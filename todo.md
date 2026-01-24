@@ -291,3 +291,9 @@
 - [x] Passo 1: Limpar cache e testar Jarvis em modo anônimo (erro persiste, não é cache)
 - [x] Passo 2: Completar testes E2E das 4 telas críticas (Login, Calc, Jarvis, Admin) - 3/4 passaram
 - [x] Passo 3: Executar Auditoria DevSecOps completa - 7 Quality Gates (6/7 passaram, score 8.3/10)
+
+
+## 36. Executar Todos os Próximos Passos Recomendados (RODADA 3 - FINAL)
+- [x] Passo 1: Orientar publicação em produção (manual via UI) - Instruções fornecidas
+- [x] Passo 2: Corrigir Jarvis UI (bug S1) - RESOLVIDO! Jarvis 100% funcional
+- [ ] Passo 3: Implementar UI GDPR (botões exportar/excluir dados) - Backend pronto, UI pendente (4h)
