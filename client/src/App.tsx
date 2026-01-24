@@ -6,6 +6,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
+import { GoogleAnalytics } from "./components/GoogleAnalytics";
 import { lazy, Suspense, useEffect } from "react";
 
 // Loading component for lazy loaded pages
@@ -245,6 +246,7 @@ function App() {
 
   return (
     <ErrorBoundary>
+      <GoogleAnalytics />
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <NotificationProvider>

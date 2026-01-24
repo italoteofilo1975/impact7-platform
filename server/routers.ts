@@ -128,12 +128,47 @@ import {
 import { systemMetricsRouter } from "./routers/system-metrics";
 import { set7Router } from "./routers/set7-router";
 import { whiteLabelRouter } from "./routers/white-label-router";
+import { autoNotificationService } from "./services/notifications/auto-notification-service";
 
 export const appRouter = router({
   system: systemRouter,
   systemMetrics: systemMetricsRouter,
   set7: set7Router,
   whiteLabel: whiteLabelRouter,
+  
+  // Auto Notifications Router (Admin only)
+  autoNotifications: router({
+    getConfig: protectedProcedure.query(({ ctx }) => {
+      if (ctx.user.role !== 'admin') {
+        throw new Error('Acesso restrito a administradores');
+      }
+      return autoNotificationService.getConfig();
+    }),
+    
+    setConfig: protectedProcedure
+      .input(z.object({
+        enabled: z.boolean().optional(),
+        notifyOnNewLead: z.boolean().optional(),
+        notifyOnNewDownload: z.boolean().optional(),
+        notifyOnCaseSubmission: z.boolean().optional(),
+        notifyOnContactMessage: z.boolean().optional(),
+      }))
+      .mutation(({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
+        autoNotificationService.setConfig(input);
+        return { success: true, config: autoNotificationService.getConfig() };
+      }),
+    
+    sendTest: protectedProcedure.mutation(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') {
+        throw new Error('Acesso restrito a administradores');
+      }
+      const success = await autoNotificationService.sendTestNotification();
+      return { success };
+    }),
+  }),
   
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
