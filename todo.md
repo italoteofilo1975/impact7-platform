@@ -190,3 +190,61 @@
 - [ ] Executar retest e regressão mínima
 - [ ] Gerar relatório final consolidado
 - [ ] Salvar checkpoint final v2.0.0
+
+
+## 28. Agentes Especializados SET7 (4 Agentes)
+- [x] Incorporar Agente de Testes E2E ao sistema
+- [x] Incorporar Agente DevSecOps ao sistema
+- [x] Incorporar Agente de Custo de Tokens ao sistema
+- [x] Incorporar Agente Multi-instância ao sistema
+- [ ] Executar protocolo completo de cada agente
+
+## 29. FASE 1 - Testes E2E Tela a Tela (Sem Mocks)
+- [ ] Testar TEL-AUTH-01: Login (fluxo crítico)
+- [x] Testar TEL-CALC-01: Calculadora (R=0 já protegido, 1 bug S3 encontrado)
+- [ ] Testar TEL-JARV-CHAT: Jarvis AI (timeout, streaming)
+- [ ] Testar TEL-ADM-01: Admin Dashboard (autorização)
+- [ ] Testar TEL-DOWN-01: Whitepaper (captura de leads)
+- [ ] Testar TEL-CASE-03: Case Submit (upload S3)
+- [ ] Testar todas as 88 telas (cobertura 100%)
+
+## 30. Auditoria DevSecOps Completa
+- [ ] Auditoria de segurança (OWASP Top 10)
+- [ ] Auditoria de performance (Core Web Vitals)
+- [ ] Auditoria de acessibilidade (WCAG AAA)
+- [ ] Auditoria de SEO (meta tags, sitemap)
+- [ ] Auditoria de infraestrutura (logs, monitoring)
+- [ ] Auditoria de CI/CD (pipelines, testes automatizados)
+
+## 31. Otimização de Custos de Tokens
+- [ ] Mapear uso de LLM (invokeLLM)
+- [ ] Implementar cache de respostas
+- [ ] Otimizar prompts (reduzir tokens)
+- [ ] Implementar rate limiting
+- [ ] Criar dashboard de custos
+
+## 32. Arquitetura Multi-instância
+- [ ] Implementar isolamento de dados por tenant
+- [ ] Implementar white label por tenant
+- [ ] Implementar billing por tenant
+- [ ] Implementar gestão de usuários por tenant
+- [ ] Testar escalabilidade horizontal
+
+## 33. Correção de Bugs (S0/S1/S2)
+- [ ] Corrigir RISCO-01: Calculadora R=0 (S0)
+- [ ] Corrigir RISCO-02: Leads duplicados (S1)
+- [ ] Corrigir RISCO-03: Jarvis timeout (S1)
+- [ ] Corrigir RISCO-05: Admin sem autorização (S1)
+- [ ] Corrigir todos os bugs S2 encontrados
+
+## 34. Retest e Regressão Completa
+- [ ] Retestar todos os bugs corrigidos
+- [ ] Executar regressão nos fluxos críticos
+- [ ] Validar cobertura de testes (100%)
+- [ ] Gerar relatório de qualidade
+
+## 35. Checkpoint Final v2.0.0
+- [ ] Consolidar todas as melhorias
+- [ ] Gerar relatório final consolidado
+- [ ] Salvar checkpoint v2.0.0 (produção)
+- [ ] Publicar sistema
