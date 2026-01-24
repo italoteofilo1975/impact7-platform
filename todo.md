@@ -176,3 +176,17 @@
 - [x] Limpar cache e reiniciar servidor (resolveu o problema)
 - [x] Testar homepage sem erros (100% funcional)
 - [x] Criar checkpoint v1.1.3
+
+
+## 27. Protocolo de Testes E2E SET7 (Completo)
+- [x] Incorporar protocolo de testes E2E ao sistema
+- [x] Criar estrutura de arquivos de testes (docs/testing/)
+- [x] FASE 0: Criar inventário completo do sistema (88 telas, 14 módulos, 3 perfis)
+- [x] FASE 0: Criar mapa de erros e inconsistências (48 inconsistências, 5 bloqueios)
+- [x] FASE 0: Criar resumo executivo (GO com restrições)
+- [x] FASE 0: Instalar dependências faltantes (jsPDF, qrcode, otplib)
+- [ ] FASE 1+: Executar testes E2E tela a tela
+- [ ] Corrigir bugs e inconsistências (S0/S1/S2/S3/S4)
+- [ ] Executar retest e regressão mínima
+- [ ] Gerar relatório final consolidado
+- [ ] Salvar checkpoint final v2.0.0
