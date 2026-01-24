@@ -253,3 +253,29 @@
 - [ ] Gerar relatório final consolidado
 - [ ] Salvar checkpoint v2.0.0 (produção)
 - [ ] Publicar sistema
+
+
+## 31. Correção BUG-JARV-01 (S1 — Crítico)
+- [ ] Investigar erro do Jarvis AI (LLM não processa mensagens)
+- [ ] Verificar se invokeLLM está sendo chamado corretamente
+- [ ] Verificar autenticação com API Forge
+- [ ] Testar Jarvis após correção
+
+## 32. Completar Testes E2E (8 telas restantes)
+- [ ] TEL-ADM-01: Admin Dashboard (autorização)
+- [ ] TEL-DOWN-01: Whitepaper (captura de leads)
+- [ ] TEL-CASE-03: Case Submit (upload S3)
+- [ ] TEL-HOME-01: Homepage (6 módulos)
+- [ ] TEL-AUTH-05: Profile
+- [ ] TEL-NOTIF-01: Notificações
+- [ ] TEL-PAY-03: Payments
+- [ ] TEL-CALC-02: Impact Dashboard
+
+## 33. Auditoria DevSecOps (7 Quality Gates)
+- [ ] G1: Segurança & Compliance
+- [ ] G2: Engenharia & Qualidade
+- [ ] G3: Testes & Correção Funcional
+- [ ] G4: Confiabilidade & Resiliência
+- [ ] G5: Observabilidade & Operação
+- [ ] G6: Integridade & Governança de Dados
+- [ ] G7: Performance & Escalabilidade

@@ -256,8 +256,13 @@ export async function chatWithJarvis(
   ];
   
   try {
+    console.log("[Jarvis] Iniciando chat com mensagem:", userMessage);
+    console.log("[Jarvis] Histórico de mensagens:", conversationHistory.length);
+    
     // Executar LLM com circuit breaker para resiliência
+    console.log("[Jarvis] Executando LLM via circuit breaker...");
     const response = await llmCircuitBreaker.execute(() => invokeLLM({ messages }));
+    console.log("[Jarvis] Resposta do LLM recebida com sucesso");
     const rawContent = response.choices[0]?.message?.content;
     const assistantMessage = typeof rawContent === 'string' ? rawContent : 
       "Desculpe, não consegui processar sua solicitação. Por favor, tente novamente.";
@@ -271,7 +276,9 @@ export async function chatWithJarvis(
       sources: sources.length > 0 ? sources : undefined
     };
   } catch (error) {
-    console.error("[Jarvis] Error:", error);
+    console.error("[Jarvis] Erro capturado:", error);
+    console.error("[Jarvis] Stack trace:", error instanceof Error ? error.stack : 'N/A');
+    console.error("[Jarvis] Tipo de erro:", error instanceof CircuitBreakerError ? 'CircuitBreakerError' : error?.constructor?.name);
     
     // Verificar se é erro do circuit breaker
     if (error instanceof CircuitBreakerError) {

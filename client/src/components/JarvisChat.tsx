@@ -85,10 +85,19 @@ export default function JarvisChat() {
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      console.error("[Jarvis] Error:", error);
+      console.error("[Jarvis] Erro completo:", error);
+      console.error("[Jarvis] Mensagem de erro:", error instanceof Error ? error.message : String(error));
+      console.error("[Jarvis] Stack:", error instanceof Error ? error.stack : 'N/A');
+      
+      // Extrair mensagem de erro mais específica
+      let errorMessage = "Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente em alguns instantes.";
+      if (error instanceof Error) {
+        errorMessage = `Erro: ${error.message}`;
+      }
+      
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: "Desculpe, ocorreu um erro. Por favor, tente novamente."
+        content: errorMessage
       }]);
     } finally {
       setIsTyping(false);
