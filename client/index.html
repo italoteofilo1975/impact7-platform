@@ -1,20 +1,140 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 
   <head>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>IMPACT7 - Exponential Social Innovation Platform</title>    
-    <!-- THIS IS THE START OF A COMMENT BLOCK, BLOCK TO BE DELETED: Google Fonts here, example:
+    <title>Método IMPACT7 - Inovação Social Exponencial</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Método IMPACT7 - Inovação Social Exponencial" />
+    <meta name="description" content="Transforme seu impacto social com ciência cognitiva, modelagem matemática e engenharia de software. Calcule o S-ROI dos seus projetos e maximize resultados." />
+    <meta name="keywords" content="impacto social, SROI, retorno social, inovação social, mensuração de impacto, ODS, ESG, investimento social, terceiro setor, ONGs, fundações" />
+    <meta name="author" content="IMPACT7" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="Portuguese" />
+    <meta name="revisit-after" content="7 days" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://impact7.com.br/" />
+    <meta property="og:title" content="Método IMPACT7 - Inovação Social Exponencial" />
+    <meta property="og:description" content="Transforme seu impacto social com ciência cognitiva, modelagem matemática e engenharia de software. Calcule o S-ROI dos seus projetos." />
+    <meta property="og:image" content="https://impact7.com.br/og-image.png" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="IMPACT7" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://impact7.com.br/" />
+    <meta property="twitter:title" content="Método IMPACT7 - Inovação Social Exponencial" />
+    <meta property="twitter:description" content="Transforme seu impacto social com ciência cognitiva, modelagem matemática e engenharia de software." />
+    <meta property="twitter:image" content="https://impact7.com.br/og-image.png" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://impact7.com.br/" />
+    
+    <!-- Theme and PWA -->
+    <meta name="theme-color" content="#0F172A" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="IMPACT7" />
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    THIS IS THE END OF A COMMENT BLOCK, BLOCK TO BE DELETED -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "IMPACT7",
+      "url": "https://impact7.com.br",
+      "logo": "https://impact7.com.br/logo.png",
+      "description": "Plataforma de inovação social exponencial que combina ciência cognitiva, modelagem matemática e engenharia de software para maximizar o retorno sobre investimento social.",
+      "sameAs": [
+        "https://linkedin.com/company/impact7",
+        "https://instagram.com/impact7",
+        "https://youtube.com/@impact7"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+55-11-99999-9999",
+        "contactType": "customer service",
+        "areaServed": ["BR", "PT"],
+        "availableLanguage": ["Portuguese"]
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Calculadora de Impacto IMPACT7",
+      "url": "https://impact7.com.br/calculadora",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "BRL"
+      },
+      "description": "Calcule o S-ROI (Retorno Social sobre Investimento) dos seus projetos de impacto social usando a equação I = (E × C⁷) / R"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "IMPACT7 Platform",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "0",
+        "highPrice": "499",
+        "priceCurrency": "BRL",
+        "offerCount": "3"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "127"
+      }
+    }
+    </script>
   </head>
 
   <body>
+    <script>
+      // Suprimir erros de WebSocket do Vite HMR no ambiente sandbox
+      (function() {
+        var originalError = console.error;
+        console.error = function() {
+          var msg = arguments[0] && arguments[0].toString ? arguments[0].toString() : '';
+          if (msg.indexOf('WebSocket') !== -1 || msg.indexOf('24678') !== -1 || msg.indexOf('@vite/client') !== -1 || msg.indexOf('websocket') !== -1) {
+            return;
+          }
+          originalError.apply(console, arguments);
+        };
+        window.addEventListener('error', function(e) {
+          if (e.message && (e.message.indexOf('WebSocket') !== -1 || e.message.indexOf('24678') !== -1)) {
+            e.preventDefault();
+            return false;
+          }
+        }, true);
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script

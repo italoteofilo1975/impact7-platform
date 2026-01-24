@@ -1,0 +1,59 @@
+# robots.txt for IMPACT7 Platform
+# https://www.robotstxt.org/
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/
+Disallow: /api/*
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /profile
+Disallow: /settings
+Disallow: /payments
+Disallow: /onboarding
+
+# Allow important pages
+Allow: /
+Allow: /sobre
+Allow: /ciencia
+Allow: /matematica
+Allow: /tecnologia
+Allow: /calculadora
+Allow: /cases
+Allow: /casos-sucesso
+Allow: /whitepaper
+Allow: /ebook
+Allow: /blog
+Allow: /faq
+Allow: /precos
+Allow: /comparacao
+Allow: /metodologia
+Allow: /glossario
+Allow: /certificacoes
+Allow: /demo
+Allow: /newsletter
+Allow: /contato
+Allow: /parceiros
+Allow: /carreiras
+Allow: /comunidade
+Allow: /recursos
+Allow: /depoimentos
+Allow: /webinars
+Allow: /integracoes
+Allow: /seguranca
+Allow: /roadmap
+Allow: /changelog
+Allow: /status
+Allow: /impacto
+Allow: /termos
+Allow: /privacidade
+
+# Sitemap location
+Sitemap: https://impact7.com.br/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

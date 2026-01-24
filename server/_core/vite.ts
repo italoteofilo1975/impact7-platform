@@ -9,16 +9,25 @@ import viteConfig from "../../vite.config";
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
-    hmr: { server },
+    // Desabilitar HMR completamente para evitar erros de WebSocket no sandbox
+    hmr: false,
     allowedHosts: true as const,
   };
 
-  const vite = await createViteServer({
+  // Criar configuração do Vite com HMR completamente desabilitado
+  const viteConfigWithoutHMR = {
     ...viteConfig,
-    configFile: false,
+    configFile: false as const,
     server: serverOptions,
-    appType: "custom",
-  });
+    appType: "custom" as const,
+    // Desabilitar o cliente HMR também
+    define: {
+      ...((viteConfig as any).define || {}),
+      '__HMR_ENABLE_OVERLAY__': 'false',
+    },
+  };
+
+  const vite = await createViteServer(viteConfigWithoutHMR);
 
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {

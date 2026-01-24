@@ -1,0 +1,1240 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "success": "Sucesso!",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "create": "Criar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "export": "Exportar",
+    "import": "Importar",
+    "download": "Baixar",
+    "upload": "Enviar",
+    "submit": "Enviar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "close": "Fechar",
+    "confirm": "Confirmar",
+    "yes": "Sim",
+    "no": "Não",
+    "all": "Todos",
+    "none": "Nenhum",
+    "select": "Selecionar",
+    "required": "Obrigatório",
+    "optional": "Opcional",
+    "viewMore": "Ver mais",
+    "viewLess": "Ver menos",
+    "noResults": "Nenhum resultado encontrado",
+    "tryAgain": "Tentar novamente",
+    "home": "Início",
+    "clearFilters": "Limpar filtros",
+    "filtersActive": "filtros ativos",
+    "featured": "Destaque",
+    "maxCompare": "Máximo de 3 cases para comparação",
+    "selected": "Selecionado",
+    "saved": "Salvo",
+    "challenge": "Desafio",
+    "solution": "Solução IMPACT7",
+    "results": "Resultados",
+    "relatedSDGs": "ODS relacionados",
+    "impactMetrics": "Métricas de Impacto",
+    "sroiDescription": "Retorno Social sobre Investimento",
+    "calculateImpact": "Calcular Meu Impacto"
+  },
+  "nav": {
+    "home": "Início",
+    "science": "Ciência",
+    "math": "Matemática",
+    "technology": "Tecnologia",
+    "cases": "Casos",
+    "contact": "Contato",
+    "platform": "Plataforma",
+    "admin": "Admin",
+    "login": "Entrar",
+    "logout": "Sair",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "bePartner": "Seja Parceiro"
+  },
+  "home": {
+    "seo": {
+      "title": "Inovação Social Exponencial",
+      "description": "Transforme seu impacto social com ciência cognitiva, modelagem matemática e engenharia de software."
+    },
+    "hero": {
+      "badge": "Inovação Social Exponencial",
+      "title": "Transforme seu",
+      "titleHighlight": "Impacto Social",
+      "titleEnd": "com Ciência",
+      "subtitle": "O Método IMPACT7 combina Ciência Cognitiva, Modelagem Matemática e Engenharia de Software para maximizar o retorno sobre investimento social.",
+      "cta1": "Calcular Impacto",
+      "cta2": "Baixar Whitepaper"
+    },
+    "stats": {
+      "organizations": "Organizações",
+      "avgSroi": "S-ROI Médio",
+      "beneficiaries": "Beneficiários",
+      "satisfaction": "Satisfação"
+    },
+    "equation": {
+      "title": "A Equação do Impacto",
+      "subtitle": "Uma fórmula matemática que quantifica o potencial de transformação social",
+      "description": "Onde I é o Impacto Total, E é a Eficiência, C representa os 7 Catalisadores e R é a Resistência ao Impacto.",
+      "impact": "Impacto",
+      "impactDesc": "Resultado mensurável",
+      "energy": "Energia",
+      "energyDesc": "Investimento total",
+      "context": "Contexto",
+      "contextDesc": "7 dimensões de alinhamento",
+      "resistance": "Resistência",
+      "resistanceDesc": "Barreiras e fricções",
+      "cta": "Entender a Matemática"
+    },
+    "framework": {
+      "title": "Framework Tecnológico",
+      "subtitle": "Uma arquitetura completa para maximizar o impacto social",
+      "7r": "7 Recursos Estratégicos",
+      "7v": "7 Vetores de Valor",
+      "77t": "77 Técnicas Aplicadas",
+      "contextLake": "Base de Conhecimento IA",
+      "cta": "Explorar Tecnologia"
+    },
+    "modules": {
+      "title": "Os 7 Módulos",
+      "subtitle": "Um framework estruturado para maximizar o impacto social",
+      "module1": "Diagnóstico",
+      "module2": "Estratégia",
+      "module3": "Design",
+      "module4": "Implementação",
+      "module5": "Monitoramento",
+      "module6": "Avaliação",
+      "module7": "Escala",
+      "desc1": "Análise profunda do contexto e identificação de oportunidades",
+      "desc2": "Definição de objetivos e métricas de impacto",
+      "desc3": "Modelagem de intervenções baseadas em evidências",
+      "desc4": "Execução com metodologia ágil e adaptativa",
+      "desc5": "Coleta e análise de dados de impacto",
+      "desc6": "Ajustes contínuos baseados em resultados",
+      "desc7": "Replicação e ampliação do impacto"
+    },
+    "cta": {
+      "title": "Pronto para Maximizar seu Impacto?",
+      "subtitle": "Comece agora a calcular o potencial de transformação do seu projeto social",
+      "button1": "Calcular Impacto Agora",
+      "button2": "Falar com Especialista"
+    },
+    "metrics": {
+      "title": "Métricas de Impacto",
+      "projects": "Projetos",
+      "beneficiaries": "Beneficiários",
+      "investment": "Investimento",
+      "avgSroi": "S-ROI Médio"
+    },
+    "testimonials": {
+      "title": "Depoimentos",
+      "subtitle": "O que nossos parceiros dizem",
+      "role1": "Diretora Executiva",
+      "role2": "Gerente de Projetos",
+      "role3": "Coordenadora",
+      "text1": "O Método IMPACT7 revolucionou nossa forma de medir e comunicar impacto. Aumentamos nosso S-ROI em 340% em 12 meses.",
+      "text2": "A calculadora de impacto nos ajudou a priorizar investimentos e maximizar resultados. Ferramenta indispensável.",
+      "text3": "Finalmente uma metodologia que une rigor científico com praticidade. Recomendo fortemente."
+    }
+  },
+  "accessibility": {
+    "skipToContent": "Pular para o conteúdo principal",
+    "skipToNav": "Pular para a navegação"
+  },
+  "calculator": {
+    "title": "Calculadora de Impacto",
+    "subtitle": "Estime o S-ROI (Retorno Social sobre Investimento) do seu projeto usando a equação do Método IMPACT7.",
+    "badge": "Ferramenta Interativa",
+    "breadcrumb": "Calculadora",
+    "projectData": "Dados do Projeto",
+    "projectDataDesc": "Preencha as informações para calcular o impacto potencial",
+    "investment": "Investimento Total (E)",
+    "investmentTooltip": "Valor total a ser investido no projeto, incluindo recursos financeiros, humanos e materiais.",
+    "investmentMin": "R$ 10 mil",
+    "investmentMax": "R$ 10 milhões",
+    "contextAlignment": "Alinhamento com Contexto (C)",
+    "contextTooltip": "Grau de alinhamento do projeto com as 7 dimensões contextuais: cultural, econômico, social, político, tecnológico, ambiental e institucional.",
+    "low": "Baixo",
+    "high": "Alto",
+    "barriers": "Barreiras e Resistências (R)",
+    "barriersTooltip": "Nível de barreiras e resistências esperadas: burocráticas, culturais, financeiras, políticas, etc.",
+    "few": "Poucas",
+    "many": "Muitas",
+    "beneficiaries": "Beneficiários Diretos",
+    "duration": "Duração do Projeto (meses)",
+    "months": "meses",
+    "durationMin": "3 meses",
+    "durationMax": "5 anos",
+    "calculate": "Calcular Impacto",
+    "equation": {
+      "title": "A Equação do Impacto",
+      "energy": "Energia",
+      "context": "Contexto",
+      "resistance": "Resistência",
+      "impact": "Impacto"
+    },
+    "results": {
+      "title": "Resultado da Análise",
+      "sroiEstimated": "S-ROI Estimado",
+      "socialValue": "Valor Social Gerado",
+      "impactScore": "Score de Impacto",
+      "recommendation": "Recomendação",
+      "excellent": "Excelente potencial de impacto! O projeto apresenta condições favoráveis para maximizar o retorno social.",
+      "good": "Bom potencial. Considere estratégias para aumentar o alinhamento contextual ou reduzir resistências.",
+      "moderate": "Potencial moderado. Recomendamos uma análise mais profunda dos fatores de resistência e contexto.",
+      "exportPdf": "Exportar PDF",
+      "exporting": "Exportando...",
+      "scheduleConsulting": "Agendar Consultoria"
+    },
+    "ratings": {
+      "low": "Baixo",
+      "moderate": "Moderado",
+      "good": "Bom",
+      "veryGood": "Muito Bom",
+      "excellent": "Excelente"
+    },
+    "benchmarks": {
+      "title": "Benchmarks de Referência",
+      "minRecommended": "S-ROI Mínimo Recomendado",
+      "avgSocial": "S-ROI Médio (Projetos Sociais)",
+      "top10": "S-ROI Top 10% (IMPACT7)"
+    },
+    "cta": {
+      "title": "Quer maximizar o impacto do seu projeto?",
+      "subtitle": "Agende uma consultoria gratuita com nossa equipe para aplicar o Método IMPACT7 no seu contexto específico.",
+      "scheduleConsulting": "Agendar Consultoria",
+      "downloadWhitepaper": "Baixar Whitepaper"
+    },
+    "toast": {
+      "success": "Impacto calculado: S-ROI de {{sroi}}x",
+      "error": "Erro ao calcular. Tente novamente.",
+      "pdfExported": "PDF exportado com sucesso!",
+      "pdfError": "Erro ao exportar PDF. Tente novamente."
+    }
+  },
+  "cases": {
+    "title": "Casos de Estudo",
+    "subtitle": "Projetos reais que transformaram comunidades",
+    "filters": {
+      "all": "Todos",
+      "sector": "Setor",
+      "year": "Ano",
+      "investment": "Investimento",
+      "ods": "ODS"
+    },
+    "card": {
+      "beneficiaries": "beneficiários",
+      "investment": "investimento",
+      "sroi": "S-ROI",
+      "viewDetails": "Ver Detalhes",
+      "favorite": "Favoritar",
+      "unfavorite": "Remover Favorito",
+      "compare": "Comparar",
+      "export": "Exportar PDF"
+    },
+    "submit": {
+      "title": "Submeter Caso",
+      "subtitle": "Compartilhe seu projeto de impacto social",
+      "step1": "Informações Básicas",
+      "step2": "Métricas de Impacto",
+      "step3": "Documentação",
+      "step4": "Revisão",
+      "success": "Caso submetido com sucesso! Nossa equipe irá revisar em breve."
+    },
+    "compare": {
+      "title": "Comparar Casos",
+      "subtitle": "Análise lado a lado de projetos selecionados",
+      "selectCases": "Selecione até 3 casos para comparar",
+      "noSelection": "Nenhum caso selecionado"
+    }
+  },
+  "jarvis": {
+    "title": "Jarvis IA",
+    "subtitle": "Seu assistente de impacto social",
+    "placeholder": "Digite sua pergunta...",
+    "send": "Enviar",
+    "thinking": "Pensando...",
+    "greeting": "Olá! Sou o Jarvis, seu assistente de impacto social. Como posso ajudar?",
+    "skills": {
+      "calculator": "Calculadora de Impacto",
+      "mentoring": "Mentoria Personalizada",
+      "export": "Exportar Relatório",
+      "memory": "Memória de Longo Prazo"
+    },
+    "memory": {
+      "title": "Memória",
+      "saved": "Memória salva",
+      "recalled": "Memória recuperada",
+      "cleared": "Memória limpa"
+    },
+    "reports": {
+      "title": "Relatórios Jarvis IA",
+      "subtitle": "Geração automática de relatórios de impacto",
+      "generate": "Gerar Relatório",
+      "generating": "Gerando...",
+      "types": {
+        "impact": "Relatório de Impacto",
+        "executive_summary": "Resumo Executivo",
+        "progress": "Relatório de Progresso",
+        "comparison": "Análise Comparativa",
+        "forecast": "Projeção de Impacto"
+      }
+    }
+  },
+  "admin": {
+    "title": "Painel Administrativo",
+    "dashboard": "Dashboard",
+    "leads": "Leads",
+    "contacts": "Contatos",
+    "downloads": "Downloads",
+    "cases": "Casos",
+    "tags": "Tags",
+    "webhooks": "Webhooks",
+    "oauth": "OAuth Clients",
+    "apiKeys": "API Keys",
+    "monitoring": "Monitoramento",
+    "notifications": "Notificações",
+    "metrics": "Métricas API"
+  },
+  "auth": {
+    "login": "Entrar",
+    "logout": "Sair",
+    "register": "Registrar",
+    "forgotPassword": "Esqueceu a senha?",
+    "email": "Email",
+    "password": "Senha",
+    "confirmPassword": "Confirmar Senha",
+    "rememberMe": "Lembrar de mim",
+    "loginWith": "Entrar com",
+    "orContinueWith": "Ou continue com"
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "points": "Pontos",
+    "badges": "Badges",
+    "level": "Nível",
+    "streak": "Sequência",
+    "favorites": "Favoritos",
+    "history": "Histórico",
+    "settings": "Configurações"
+  },
+  "gamification": {
+    "points": "pontos",
+    "level": "Nível",
+    "badge": "Badge",
+    "badges": "Badges",
+    "leaderboard": "Ranking",
+    "streak": "Sequência de dias",
+    "achievements": "Conquistas",
+    "unlocked": "Desbloqueado!",
+    "progress": "Progresso"
+  },
+  "api": {
+    "title": "API IMPACT7",
+    "docs": "Documentação",
+    "playground": "Playground",
+    "changelog": "Changelog",
+    "status": "Status",
+    "keys": "API Keys",
+    "webhooks": "Webhooks",
+    "oauth": "OAuth2",
+    "rateLimit": "Rate Limit"
+  },
+  "certificates": {
+    "title": "Certificados de Impacto",
+    "verify": "Verificar Certificado",
+    "issue": "Emitir Certificado",
+    "download": "Baixar Certificado",
+    "qrCode": "QR Code de Verificação",
+    "blockchain": "Registrado em Blockchain",
+    "hash": "Hash de Verificação",
+    "tokens": "Tokens de Impacto (SIT)",
+    "valid": "Certificado Válido",
+    "invalid": "Certificado Inválido"
+  },
+  "footer": {
+    "tagline": "Inovação Social Exponencial. Transformando impacto social com ciência, matemática e tecnologia.",
+    "quickLinks": "Links Rápidos",
+    "aboutUs": "Sobre Nós",
+    "partners": "Parceiros",
+    "careers": "Carreiras",
+    "scheduleDemo": "Agendar Demo",
+    "newsletter": "Newsletter",
+    "successCases": "Casos de Sucesso",
+    "comparePlans": "Comparar Planos",
+    "testimonials": "Depoimentos",
+    "resources": "Recursos",
+    "caseStudies": "Casos de Estudo",
+    "freeEbook": "E-book Gratuito",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "support": "Suporte",
+    "pricing": "Preços",
+    "apiDocs": "API Docs",
+    "status": "Status",
+    "changelog": "Changelog",
+    "roadmap": "Roadmap",
+    "integrations": "Integrações",
+    "webinars": "Webinars",
+    "security": "Segurança",
+    "community": "Comunidade",
+    "resourcesLink": "Recursos",
+    "methodology": "Metodologia",
+    "glossary": "Glossário",
+    "certifications": "Certificações",
+    "contact": "Contato",
+    "allRightsReserved": "Todos os direitos reservados.",
+    "privacy": "Privacidade",
+    "terms": "Termos de Uso"
+  },
+  "socialProof": {
+    "badge": "Reconhecido por Líderes do Setor",
+    "title": "Confiança de Quem Transforma",
+    "subtitle": "Mais de 500 organizações utilizam o Método IMPACT7 para maximizar seu impacto social",
+    "featuredCases": "Cases de Destaque",
+    "verified": "Verificado",
+    "beneficiariesLabel": "Beneficiários",
+    "partnersTitle": "Organizações que confiam no IMPACT7",
+    "certificationsTitle": "Certificações e Reconhecimentos",
+    "categories": {
+      "education": "Educação",
+      "sustainability": "Sustentabilidade",
+      "socialFinance": "Finanças Sociais",
+      "development": "Desenvolvimento"
+    },
+    "certifications": {
+      "iso26000": "Responsabilidade Social",
+      "bcorp": "Impacto Positivo",
+      "giin": "Investimento de Impacto"
+    },
+    "metrics": {
+      "beneficiaries": {
+        "label": "Beneficiários Diretos",
+        "description": "Pessoas impactadas por projetos mensurados"
+      },
+      "organizations": {
+        "label": "Organizações",
+        "description": "ONGs, fundações e empresas parceiras"
+      },
+      "socialValue": {
+        "label": "Valor Social Gerado",
+        "description": "Retorno social sobre investimento"
+      },
+      "states": {
+        "label": "Estados",
+        "description": "Presença em todo o Brasil"
+      }
+    },
+    "cases": {
+      "case1": {
+        "project": "Educação Digital Rural",
+        "highlight": "Maior S-ROI do setor educacional em 2025"
+      },
+      "case2": {
+        "project": "Capacitação Profissional",
+        "highlight": "Prêmio Melhores Práticas ODS"
+      },
+      "case3": {
+        "project": "Saúde Comunitária",
+        "highlight": "Reconhecimento OMS América Latina"
+      }
+    },
+    "compact": {
+      "organizations": "Organizações",
+      "beneficiaries": "Beneficiários",
+      "avgSroi": "S-ROI Médio",
+      "satisfaction": "Satisfação"
+    }
+  },
+  "cases": {
+    "breadcrumb": "Cases",
+    "badge": "Casos de Sucesso Verificados",
+    "title": "Histórias de Impacto Real",
+    "subtitle": "Conheça projetos que transformaram comunidades aplicando o Método IMPACT7. Cada caso foi auditado e validado com métricas de impacto social mensuráveis.",
+    "stats": {
+      "projects": "Projetos Apoiados",
+      "avgSroi": "S-ROI Médio",
+      "beneficiaries": "Beneficiários",
+      "socialValue": "Valor Social Gerado"
+    },
+    "featured": {
+      "title": "Cases em Destaque"
+    },
+    "filters": {
+      "search": "Buscar cases...",
+      "sector": "Setor",
+      "region": "Região",
+      "sortBy": "Ordenar por",
+      "filters": "Filtros",
+      "year": "Ano",
+      "investment": "Investimento",
+      "ods": "ODS",
+      "all": "Todos",
+      "allRegions": "Todas",
+      "allODS": "Todos os ODS",
+      "sortOptions": {
+        "sRoi": "Maior S-ROI",
+        "investment": "Maior Investimento",
+        "beneficiaries": "Mais Beneficiários",
+        "year": "Mais Recente"
+      },
+      "investmentRanges": {
+        "all": "Todos",
+        "upTo1M": "Até R$ 1M",
+        "1Mto5M": "R$ 1M - R$ 5M",
+        "5Mto10M": "R$ 5M - R$ 10M",
+        "above10M": "Acima de R$ 10M"
+      }
+    },
+    "sectors": {
+      "all": "Todos",
+      "education": "Educação",
+      "health": "Saúde",
+      "microfinance": "Microfinanças",
+      "agriculture": "Agricultura",
+      "housing": "Habitação"
+    },
+    "regions": {
+      "all": "Todas",
+      "southeast": "Sudeste",
+      "northeast": "Nordeste",
+      "south": "Sul",
+      "north": "Norte",
+      "midwest": "Centro-Oeste"
+    },
+    "actions": {
+      "compare": "Comparar Cases",
+      "compareSelected": "Comparar {{count}} Cases",
+      "selectMore": "Selecione {{count}} mais",
+      "cancel": "Cancelar",
+      "export": "Exportar {{count}} Cases",
+      "generating": "Gerando...",
+      "submit": "Submeter Seu Case",
+      "viewDetails": "Ver Detalhes",
+      "download": "Baixar PDF"
+    },
+    "card": {
+      "investment": "Investimento",
+      "beneficiaries": "Beneficiários",
+      "duration": "Duração",
+      "sRoi": "S-ROI"
+    },
+    "results": {
+      "found": "{{count}} cases encontrados",
+      "noResults": "Nenhum case encontrado",
+      "noResultsDescription": "Tente ajustar os filtros ou buscar por outros termos."
+    },
+    "toast": {
+      "pdfSuccess": "PDF gerado com sucesso! Abra o arquivo HTML e use Ctrl+P para salvar como PDF.",
+      "pdfError": "Erro ao gerar PDF",
+      "favoriteAdded": "Case adicionado aos favoritos",
+      "favoriteRemoved": "Case removido dos favoritos",
+      "loginRequired": "Faça login para salvar favoritos",
+      "reportSuccess": "Relatório gerado com {{count}} cases! Abra o arquivo e use Ctrl+P para salvar como PDF.",
+      "reportError": "Erro ao gerar relatório"
+    },
+    "cta": {
+      "title": "Quer resultados como estes?",
+      "subtitle": "Aplique o Método IMPACT7 no seu projeto e maximize seu impacto social. Nossa metodologia já transformou mais de 2 milhões de vidas.",
+      "submitCase": "Submeter Case",
+      "contact": "Falar com Especialista"
+    },
+    "data": {
+      "case1.title": "Programa de Capacitação Digital",
+      "case1.organization": "Instituto Futuro Digital",
+      "case1.location": "São Paulo, SP",
+      "case1.duration": "24 meses",
+      "case1.description": "Programa de formação em tecnologia para jovens de comunidades vulneráveis, com foco em programação, design e empreendedorismo digital.",
+      "case1.challenge": "Baixa empregabilidade e renda entre jovens de 18-29 anos em áreas periféricas, com apenas 23% conseguindo emprego formal após o ensino médio.",
+      "case1.solution": "Metodologia IMPACT7 aplicada para design de currículo baseado em competências do mercado, seleção de participantes por potencial de transformação e mensuração contínua de resultados com ajustes em tempo real.",
+      "case1.results": "12.4x de retorno social sobre investimento, com 87% dos formandos empregados em até 6 meses e aumento médio de 180% na renda familiar.",
+      "case1.testimonial.quote": "O programa mudou minha vida. Saí de um emprego informal ganhando R$ 800 para uma posição de desenvolvedor júnior com R$ 4.500. Hoje consigo ajudar minha família e tenho perspectiva de futuro.",
+      "case1.testimonial.author": "Maria Santos",
+      "case1.testimonial.role": "Formanda da turma 2023",
+      "case1.metrics.employability": "Taxa de Empregabilidade",
+      "case1.metrics.income": "Renda Média",
+      "case1.metrics.completion": "Conclusão do Programa",
+      "case2.title": "Rede de Microcrédito Solidário",
+      "case2.organization": "Cooperativa Esperança",
+      "case2.location": "Recife, PE",
+      "case2.duration": "36 meses",
+      "case2.description": "Programa de microcrédito com acompanhamento técnico para empreendedores de baixa renda, combinando capital com capacitação em gestão.",
+      "case2.challenge": "Falta de acesso a crédito formal e conhecimento de gestão para pequenos empreendedores em comunidades de baixa renda, com 78% dependendo de agiotas.",
+      "case2.solution": "Combinação de microcrédito com taxas justas, mentoria personalizada e capacitação em gestão financeira, usando a metodologia IMPACT7 para identificar empreendedores com maior potencial de crescimento.",
+      "case2.results": "2.400 novos negócios criados, com taxa de inadimplência de apenas 3.2% (vs. 15% do mercado) e aumento médio de 220% na renda familiar.",
+      "case2.testimonial.quote": "Com o microcrédito e a mentoria, consegui transformar minha barraca de frutas em uma pequena mercearia. Hoje emprego 3 pessoas da comunidade.",
+      "case2.testimonial.author": "José Ferreira",
+      "case2.testimonial.role": "Empreendedor beneficiado",
+      "case2.metrics.businesses": "Negócios Criados",
+      "case2.metrics.default": "Taxa de Inadimplência",
+      "case2.metrics.income": "Renda Familiar",
+      "case3.title": "Saúde Preventiva Comunitária",
+      "case3.organization": "Fundação Vida Saudável",
+      "case3.location": "Belo Horizonte, MG",
+      "case3.duration": "18 meses",
+      "case3.description": "Programa de prevenção de doenças crônicas através de agentes comunitários de saúde equipados com tecnologia mobile.",
+      "case3.challenge": "Alta incidência de doenças crônicas preveníveis em comunidades de baixa renda, com 67% dos moradores sem acompanhamento médico regular.",
+      "case3.solution": "Rede de 120 agentes comunitários com aplicativo mobile para acompanhamento e educação em saúde, usando IMPACT7 para priorizar intervenções de maior impacto.",
+      "case3.results": "4.200 internações evitadas, gerando economia de R$ 12M para o sistema público de saúde e aumento de 94% na cobertura vacinal.",
+      "case3.testimonial.quote": "Os agentes de saúde me ajudaram a controlar minha diabetes. Antes eu ia ao hospital todo mês, agora faço acompanhamento em casa e não preciso mais internar.",
+      "case3.testimonial.author": "Dona Maria Aparecida",
+      "case3.testimonial.role": "Beneficiária, 68 anos",
+      "case3.metrics.hospitalizations": "Internações Evitadas",
+      "case3.metrics.susCost": "Custo SUS Evitado",
+      "case3.metrics.vaccination": "Cobertura Vacinal",
+      "case4.title": "Agricultura Familiar Sustentável",
+      "case4.organization": "Associação Terra Viva",
+      "case4.location": "Chapecó, SC",
+      "case4.duration": "30 meses",
+      "case4.description": "Programa de transição para agricultura orgânica com assistência técnica e acesso a mercados para pequenos produtores rurais.",
+      "case4.challenge": "Baixa produtividade e renda de agricultores familiares, com 45% vivendo abaixo da linha da pobreza e uso intensivo de agrotóxicos.",
+      "case4.solution": "Capacitação em técnicas agroecológicas, certificação orgânica coletiva e conexão direta com mercados consumidores através de cooperativa.",
+      "case4.results": "Aumento de 156% na produtividade, 340 famílias certificadas como orgânicas e acesso a mercados premium com preços 40% superiores.",
+      "case4.testimonial.quote": "Deixei de usar veneno na lavoura e hoje ganho mais vendendo orgânico. Meus filhos querem continuar na terra, coisa que antes nem pensavam.",
+      "case4.testimonial.author": "João da Silva",
+      "case4.testimonial.role": "Agricultor familiar",
+      "case4.metrics.productivity": "Produtividade",
+      "case4.metrics.income": "Renda Agrícola",
+      "case4.metrics.organic": "Certificação Orgânica (famílias)",
+      "case5.title": "Moradia Social Integrada",
+      "case5.organization": "Habitat Brasil",
+      "case5.location": "Salvador, BA",
+      "case5.duration": "48 meses",
+      "case5.description": "Programa de urbanização de favelas com construção de moradias, regularização fundiária e desenvolvimento comunitário integrado.",
+      "case5.challenge": "700 famílias vivendo em área de risco com moradias precárias, sem saneamento básico e sem título de propriedade.",
+      "case5.solution": "Urbanização integrada com participação comunitária, usando IMPACT7 para priorizar intervenções e medir impacto multidimensional.",
+      "case5.results": "700 famílias com moradia digna e título de propriedade, valorização média de 280% dos imóveis e redução de 95% nos casos de doenças relacionadas a saneamento.",
+      "case5.testimonial.quote": "Morei 30 anos em barraco de madeira. Hoje tenho uma casa de alvenaria com meu nome na escritura. Meus netos vão herdar algo de valor.",
+      "case5.testimonial.author": "Seu Antônio",
+      "case5.testimonial.role": "Morador beneficiado",
+      "case5.metrics.families": "Famílias Reassentadas",
+      "case5.metrics.regularization": "Regularização Fundiária",
+      "case5.metrics.appreciation": "Valorização Imobiliária",
+      "case6.title": "Inclusão Digital para Idosos",
+      "case6.organization": "Instituto Longevidade",
+      "case6.location": "Porto Alegre, RS",
+      "case6.duration": "12 meses",
+      "case6.description": "Programa de alfabetização digital para idosos com foco em autonomia, conexão social e acesso a serviços públicos online.",
+      "case6.challenge": "85% dos idosos acima de 65 anos sem habilidades digitais básicas, resultando em exclusão de serviços e isolamento social.",
+      "case6.solution": "Metodologia adaptada para terceira idade com aulas presenciais, material didático simplificado e acompanhamento por voluntários jovens.",
+      "case6.results": "4.800 idosos alfabetizados digitalmente, redução de 62% nos índices de isolamento social e aumento de 340% no acesso a serviços online.",
+      "case6.testimonial.quote": "Aprendi a fazer videochamada com meus netos que moram longe. Agora também marco consulta médica pelo celular. Me sinto parte do mundo novamente.",
+      "case6.testimonial.author": "Dona Irene",
+      "case6.testimonial.role": "Participante, 72 anos",
+      "case6.metrics.digitally": "Idosos Alfabetizados Digitalmente",
+      "case6.metrics.isolation": "Redução de Isolamento",
+      "case6.metrics.services": "Acesso a Serviços Online"
+    },
+    "submit": {
+      "title": "Submeter Case de Sucesso",
+      "subtitle": "Compartilhe o impacto do seu projeto com a comunidade IMPACT7",
+      "steps": {
+        "organization": "Organização",
+        "project": "Projeto",
+        "impact": "Impacto",
+        "review": "Revisão"
+      },
+      "step1": {
+        "title": "Informações da Organização",
+        "description": "Conte-nos sobre sua organização e quem é o responsável pelo projeto.",
+        "organizationName": "Nome da Organização",
+        "organizationNamePlaceholder": "Ex: Instituto Futuro Digital",
+        "contactName": "Nome do Contato",
+        "contactNamePlaceholder": "Seu nome completo",
+        "contactPhone": "Telefone",
+        "contactPhonePlaceholder": "(11) 99999-9999",
+        "contactEmail": "Email",
+        "contactEmailPlaceholder": "seu@email.com"
+      },
+      "step2": {
+        "title": "Detalhes do Projeto",
+        "description": "Descreva o projeto, seu escopo e abrangência.",
+        "projectTitle": "Título do Projeto",
+        "projectTitlePlaceholder": "Ex: Programa de Capacitação Digital",
+        "sector": "Setor",
+        "sectorPlaceholder": "Selecione o setor",
+        "location": "Localização",
+        "locationPlaceholder": "Ex: São Paulo, SP",
+        "investment": "Investimento Total",
+        "investmentPlaceholder": "Ex: R$ 2.5M",
+        "beneficiaries": "Beneficiários",
+        "beneficiariesPlaceholder": "Ex: 15.000",
+        "duration": "Duração",
+        "durationPlaceholder": "Ex: 24 meses",
+        "description": "Descrição do Projeto",
+        "descriptionPlaceholder": "Descreva o projeto, seus objetivos e público-alvo...",
+        "minChars": "mín."
+      },
+      "step3": {
+        "title": "Impacto e Resultados",
+        "description": "Detalhe os desafios, soluções e resultados alcançados.",
+        "challenge": "Desafio",
+        "challengePlaceholder": "Qual problema ou desafio o projeto buscou resolver?",
+        "solution": "Solução",
+        "solutionPlaceholder": "Como o projeto abordou o desafio? Qual metodologia foi utilizada?",
+        "results": "Resultados",
+        "resultsPlaceholder": "Quais foram os principais resultados e impactos alcançados?",
+        "metrics": "Métricas de Impacto",
+        "metricsOptional": "(opcional)",
+        "metricLabel": "Métrica {{number}} (ex: Taxa de Empregabilidade)",
+        "metricValue": "Valor (ex: +340%)",
+        "documentUrl": "Link para Documentação",
+        "documentUrlPlaceholder": "URL para relatório, apresentação ou documentação adicional",
+        "documentUrlHint": "Compartilhe um link para Google Drive, Dropbox ou outro serviço de armazenamento."
+      },
+      "step4": {
+        "title": "Revisão e Envio",
+        "description": "Revise as informações antes de enviar.",
+        "alert": "Revise as informações abaixo antes de enviar. Após a submissão, nossa equipe irá analisar o case e entrar em contato.",
+        "organization": "Organização",
+        "project": "Projeto",
+        "impact": "Impacto",
+        "name": "Nome",
+        "contact": "Contato",
+        "email": "Email",
+        "phone": "Telefone",
+        "title": "Título",
+        "sector": "Setor",
+        "location": "Local",
+        "duration": "Duração",
+        "investment": "Investimento",
+        "beneficiaries": "Beneficiários",
+        "description": "Descrição",
+        "challenge": "Desafio",
+        "solution": "Solução",
+        "results": "Resultados",
+        "metrics": "Métricas"
+      },
+      "navigation": {
+        "back": "Voltar",
+        "next": "Próximo",
+        "submit": "Submeter Case",
+        "submitting": "Enviando..."
+      },
+      "validation": {
+        "organizationNameRequired": "Nome da organização é obrigatório",
+        "contactNameRequired": "Nome do contato é obrigatório",
+        "emailRequired": "Email é obrigatório",
+        "emailInvalid": "Email inválido",
+        "projectTitleRequired": "Título do projeto é obrigatório",
+        "sectorRequired": "Setor é obrigatório",
+        "locationRequired": "Localização é obrigatória",
+        "investmentRequired": "Investimento é obrigatório",
+        "beneficiariesRequired": "Número de beneficiários é obrigatório",
+        "durationRequired": "Duração é obrigatória",
+        "descriptionRequired": "Descrição é obrigatória",
+        "descriptionMinLength": "Descrição deve ter pelo menos 50 caracteres",
+        "challengeRequired": "Desafio é obrigatório",
+        "challengeMinLength": "Desafio deve ter pelo menos 30 caracteres",
+        "solutionRequired": "Solução é obrigatória",
+        "solutionMinLength": "Solução deve ter pelo menos 30 caracteres",
+        "resultsRequired": "Resultados são obrigatórios",
+        "resultsMinLength": "Resultados devem ter pelo menos 30 caracteres"
+      },
+      "toast": {
+        "success": "Case submetido com sucesso! Nossa equipe irá analisar em breve.",
+        "error": "Erro ao submeter case"
+      },
+      "sectors": {
+        "education": "Educação",
+        "health": "Saúde",
+        "microfinance": "Microfinanças",
+        "agriculture": "Agricultura",
+        "housing": "Habitação",
+        "environment": "Meio Ambiente",
+        "culture": "Cultura",
+        "socialAssistance": "Assistência Social",
+        "communityDevelopment": "Desenvolvimento Comunitário",
+        "other": "Outro"
+      }
+    },
+    "compare": {
+      "title": "Comparador de Cases",
+      "subtitle": "Compare até 3 cases lado a lado para análise detalhada",
+      "addCase": "Adicionar Case",
+      "selectCase": "Selecionar Case para Comparação",
+      "emptyState": {
+        "title": "Nenhum case selecionado",
+        "description": "Adicione até 3 cases para comparar métricas, resultados e impacto lado a lado.",
+        "addFirst": "Adicionar Primeiro Case"
+      },
+      "summary": {
+        "title": "Resumo Comparativo",
+        "totalInvestment": "Investimento Total",
+        "totalBeneficiaries": "Beneficiários Total",
+        "avgSRoi": "S-ROI Médio",
+        "maxSRoi": "Maior S-ROI",
+        "minSRoi": "Menor S-ROI",
+        "costPerBeneficiary": "Custo/Beneficiário"
+      },
+      "badges": {
+        "bestSRoi": "Melhor S-ROI",
+        "mostBeneficiaries": "Mais Beneficiários"
+      },
+      "metrics": {
+        "sRoi": "S-ROI",
+        "beneficiaries": "Beneficiários",
+        "investment": "Investimento",
+        "duration": "Duração",
+        "impactMetrics": "Métricas de Impacto",
+        "relatedSdgs": "ODS Relacionados"
+      },
+      "table": {
+        "title": "Tabela Comparativa",
+        "metric": "Métrica",
+        "sector": "Setor",
+        "region": "Região",
+        "costPerBeneficiary": "Custo/Beneficiário",
+        "sdgs": "ODS"
+      },
+      "addMore": "Adicionar mais um case para comparar",
+      "maxCases": "Máximo de 3 cases para comparação"
+    }
+  },
+  "admin": {
+    "loading": "Carregando...",
+    "restrictedArea": "Área Restrita",
+    "loginMessage": "Faça login para acessar o painel administrativo do IMPACT7.",
+    "loginButton": "Fazer Login com Manus",
+    "backToSite": "Voltar para o Site",
+    "accessDenied": "Acesso Negado",
+    "noPermission": "Você não tem permissão para acessar o painel administrativo. Entre em contato com o administrador.",
+    "loggedAs": "Logado como",
+    "logout": "Sair",
+    "back": "Voltar",
+    "title": "Painel Administrativo",
+    "welcome": "Bem-vindo ao painel de controle do IMPACT7. Gerencie leads, downloads e configurações.",
+    "stats": {
+      "totalLeads": "Leads Total",
+      "leadsToday": "Leads Hoje",
+      "downloads": "Downloads",
+      "pendingCases": "Cases Pendentes",
+      "notifications": "Notificações",
+      "conversion": "Conversão"
+    },
+    "activity": {
+      "title": "Atividade dos Últimos 7 Dias",
+      "leads": "Leads",
+      "downloads": "Downloads",
+      "recentTitle": "Atividade Recente"
+    },
+    "modules": {
+      "title": "Módulos",
+      "leads": {
+        "title": "Leads",
+        "description": "Gerenciar leads capturados pelo site"
+      },
+      "contacts": {
+        "title": "Contatos",
+        "description": "Mensagens recebidas pelo formulário de contato"
+      },
+      "downloads": {
+        "title": "Downloads",
+        "description": "Acompanhar downloads de whitepaper e e-book"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Métricas de uso do Jarvis, calculadora e site"
+      },
+      "monitoring": {
+        "title": "Monitoramento",
+        "description": "Dashboard de métricas, alertas e saúde do sistema"
+      },
+      "caseReview": {
+        "title": "Revisão de Cases",
+        "description": "Revisar e aprovar submissões de cases de parceiros"
+      },
+      "notifications": {
+        "title": "Notificações",
+        "description": "Configurar alertas e preferências de notificação"
+      },
+      "tags": {
+        "title": "Tags de Cases",
+        "description": "Criar e gerenciar tags para organizar cases"
+      },
+      "tokens": {
+        "title": "Tokens de Impacto",
+        "description": "Gerenciar tokens, saldos e transações"
+      },
+      "templates": {
+        "title": "Templates de Notificação",
+        "description": "Criar e editar templates personalizados"
+      },
+      "systemMetrics": {
+        "title": "Métricas de Sistema",
+        "description": "Dashboard de performance, usuários e notificações"
+      },
+      "alerts": {
+        "title": "Alertas",
+        "description": "Painel de alertas automáticos e configurações"
+      },
+      "jarvisMemories": {
+        "title": "Jarvis Memórias",
+        "description": "Histórico de interações e conhecimento do Jarvis"
+      },
+      "advanced": {
+        "title": "Admin Avançado",
+        "description": "Ferramentas avançadas, SSE, scheduler e debug"
+      },
+      "audit": {
+        "title": "Auditoria",
+        "description": "Log de ações administrativas para compliance"
+      },
+      "settings": {
+        "title": "Configurações",
+        "description": "Configurar integrações e parâmetros do sistema"
+      },
+      "reports": {
+        "title": "Relatórios",
+        "description": "Relatórios consolidados e exportação de dados"
+      },
+      "businessMetrics": {
+        "title": "Métricas de Negócio",
+        "description": "MRR, ARR, LTV, CAC e unit economics"
+      }
+    },
+    "advancedAdmin": {
+      "title": "Administração Avançada",
+      "description": "Acesso completo a todas as configurações do sistema"
+    }
+  },
+  "toast": {
+    "success": {
+      "saved": "Salvo com sucesso!",
+      "deleted": "Excluído com sucesso!",
+      "updated": "Atualizado com sucesso!",
+      "copied": "Copiado para a área de transferência!",
+      "sent": "Enviado com sucesso!",
+      "downloaded": "Download iniciado!",
+      "exported": "Exportado com sucesso!",
+      "imported": "Importado com sucesso!",
+      "subscribed": "Inscrição realizada com sucesso!",
+      "contactSent": "Mensagem enviada com sucesso! Entraremos em contato em breve.",
+      "leadCaptured": "Obrigado! Entraremos em contato em breve."
+    },
+    "error": {
+      "generic": "Ocorreu um erro. Tente novamente.",
+      "network": "Erro de conexão. Verifique sua internet.",
+      "unauthorized": "Você não tem permissão para esta ação.",
+      "notFound": "Recurso não encontrado.",
+      "validation": "Por favor, verifique os campos e tente novamente.",
+      "serverError": "Erro no servidor. Tente novamente mais tarde.",
+      "timeout": "A requisição expirou. Tente novamente.",
+      "fileTooLarge": "Arquivo muito grande. Tamanho máximo: {{size}}MB",
+      "invalidFormat": "Formato de arquivo inválido.",
+      "requiredField": "Este campo é obrigatório.",
+      "invalidEmail": "E-mail inválido.",
+      "invalidPhone": "Telefone inválido."
+    },
+    "info": {
+      "loading": "Carregando...",
+      "processing": "Processando...",
+      "saving": "Salvando...",
+      "uploading": "Enviando arquivo...",
+      "redirecting": "Redirecionando...",
+      "featureComingSoon": "Funcionalidade em breve!"
+    },
+    "warning": {
+      "unsavedChanges": "Você tem alterações não salvas.",
+      "sessionExpiring": "Sua sessão expirará em breve.",
+      "limitReached": "Limite atingido."
+    }
+  },
+  "whitepaper": {
+    "breadcrumb": "Whitepaper",
+    "badge": "Documento Técnico",
+    "title": "Whitepaper IMPACT7",
+    "subtitle": "O guia completo do Método IMPACT7: fundamentação científica, modelo matemático e aplicação prática para maximizar o impacto social.",
+    "document": {
+      "title": "Método IMPACT7",
+      "subtitle": "Whitepaper Completo",
+      "pages": "140 páginas",
+      "format": "PDF",
+      "version": "v2.0"
+    },
+    "highlights": [
+      "Fundamentação científica completa",
+      "Modelo matemático detalhado",
+      "77 técnicas aplicáveis",
+      "Casos de estudo reais",
+      "Templates e ferramentas",
+      "Guia de implementação"
+    ],
+    "chapters": {
+      "title": "Índice de Conteúdo",
+      "1": { "title": "Introdução ao Impacto Social", "pages": "1-15" },
+      "2": { "title": "A Equação do Impacto: I = (E × C⁷) / R", "pages": "16-35" },
+      "3": { "title": "Os 7 Contextos do Impacto", "pages": "36-55" },
+      "4": { "title": "Metodologia de Mensuração S-ROI", "pages": "56-75" },
+      "5": { "title": "Framework 7R: Recursos Estratégicos", "pages": "76-95" },
+      "6": { "title": "Framework 7V: Vetores de Valor", "pages": "96-115" },
+      "7": { "title": "Casos de Aplicação e Resultados", "pages": "116-140" }
+    },
+    "form": {
+      "title": "Baixar Whitepaper Gratuito",
+      "titleSuccess": "Download Disponível",
+      "subtitle": "Preencha o formulário para receber o whitepaper completo.",
+      "subtitleSuccess": "O whitepaper foi enviado para seu email.",
+      "name": "Nome Completo",
+      "namePlaceholder": "Seu nome",
+      "email": "Email",
+      "emailPlaceholder": "seu@email.com",
+      "organization": "Organização (opcional)",
+      "organizationPlaceholder": "Nome da sua organização",
+      "submit": "Baixar Whitepaper Gratuito",
+      "processing": "Processando...",
+      "downloadNow": "Baixar PDF Agora",
+      "successTitle": "Whitepaper Enviado!",
+      "successMessage": "Verifique sua caixa de entrada. O download também está disponível abaixo.",
+      "consent": "Ao baixar, você concorda em receber comunicações sobre o Método IMPACT7. Você pode cancelar a qualquer momento."
+    },
+    "toast": {
+      "success": "Whitepaper pronto para download!",
+      "error": "Erro ao processar download. Tente novamente.",
+      "validation": "Por favor, preencha nome e email."
+    },
+    "cta": {
+      "title": "Quer aplicar o método na prática?",
+      "subtitle": "Use nossa calculadora interativa ou agende uma consultoria com nossa equipe.",
+      "calculateImpact": "Calcular Impacto",
+      "scheduleConsulting": "Agendar Consultoria"
+    }
+  },
+  "technology": {
+    "breadcrumb": "Tecnologia",
+    "badge": "Framework Tecnológico",
+    "title": "Tecnologia para Impacto",
+    "subtitle": "Uma arquitetura de software moderna e escalável, projetada para maximizar o impacto social através de inteligência artificial e análise de dados.",
+    "stack": {
+      "title": "Stack Tecnológico",
+      "subtitle": "Componentes de software que compõem a plataforma IMPACT7",
+      "jarvis": {
+        "title": "Jarvis IA",
+        "description": "Assistente inteligente com RAG (Retrieval-Augmented Generation) para suporte contextualizado.",
+        "features": ["Knowledge Base", "Chat contextual", "Skills especializadas", "Análise preditiva"]
+      },
+      "contextLake": {
+        "title": "Context Lake",
+        "description": "Data lake especializado para armazenamento e análise de dados de impacto social.",
+        "features": ["Dados estruturados", "Séries temporais", "Benchmarks", "Integração API"]
+      },
+      "analytics": {
+        "title": "Analytics Engine",
+        "description": "Motor de análise para cálculo de métricas de impacto e S-ROI em tempo real.",
+        "features": ["Dashboards", "Relatórios", "Alertas", "Exportação"]
+      },
+      "security": {
+        "title": "Segurança",
+        "description": "Infraestrutura segura com criptografia end-to-end e conformidade LGPD.",
+        "features": ["Criptografia", "LGPD", "Audit logs", "Backup"]
+      }
+    },
+    "frameworks": {
+      "title": "Frameworks Metodológicos",
+      "subtitle": "Estruturas conceituais implementadas na plataforma",
+      "7r": {
+        "name": "7R",
+        "description": "7 Recursos Estratégicos",
+        "items": ["Financeiro", "Humano", "Tecnológico", "Relacional", "Intelectual", "Natural", "Social"]
+      },
+      "7v": {
+        "name": "7V",
+        "description": "7 Vetores de Valor",
+        "items": ["Econômico", "Social", "Ambiental", "Cultural", "Político", "Institucional", "Tecnológico"]
+      },
+      "77t": {
+        "name": "77T",
+        "description": "77 Técnicas Aplicadas",
+        "items": ["Diagnóstico", "Estratégia", "Design", "Implementação", "Mensuração", "Otimização", "Escala"]
+      }
+    },
+    "architecture": {
+      "title": "Arquitetura da Plataforma",
+      "subtitle": "Camadas tecnológicas que compõem a solução",
+      "layers": {
+        "frontend": { "name": "Frontend", "tech": "React + TypeScript", "description": "Interface responsiva e acessível" },
+        "backend": { "name": "Backend", "tech": "Node.js + tRPC", "description": "API type-safe e performática" },
+        "database": { "name": "Database", "tech": "MySQL + Drizzle", "description": "Persistência relacional robusta" },
+        "ia": { "name": "IA", "tech": "LLM + RAG", "description": "Inteligência artificial contextual" },
+        "infra": { "name": "Infra", "tech": "Cloud + CDN", "description": "Escalabilidade e disponibilidade" }
+      }
+    },
+    "securitySection": {
+      "title": "Segurança e Conformidade",
+      "subtitle": "Proteção de dados e conformidade regulatória",
+      "encryption": {
+        "title": "Criptografia",
+        "description": "Dados criptografados em trânsito (TLS 1.3) e em repouso (AES-256)"
+      },
+      "lgpd": {
+        "title": "LGPD",
+        "description": "Conformidade total com a Lei Geral de Proteção de Dados"
+      },
+      "backup": {
+        "title": "Backup",
+        "description": "Backups automáticos diários com retenção de 30 dias"
+      }
+    },
+    "cta": {
+      "title": "Experimente a Tecnologia",
+      "subtitle": "Use nossa calculadora de impacto e veja a tecnologia em ação.",
+      "calculateImpact": "Calcular Impacto",
+      "talkToTeam": "Falar com Equipe Técnica"
+    }
+  },
+  "math": {
+    "breadcrumb": "Matemática",
+    "badge": "Modelagem Matemática",
+    "title": "A Matemática do Impacto",
+    "subtitle": "Entenda a equação que quantifica o potencial de transformação social e como cada variável influencia o resultado.",
+    "equation": {
+      "title": "A Equação Fundamental",
+      "description": "O Impacto (I) é diretamente proporcional à Energia investida (E) multiplicada pelo Contexto (C) elevado à sétima potência, e inversamente proporcional às Resistências (R)."
+    },
+    "variables": {
+      "title": "As Variáveis da Equação",
+      "subtitle": "Cada variável representa um aspecto fundamental do projeto social",
+      "unit": "Unidade",
+      "I": {
+        "name": "Impacto",
+        "description": "Resultado mensurável da intervenção social",
+        "formula": "Variável dependente",
+        "unit": "Unidades de impacto"
+      },
+      "E": {
+        "name": "Energia (Investimento)",
+        "description": "Soma de todos os recursos investidos no projeto",
+        "formula": "E = Rf + Rh + Rm + Rt",
+        "unit": "R$ (Reais)"
+      },
+      "C": {
+        "name": "Contexto",
+        "description": "Grau de alinhamento com as 7 dimensões contextuais",
+        "formula": "C = (Σ Ci) / 7, onde i = 1...7",
+        "unit": "Score 0-1"
+      },
+      "R": {
+        "name": "Resistência",
+        "description": "Soma das barreiras e fricções que reduzem o impacto",
+        "formula": "R = Rb + Rc + Rp + Ri",
+        "unit": "Score 0-1"
+      }
+    },
+    "powerOf7": {
+      "badge": "O Poder do 7",
+      "title": "Por que C⁷?",
+      "subtitle": "O expoente 7 não é arbitrário. Representa as 7 dimensões contextuais que, quando alinhadas, geram um efeito multiplicador exponencial no impacto.",
+      "dimensions": {
+        "1": { "name": "Cultural", "description": "Alinhamento com valores e práticas locais" },
+        "2": { "name": "Econômico", "description": "Viabilidade e sustentabilidade financeira" },
+        "3": { "name": "Social", "description": "Aceitação e engajamento comunitário" },
+        "4": { "name": "Político", "description": "Suporte institucional e regulatório" },
+        "5": { "name": "Tecnológico", "description": "Infraestrutura e capacidade técnica" },
+        "6": { "name": "Ambiental", "description": "Sustentabilidade e impacto ecológico" },
+        "7": { "name": "Institucional", "description": "Governança e capacidade organizacional" }
+      },
+      "effect": {
+        "title": "Efeito Exponencial",
+        "description": "Quando C = 0.5, C⁷ = 0.0078 (impacto muito reduzido). Quando C = 0.9, C⁷ = 0.478 (impacto significativo). Um aumento de 0.5 para 0.9 no contexto resulta em um aumento de 61x no multiplicador!"
+      }
+    },
+    "sroi": {
+      "title": "S-ROI: Retorno Social sobre Investimento",
+      "subtitle": "A métrica que traduz impacto em valor comparável",
+      "socialValue": {
+        "title": "VS (Valor Social)",
+        "description": "Soma dos benefícios sociais gerados, monetizados através de proxies validados (ex: custo evitado, produtividade gerada, bem-estar aumentado)."
+      },
+      "investment": {
+        "title": "E (Energia/Investimento)",
+        "description": "Soma de todos os recursos investidos: financeiros, humanos, materiais e tecnológicos."
+      },
+      "interpretation": {
+        "title": "Interpretação",
+        "description": "Um S-ROI de 7x significa que para cada R$1 investido, R$7 em valor social são gerados. O benchmark mínimo recomendado pelo Método IMPACT7 é de 7x."
+      }
+    },
+    "cta": {
+      "title": "Aplique a Matemática no Seu Projeto",
+      "subtitle": "Use nossa calculadora interativa para estimar o impacto potencial do seu projeto social.",
+      "calculateImpact": "Calcular Impacto",
+      "readWhitepaper": "Ler Whitepaper Completo"
+    }
+  },
+  "science": {
+    "breadcrumb": "Ciência",
+    "badge": "Fundamentação Científica",
+    "title": "A Ciência por Trás do IMPACT7",
+    "subtitle": "Uma metodologia construída sobre décadas de pesquisa em ciência cognitiva, economia comportamental e avaliação de impacto social.",
+    "pillars": {
+      "title": "Pilares Científicos",
+      "subtitle": "O Método IMPACT7 integra conhecimentos de múltiplas disciplinas científicas"
+    },
+    "foundations": {
+      "cognitive": {
+        "title": "Ciência Cognitiva",
+        "description": "Aplicação de princípios de neurociência e psicologia cognitiva para design de intervenções mais efetivas.",
+        "topics": ["Vieses cognitivos", "Tomada de decisão", "Mudança comportamental", "Aprendizagem social"]
+      },
+      "behavioral": {
+        "title": "Ciência Comportamental",
+        "description": "Uso de nudges e arquitetura de escolhas para facilitar comportamentos pró-sociais.",
+        "topics": ["Economia comportamental", "Nudge theory", "Incentivos", "Normas sociais"]
+      },
+      "impact": {
+        "title": "Avaliação de Impacto",
+        "description": "Metodologias rigorosas para mensuração e atribuição de resultados sociais.",
+        "topics": ["RCTs", "Quasi-experimentos", "Teoria da Mudança", "Contrafactuais"]
+      },
+      "innovation": {
+        "title": "Inovação Social",
+        "description": "Frameworks para desenvolvimento e escala de soluções sociais inovadoras.",
+        "topics": ["Design thinking", "Lean startup social", "Escala de impacto", "Sustentabilidade"]
+      }
+    },
+    "principles": {
+      "title": "Os 7 Princípios Científicos",
+      "subtitle": "Diretrizes que garantem rigor e efetividade em todas as intervenções",
+      "1": { "title": "Baseado em Evidências", "description": "Toda intervenção deve ser fundamentada em pesquisa científica validada." },
+      "2": { "title": "Centrado no Contexto", "description": "Adaptação às especificidades culturais, sociais e econômicas locais." },
+      "3": { "title": "Mensurável", "description": "Métricas claras e metodologia rigorosa de avaliação de impacto." },
+      "4": { "title": "Iterativo", "description": "Ciclos contínuos de aprendizado e melhoria baseados em dados." },
+      "5": { "title": "Escalável", "description": "Design que permite replicação e ampliação do impacto." },
+      "6": { "title": "Sustentável", "description": "Modelos que garantem continuidade além do financiamento inicial." },
+      "7": { "title": "Ético", "description": "Respeito aos direitos e dignidade de todos os stakeholders." }
+    },
+    "references": {
+      "title": "Referências Científicas",
+      "subtitle": "Principais obras e pesquisas que fundamentam o Método IMPACT7",
+      "book": "Livro",
+      "article": "Artigo",
+      "paper": "Paper"
+    },
+    "cta": {
+      "title": "Aprofunde seu Conhecimento",
+      "subtitle": "Baixe nosso whitepaper completo com toda a fundamentação científica do Método IMPACT7.",
+      "downloadWhitepaper": "Baixar Whitepaper",
+      "viewMathModel": "Ver Modelo Matemático"
+    }
+  },
+  "errors": {
+    "required": "Este campo é obrigatório",
+    "invalidEmail": "Email inválido",
+    "minLength": "Mínimo de {{min}} caracteres",
+    "maxLength": "Máximo de {{max}} caracteres",
+    "invalidNumber": "Número inválido",
+    "networkError": "Erro de conexão. Tente novamente.",
+    "serverError": "Erro no servidor. Tente novamente mais tarde.",
+    "unauthorized": "Você não tem permissão para acessar este recurso.",
+    "notFound": "Recurso não encontrado."
+  }
+}

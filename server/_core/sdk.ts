@@ -257,8 +257,24 @@ class SDKServer {
   }
 
   async authenticateRequest(req: Request): Promise<User> {
-    // Regular authentication flow
     const cookies = this.parseCookies(req.headers.cookie);
+    
+    // Try custom auth first (app_session_id cookie)
+    const customSessionCookie = cookies.get('app_session_id');
+    if (customSessionCookie) {
+      try {
+        const { authenticateCustomRequest } = await import('../auth-custom');
+        const user = await authenticateCustomRequest(req);
+        if (user) {
+          console.log('[Auth] Custom authentication successful:', user.email);
+          return user;
+        }
+      } catch (error) {
+        console.warn('[Auth] Custom authentication failed:', error);
+      }
+    }
+    
+    // Fallback to regular Manus OAuth authentication
     const sessionCookie = cookies.get(COOKIE_NAME);
     const session = await this.verifySession(sessionCookie);
 

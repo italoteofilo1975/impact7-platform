@@ -1,0 +1,1239 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "download": "Download",
+    "upload": "Upload",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "none": "None",
+    "select": "Select",
+    "required": "Required",
+    "optional": "Optional",
+    "viewMore": "View more",
+    "viewLess": "View less",
+    "noResults": "No results found",
+    "tryAgain": "Try again",
+    "home": "Home",
+    "clearFilters": "Clear filters",
+    "filtersActive": "filters active",
+    "featured": "Featured",
+    "maxCompare": "Maximum of 3 cases for comparison",
+    "selected": "Selected",
+    "saved": "Saved",
+    "challenge": "Challenge",
+    "solution": "IMPACT7 Solution",
+    "results": "Results",
+    "relatedSDGs": "Related SDGs",
+    "impactMetrics": "Impact Metrics",
+    "sroiDescription": "Social Return on Investment",
+    "calculateImpact": "Calculate My Impact"
+  },
+  "nav": {
+    "home": "Home",
+    "science": "Science",
+    "math": "Mathematics",
+    "technology": "Technology",
+    "cases": "Cases",
+    "contact": "Contact",
+    "platform": "Platform",
+    "admin": "Admin",
+    "login": "Login",
+    "logout": "Logout",
+    "profile": "Profile",
+    "settings": "Settings",
+    "bePartner": "Become a Partner"
+  },
+  "home": {
+    "seo": {
+      "title": "Exponential Social Innovation",
+      "description": "Transform your social impact with cognitive science, mathematical modeling, and software engineering."
+    },
+    "hero": {
+      "badge": "Exponential Social Innovation",
+      "title": "Transform your",
+      "titleHighlight": "Social Impact",
+      "titleEnd": "with Science",
+      "subtitle": "The IMPACT7 Method combines Cognitive Science, Mathematical Modeling, and Software Engineering to maximize social return on investment.",
+      "cta1": "Calculate Impact",
+      "cta2": "Download Whitepaper"
+    },
+    "stats": {
+      "organizations": "Organizations",
+      "avgSroi": "Average S-ROI",
+      "beneficiaries": "Beneficiaries",
+      "satisfaction": "Satisfaction"
+    },
+    "equation": {
+      "title": "The Impact Equation",
+      "subtitle": "A mathematical formula that quantifies the potential for social transformation",
+      "description": "Where I is Total Impact, E is Efficiency, C represents the 7 Catalysts, and R is Impact Resistance.",
+      "impact": "Impact",
+      "impactDesc": "Measurable result",
+      "energy": "Energy",
+      "energyDesc": "Total investment",
+      "context": "Context",
+      "contextDesc": "7 alignment dimensions",
+      "resistance": "Resistance",
+      "resistanceDesc": "Barriers and friction",
+      "cta": "Understand the Math"
+    },
+    "framework": {
+      "title": "Technology Framework",
+      "subtitle": "A complete architecture to maximize social impact",
+      "7r": "7 Strategic Resources",
+      "7v": "7 Value Vectors",
+      "77t": "77 Applied Techniques",
+      "contextLake": "AI Knowledge Base",
+      "cta": "Explore Technology"
+    },
+    "modules": {
+      "title": "The 7 Modules",
+      "subtitle": "A structured framework to maximize social impact",
+      "module1": "Diagnosis",
+      "module2": "Strategy",
+      "module3": "Design",
+      "module4": "Implementation",
+      "module5": "Monitoring",
+      "module6": "Evaluation",
+      "module7": "Scale",
+      "desc1": "Deep context analysis and opportunity identification",
+      "desc2": "Definition of objectives and impact metrics",
+      "desc3": "Evidence-based intervention modeling",
+      "desc4": "Execution with agile and adaptive methodology",
+      "desc5": "Collection and analysis of impact data",
+      "desc6": "Continuous adjustments based on results",
+      "desc7": "Replication and expansion of impact"
+    },
+    "cta": {
+      "title": "Ready to Maximize Your Impact?",
+      "subtitle": "Start now calculating the transformation potential of your social project",
+      "button1": "Calculate Impact Now",
+      "button2": "Talk to an Expert"
+    },
+    "metrics": {
+      "title": "Impact Metrics",
+      "projects": "Projects",
+      "beneficiaries": "Beneficiaries",
+      "investment": "Investment",
+      "avgSroi": "Average S-ROI"
+    },
+    "testimonials": {
+      "title": "Testimonials",
+      "subtitle": "What our partners say",
+      "role1": "Executive Director",
+      "role2": "Project Manager",
+      "role3": "Coordinator",
+      "text1": "The IMPACT7 Method revolutionized how we measure and communicate impact. We increased our S-ROI by 340% in 12 months.",
+      "text2": "The impact calculator helped us prioritize investments and maximize results. An indispensable tool.",
+      "text3": "Finally a methodology that combines scientific rigor with practicality. Highly recommended."
+    }
+  },
+  "accessibility": {
+    "skipToContent": "Skip to main content",
+    "skipToNav": "Skip to navigation"
+  },
+  "calculator": {
+    "title": "Impact Calculator",
+    "subtitle": "Estimate the S-ROI (Social Return on Investment) of your project using the IMPACT7 Method equation.",
+    "badge": "Interactive Tool",
+    "breadcrumb": "Calculator",
+    "projectData": "Project Data",
+    "projectDataDesc": "Fill in the information to calculate potential impact",
+    "investment": "Total Investment (E)",
+    "investmentTooltip": "Total value to be invested in the project, including financial, human, and material resources.",
+    "investmentMin": "$10K",
+    "investmentMax": "$10M",
+    "contextAlignment": "Context Alignment (C)",
+    "contextTooltip": "Degree of project alignment with the 7 contextual dimensions: cultural, economic, social, political, technological, environmental, and institutional.",
+    "low": "Low",
+    "high": "High",
+    "barriers": "Barriers and Resistance (R)",
+    "barriersTooltip": "Level of expected barriers and resistance: bureaucratic, cultural, financial, political, etc.",
+    "few": "Few",
+    "many": "Many",
+    "beneficiaries": "Direct Beneficiaries",
+    "duration": "Project Duration (months)",
+    "months": "months",
+    "durationMin": "3 months",
+    "durationMax": "5 years",
+    "calculate": "Calculate Impact",
+    "equation": {
+      "title": "The Impact Equation",
+      "energy": "Energy",
+      "context": "Context",
+      "resistance": "Resistance",
+      "impact": "Impact"
+    },
+    "results": {
+      "title": "Analysis Result",
+      "sroiEstimated": "Estimated S-ROI",
+      "socialValue": "Social Value Generated",
+      "impactScore": "Impact Score",
+      "recommendation": "Recommendation",
+      "excellent": "Excellent impact potential! The project presents favorable conditions to maximize social return.",
+      "good": "Good potential. Consider strategies to increase contextual alignment or reduce resistance.",
+      "moderate": "Moderate potential. We recommend a deeper analysis of resistance and context factors.",
+      "exportPdf": "Export PDF",
+      "scheduleConsulting": "Schedule Consulting"
+    },
+    "ratings": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "good": "Good",
+      "veryGood": "Very Good",
+      "excellent": "Excellent"
+    },
+    "benchmarks": {
+      "title": "Reference Benchmarks",
+      "minRecommended": "Minimum Recommended S-ROI",
+      "avgSocial": "Average S-ROI (Social Projects)",
+      "top10": "Top 10% S-ROI (IMPACT7)"
+    },
+    "cta": {
+      "title": "Want to maximize your project's impact?",
+      "subtitle": "Schedule a free consultation with our team to apply the IMPACT7 Method to your specific context.",
+      "scheduleConsulting": "Schedule Consulting",
+      "downloadWhitepaper": "Download Whitepaper"
+    },
+    "toast": {
+      "success": "Impact calculated: S-ROI of {{sroi}}x",
+      "error": "Error calculating. Please try again.",
+      "pdfExported": "PDF exported successfully!",
+      "pdfError": "Error exporting PDF. Please try again."
+    },
+    "results": {
+      "title": "Analysis Result",
+      "sroiEstimated": "Estimated S-ROI",
+      "socialValue": "Social Value Generated",
+      "impactScore": "Impact Score",
+      "recommendation": "Recommendation",
+      "excellent": "Excellent impact potential! The project presents favorable conditions to maximize social return.",
+      "good": "Good potential. Consider strategies to increase contextual alignment or reduce resistance.",
+      "moderate": "Moderate potential. We recommend a deeper analysis of resistance and context factors.",
+      "exportPdf": "Export PDF",
+      "exporting": "Exporting...",
+      "scheduleConsulting": "Schedule Consulting"
+    }
+  },
+  "cases": {
+    "title": "Case Studies",
+    "subtitle": "Real projects that transformed communities",
+    "filters": {
+      "all": "All",
+      "sector": "Sector",
+      "year": "Year",
+      "investment": "Investment",
+      "ods": "SDGs"
+    },
+    "card": {
+      "beneficiaries": "beneficiaries",
+      "investment": "investment",
+      "sroi": "S-ROI",
+      "viewDetails": "View Details",
+      "favorite": "Favorite",
+      "unfavorite": "Remove Favorite",
+      "compare": "Compare",
+      "export": "Export PDF"
+    },
+    "submit": {
+      "title": "Submit Case",
+      "subtitle": "Share your social impact project",
+      "step1": "Basic Information",
+      "step2": "Impact Metrics",
+      "step3": "Documentation",
+      "step4": "Review",
+      "success": "Case submitted successfully! Our team will review it soon."
+    },
+    "compare": {
+      "title": "Compare Cases",
+      "subtitle": "Side-by-side analysis of selected projects",
+      "selectCases": "Select up to 3 cases to compare",
+      "noSelection": "No cases selected"
+    }
+  },
+  "jarvis": {
+    "title": "Jarvis AI",
+    "subtitle": "Your social impact assistant",
+    "placeholder": "Type your question...",
+    "send": "Send",
+    "thinking": "Thinking...",
+    "greeting": "Hello! I'm Jarvis, your social impact assistant. How can I help?",
+    "skills": {
+      "calculator": "Impact Calculator",
+      "mentoring": "Personalized Mentoring",
+      "export": "Export Report",
+      "memory": "Long-term Memory"
+    },
+    "memory": {
+      "title": "Memory",
+      "saved": "Memory saved",
+      "recalled": "Memory recalled",
+      "cleared": "Memory cleared"
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "dashboard": "Dashboard",
+    "leads": "Leads",
+    "contacts": "Contacts",
+    "downloads": "Downloads",
+    "cases": "Cases",
+    "tags": "Tags",
+    "webhooks": "Webhooks",
+    "oauth": "OAuth Clients",
+    "apiKeys": "API Keys",
+    "monitoring": "Monitoring",
+    "notifications": "Notifications",
+    "metrics": "API Metrics"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "forgotPassword": "Forgot password?",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "rememberMe": "Remember me",
+    "loginWith": "Login with",
+    "orContinueWith": "Or continue with"
+  },
+  "profile": {
+    "title": "My Profile",
+    "points": "Points",
+    "badges": "Badges",
+    "level": "Level",
+    "streak": "Streak",
+    "favorites": "Favorites",
+    "history": "History",
+    "settings": "Settings"
+  },
+  "gamification": {
+    "points": "points",
+    "level": "Level",
+    "badge": "Badge",
+    "badges": "Badges",
+    "leaderboard": "Leaderboard",
+    "streak": "Day streak",
+    "achievements": "Achievements",
+    "unlocked": "Unlocked!",
+    "progress": "Progress"
+  },
+  "api": {
+    "title": "IMPACT7 API",
+    "docs": "Documentation",
+    "playground": "Playground",
+    "changelog": "Changelog",
+    "status": "Status",
+    "keys": "API Keys",
+    "webhooks": "Webhooks",
+    "oauth": "OAuth2",
+    "rateLimit": "Rate Limit"
+  },
+  "certificates": {
+    "title": "Impact Certificates",
+    "verify": "Verify Certificate",
+    "issue": "Issue Certificate",
+    "download": "Download Certificate",
+    "qrCode": "Verification QR Code",
+    "blockchain": "Registered on Blockchain",
+    "hash": "Verification Hash",
+    "tokens": "Impact Tokens (SIT)",
+    "valid": "Valid Certificate",
+    "invalid": "Invalid Certificate"
+  },
+  "footer": {
+    "tagline": "Exponential Social Innovation. Transforming social impact with science, mathematics, and technology.",
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "partners": "Partners",
+    "careers": "Careers",
+    "scheduleDemo": "Schedule Demo",
+    "newsletter": "Newsletter",
+    "successCases": "Success Cases",
+    "comparePlans": "Compare Plans",
+    "testimonials": "Testimonials",
+    "resources": "Resources",
+    "caseStudies": "Case Studies",
+    "freeEbook": "Free E-book",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "support": "Support",
+    "pricing": "Pricing",
+    "apiDocs": "API Docs",
+    "status": "Status",
+    "changelog": "Changelog",
+    "roadmap": "Roadmap",
+    "integrations": "Integrations",
+    "webinars": "Webinars",
+    "security": "Security",
+    "community": "Community",
+    "resourcesLink": "Resources",
+    "methodology": "Methodology",
+    "glossary": "Glossary",
+    "certifications": "Certifications",
+    "contact": "Contact",
+    "allRightsReserved": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms of Use"
+  },
+  "socialProof": {
+    "badge": "Recognized by Industry Leaders",
+    "title": "Trusted by Those Who Transform",
+    "subtitle": "Over 500 organizations use the IMPACT7 Method to maximize their social impact",
+    "featuredCases": "Featured Cases",
+    "verified": "Verified",
+    "beneficiariesLabel": "Beneficiaries",
+    "partnersTitle": "Organizations that trust IMPACT7",
+    "certificationsTitle": "Certifications and Recognition",
+    "categories": {
+      "education": "Education",
+      "sustainability": "Sustainability",
+      "socialFinance": "Social Finance",
+      "development": "Development"
+    },
+    "certifications": {
+      "iso26000": "Social Responsibility",
+      "bcorp": "Positive Impact",
+      "giin": "Impact Investment"
+    },
+    "metrics": {
+      "beneficiaries": {
+        "label": "Direct Beneficiaries",
+        "description": "People impacted by measured projects"
+      },
+      "organizations": {
+        "label": "Organizations",
+        "description": "NGOs, foundations, and partner companies"
+      },
+      "socialValue": {
+        "label": "Social Value Generated",
+        "description": "Social return on investment"
+      },
+      "states": {
+        "label": "States",
+        "description": "Presence across Brazil"
+      }
+    },
+    "cases": {
+      "case1": {
+        "project": "Rural Digital Education",
+        "highlight": "Highest S-ROI in the education sector in 2025"
+      },
+      "case2": {
+        "project": "Professional Training",
+        "highlight": "SDG Best Practices Award"
+      },
+      "case3": {
+        "project": "Community Health",
+        "highlight": "WHO Latin America Recognition"
+      }
+    },
+    "compact": {
+      "organizations": "Organizations",
+      "beneficiaries": "Beneficiaries",
+      "avgSroi": "Average S-ROI",
+      "satisfaction": "Satisfaction"
+    }
+  },
+  "cases": {
+    "breadcrumb": "Cases",
+    "badge": "Verified Success Stories",
+    "title": "Real Impact Stories",
+    "subtitle": "Discover projects that transformed communities using the IMPACT7 Method. Each case was audited and validated with measurable social impact metrics.",
+    "stats": {
+      "projects": "Supported Projects",
+      "avgSroi": "Average S-ROI",
+      "beneficiaries": "Beneficiaries",
+      "socialValue": "Social Value Generated"
+    },
+    "featured": {
+      "title": "Featured Cases"
+    },
+    "filters": {
+      "search": "Search cases...",
+      "sector": "Sector",
+      "region": "Region",
+      "sortBy": "Sort by",
+      "filters": "Filters",
+      "year": "Year",
+      "investment": "Investment",
+      "ods": "SDGs",
+      "all": "All",
+      "allRegions": "All",
+      "allODS": "All SDGs",
+      "sortOptions": {
+        "sRoi": "Highest S-ROI",
+        "investment": "Highest Investment",
+        "beneficiaries": "Most Beneficiaries",
+        "year": "Most Recent"
+      },
+      "investmentRanges": {
+        "all": "All",
+        "upTo1M": "Up to $200K",
+        "1Mto5M": "$200K - $1M",
+        "5Mto10M": "$1M - $2M",
+        "above10M": "Above $2M"
+      }
+    },
+    "sectors": {
+      "all": "All",
+      "education": "Education",
+      "health": "Health",
+      "microfinance": "Microfinance",
+      "agriculture": "Agriculture",
+      "housing": "Housing"
+    },
+    "regions": {
+      "all": "All",
+      "southeast": "Southeast",
+      "northeast": "Northeast",
+      "south": "South",
+      "north": "North",
+      "midwest": "Midwest"
+    },
+    "actions": {
+      "compare": "Compare Cases",
+      "compareSelected": "Compare {{count}} Cases",
+      "selectMore": "Select {{count}} more",
+      "cancel": "Cancel",
+      "export": "Export {{count}} Cases",
+      "generating": "Generating...",
+      "submit": "Submit Your Case",
+      "viewDetails": "View Details",
+      "download": "Download PDF"
+    },
+    "card": {
+      "investment": "Investment",
+      "beneficiaries": "Beneficiaries",
+      "duration": "Duration",
+      "sRoi": "S-ROI"
+    },
+    "results": {
+      "found": "{{count}} cases found",
+      "noResults": "No cases found",
+      "noResultsDescription": "Try adjusting the filters or searching for other terms."
+    },
+    "toast": {
+      "pdfSuccess": "PDF generated successfully! Open the HTML file and use Ctrl+P to save as PDF.",
+      "pdfError": "Error generating PDF",
+      "favoriteAdded": "Case added to favorites",
+      "favoriteRemoved": "Case removed from favorites",
+      "loginRequired": "Login to save favorites",
+      "reportSuccess": "Report generated with {{count}} cases! Open the file and use Ctrl+P to save as PDF.",
+      "reportError": "Error generating report"
+    },
+    "cta": {
+      "title": "Want results like these?",
+      "subtitle": "Apply the IMPACT7 Method to your project and maximize your social impact. Our methodology has already transformed over 2 million lives.",
+      "submitCase": "Submit Case",
+      "contact": "Talk to Specialist"
+    },
+    "data": {
+      "case1.title": "Digital Training Program",
+      "case1.organization": "Digital Future Institute",
+      "case1.location": "São Paulo, SP",
+      "case1.duration": "24 months",
+      "case1.description": "Technology training program for youth from vulnerable communities, focusing on programming, design, and digital entrepreneurship.",
+      "case1.challenge": "Low employability and income among youth aged 18-29 in peripheral areas, with only 23% finding formal employment after high school.",
+      "case1.solution": "IMPACT7 methodology applied for market competency-based curriculum design, participant selection by transformation potential, and continuous measurement of results with real-time adjustments.",
+      "case1.results": "12.4x social return on investment, with 87% of graduates employed within 6 months and an average 180% increase in family income.",
+      "case1.testimonial.quote": "The program changed my life. I went from an informal job earning R$ 800 to a junior developer position with R$ 4,500. Now I can help my family and have a future perspective.",
+      "case1.testimonial.author": "Maria Santos",
+      "case1.testimonial.role": "Class of 2023 Graduate",
+      "case1.metrics.employability": "Employability Rate",
+      "case1.metrics.income": "Average Income",
+      "case1.metrics.completion": "Program Completion",
+      "case2.title": "Solidarity Microcredit Network",
+      "case2.organization": "Hope Cooperative",
+      "case2.location": "Recife, PE",
+      "case2.duration": "36 months",
+      "case2.description": "Microcredit program with technical support for low-income entrepreneurs, combining capital with management training.",
+      "case2.challenge": "Lack of access to formal credit and management knowledge for small entrepreneurs in low-income communities, with 78% depending on loan sharks.",
+      "case2.solution": "Combination of microcredit with fair rates, personalized mentoring, and financial management training, using the IMPACT7 methodology to identify entrepreneurs with the highest growth potential.",
+      "case2.results": "2,400 new businesses created, with a default rate of only 3.2% (vs. 15% market average) and an average 220% increase in family income.",
+      "case2.testimonial.quote": "With the microcredit and mentoring, I was able to transform my fruit stand into a small grocery store. Today I employ 3 people from the community.",
+      "case2.testimonial.author": "José Ferreira",
+      "case2.testimonial.role": "Benefited Entrepreneur",
+      "case2.metrics.businesses": "Businesses Created",
+      "case2.metrics.default": "Default Rate",
+      "case2.metrics.income": "Family Income",
+      "case3.title": "Community Preventive Health",
+      "case3.organization": "Healthy Life Foundation",
+      "case3.location": "Belo Horizonte, MG",
+      "case3.duration": "18 months",
+      "case3.description": "Chronic disease prevention program through community health agents equipped with mobile technology.",
+      "case3.challenge": "High incidence of preventable chronic diseases in low-income communities, with 67% of residents without regular medical follow-up.",
+      "case3.solution": "Network of 120 community agents with mobile app for health monitoring and education, using IMPACT7 to prioritize highest-impact interventions.",
+      "case3.results": "4,200 hospitalizations avoided, generating R$ 12M savings for the public health system and 94% increase in vaccination coverage.",
+      "case3.testimonial.quote": "The health agents helped me control my diabetes. Before I went to the hospital every month, now I do follow-up at home and don't need hospitalization anymore.",
+      "case3.testimonial.author": "Mrs. Maria Aparecida",
+      "case3.testimonial.role": "Beneficiary, 68 years old",
+      "case3.metrics.hospitalizations": "Hospitalizations Avoided",
+      "case3.metrics.susCost": "Public Health Cost Avoided",
+      "case3.metrics.vaccination": "Vaccination Coverage",
+      "case4.title": "Sustainable Family Farming",
+      "case4.organization": "Living Earth Association",
+      "case4.location": "Chapecó, SC",
+      "case4.duration": "30 months",
+      "case4.description": "Transition program to organic farming with technical assistance and market access for small rural producers.",
+      "case4.challenge": "Low productivity and income of family farmers, with 45% living below the poverty line and intensive use of pesticides.",
+      "case4.solution": "Training in agroecological techniques, collective organic certification, and direct connection with consumer markets through cooperative.",
+      "case4.results": "156% increase in productivity, 340 families certified as organic, and access to premium markets with 40% higher prices.",
+      "case4.testimonial.quote": "I stopped using poison on my crops and now I earn more selling organic. My children want to continue on the land, something they never thought about before.",
+      "case4.testimonial.author": "João da Silva",
+      "case4.testimonial.role": "Family Farmer",
+      "case4.metrics.productivity": "Productivity",
+      "case4.metrics.income": "Agricultural Income",
+      "case4.metrics.organic": "Organic Certification (families)",
+      "case5.title": "Integrated Social Housing",
+      "case5.organization": "Habitat Brazil",
+      "case5.location": "Salvador, BA",
+      "case5.duration": "48 months",
+      "case5.description": "Slum urbanization program with housing construction, land regularization, and integrated community development.",
+      "case5.challenge": "700 families living in risk areas with precarious housing, without basic sanitation and without property titles.",
+      "case5.solution": "Integrated urbanization with community participation, using IMPACT7 to prioritize interventions and measure multidimensional impact.",
+      "case5.results": "700 families with decent housing and property titles, average 280% property appreciation, and 95% reduction in sanitation-related diseases.",
+      "case5.testimonial.quote": "I lived 30 years in a wooden shack. Today I have a brick house with my name on the deed. My grandchildren will inherit something of value.",
+      "case5.testimonial.author": "Mr. Antônio",
+      "case5.testimonial.role": "Benefited Resident",
+      "case5.metrics.families": "Families Resettled",
+      "case5.metrics.regularization": "Land Regularization",
+      "case5.metrics.appreciation": "Property Appreciation",
+      "case6.title": "Digital Inclusion for Seniors",
+      "case6.organization": "Longevity Institute",
+      "case6.location": "Porto Alegre, RS",
+      "case6.duration": "12 months",
+      "case6.description": "Digital literacy program for seniors focusing on autonomy, social connection, and access to online public services.",
+      "case6.challenge": "85% of seniors over 65 without basic digital skills, resulting in service exclusion and social isolation.",
+      "case6.solution": "Methodology adapted for seniors with in-person classes, simplified teaching materials, and support from young volunteers.",
+      "case6.results": "4,800 seniors digitally literate, 62% reduction in social isolation rates, and 340% increase in access to online services.",
+      "case6.testimonial.quote": "I learned to video call my grandchildren who live far away. Now I also schedule medical appointments on my phone. I feel part of the world again.",
+      "case6.testimonial.author": "Mrs. Irene",
+      "case6.testimonial.role": "Participant, 72 years old",
+      "case6.metrics.digitally": "Digitally Literate Seniors",
+      "case6.metrics.isolation": "Isolation Reduction",
+      "case6.metrics.services": "Online Services Access"
+    },
+    "submit": {
+      "title": "Submit Success Case",
+      "subtitle": "Share your project's impact with the IMPACT7 community",
+      "steps": {
+        "organization": "Organization",
+        "project": "Project",
+        "impact": "Impact",
+        "review": "Review"
+      },
+      "step1": {
+        "title": "Organization Information",
+        "description": "Tell us about your organization and who is responsible for the project.",
+        "organizationName": "Organization Name",
+        "organizationNamePlaceholder": "E.g.: Digital Future Institute",
+        "contactName": "Contact Name",
+        "contactNamePlaceholder": "Your full name",
+        "contactPhone": "Phone",
+        "contactPhonePlaceholder": "+1 (555) 123-4567",
+        "contactEmail": "Email",
+        "contactEmailPlaceholder": "your@email.com"
+      },
+      "step2": {
+        "title": "Project Details",
+        "description": "Describe the project, its scope and reach.",
+        "projectTitle": "Project Title",
+        "projectTitlePlaceholder": "E.g.: Digital Training Program",
+        "sector": "Sector",
+        "sectorPlaceholder": "Select sector",
+        "location": "Location",
+        "locationPlaceholder": "E.g.: New York, NY",
+        "investment": "Total Investment",
+        "investmentPlaceholder": "E.g.: $2.5M",
+        "beneficiaries": "Beneficiaries",
+        "beneficiariesPlaceholder": "E.g.: 15,000",
+        "duration": "Duration",
+        "durationPlaceholder": "E.g.: 24 months",
+        "description": "Project Description",
+        "descriptionPlaceholder": "Describe the project, its objectives and target audience...",
+        "minChars": "min."
+      },
+      "step3": {
+        "title": "Impact and Results",
+        "description": "Detail the challenges, solutions and results achieved.",
+        "challenge": "Challenge",
+        "challengePlaceholder": "What problem or challenge did the project seek to solve?",
+        "solution": "Solution",
+        "solutionPlaceholder": "How did the project address the challenge? What methodology was used?",
+        "results": "Results",
+        "resultsPlaceholder": "What were the main results and impacts achieved?",
+        "metrics": "Impact Metrics",
+        "metricsOptional": "(optional)",
+        "metricLabel": "Metric {{number}} (e.g.: Employability Rate)",
+        "metricValue": "Value (e.g.: +340%)",
+        "documentUrl": "Documentation Link",
+        "documentUrlPlaceholder": "URL for report, presentation or additional documentation",
+        "documentUrlHint": "Share a link to Google Drive, Dropbox or another storage service."
+      },
+      "step4": {
+        "title": "Review and Submit",
+        "description": "Review the information before submitting.",
+        "alert": "Review the information below before submitting. After submission, our team will analyze the case and contact you.",
+        "organization": "Organization",
+        "project": "Project",
+        "impact": "Impact",
+        "name": "Name",
+        "contact": "Contact",
+        "email": "Email",
+        "phone": "Phone",
+        "title": "Title",
+        "sector": "Sector",
+        "location": "Location",
+        "duration": "Duration",
+        "investment": "Investment",
+        "beneficiaries": "Beneficiaries",
+        "description": "Description",
+        "challenge": "Challenge",
+        "solution": "Solution",
+        "results": "Results",
+        "metrics": "Metrics"
+      },
+      "navigation": {
+        "back": "Back",
+        "next": "Next",
+        "submit": "Submit Case",
+        "submitting": "Submitting..."
+      },
+      "validation": {
+        "organizationNameRequired": "Organization name is required",
+        "contactNameRequired": "Contact name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email",
+        "projectTitleRequired": "Project title is required",
+        "sectorRequired": "Sector is required",
+        "locationRequired": "Location is required",
+        "investmentRequired": "Investment is required",
+        "beneficiariesRequired": "Number of beneficiaries is required",
+        "durationRequired": "Duration is required",
+        "descriptionRequired": "Description is required",
+        "descriptionMinLength": "Description must have at least 50 characters",
+        "challengeRequired": "Challenge is required",
+        "challengeMinLength": "Challenge must have at least 30 characters",
+        "solutionRequired": "Solution is required",
+        "solutionMinLength": "Solution must have at least 30 characters",
+        "resultsRequired": "Results are required",
+        "resultsMinLength": "Results must have at least 30 characters"
+      },
+      "toast": {
+        "success": "Case submitted successfully! Our team will analyze it soon.",
+        "error": "Error submitting case"
+      },
+      "sectors": {
+        "education": "Education",
+        "health": "Health",
+        "microfinance": "Microfinance",
+        "agriculture": "Agriculture",
+        "housing": "Housing",
+        "environment": "Environment",
+        "culture": "Culture",
+        "socialAssistance": "Social Assistance",
+        "communityDevelopment": "Community Development",
+        "other": "Other"
+      }
+    },
+    "compare": {
+      "title": "Case Comparator",
+      "subtitle": "Compare up to 3 cases side by side for detailed analysis",
+      "addCase": "Add Case",
+      "selectCase": "Select Case for Comparison",
+      "emptyState": {
+        "title": "No case selected",
+        "description": "Add up to 3 cases to compare metrics, results and impact side by side.",
+        "addFirst": "Add First Case"
+      },
+      "summary": {
+        "title": "Comparative Summary",
+        "totalInvestment": "Total Investment",
+        "totalBeneficiaries": "Total Beneficiaries",
+        "avgSRoi": "Average S-ROI",
+        "maxSRoi": "Highest S-ROI",
+        "minSRoi": "Lowest S-ROI",
+        "costPerBeneficiary": "Cost/Beneficiary"
+      },
+      "badges": {
+        "bestSRoi": "Best S-ROI",
+        "mostBeneficiaries": "Most Beneficiaries"
+      },
+      "metrics": {
+        "sRoi": "S-ROI",
+        "beneficiaries": "Beneficiaries",
+        "investment": "Investment",
+        "duration": "Duration",
+        "impactMetrics": "Impact Metrics",
+        "relatedSdgs": "Related SDGs"
+      },
+      "table": {
+        "title": "Comparison Table",
+        "metric": "Metric",
+        "sector": "Sector",
+        "region": "Region",
+        "costPerBeneficiary": "Cost/Beneficiary",
+        "sdgs": "SDGs"
+      },
+      "addMore": "Add another case to compare",
+      "maxCases": "Maximum of 3 cases for comparison"
+    }
+  },
+  "admin": {
+    "loading": "Loading...",
+    "restrictedArea": "Restricted Area",
+    "loginMessage": "Log in to access the IMPACT7 admin panel.",
+    "loginButton": "Login with Manus",
+    "backToSite": "Back to Site",
+    "accessDenied": "Access Denied",
+    "noPermission": "You do not have permission to access the admin panel. Contact the administrator.",
+    "loggedAs": "Logged in as",
+    "logout": "Logout",
+    "back": "Back",
+    "title": "Admin Panel",
+    "welcome": "Welcome to the IMPACT7 control panel. Manage leads, downloads and settings.",
+    "stats": {
+      "totalLeads": "Total Leads",
+      "leadsToday": "Leads Today",
+      "downloads": "Downloads",
+      "pendingCases": "Pending Cases",
+      "notifications": "Notifications",
+      "conversion": "Conversion"
+    },
+    "activity": {
+      "title": "Activity Last 7 Days",
+      "leads": "Leads",
+      "downloads": "Downloads",
+      "recentTitle": "Recent Activity"
+    },
+    "modules": {
+      "title": "Modules",
+      "leads": {
+        "title": "Leads",
+        "description": "Manage leads captured by the site"
+      },
+      "contacts": {
+        "title": "Contacts",
+        "description": "Messages received through contact form"
+      },
+      "downloads": {
+        "title": "Downloads",
+        "description": "Track whitepaper and e-book downloads"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Jarvis, calculator and site usage metrics"
+      },
+      "monitoring": {
+        "title": "Monitoring",
+        "description": "Metrics dashboard, alerts and system health"
+      },
+      "caseReview": {
+        "title": "Case Review",
+        "description": "Review and approve partner case submissions"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Configure alerts and notification preferences"
+      },
+      "tags": {
+        "title": "Case Tags",
+        "description": "Create and manage tags to organize cases"
+      },
+      "tokens": {
+        "title": "Impact Tokens",
+        "description": "Manage tokens, balances and transactions"
+      },
+      "templates": {
+        "title": "Notification Templates",
+        "description": "Create and edit custom templates"
+      },
+      "systemMetrics": {
+        "title": "System Metrics",
+        "description": "Performance, users and notifications dashboard"
+      },
+      "alerts": {
+        "title": "Alerts",
+        "description": "Automatic alerts panel and settings"
+      },
+      "jarvisMemories": {
+        "title": "Jarvis Memories",
+        "description": "Jarvis interaction history and knowledge"
+      },
+      "advanced": {
+        "title": "Advanced Admin",
+        "description": "Advanced tools, SSE, scheduler and debug"
+      },
+      "audit": {
+        "title": "Audit",
+        "description": "Administrative action log for compliance"
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Configure integrations and system parameters"
+      },
+      "reports": {
+        "title": "Reports",
+        "description": "Consolidated reports and data export"
+      },
+      "businessMetrics": {
+        "title": "Business Metrics",
+        "description": "MRR, ARR, LTV, CAC and unit economics"
+      }
+    },
+    "advancedAdmin": {
+      "title": "Advanced Administration",
+      "description": "Full access to all system settings"
+    }
+  },
+  "toast": {
+    "success": {
+      "saved": "Saved successfully!",
+      "deleted": "Deleted successfully!",
+      "updated": "Updated successfully!",
+      "copied": "Copied to clipboard!",
+      "sent": "Sent successfully!",
+      "downloaded": "Download started!",
+      "exported": "Exported successfully!",
+      "imported": "Imported successfully!",
+      "subscribed": "Subscription completed successfully!",
+      "contactSent": "Message sent successfully! We will contact you soon.",
+      "leadCaptured": "Thank you! We will contact you soon."
+    },
+    "error": {
+      "generic": "An error occurred. Please try again.",
+      "network": "Connection error. Check your internet.",
+      "unauthorized": "You do not have permission for this action.",
+      "notFound": "Resource not found.",
+      "validation": "Please check the fields and try again.",
+      "serverError": "Server error. Please try again later.",
+      "timeout": "Request timed out. Please try again.",
+      "fileTooLarge": "File too large. Maximum size: {{size}}MB",
+      "invalidFormat": "Invalid file format.",
+      "requiredField": "This field is required.",
+      "invalidEmail": "Invalid email.",
+      "invalidPhone": "Invalid phone number."
+    },
+    "info": {
+      "loading": "Loading...",
+      "processing": "Processing...",
+      "saving": "Saving...",
+      "uploading": "Uploading file...",
+      "redirecting": "Redirecting...",
+      "featureComingSoon": "Feature coming soon!"
+    },
+    "warning": {
+      "unsavedChanges": "You have unsaved changes.",
+      "sessionExpiring": "Your session will expire soon.",
+      "limitReached": "Limit reached."
+    }
+  },
+  "whitepaper": {
+    "breadcrumb": "Whitepaper",
+    "badge": "Technical Document",
+    "title": "IMPACT7 Whitepaper",
+    "subtitle": "The complete guide to the IMPACT7 Method: scientific foundation, mathematical model, and practical application to maximize social impact.",
+    "document": {
+      "title": "IMPACT7 Method",
+      "subtitle": "Complete Whitepaper",
+      "pages": "140 pages",
+      "format": "PDF",
+      "version": "v2.0"
+    },
+    "highlights": [
+      "Complete scientific foundation",
+      "Detailed mathematical model",
+      "77 applicable techniques",
+      "Real case studies",
+      "Templates and tools",
+      "Implementation guide"
+    ],
+    "chapters": {
+      "title": "Table of Contents",
+      "1": { "title": "Introduction to Social Impact", "pages": "1-15" },
+      "2": { "title": "The Impact Equation: I = (E × C⁷) / R", "pages": "16-35" },
+      "3": { "title": "The 7 Contexts of Impact", "pages": "36-55" },
+      "4": { "title": "S-ROI Measurement Methodology", "pages": "56-75" },
+      "5": { "title": "7R Framework: Strategic Resources", "pages": "76-95" },
+      "6": { "title": "7V Framework: Value Vectors", "pages": "96-115" },
+      "7": { "title": "Application Cases and Results", "pages": "116-140" }
+    },
+    "form": {
+      "title": "Download Free Whitepaper",
+      "titleSuccess": "Download Available",
+      "subtitle": "Fill out the form to receive the complete whitepaper.",
+      "subtitleSuccess": "The whitepaper has been sent to your email.",
+      "name": "Full Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "organization": "Organization (optional)",
+      "organizationPlaceholder": "Your organization name",
+      "submit": "Download Free Whitepaper",
+      "processing": "Processing...",
+      "downloadNow": "Download PDF Now",
+      "successTitle": "Whitepaper Sent!",
+      "successMessage": "Check your inbox. The download is also available below.",
+      "consent": "By downloading, you agree to receive communications about the IMPACT7 Method. You can unsubscribe at any time."
+    },
+    "toast": {
+      "success": "Whitepaper ready for download!",
+      "error": "Error processing download. Please try again.",
+      "validation": "Please fill in name and email."
+    },
+    "cta": {
+      "title": "Want to apply the method in practice?",
+      "subtitle": "Use our interactive calculator or schedule a consultation with our team.",
+      "calculateImpact": "Calculate Impact",
+      "scheduleConsulting": "Schedule Consulting"
+    }
+  },
+  "technology": {
+    "breadcrumb": "Technology",
+    "badge": "Technology Framework",
+    "title": "Technology for Impact",
+    "subtitle": "A modern and scalable software architecture, designed to maximize social impact through artificial intelligence and data analysis.",
+    "stack": {
+      "title": "Technology Stack",
+      "subtitle": "Software components that make up the IMPACT7 platform",
+      "jarvis": {
+        "title": "Jarvis AI",
+        "description": "Intelligent assistant with RAG (Retrieval-Augmented Generation) for contextualized support.",
+        "features": ["Knowledge Base", "Contextual chat", "Specialized skills", "Predictive analysis"]
+      },
+      "contextLake": {
+        "title": "Context Lake",
+        "description": "Specialized data lake for storage and analysis of social impact data.",
+        "features": ["Structured data", "Time series", "Benchmarks", "API Integration"]
+      },
+      "analytics": {
+        "title": "Analytics Engine",
+        "description": "Analysis engine for calculating impact metrics and S-ROI in real-time.",
+        "features": ["Dashboards", "Reports", "Alerts", "Export"]
+      },
+      "security": {
+        "title": "Security",
+        "description": "Secure infrastructure with end-to-end encryption and GDPR compliance.",
+        "features": ["Encryption", "GDPR", "Audit logs", "Backup"]
+      }
+    },
+    "frameworks": {
+      "title": "Methodological Frameworks",
+      "subtitle": "Conceptual structures implemented in the platform",
+      "7r": {
+        "name": "7R",
+        "description": "7 Strategic Resources",
+        "items": ["Financial", "Human", "Technological", "Relational", "Intellectual", "Natural", "Social"]
+      },
+      "7v": {
+        "name": "7V",
+        "description": "7 Value Vectors",
+        "items": ["Economic", "Social", "Environmental", "Cultural", "Political", "Institutional", "Technological"]
+      },
+      "77t": {
+        "name": "77T",
+        "description": "77 Applied Techniques",
+        "items": ["Diagnosis", "Strategy", "Design", "Implementation", "Measurement", "Optimization", "Scale"]
+      }
+    },
+    "architecture": {
+      "title": "Platform Architecture",
+      "subtitle": "Technology layers that make up the solution",
+      "layers": {
+        "frontend": { "name": "Frontend", "tech": "React + TypeScript", "description": "Responsive and accessible interface" },
+        "backend": { "name": "Backend", "tech": "Node.js + tRPC", "description": "Type-safe and performant API" },
+        "database": { "name": "Database", "tech": "MySQL + Drizzle", "description": "Robust relational persistence" },
+        "ia": { "name": "AI", "tech": "LLM + RAG", "description": "Contextual artificial intelligence" },
+        "infra": { "name": "Infra", "tech": "Cloud + CDN", "description": "Scalability and availability" }
+      }
+    },
+    "securitySection": {
+      "title": "Security and Compliance",
+      "subtitle": "Data protection and regulatory compliance",
+      "encryption": {
+        "title": "Encryption",
+        "description": "Data encrypted in transit (TLS 1.3) and at rest (AES-256)"
+      },
+      "lgpd": {
+        "title": "GDPR",
+        "description": "Full compliance with the General Data Protection Regulation"
+      },
+      "backup": {
+        "title": "Backup",
+        "description": "Automatic daily backups with 30-day retention"
+      }
+    },
+    "cta": {
+      "title": "Experience the Technology",
+      "subtitle": "Use our impact calculator and see the technology in action.",
+      "calculateImpact": "Calculate Impact",
+      "talkToTeam": "Talk to Technical Team"
+    }
+  },
+  "math": {
+    "breadcrumb": "Mathematics",
+    "badge": "Mathematical Modeling",
+    "title": "The Mathematics of Impact",
+    "subtitle": "Understand the equation that quantifies social transformation potential and how each variable influences the result.",
+    "equation": {
+      "title": "The Fundamental Equation",
+      "description": "Impact (I) is directly proportional to invested Energy (E) multiplied by Context (C) raised to the seventh power, and inversely proportional to Resistance (R)."
+    },
+    "variables": {
+      "title": "The Equation Variables",
+      "subtitle": "Each variable represents a fundamental aspect of the social project",
+      "unit": "Unit",
+      "I": {
+        "name": "Impact",
+        "description": "Measurable result of the social intervention",
+        "formula": "Dependent variable",
+        "unit": "Impact units"
+      },
+      "E": {
+        "name": "Energy (Investment)",
+        "description": "Sum of all resources invested in the project",
+        "formula": "E = Rf + Rh + Rm + Rt",
+        "unit": "$ (Dollars)"
+      },
+      "C": {
+        "name": "Context",
+        "description": "Degree of alignment with the 7 contextual dimensions",
+        "formula": "C = (Σ Ci) / 7, where i = 1...7",
+        "unit": "Score 0-1"
+      },
+      "R": {
+        "name": "Resistance",
+        "description": "Sum of barriers and frictions that reduce impact",
+        "formula": "R = Rb + Rc + Rp + Ri",
+        "unit": "Score 0-1"
+      }
+    },
+    "powerOf7": {
+      "badge": "The Power of 7",
+      "title": "Why C⁷?",
+      "subtitle": "The exponent 7 is not arbitrary. It represents the 7 contextual dimensions that, when aligned, generate an exponential multiplier effect on impact.",
+      "dimensions": {
+        "1": { "name": "Cultural", "description": "Alignment with local values and practices" },
+        "2": { "name": "Economic", "description": "Financial viability and sustainability" },
+        "3": { "name": "Social", "description": "Community acceptance and engagement" },
+        "4": { "name": "Political", "description": "Institutional and regulatory support" },
+        "5": { "name": "Technological", "description": "Infrastructure and technical capacity" },
+        "6": { "name": "Environmental", "description": "Sustainability and ecological impact" },
+        "7": { "name": "Institutional", "description": "Governance and organizational capacity" }
+      },
+      "effect": {
+        "title": "Exponential Effect",
+        "description": "When C = 0.5, C⁷ = 0.0078 (greatly reduced impact). When C = 0.9, C⁷ = 0.478 (significant impact). An increase from 0.5 to 0.9 in context results in a 61x increase in the multiplier!"
+      }
+    },
+    "sroi": {
+      "title": "S-ROI: Social Return on Investment",
+      "subtitle": "The metric that translates impact into comparable value",
+      "socialValue": {
+        "title": "SV (Social Value)",
+        "description": "Sum of social benefits generated, monetized through validated proxies (e.g., avoided costs, generated productivity, increased well-being)."
+      },
+      "investment": {
+        "title": "E (Energy/Investment)",
+        "description": "Sum of all invested resources: financial, human, material, and technological."
+      },
+      "interpretation": {
+        "title": "Interpretation",
+        "description": "An S-ROI of 7x means that for every $1 invested, $7 in social value is generated. The minimum benchmark recommended by the IMPACT7 Method is 7x."
+      }
+    },
+    "cta": {
+      "title": "Apply Mathematics to Your Project",
+      "subtitle": "Use our interactive calculator to estimate the potential impact of your social project.",
+      "calculateImpact": "Calculate Impact",
+      "readWhitepaper": "Read Full Whitepaper"
+    }
+  },
+  "science": {
+    "breadcrumb": "Science",
+    "badge": "Scientific Foundation",
+    "title": "The Science Behind IMPACT7",
+    "subtitle": "A methodology built on decades of research in cognitive science, behavioral economics, and social impact assessment.",
+    "pillars": {
+      "title": "Scientific Pillars",
+      "subtitle": "The IMPACT7 Method integrates knowledge from multiple scientific disciplines"
+    },
+    "foundations": {
+      "cognitive": {
+        "title": "Cognitive Science",
+        "description": "Application of neuroscience and cognitive psychology principles for designing more effective interventions.",
+        "topics": ["Cognitive biases", "Decision making", "Behavioral change", "Social learning"]
+      },
+      "behavioral": {
+        "title": "Behavioral Science",
+        "description": "Use of nudges and choice architecture to facilitate pro-social behaviors.",
+        "topics": ["Behavioral economics", "Nudge theory", "Incentives", "Social norms"]
+      },
+      "impact": {
+        "title": "Impact Assessment",
+        "description": "Rigorous methodologies for measuring and attributing social outcomes.",
+        "topics": ["RCTs", "Quasi-experiments", "Theory of Change", "Counterfactuals"]
+      },
+      "innovation": {
+        "title": "Social Innovation",
+        "description": "Frameworks for developing and scaling innovative social solutions.",
+        "topics": ["Design thinking", "Social lean startup", "Impact scaling", "Sustainability"]
+      }
+    },
+    "principles": {
+      "title": "The 7 Scientific Principles",
+      "subtitle": "Guidelines that ensure rigor and effectiveness in all interventions",
+      "1": { "title": "Evidence-Based", "description": "Every intervention must be grounded in validated scientific research." },
+      "2": { "title": "Context-Centered", "description": "Adaptation to local cultural, social, and economic specificities." },
+      "3": { "title": "Measurable", "description": "Clear metrics and rigorous impact assessment methodology." },
+      "4": { "title": "Iterative", "description": "Continuous learning and improvement cycles based on data." },
+      "5": { "title": "Scalable", "description": "Design that enables replication and expansion of impact." },
+      "6": { "title": "Sustainable", "description": "Models that ensure continuity beyond initial funding." },
+      "7": { "title": "Ethical", "description": "Respect for the rights and dignity of all stakeholders." }
+    },
+    "references": {
+      "title": "Scientific References",
+      "subtitle": "Key works and research that underpin the IMPACT7 Method",
+      "book": "Book",
+      "article": "Article",
+      "paper": "Paper"
+    },
+    "cta": {
+      "title": "Deepen Your Knowledge",
+      "subtitle": "Download our complete whitepaper with all the scientific foundation of the IMPACT7 Method.",
+      "downloadWhitepaper": "Download Whitepaper",
+      "viewMathModel": "View Mathematical Model"
+    }
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email",
+    "minLength": "Minimum {{min}} characters",
+    "maxLength": "Maximum {{max}} characters",
+    "invalidNumber": "Invalid number",
+    "networkError": "Connection error. Please try again.",
+    "serverError": "Server error. Please try again later.",
+    "unauthorized": "You don't have permission to access this resource.",
+    "notFound": "Resource not found."
+  }
+}

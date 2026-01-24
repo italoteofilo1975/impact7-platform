@@ -31,7 +31,10 @@ class ErrorBoundary extends Component<Props, State> {
               className="text-destructive mb-6 flex-shrink-0"
             />
 
-            <h2 className="text-xl mb-4">An unexpected error occurred.</h2>
+            <h2 className="text-xl font-semibold mb-2">Ops! Algo deu errado</h2>
+            <p className="text-muted-foreground mb-4 text-center">
+              Ocorreu um erro inesperado. Por favor, tente recarregar a página.
+            </p>
 
             <div className="p-4 w-full rounded bg-muted overflow-auto mb-6">
               <pre className="text-sm text-muted-foreground whitespace-break-spaces">
@@ -48,7 +51,7 @@ class ErrorBoundary extends Component<Props, State> {
               )}
             >
               <RotateCcw size={16} />
-              Reload Page
+              Recarregar Página
             </button>
           </div>
         </div>

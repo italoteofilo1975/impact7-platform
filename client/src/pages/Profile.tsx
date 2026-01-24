@@ -1,0 +1,405 @@
+import { useState } from "react";
+import { Link } from "wouter";
+import { 
+  ArrowLeft, Trophy, Star, Flame, Target, Award, 
+  ChevronRight, TrendingUp, Calendar, Zap, Crown,
+  Medal, Gift
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
+
+const RARITY_COLORS = {
+  common: "bg-gray-500",
+  uncommon: "bg-green-500",
+  rare: "bg-blue-500",
+  epic: "bg-purple-500",
+  legendary: "bg-yellow-500",
+};
+
+const RARITY_LABELS = {
+  common: "Comum",
+  uncommon: "Incomum",
+  rare: "Raro",
+  epic: "Épico",
+  legendary: "Lendário",
+};
+
+export default function Profile() {
+  const { user, isAuthenticated } = useAuth();
+  const [activeTab, setActiveTab] = useState("overview");
+  
+  const { data: stats, isLoading: statsLoading } = trpc.gamification.getStats.useQuery(
+    undefined,
+    { enabled: isAuthenticated }
+  );
+  
+  const { data: allBadges } = trpc.gamification.getAllBadges.useQuery();
+  const { data: leaderboard } = trpc.gamification.getLeaderboard.useQuery({ limit: 10 });
+  
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardHeader className="text-center">
+            <Trophy className="w-16 h-16 mx-auto mb-4 text-primary" />
+            <CardTitle>Acesse seu Perfil</CardTitle>
+            <CardDescription>
+              Faça login para ver suas conquistas, pontos e badges do Jarvis.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <a href={getLoginUrl()}>
+              <Button size="lg">
+                Fazer Login
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </a>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  
+  const earnedBadgeIds = new Set(stats?.badges?.map(b => b.id) || []);
+  
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Link href="/">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold">Meu Perfil</h1>
+            <p className="text-muted-foreground">
+              Acompanhe seu progresso e conquistas
+            </p>
+          </div>
+        </div>
+        
+        {/* User Stats Hero */}
+        <Card className="mb-8 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+              {/* Avatar & Level */}
+              <div className="relative">
+                <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center text-4xl font-bold text-primary">
+                  {user?.name?.charAt(0) || "U"}
+                </div>
+                <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm font-bold">
+                  Nv. {stats?.level || 1}
+                </div>
+              </div>
+              
+              {/* Info */}
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold mb-1">{user?.name || "Usuário"}</h2>
+                <p className="text-muted-foreground mb-4">{user?.email}</p>
+                
+                {/* Progress to next level */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Progresso para Nível {(stats?.level || 1) + 1}</span>
+                    <span>{stats?.progressPercent || 0}%</span>
+                  </div>
+                  <Progress value={stats?.progressPercent || 0} className="h-3" />
+                  <p className="text-xs text-muted-foreground">
+                    {stats?.pointsToNextLevel || 100} pontos para o próximo nível
+                  </p>
+                </div>
+              </div>
+              
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-4 bg-background/50 rounded-lg">
+                  <Star className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
+                  <div className="text-2xl font-bold">{stats?.points || 0}</div>
+                  <div className="text-xs text-muted-foreground">Pontos</div>
+                </div>
+                <div className="text-center p-4 bg-background/50 rounded-lg">
+                  <Flame className="w-6 h-6 mx-auto mb-1 text-orange-500" />
+                  <div className="text-2xl font-bold">{stats?.streak || 0}</div>
+                  <div className="text-xs text-muted-foreground">Dias Seguidos</div>
+                </div>
+                <div className="text-center p-4 bg-background/50 rounded-lg">
+                  <Target className="w-6 h-6 mx-auto mb-1 text-blue-500" />
+                  <div className="text-2xl font-bold">{stats?.totalInteractions || 0}</div>
+                  <div className="text-xs text-muted-foreground">Interações</div>
+                </div>
+                <div className="text-center p-4 bg-background/50 rounded-lg">
+                  <Trophy className="w-6 h-6 mx-auto mb-1 text-purple-500" />
+                  <div className="text-2xl font-bold">#{stats?.rank || "-"}</div>
+                  <div className="text-xs text-muted-foreground">Ranking</div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-6">
+            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+            <TabsTrigger value="badges">Badges ({stats?.badges?.length || 0}/{allBadges?.length || 0})</TabsTrigger>
+            <TabsTrigger value="leaderboard">Ranking</TabsTrigger>
+            <TabsTrigger value="history">Histórico</TabsTrigger>
+          </TabsList>
+          
+          {/* Overview Tab */}
+          <TabsContent value="overview">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Recent Badges */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="w-5 h-5" />
+                    Badges Recentes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {stats?.badges && stats.badges.length > 0 ? (
+                    <div className="flex flex-wrap gap-3">
+                      {stats.badges.slice(0, 6).map((badge) => (
+                        <div
+                          key={badge.id}
+                          className="flex items-center gap-2 p-2 bg-muted rounded-lg"
+                          title={badge.description || ""}
+                        >
+                          <span className="text-2xl">{badge.icon}</span>
+                          <div>
+                            <div className="font-medium text-sm">{badge.name}</div>
+                            <Badge 
+                              variant="outline" 
+                              className={`text-xs ${RARITY_COLORS[badge.rarity as keyof typeof RARITY_COLORS]} text-white`}
+                            >
+                              {RARITY_LABELS[badge.rarity as keyof typeof RARITY_LABELS]}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Gift className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p>Nenhum badge conquistado ainda</p>
+                      <p className="text-sm">Continue usando o Jarvis para ganhar badges!</p>
+                    </div>
+                  )}
+                  {stats?.badges && stats.badges.length > 6 && (
+                    <Button 
+                      variant="ghost" 
+                      className="w-full mt-4"
+                      onClick={() => setActiveTab("badges")}
+                    >
+                      Ver todos os badges
+                      <ChevronRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+              
+              {/* Points Breakdown */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="w-5 h-5" />
+                    Como Ganhar Pontos
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-2 bg-muted rounded-lg">
+                      <span>Pergunta ao Jarvis</span>
+                      <Badge>+10 pts</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-muted rounded-lg">
+                      <span>Usar Calculadora</span>
+                      <Badge>+15 pts</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-muted rounded-lg">
+                      <span>Favoritar Case</span>
+                      <Badge>+5 pts</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-muted rounded-lg">
+                      <span>Download de Case</span>
+                      <Badge>+10 pts</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-muted rounded-lg">
+                      <span>Login Diário</span>
+                      <Badge>+20 pts</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-muted rounded-lg">
+                      <span>Bônus de Streak</span>
+                      <Badge variant="secondary">+10 pts/dia</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          
+          {/* Badges Tab */}
+          <TabsContent value="badges">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {allBadges?.map((badge) => {
+                const isEarned = earnedBadgeIds.has(badge.id);
+                return (
+                  <Card 
+                    key={badge.id} 
+                    className={`transition-all ${isEarned ? "border-primary" : "opacity-60 grayscale"}`}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-4">
+                        <div 
+                          className={`w-14 h-14 rounded-full flex items-center justify-center text-3xl ${
+                            isEarned ? "" : "bg-muted"
+                          }`}
+                          style={{ backgroundColor: isEarned ? badge.color + "20" : undefined }}
+                        >
+                          {badge.icon}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold">{badge.name}</h3>
+                            {isEarned && <Medal className="w-4 h-4 text-primary" />}
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {badge.description}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <Badge 
+                              variant="outline"
+                              className={`${RARITY_COLORS[badge.rarity as keyof typeof RARITY_COLORS]} text-white`}
+                            >
+                              {RARITY_LABELS[badge.rarity as keyof typeof RARITY_LABELS]}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">
+                              +{badge.pointsReward} pts
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </TabsContent>
+          
+          {/* Leaderboard Tab */}
+          <TabsContent value="leaderboard">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Crown className="w-5 h-5 text-yellow-500" />
+                  Top 10 Usuários
+                </CardTitle>
+                <CardDescription>
+                  Os usuários mais ativos da plataforma IMPACT7
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {leaderboard?.map((entry, index) => (
+                    <div 
+                      key={entry.userId}
+                      className={`flex items-center gap-4 p-3 rounded-lg ${
+                        entry.userId === user?.id ? "bg-primary/10 border border-primary/20" : "bg-muted"
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
+                        index === 0 ? "bg-yellow-500 text-white" :
+                        index === 1 ? "bg-gray-400 text-white" :
+                        index === 2 ? "bg-amber-600 text-white" :
+                        "bg-muted-foreground/20"
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium">
+                          {entry.userId === user?.id ? user.name || "Você" : `Usuário #${entry.userId}`}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Nível {entry.level} • {entry.totalInteractions} interações
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-primary">{entry.points.toLocaleString()}</div>
+                        <div className="text-xs text-muted-foreground">pontos</div>
+                      </div>
+                      {entry.streak > 0 && (
+                        <div className="flex items-center gap-1 text-orange-500">
+                          <Flame className="w-4 h-4" />
+                          <span className="text-sm font-medium">{entry.streak}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          {/* History Tab */}
+          <TabsContent value="history">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Histórico de Pontos
+                </CardTitle>
+                <CardDescription>
+                  Suas últimas transações de pontos
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {stats?.recentTransactions && stats.recentTransactions.length > 0 ? (
+                  <div className="space-y-2">
+                    {stats.recentTransactions.map((tx) => (
+                      <div 
+                        key={tx.id}
+                        className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                      >
+                        <div>
+                          <div className="font-medium">
+                            {tx.reason.replace(/_/g, " ").replace(/^\w/, c => c.toUpperCase())}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {new Date(tx.createdAt).toLocaleDateString("pt-BR", {
+                              day: "2-digit",
+                              month: "short",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </div>
+                        </div>
+                        <Badge variant={tx.points > 0 ? "default" : "destructive"}>
+                          {tx.points > 0 ? "+" : ""}{tx.points} pts
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <TrendingUp className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p>Nenhuma transação ainda</p>
+                    <p className="text-sm">Comece a usar a plataforma para ganhar pontos!</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}
