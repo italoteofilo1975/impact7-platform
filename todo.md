@@ -165,4 +165,14 @@
 - [x] Limpar cache do build (.vite, dist, node_modules/.vite)
 - [x] Testar homepage sem erros (100% funcional)
 - [x] Testar todas as páginas principais
-- [ ] Criar checkpoint v1.1.2
+- [x] Criar checkpoint v1.1.2 (versão: c1fea18b)
+
+
+## 26. Correção Definitiva: Erro db.execute Persistente
+- [x] Investigar origem do erro "db.execute is not a function" na homepage (era cache do build)
+- [x] Buscar por padrões alternativos de uso (sql``, db.run, etc) (nenhum encontrado)
+- [x] Verificar imports de db em todos os arquivos (todos corretos)
+- [x] Corrigir todas as ocorrências encontradas (não havia ocorrências no código)
+- [x] Limpar cache e reiniciar servidor (resolveu o problema)
+- [x] Testar homepage sem erros (100% funcional)
+- [x] Criar checkpoint v1.1.3
