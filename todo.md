@@ -157,4 +157,12 @@
 - [x] Identificar onde db.execute está sendo chamado
 - [x] Corrigir para usar sintaxe correta do Drizzle ORM (criado db-raw.ts)
 - [x] Testar login após correção (100% funcional)
-- [ ] Criar checkpoint v1.1.1
+- [x] Criar checkpoint v1.1.1 (versão: f2ad1de2)
+
+
+## 25. Correção Completa de db.execute (Homepage)
+- [x] Procurar todas as ocorrências restantes de db.execute no código (nenhuma encontrada)
+- [x] Limpar cache do build (.vite, dist, node_modules/.vite)
+- [x] Testar homepage sem erros (100% funcional)
+- [x] Testar todas as páginas principais
+- [ ] Criar checkpoint v1.1.2
