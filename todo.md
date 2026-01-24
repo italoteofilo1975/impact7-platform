@@ -279,3 +279,9 @@
 - [ ] G5: Observabilidade & Operação
 - [ ] G6: Integridade & Governança de Dados
 - [ ] G7: Performance & Escalabilidade
+
+
+## 34. Executar Todos os Próximos Passos Recomendados (AGORA)
+- [x] Passo 1: Investigar BUG-JARV-01 testando endpoint tRPC diretamente (2h investidas, backend 100% funcional, frontend com erro intermitente)
+- [ ] Passo 2: Completar testes E2E das 8 telas críticas restantes (2-3 horas) - PENDENTE
+- [ ] Passo 3: Executar Auditoria DevSecOps completa - 7 Quality Gates (2 horas) - PENDENTE
