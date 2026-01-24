@@ -1,4 +1,5 @@
 import { getDb } from "../db";
+import { executeRawQuery } from "../db-raw";
 import { sql } from "drizzle-orm";
 
 export interface AuditLogEntry {
@@ -22,7 +23,7 @@ export const auditLogService = {
       const db = await getDb();
       if (!db) return;
 
-      await db.execute(sql`
+      await executeRawQuery(sql`
         INSERT INTO auditLogs (userId, action, resource, resourceId, details, ipAddress, userAgent, status, errorMessage, createdAt)
         VALUES (${entry.userId}, ${entry.action}, ${entry.resource}, ${entry.resourceId || null}, ${entry.details ? JSON.stringify(entry.details) : null}, ${entry.ipAddress || null}, ${entry.userAgent || null}, ${entry.status}, ${entry.errorMessage || null}, NOW())
       `);
@@ -132,7 +133,7 @@ export const auditLogService = {
       query += ` OFFSET ${filters.offset}`;
     }
 
-    const result = await db.execute(sql.raw(query));
+    const result = await executeRawQuery(sql.raw(query));
     return (result as any)[0] || [];
   },
 
@@ -161,28 +162,28 @@ export const auditLogService = {
     startDate.setDate(startDate.getDate() - days);
 
     // Total actions
-    const totalResult = await db.execute(sql`
+    const totalResult = await executeRawQuery(sql`
       SELECT COUNT(*) as total, SUM(CASE WHEN status = 'success' THEN 1 ELSE 0 END) as success
       FROM auditLogs WHERE createdAt >= ${startDate}
     `);
     const totals = (totalResult as any)[0][0] || { total: 0, success: 0 };
 
     // Top actions
-    const actionsResult = await db.execute(sql`
+    const actionsResult = await executeRawQuery(sql`
       SELECT action, COUNT(*) as count
       FROM auditLogs WHERE createdAt >= ${startDate}
       GROUP BY action ORDER BY count DESC LIMIT 10
     `);
 
     // Top resources
-    const resourcesResult = await db.execute(sql`
+    const resourcesResult = await executeRawQuery(sql`
       SELECT resource, COUNT(*) as count
       FROM auditLogs WHERE createdAt >= ${startDate}
       GROUP BY resource ORDER BY count DESC LIMIT 10
     `);
 
     // Daily trend
-    const trendResult = await db.execute(sql`
+    const trendResult = await executeRawQuery(sql`
       SELECT DATE(createdAt) as date, COUNT(*) as count
       FROM auditLogs WHERE createdAt >= ${startDate}
       GROUP BY DATE(createdAt) ORDER BY date ASC

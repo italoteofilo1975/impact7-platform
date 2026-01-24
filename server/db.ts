@@ -10,6 +10,13 @@ let _db: BetterSQLite3Database | null = null;
 let _sqlite: Database.Database | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
+export async function getSqlite() {
+  if (!_sqlite && process.env.DATABASE_URL) {
+    await getDb(); // Ensure db is initialized
+  }
+  return _sqlite;
+}
+
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {

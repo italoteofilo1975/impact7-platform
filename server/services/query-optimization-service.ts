@@ -4,6 +4,7 @@
  */
 
 import { getDb } from '../db';
+import { executeRawQuery } from '../db-raw';
 import { sql } from 'drizzle-orm';
 
 interface QueryStats {
@@ -169,7 +170,7 @@ export async function checkDatabaseHealth(): Promise<{
     }
     
     // Simple query to check connection
-    await db.execute(sql`SELECT 1`);
+    await executeRawQuery(sql`SELECT 1`);
     
     const latency = performance.now() - start;
     
@@ -197,7 +198,7 @@ export async function getTableStats(): Promise<Record<string, number>> {
     }
     
     // This is MySQL-specific
-    const result = await db.execute(sql`
+    const result = await executeRawQuery(sql`
       SELECT TABLE_NAME, TABLE_ROWS 
       FROM information_schema.TABLES 
       WHERE TABLE_SCHEMA = DATABASE()

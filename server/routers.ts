@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { getDb } from "./db";
+import { executeRawQuery } from "./db-raw";
 import { leads, contacts, whitepaperDownloads, ebookDownloads, newsletterSubscribers, calculations, caseFavorites, caseSubmissions, caseTags, caseTagRelations, notificationPreferences, systemSettings, impactTokens } from "../drizzle/schema";
 import { chatWithJarvis, jarvisSkills, getSuggestedQuestions, JarvisMessage } from "./services/jarvis/jarvis-service";
 import { searchKnowledge, listCategories, getDocumentsByCategory } from "./services/jarvis/knowledge-base";
@@ -1120,7 +1121,7 @@ export const appRouter = router({
           query += ` AND isFeatured = TRUE`;
         }
         query += ` ORDER BY isFeatured DESC, year DESC LIMIT ${input?.limit || 20}`;
-        const result = await db.execute(query);
+        const result = await executeRawQuery(query);
         return (result as any)[0] || [];
       }),
 
@@ -1130,7 +1131,7 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) return null;
-        const result = await db.execute(`
+        const result = await executeRawQuery(`
           SELECT * FROM caseStudies WHERE id = ${input.id} AND isActive = TRUE
         `);
         const rows = (result as any)[0];
@@ -1141,7 +1142,7 @@ export const appRouter = router({
     getSectors: publicProcedure.query(async () => {
       const db = await getDb();
       if (!db) return [];
-      const result = await db.execute(`
+      const result = await executeRawQuery(`
         SELECT DISTINCT sector FROM caseStudies WHERE isActive = TRUE ORDER BY sector
       `);
       return ((result as any)[0] || []).map((r: any) => r.sector);
@@ -1151,7 +1152,7 @@ export const appRouter = router({
     getRegions: publicProcedure.query(async () => {
       const db = await getDb();
       if (!db) return [];
-      const result = await db.execute(`
+      const result = await executeRawQuery(`
         SELECT DISTINCT region FROM caseStudies WHERE isActive = TRUE ORDER BY region
       `);
       return ((result as any)[0] || []).map((r: any) => r.region);
@@ -3584,7 +3585,7 @@ export const appRouter = router({
       .query(async () => {
         const db = await getDb();
         if (!db) return [];
-        const result = await db.execute(`
+        const result = await executeRawQuery(`
           SELECT metricKey, value, icon, labelKey, descriptionKey, displayOrder 
           FROM socialProofMetrics 
           WHERE isActive = TRUE 
@@ -3598,7 +3599,7 @@ export const appRouter = router({
       .query(async () => {
         const db = await getDb();
         if (!db) return [];
-        const result = await db.execute(`
+        const result = await executeRawQuery(`
           SELECT id, name, descriptionKey, displayOrder 
           FROM socialProofCertifications 
           WHERE isActive = TRUE 
@@ -3612,7 +3613,7 @@ export const appRouter = router({
       .query(async () => {
         const db = await getDb();
         if (!db) return [];
-        const result = await db.execute(`
+        const result = await executeRawQuery(`
           SELECT id, name, category, logoUrl, website, displayOrder 
           FROM partners 
           WHERE isActive = TRUE 
@@ -3627,7 +3628,7 @@ export const appRouter = router({
       .query(async () => {
         const db = await getDb();
         if (!db) return [];
-        const result = await db.execute(`
+        const result = await executeRawQuery(`
           SELECT id, title, organization, sector, sroi, beneficiaries, description, isFeatured 
           FROM caseStudies 
           WHERE isFeatured = TRUE AND isActive = TRUE 
@@ -3659,7 +3660,7 @@ export const appRouter = router({
           query += ` AND isFeatured = TRUE`;
         }
         query += ` ORDER BY displayOrder ASC, createdAt DESC LIMIT ${input?.limit || 10}`;
-        const result = await db.execute(query);
+        const result = await executeRawQuery(query);
         return (result as any)[0] || [];
       }),
 
@@ -3668,7 +3669,7 @@ export const appRouter = router({
       .query(async () => {
         const db = await getDb();
         if (!db) return [];
-        const result = await db.execute(`
+        const result = await executeRawQuery(`
           SELECT DISTINCT sector FROM testimonials WHERE isActive = TRUE ORDER BY sector
         `);
         return ((result as any)[0] || []).map((r: any) => r.sector);
@@ -3686,7 +3687,7 @@ export const appRouter = router({
         }
         const db = await getDb();
         if (!db) throw new Error('Database not available');
-        await db.execute(`
+        await executeRawQuery(`
           UPDATE socialProofMetrics 
           SET value = '${input.value}', updatedAt = NOW() 
           WHERE metricKey = '${input.metricKey}'

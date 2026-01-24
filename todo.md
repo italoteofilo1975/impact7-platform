@@ -149,5 +149,12 @@
 - [x] Confirmar performance e responsividade
 
 ## 23. Checkpoint v1.1.0
-- [ ] Criar checkpoint v1.1.0
-- [ ] Documentar changelog
+- [x] Criar checkpoint v1.1.0 (versão: 9c69f2ed)
+- [x] Documentar changelog
+
+
+## 24. Correção de Erro "db.execute is not a function"
+- [x] Identificar onde db.execute está sendo chamado
+- [x] Corrigir para usar sintaxe correta do Drizzle ORM (criado db-raw.ts)
+- [x] Testar login após correção (100% funcional)
+- [ ] Criar checkpoint v1.1.1

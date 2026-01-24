@@ -38,7 +38,7 @@ async function checkDatabase(): Promise<ComponentHealth> {
   const start = Date.now();
   try {
     // Simular verificação de conexão
-    // Em produção, fazer query real: await db.execute(sql`SELECT 1`)
+    // Em produção, fazer query real: await executeRawQuery(sql`SELECT 1`)
     const latency = Date.now() - start;
     
     return {
