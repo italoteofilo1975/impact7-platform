@@ -318,9 +318,19 @@ export default function Calculadora() {
                     className="w-full gradient-orange text-white border-0" 
                     size="lg"
                     onClick={handleCalculate}
+                    disabled={calculateMutation.isPending}
                   >
-                    <Calculator className="w-5 h-5 mr-2" />
-                    {t("calculator.calculate")}
+                    {calculateMutation.isPending ? (
+                      <>
+                        <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        {t("calculator.calculating")}
+                      </>
+                    ) : (
+                      <>
+                        <Calculator className="w-5 h-5 mr-2" />
+                        {t("calculator.calculate")}
+                      </>
+                    )}
                   </Button>
                 </CardContent>
               </Card>

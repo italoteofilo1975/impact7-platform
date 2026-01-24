@@ -4,10 +4,13 @@ import { users } from '../../drizzle/schema';
 import { eq } from 'drizzle-orm';
 import { PLANS } from './products';
 
-// Initialize Stripe with secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-12-15.clover',
-});
+// Initialize Stripe with secret key (only if configured)
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const stripe = STRIPE_SECRET_KEY 
+  ? new Stripe(STRIPE_SECRET_KEY, {
+      apiVersion: '2025-12-15.clover',
+    })
+  : null;
 
 export interface CreateCheckoutSessionParams {
   userId: number;
@@ -22,6 +25,10 @@ export interface CreateCheckoutSessionParams {
  * Create a Stripe Checkout Session for subscription
  */
 export async function createCheckoutSession(params: CreateCheckoutSessionParams): Promise<string> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+  }
+  
   const { userId, userEmail, userName, planId, billingPeriod, origin } = params;
   
   const plan = PLANS[planId];
@@ -232,6 +239,9 @@ export async function handleSubscriptionDeleted(subscription: Stripe.Subscriptio
  * Cancel a subscription
  */
 export async function cancelSubscription(subscriptionId: string): Promise<void> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+  }
   await stripe.subscriptions.cancel(subscriptionId);
 }
 
@@ -239,6 +249,9 @@ export async function cancelSubscription(subscriptionId: string): Promise<void> 
  * Get subscription details
  */
 export async function getSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+  }
   return stripe.subscriptions.retrieve(subscriptionId);
 }
 
@@ -246,6 +259,9 @@ export async function getSubscription(subscriptionId: string): Promise<Stripe.Su
  * Create customer portal session
  */
 export async function createPortalSession(customerId: string, returnUrl: string): Promise<string> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+  }
   const session = await stripe.billingPortal.sessions.create({
     customer: customerId,
     return_url: returnUrl,
@@ -261,6 +277,9 @@ export function constructWebhookEvent(
   payload: string | Buffer,
   signature: string
 ): Stripe.Event {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+  }
   return stripe.webhooks.constructEvent(
     payload,
     signature,

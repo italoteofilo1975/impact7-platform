@@ -199,7 +199,12 @@
 - [x] Incorporar Agente Multi-instância ao sistema
 - [ ] Executar protocolo completo de cada agente
 
-## 29. FASE 1 - Testes E2E Tela a Tela (Sem Mocks)
+## 29. FASE 1 - Correções Críticas (CONCLUÍDA)
+- [x] MT-001: Corrigir erro Stripe (P0) - Stripe agora é condicional
+- [x] MT-002: Adicionar loading state na calculadora (P3)
+- [x] MT-003: Corrigir erros TypeScript websocket (P4) - 327→323 erros
+
+## 30. FASE 2 - Testes E2E Tela a Tela (Sem Mocks)
 - [ ] Testar TEL-AUTH-01: Login (fluxo crítico)
 - [x] Testar TEL-CALC-01: Calculadora (R=0 já protegido, 1 bug S3 encontrado)
 - [ ] Testar TEL-JARV-CHAT: Jarvis AI (timeout, streaming)

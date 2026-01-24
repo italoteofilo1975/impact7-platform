@@ -33,7 +33,7 @@ class WebSocketService {
       this.wss = new WebSocketServer({ server, path: '/ws' });
       console.log('[WebSocket] WebSocketServer created successfully');
 
-      this.wss.on('connection', (ws, req) => {
+      this.wss.on('connection', (ws: WebSocket, req: any) => {
         console.log('[WebSocket] New connection attempt');
       const url = new URL(req.url || '', `http://${req.headers.host}`);
       const userId = url.searchParams.get('userId') || 'anonymous';
@@ -48,7 +48,7 @@ class WebSocketService {
         ws.send(JSON.stringify({ type: 'pending_notifications', notifications: pending.filter(n => !n.read) }));
       }
 
-      ws.on('message', (data) => {
+      ws.on('message', (data: any) => {
         try {
           const message = JSON.parse(data.toString());
           this.handleMessage(clientId, message);
@@ -62,7 +62,7 @@ class WebSocketService {
         console.log(`[WebSocket] Client disconnected: ${clientId}`);
       });
 
-      ws.on('error', (error) => {
+      ws.on('error', (error: Error) => {
         console.error(`[WebSocket] Error for ${clientId}:`, error);
         this.clients.delete(clientId);
       });
