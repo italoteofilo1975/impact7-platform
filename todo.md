@@ -297,3 +297,9 @@
 - [x] Passo 1: Orientar publicação em produção (manual via UI) - Instruções fornecidas
 - [x] Passo 2: Corrigir Jarvis UI (bug S1) - RESOLVIDO! Jarvis 100% funcional
 - [ ] Passo 3: Implementar UI GDPR (botões exportar/excluir dados) - Backend pronto, UI pendente (4h)
+
+
+## 37. Executar Todos os Próximos Passos Recomendados (RODADA 4 - FINAL)
+- [x] Passo 1: Orientar publicação em produção via Management UI - Instruções fornecidas
+- [x] Passo 2: Implementar UI GDPR completa (botões exportar + excluir dados) - Tab Configurações adicionada ao perfil
+- [x] Passo 3: Orientar configuração de integrações opcionais (Stripe + SMTP) - Guia criado em docs/GUIA_INTEGRACOES_OPCIONAIS.md

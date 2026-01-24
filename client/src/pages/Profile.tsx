@@ -42,6 +42,10 @@ export default function Profile() {
   const { data: allBadges } = trpc.gamification.getAllBadges.useQuery();
   const { data: leaderboard } = trpc.gamification.getLeaderboard.useQuery({ limit: 10 });
   
+  // GDPR mutations
+  const exportDataMutation = trpc.gdpr.exportData.useMutation();
+  const deletionMutation = trpc.gdpr.requestDeletion.useMutation();
+  
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -152,6 +156,7 @@ export default function Profile() {
             <TabsTrigger value="badges">Badges ({stats?.badges?.length || 0}/{allBadges?.length || 0})</TabsTrigger>
             <TabsTrigger value="leaderboard">Ranking</TabsTrigger>
             <TabsTrigger value="history">Histórico</TabsTrigger>
+            <TabsTrigger value="settings">Configurações</TabsTrigger>
           </TabsList>
           
           {/* Overview Tab */}
@@ -395,6 +400,77 @@ export default function Profile() {
                     <p className="text-sm">Comece a usar a plataforma para ganhar pontos!</p>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configurações de Privacidade (GDPR)</CardTitle>
+                <CardDescription>
+                  Gerencie seus dados pessoais de acordo com o Regulamento Geral de Proteção de Dados (GDPR)
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Exportar Dados */}
+                <div className="border rounded-lg p-4">
+                  <h3 className="font-semibold mb-2">Exportar Meus Dados</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Baixe uma cópia de todos os seus dados pessoais armazenados na plataforma (Art. 20 GDPR - Direito à Portabilidade).
+                  </p>
+                  <Button 
+                    variant="outline"
+                    disabled={exportDataMutation.isPending}
+                    onClick={() => {
+                      exportDataMutation.mutate(undefined, {
+                        onSuccess: (data) => {
+                          const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: 'application/json' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = `meus-dados-impact7-${new Date().toISOString().split('T')[0]}.json`;
+                          a.click();
+                          URL.revokeObjectURL(url);
+                        },
+                        onError: (error) => {
+                          alert(`Erro ao exportar dados: ${error.message}`);
+                        },
+                      });
+                    }}
+                  >
+                    {exportDataMutation.isPending ? 'Exportando...' : 'Exportar Dados (JSON)'}
+                  </Button>
+                </div>
+
+                {/* Excluir Conta */}
+                <div className="border border-destructive/50 rounded-lg p-4 bg-destructive/5">
+                  <h3 className="font-semibold text-destructive mb-2">Excluir Minha Conta</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Exclua permanentemente sua conta e todos os seus dados da plataforma (Art. 17 GDPR - Direito ao Esquecimento). Esta ação é irreversível.
+                  </p>
+                  <Button 
+                    variant="destructive"
+                    disabled={deletionMutation.isPending}
+                    onClick={() => {
+                      const confirmation = prompt('Para confirmar a exclusão da sua conta, digite "DELETE" (em maiúsculas):');
+                      if (confirmation === 'DELETE') {
+                        deletionMutation.mutate({ confirmation }, {
+                          onSuccess: () => {
+                            alert('Sua conta foi excluída com sucesso. Você será redirecionado.');
+                            window.location.href = '/';
+                          },
+                          onError: (error) => {
+                            alert(`Erro ao excluir conta: ${error.message}`);
+                          },
+                        });
+                      }
+                    }}
+                  >
+                    {deletionMutation.isPending ? 'Excluindo...' : 'Excluir Conta Permanentemente'}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
