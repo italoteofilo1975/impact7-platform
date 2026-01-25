@@ -517,3 +517,21 @@
 - [ ] Integrar toast em formulários (não implementado)
 - [x] Validação TypeScript: 264 erros (sem mudança)
 - [x] Salvar checkpoint v2.4.0
+
+
+## 56. Correção Manual updatedAt + Coluna organization + Integração useContactForm (RODADA 20 - PARCIAL)
+- [x] Buscar inserts sem updatedAt em webhook-service.ts (2 encontrados)
+- [x] Adicionar updatedAt em webhook-service.ts linha 49 (webhooks table)
+- [x] Tentar adicionar updatedAt em webhookDeliveries - FALHOU (tabela sem updatedAt no schema)
+- [x] Buscar inserts sem updatedAt em routers.ts (20+ encontrados)
+- [x] Tentar script sed para adicionar updatedAt - FALHOU (erros aumentaram 264→2283)
+- [x] Reverter routers.ts com git checkout
+- [x] Verificar coluna organization no schema - JÁ EXISTE
+- [x] Tentar pnpm db:push - FALHOU (DEFAULT UNIX_TIMESTAMP() não permitido)
+- [x] Ler Contact.tsx e entender estrutura
+- [x] Importar useContactForm no Contact.tsx
+- [x] Substituir validação manual por form.handleSubmit()
+- [x] Integrar react-hook-form + Zod no Contact.tsx
+- [ ] Testar formulário de contato no browser (não testado)
+- [x] Validação TypeScript: 264 erros (mantido após reversão)
+- [x] Salvar checkpoint v2.5.0

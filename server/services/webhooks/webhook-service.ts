@@ -53,9 +53,9 @@ export async function createWebhook(
     secret,
     events: JSON.stringify(events),
     isActive: 1,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  });
   
   const insertId = result[0]?.insertId;
   if (!insertId) return null;
@@ -193,9 +193,8 @@ async function deliverWebhook(
     event,
     payload: payloadString,
     attempts: 1,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+  });
   
   const deliveryId = deliveryResult[0]?.insertId;
   if (!deliveryId) return;

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useContactForm } from "@/hooks/useFormValidation";
 import MainNavbar from "@/components/MainNavbar";
 import Footer from "@/components/Footer";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
@@ -49,20 +50,11 @@ const subjects = [
 ];
 
 export default function Contato() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    organization: "",
-    subject: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  
+  // Integração com react-hook-form + Zod
+  const form = useContactForm();
+  const { register, handleSubmit: handleFormSubmit, formState: { errors, isSubmitting } } = form;
 
   const contactMutation = trpc.contacts.create.useMutation({
     onSuccess: () => {
@@ -75,28 +67,20 @@ export default function Contato() {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name || !formData.email || !formData.message) {
-      toast.error("Por favor, preencha os campos obrigatórios.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    
+  const onSubmit = handleFormSubmit(async (data) => {
     try {
       await contactMutation.mutateAsync({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || undefined,
-        subject: formData.subject || undefined,
-        message: formData.message,
+        name: data.name,
+        email: data.email,
+        phone: data.phone || undefined,
+        subject: data.subject || undefined,
+        message: data.message,
+        organization: data.organization || undefined,
       });
-    } finally {
-      setIsSubmitting(false);
+    } catch (error) {
+      // Error já tratado pelo contactMutation.onError
     }
-  };
+  });
 
   return (
     <div className="min-h-screen bg-background">
