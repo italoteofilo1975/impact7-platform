@@ -1710,3 +1710,59 @@ export const whiteLabelConfig = mysqlTable("white_label_config", {
 
 export type WhiteLabelConfig = typeof whiteLabelConfig.$inferSelect;
 export type InsertWhiteLabelConfig = typeof whiteLabelConfig.$inferInsert;
+
+/**
+ * RBAC (Role-Based Access Control) Tables
+ */
+
+// Roles table
+export const roles = mysqlTable("roles", {
+  id: int("id").primaryKey({ autoIncrement: true }),
+  code: varchar("code", { length: 50 }).notNull().unique(),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  level: int("level").notNull().default(0),
+  isActive: int("isActive").notNull().default(1),
+  createdAt: int("createdAt").notNull(),
+  updatedAt: int("updatedAt").notNull(),
+});
+
+export type Role = typeof roles.$inferSelect;
+export type InsertRole = typeof roles.$inferInsert;
+
+// Permissions table
+export const permissions = mysqlTable("permissions", {
+  id: int("id").primaryKey({ autoIncrement: true }),
+  code: varchar("code", { length: 100 }).notNull().unique(),
+  name: varchar("name", { length: 150 }).notNull(),
+  description: text("description"),
+  category: varchar("category", { length: 50 }).notNull(),
+  isActive: int("isActive").notNull().default(1),
+  createdAt: int("createdAt").notNull(),
+  updatedAt: int("updatedAt").notNull(),
+});
+
+export type Permission = typeof permissions.$inferSelect;
+export type InsertPermission = typeof permissions.$inferInsert;
+
+// RolePermissions junction table
+export const rolePermissions = mysqlTable("rolePermissions", {
+  id: int("id").primaryKey({ autoIncrement: true }),
+  roleId: int("roleId").notNull(),
+  permissionId: int("permissionId").notNull(),
+  assignedAt: int("assignedAt").notNull(),
+});
+
+export type RolePermission = typeof rolePermissions.$inferSelect;
+export type InsertRolePermission = typeof rolePermissions.$inferInsert;
+
+// UserRoles junction table
+export const userRoles = mysqlTable("userRoles", {
+  id: int("id").primaryKey({ autoIncrement: true }),
+  userId: int("userId").notNull(),
+  roleId: int("roleId").notNull(),
+  assignedAt: int("assignedAt").notNull(),
+});
+
+export type UserRole = typeof userRoles.$inferSelect;
+export type InsertUserRole = typeof userRoles.$inferInsert;

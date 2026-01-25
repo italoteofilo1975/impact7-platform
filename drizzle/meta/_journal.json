@@ -36,6 +36,13 @@
       "when": 1769360419332,
       "tag": "0004_deep_darkhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1769361283620,
+      "tag": "0005_slippery_jack_murdock",
+      "breakpoints": true
     }
   ]
 }

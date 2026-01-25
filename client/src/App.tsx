@@ -115,6 +115,7 @@ const AdminReports = lazy(() => import("./pages/AdminReports"));
 const AdminBusinessMetrics = lazy(() => import("./pages/AdminBusinessMetrics"));
 const AdminAlerts = lazy(() => import("./pages/AdminAlerts"));
 const Set7Dashboard = lazy(() => import("./pages/admin/Set7Dashboard"));
+const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 
 // Components
 import JarvisChat from "./components/JarvisChat";
@@ -221,6 +222,7 @@ function Router() {
         <Route path="/admin/reports">{() => <AdminRoute><AdminReports /></AdminRoute>}</Route>
         <Route path="/admin/business">{() => <AdminRoute><AdminBusinessMetrics /></AdminRoute>}</Route>
         <Route path="/admin/set7">{() => <AdminRoute><Set7Dashboard /></AdminRoute>}</Route>
+        <Route path="/admin/users">{() => <AdminRoute><AdminUsers /></AdminRoute>}</Route>
         <Route path="/admin/:rest*">{() => <AdminRoute><Admin /></AdminRoute>}</Route>
         
         {/* 404 */}

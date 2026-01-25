@@ -3855,6 +3855,98 @@ export const appRouter = router({
           permissionsCreated: allPerms.length,
         };
       }),
+
+    // Listar todos os usuários (admin only)
+    listUsers: protectedProcedure
+      .use(async ({ ctx, next }) => {
+        const { requirePermission } = await import('./rbac');
+        return requirePermission('users.read')({ ctx, next });
+      })
+      .query(async () => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        const { users } = await import('../drizzle/schema');
+        const allUsers = await db.select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          role: users.role,
+          createdAt: users.createdAt,
+        }).from(users);
+        
+        return allUsers;
+      }),
+
+    // Obter permissões e roles de um usuário
+    getUserRBAC: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        const { getUserPermissions, getUserRoles } = await import('./rbac');
+        const [permissions, roles] = await Promise.all([
+          getUserPermissions(input.userId),
+          getUserRoles(input.userId),
+        ]);
+        return { permissions, roles };
+      }),
+
+    // Atribuir role a um usuário
+    assignRole: protectedProcedure
+      .use(async ({ ctx, next }) => {
+        const { requirePermission } = await import('./rbac');
+        return requirePermission('users.update')({ ctx, next });
+      })
+      .input(z.object({
+        userId: z.number(),
+        roleCode: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const { assignRole } = await import('./rbac');
+        const success = await assignRole(input.userId, input.roleCode);
+        if (!success) {
+          throw new Error('Falha ao atribuir role');
+        }
+        return { success: true };
+      }),
+
+    // Remover role de um usuário
+    removeRole: protectedProcedure
+      .use(async ({ ctx, next }) => {
+        const { requirePermission } = await import('./rbac');
+        return requirePermission('users.update')({ ctx, next });
+      })
+      .input(z.object({
+        userId: z.number(),
+        roleCode: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const { removeRole } = await import('./rbac');
+        const success = await removeRole(input.userId, input.roleCode);
+        if (!success) {
+          throw new Error('Falha ao remover role');
+        }
+        return { success: true };
+      }),
+
+    // Listar todos os roles disponíveis
+    listRoles: protectedProcedure
+      .query(async () => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        const allRoles = await db.select().from(roles);
+        return allRoles;
+      }),
+
+    // Listar todas as permissions disponíveis
+    listPermissions: protectedProcedure
+      .query(async () => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        const allPerms = await db.select().from(permissions);
+        return allPerms;
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;

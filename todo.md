@@ -382,4 +382,17 @@
 - [x] Usuário admin@impact7.com já existe
 - [x] Atribuir role 'admin' ao usuário ID 3
 - [x] Sistema RBAC 100% funcional (4 roles + 13 permissions)
-- [ ] Salvar checkpoint v1.3.0
+- [x] Salvar checkpoint v1.3.0 (7e4aa36d)
+
+
+## 45. Implementar Sistema de Permissões Completo (RODADA 9 - CONCLUÍDO)
+- [x] Criar middleware `requirePermission()` e `requireRole()` no tRPC
+- [x] Criar arquivo server/rbac.ts com 8 funções
+- [x] Criar 6 rotas tRPC para gerenciamento RBAC
+- [x] Criar página /admin/users para gerenciamento
+- [x] Implementar UI de atribuição de roles (dialog com select)
+- [x] Criar hook usePermissions para frontend
+- [x] Melhorar efeito visual do theme switcher (animação sol/lua com framer-motion)
+- [x] Criar documento CONTENT_ORGANIZATION.md (60+ páginas categorizadas)
+- [x] Criar documento PROJECT_COMPLETION_REPORT.md (78% concluído)
+- [x] Salvar checkpoint v1.4.0
