@@ -41,7 +41,7 @@ export async function saveMemory(
       and(
         eq(jarvisMemory.userId, userId),
         eq(jarvisMemory.key, entry.key),
-        eq(jarvisMemory.isActive, true)
+        eq(jarvisMemory.isActive, 1)
       )
     )
     .limit(1);
@@ -99,7 +99,7 @@ export async function getMemoriesByType(
       and(
         eq(jarvisMemory.userId, userId),
         eq(jarvisMemory.memoryType, type),
-        eq(jarvisMemory.isActive, true)
+        eq(jarvisMemory.isActive, 1)
       )
     )
     .orderBy(desc(jarvisMemory.importance), desc(jarvisMemory.lastAccessed))
@@ -137,7 +137,7 @@ export async function getMemoryByKey(
       and(
         eq(jarvisMemory.userId, userId),
         eq(jarvisMemory.key, key),
-        eq(jarvisMemory.isActive, true)
+        eq(jarvisMemory.isActive, 1)
       )
     )
     .limit(1);
@@ -175,7 +175,7 @@ export async function searchMemories(
     .where(
       and(
         eq(jarvisMemory.userId, userId),
-        eq(jarvisMemory.isActive, true),
+        eq(jarvisMemory.isActive, 1),
         sql`(${jarvisMemory.key} LIKE ${searchPattern} OR ${jarvisMemory.value} LIKE ${searchPattern})`
       )
     )
@@ -188,7 +188,7 @@ export async function searchMemories(
     .where(
       and(
         eq(jarvisMemory.userId, userId),
-        eq(jarvisMemory.isActive, true),
+        eq(jarvisMemory.isActive, 1),
         sql`(${jarvisMemory.key} LIKE ${searchPattern} OR ${jarvisMemory.value} LIKE ${searchPattern})`
       )
     );
@@ -215,7 +215,7 @@ export async function getAllUserMemories(
     .where(
       and(
         eq(jarvisMemory.userId, userId),
-        eq(jarvisMemory.isActive, true)
+        eq(jarvisMemory.isActive, 1)
       )
     )
     .orderBy(desc(jarvisMemory.importance), desc(jarvisMemory.accessCount))
@@ -297,7 +297,7 @@ export async function deleteMemory(
   
   const result = await db
     .update(jarvisMemory)
-    .set({ isActive: false })
+    .set({ isActive: 0 })
     .where(
       and(
         eq(jarvisMemory.id, memoryId),
@@ -317,7 +317,7 @@ export async function clearAllMemories(userId: number): Promise<number> {
   
   const result = await db
     .update(jarvisMemory)
-    .set({ isActive: false })
+    .set({ isActive: 0 })
     .where(eq(jarvisMemory.userId, userId));
 
   return 1; // Return count of affected rows

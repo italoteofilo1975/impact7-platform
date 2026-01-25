@@ -73,7 +73,7 @@ export const notificationPersistenceService = {
     }
     
     if (unreadOnly) {
-      conditions.push(eq(notifications.isRead, false));
+      conditions.push(eq(notifications.isRead, 0));
     }
     
     if (startDate) {
@@ -95,7 +95,7 @@ export const notificationPersistenceService = {
       db
         .select({ count: sql<number>`count(*)` })
         .from(notifications)
-        .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false))),
+        .where(and(eq(notifications.userId, userId), eq(notifications.isRead, 0))),
     ]);
 
     return {
@@ -113,7 +113,7 @@ export const notificationPersistenceService = {
     if (!db) return false;
     const result = await db
       .update(notifications)
-      .set({ isRead: true, readAt: Date.now() })
+      .set({ isRead: 1, readAt: Date.now() })
       .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)));
     
     return result[0].affectedRows > 0;
@@ -127,8 +127,8 @@ export const notificationPersistenceService = {
     if (!db) return 0;
     const result = await db
       .update(notifications)
-      .set({ isRead: true, readAt: Date.now() })
-      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
+      .set({ isRead: 1, readAt: Date.now() })
+      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, 0)));
     
     return result[0].affectedRows;
   },
@@ -160,7 +160,7 @@ export const notificationPersistenceService = {
       .where(
         and(
           eq(notifications.userId, userId),
-          eq(notifications.isRead, true),
+          eq(notifications.isRead, 1),
           sql`${notifications.createdAt} < ${cutoffDate}`
         )
       );
@@ -177,7 +177,7 @@ export const notificationPersistenceService = {
     const result = await db
       .select({ count: sql<number>`count(*)` })
       .from(notifications)
-      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
+      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, 0)));
     
     return Number(result[0]?.count || 0);
   },

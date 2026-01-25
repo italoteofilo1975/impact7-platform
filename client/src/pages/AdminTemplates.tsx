@@ -63,7 +63,7 @@ const defaultFormData: TemplateFormData = {
   type: 'info',
   titleTemplate: '',
   messageTemplate: '',
-  isActive: true,
+  isActive: 1,
 };
 
 export default function AdminTemplates() {

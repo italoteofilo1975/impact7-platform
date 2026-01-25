@@ -41,7 +41,7 @@ export async function createApiKey(
     permissions: JSON.stringify(permissions),
     rateLimit,
     expiresAt,
-    isActive: true,
+    isActive: 1,
   
           createdAt: Date.now(),
         });
@@ -70,7 +70,7 @@ export async function validateApiKey(key: string): Promise<{
     .where(
       and(
         eq(apiKeys.keyHash, hash),
-        eq(apiKeys.isActive, true),
+        eq(apiKeys.isActive, 1),
         or(
           isNull(apiKeys.expiresAt),
           gte(apiKeys.expiresAt, Date.now())
@@ -135,7 +135,7 @@ export async function revokeApiKey(userId: number, keyId: number): Promise<boole
   if (!db) return false;
   
   await db.update(apiKeys)
-    .set({ isActive: false })
+    .set({ isActive: 0 })
     .where(and(eq(apiKeys.id, keyId), eq(apiKeys.userId, userId)));
   
   return true;

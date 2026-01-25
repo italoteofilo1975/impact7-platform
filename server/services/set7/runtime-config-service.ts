@@ -197,7 +197,7 @@ export async function createRuntimeConfig(input: CreateRuntimeConfigInput) {
     modelRouting: input.modelRouting || "default",
     gateProfile: JSON.stringify(gateProfile),
     humanApprovalPhases: JSON.stringify(input.humanApprovalPhases ?? defaults.humanApprovalPhases),
-    isActive: true,
+    isActive: 1,
   }).$returningId();
 
   await logAuditEvent({
@@ -219,7 +219,7 @@ export async function getActiveConfig() {
   
   const [config] = await db.select()
     .from(set7RuntimeConfig)
-    .where(eq(set7RuntimeConfig.isActive, true));
+    .where(eq(set7RuntimeConfig.isActive, 1));
   
   if (config) {
     return {
@@ -312,11 +312,11 @@ export async function activateConfig(configId: string) {
   
   // Desativar todas as configs
   await db.update(set7RuntimeConfig)
-    .set({ isActive: false });
+    .set({ isActive: 0 });
   
   // Ativar a config especificada
   await db.update(set7RuntimeConfig)
-    .set({ isActive: true })
+    .set({ isActive: 1 })
     .where(eq(set7RuntimeConfig.configId, configId));
 
   await logAuditEvent({

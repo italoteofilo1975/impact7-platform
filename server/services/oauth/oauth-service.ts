@@ -67,7 +67,7 @@ export async function createOAuthClient(
     clientSecretHash,
     redirectUris: JSON.stringify(redirectUris),
     scopes: JSON.stringify(scopes),
-    isActive: true,
+    isActive: 1,
   
           createdAt: Date.now(),
         });
@@ -116,7 +116,7 @@ export async function validateOAuthClient(
   
   const clients = await db.select()
     .from(oauthClients)
-    .where(and(eq(oauthClients.clientId, clientId), eq(oauthClients.isActive, true)));
+    .where(and(eq(oauthClients.clientId, clientId), eq(oauthClients.isActive, 1)));
   
   if (clients.length === 0) {
     return { valid: false, error: "Invalid client_id" };
@@ -190,7 +190,7 @@ export async function exchangeCodeForTokens(
   // Validar client
   const clients = await db.select()
     .from(oauthClients)
-    .where(and(eq(oauthClients.clientId, clientId), eq(oauthClients.isActive, true)));
+    .where(and(eq(oauthClients.clientId, clientId), eq(oauthClients.isActive, 1)));
   
   if (clients.length === 0) {
     return { error: "Invalid client_id" };
@@ -287,7 +287,7 @@ export async function refreshAccessToken(
   // Validar client
   const clients = await db.select()
     .from(oauthClients)
-    .where(and(eq(oauthClients.clientId, clientId), eq(oauthClients.isActive, true)));
+    .where(and(eq(oauthClients.clientId, clientId), eq(oauthClients.isActive, 1)));
   
   if (clients.length === 0) {
     return { error: "Invalid client_id" };

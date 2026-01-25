@@ -47,7 +47,7 @@ class NotificationTemplateService {
     return db
       .select()
       .from(notificationTemplates)
-      .where(eq(notificationTemplates.isActive, true))
+      .where(eq(notificationTemplates.isActive, 1))
       .orderBy(notificationTemplates.code);
   }
 
@@ -330,7 +330,7 @@ class NotificationTemplateService {
           ...template,
           availableVariables: JSON.stringify(template.availableVariables),
           isSystem: true,
-          isActive: true,
+          isActive: 1,
         
           createdAt: Date.now(),
         });

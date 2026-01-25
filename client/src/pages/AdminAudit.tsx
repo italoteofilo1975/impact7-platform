@@ -97,7 +97,7 @@ export default function AdminAudit() {
   const { refetch: exportCsv, isFetching: isExporting } = trpc.audit.exportCsv.useQuery({
     action: actionFilter !== 'all' ? actionFilter : undefined,
     resourceType: resourceFilter !== 'all' ? resourceFilter : undefined,
-  }, { enabled: false });
+  }, { enabled: 0 });
 
   const handleExport = async () => {
     try {

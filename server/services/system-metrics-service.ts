@@ -140,7 +140,7 @@ async function getDatabaseMetrics(): Promise<DatabaseMetrics> {
     db.select({ count: count() }).from(caseSubmissions),
     db.select({ count: count() }).from(caseSubmissions).where(eq(caseSubmissions.status, "pending")),
     db.select({ count: count() }).from(notifications),
-    db.select({ count: count() }).from(notifications).where(eq(notifications.isRead, false)),
+    db.select({ count: count() }).from(notifications).where(eq(notifications.isRead, 0)),
     db.select({ count: count() }).from(auditLogs),
   ]);
 

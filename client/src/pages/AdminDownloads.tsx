@@ -38,7 +38,7 @@ export default function AdminDownloads() {
 
   const { refetch: exportCsv, isFetching: isExporting } = trpc.downloads.exportCsv.useQuery(
     { type: activeTab === 'whitepaper' ? 'whitepaper' : activeTab === 'ebook' ? 'ebook' : 'all' },
-    { enabled: false }
+    { enabled: 0 }
   );
 
   const handleExport = async () => {

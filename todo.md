@@ -472,3 +472,14 @@
 - [x] Executar tsc e verificar redução: 412 → 289 erros (123 eliminados = 30% redução)
 - [x] Testar homepage - 100% funcional
 - [x] Salvar checkpoint v2.1.0
+
+
+## 53. Conversão Boolean → Int e Type Casting (RODADA 17 - CONCLUÍDA)
+- [x] Analisar todos os campos boolean no schema.ts (22 campos identificados)
+- [x] Identificar queries que usam campos boolean
+- [x] Criar script fix-boolean-fields.mjs (unificado)
+- [x] Executar conversão nas queries (17 arquivos, 46 mudanças)
+- [x] Remover .$type<boolean>() do schema (causava conflito)
+- [x] Validar compilação TypeScript (289 → 265 erros = 24 eliminados)
+- [x] Testar homepage - 100% funcional
+- [x] Salvar checkpoint v2.2.0

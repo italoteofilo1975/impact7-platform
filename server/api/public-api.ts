@@ -428,7 +428,7 @@ router.get('/metrics', async (req: Request, res: Response) => {
     const metrics = await db
       .select()
       .from(socialProofMetrics)
-      .where(eq(socialProofMetrics.isActive, true))
+      .where(eq(socialProofMetrics.isActive, 1))
       .orderBy(socialProofMetrics.displayOrder);
     
     res.json({

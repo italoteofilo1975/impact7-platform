@@ -73,7 +73,7 @@ export async function generateSecret(userId: number): Promise<{
         secret,
         backupCodes: JSON.stringify(hashedBackupCodes),
         backupCodesUsed: 0,
-        isVerified: false,
+        isVerified: 0,
         isEnabled: false,
         failedAttempts: 0,
         lockedUntil: null,
@@ -87,7 +87,7 @@ export async function generateSecret(userId: number): Promise<{
       secret,
       backupCodes: JSON.stringify(hashedBackupCodes),
       isEnabled: false,
-      isVerified: false,
+      isVerified: 0,
     
           createdAt: Date.now(),
         });
@@ -151,7 +151,7 @@ export async function verifyAndEnable(userId: number, code: string): Promise<{
   await db.update(twoFactorAuth)
     .set({
       isEnabled: true,
-      isVerified: true,
+      isVerified: 1,
       failedAttempts: 0,
       lockedUntil: null,
       lastUsedAt: Date.now(),
@@ -264,7 +264,7 @@ export async function disable2FA(userId: number, code: string): Promise<{
   await db.update(twoFactorAuth)
     .set({
       isEnabled: false,
-      isVerified: false,
+      isVerified: 0,
       secret: otpGenerateSecret(), // Generate new secret to invalidate old one
       backupCodes: null,
       backupCodesUsed: 0,
@@ -288,7 +288,7 @@ export async function getStatus(userId: number): Promise<{
   if (!db) {
     return {
       isEnabled: false,
-      isVerified: false,
+      isVerified: 0,
       backupCodesRemaining: 0,
       lastUsedAt: null,
     };
@@ -299,7 +299,7 @@ export async function getStatus(userId: number): Promise<{
   if (!tfa) {
     return {
       isEnabled: false,
-      isVerified: false,
+      isVerified: 0,
       backupCodesRemaining: 0,
       lastUsedAt: null,
     };
@@ -384,7 +384,7 @@ export async function markSessionVerified(sessionToken: string): Promise<void> {
 
   await db.update(twoFactorSessions)
     .set({
-      isVerified: true,
+      isVerified: 1,
       verifiedAt: Date.now(),
     })
     .where(eq(twoFactorSessions.sessionToken, sessionToken));

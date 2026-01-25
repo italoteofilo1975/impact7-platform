@@ -39,7 +39,7 @@ export default function AdminContacts() {
 
   const { refetch: exportCsv, isFetching: isExporting } = trpc.contacts.exportCsv.useQuery(
     undefined,
-    { enabled: false }
+    { enabled: 0 }
   );
 
   const handleExport = async () => {

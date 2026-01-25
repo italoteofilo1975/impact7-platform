@@ -3499,7 +3499,7 @@ export const appRouter = router({
         if (!db) throw new Error('Database not available');
         
         await db.update(userAccessTokens)
-          .set({ isActive: false })
+          .set({ isActive: 0 })
           .where(and(
             eq(userAccessTokens.id, input.tokenId),
             eq(userAccessTokens.userId, ctx.user.id)

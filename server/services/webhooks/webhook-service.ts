@@ -52,7 +52,7 @@ export async function createWebhook(
     url,
     secret,
     events: JSON.stringify(events),
-    isActive: true,
+    isActive: 1,
   
           createdAt: Date.now(),
         });
@@ -156,7 +156,7 @@ export async function triggerWebhookEvent(
   // Buscar todos os webhooks ativos que assinam este evento
   const activeWebhooks = await db.select()
     .from(webhooks)
-    .where(eq(webhooks.isActive, true));
+    .where(eq(webhooks.isActive, 1));
   
   const subscribedWebhooks = activeWebhooks.filter(w => {
     const events = w.events ? JSON.parse(w.events) : [];

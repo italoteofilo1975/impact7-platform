@@ -37,7 +37,7 @@ export default function AdminLeads() {
 
   const { refetch: exportCsv, isFetching: isExporting } = trpc.leads.exportCsv.useQuery(
     { source: statusFilter === 'all' ? undefined : statusFilter },
-    { enabled: false }
+    { enabled: 0 }
   );
 
   const handleExport = async () => {
