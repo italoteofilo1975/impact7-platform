@@ -1,4 +1,4 @@
-import { mysqlTable, int, varchar, text, decimal, blob, timestamp } from "drizzle-orm/mysql-core";
+import { mysqlTable, int, varchar, text, decimal, timestamp } from "drizzle-orm/mysql-core";
 import { sql } from "drizzle-orm";
 
 /**
@@ -35,10 +35,10 @@ export const leads = mysqlTable("leads", {
   message: text("message"),
   source: text("source").default("contact_form").notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
-  welcomeEmailSent: int("welcomeEmailSent").default(false).notNull(),
+  welcomeEmailSent: int("welcomeEmailSent").default(0).notNull(),
   nurturingStep: int("nurturingStep").default(0).notNull(),
   lastEmailSentAt: int("lastEmailSentAt"),
-  unsubscribed: int("unsubscribed").default(false).notNull(),
+  unsubscribed: int("unsubscribed").default(0).notNull(),
 });
 
 export type Lead = typeof leads.$inferSelect;
@@ -53,7 +53,7 @@ export const newsletterSubscribers = mysqlTable("newsletterSubscribers", {
   name: varchar("name", { length: 255 }),
   segment: text("segment").default("general").notNull(),
   interests: text("interests"),
-  isActive: int("isActive").default(true).notNull(),
+  isActive: int("isActive").default(1).notNull(),
   confirmedAt: int("confirmedAt"),
   unsubscribedAt: int("unsubscribedAt"),
   createdAt: int("createdAt").$type<number>().notNull(),
@@ -96,7 +96,7 @@ export const ebookDownloads = mysqlTable("ebookDownloads", {
   phone: varchar("phone", { length: 20 }),
   source: varchar("source", { length: 100 }).default("website"),
   downloadedAt: int("downloadedAt").notNull(),
-  emailSent: int("emailSent").default(false).notNull(),
+  emailSent: int("emailSent").default(0).notNull(),
 });
 
 export type EbookDownload = typeof ebookDownloads.$inferSelect;
@@ -173,7 +173,7 @@ export const knowledgeDocuments = mysqlTable("knowledgeDocuments", {
   category: varchar("category", { length: 100 }).notNull(),
   tags: text("tags"),
   embedding: text("embedding"),
-  isActive: int("isActive").default(true).notNull(),
+  isActive: int("isActive").default(1).notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
 });
@@ -203,14 +203,14 @@ export const jarvisAnalytics = mysqlTable("jarvisAnalytics", {
   id: int("id").primaryKey({ autoIncrement: true }),
   sessionId: varchar("sessionId", { length: 64 }).notNull(),
   userId: int("userId"),
-  interactionType: text("interactionType", ["chat", "calculator", "mentorship", "export", "search"]).notNull(),
+  interactionType: text("interactionType").notNull(),
   query: text("query"),
   skillUsed: varchar("skillUsed", { length: 50 }),
   responseTime: int("responseTime"), // in milliseconds
   tokensUsed: int("tokensUsed"),
-  successful: int("successful").default(true).notNull(),
+  successful: int("successful").default(1).notNull(),
   errorMessage: text("errorMessage"),
-  userFeedback: text("userFeedback", ["positive", "negative", "neutral"]),
+  userFeedback: text("userFeedback"),
   createdAt: int("createdAt").$type<number>().notNull(),
 });
 
@@ -223,14 +223,14 @@ export type InsertJarvisAnalytic = typeof jarvisAnalytics.$inferInsert;
 export const leadConversions = mysqlTable("leadConversions", {
   id: int("id").primaryKey({ autoIncrement: true }),
   leadId: int("leadId").notNull(),
-  conversionType: text("conversionType", ["signup", "download", "contact", "calculator", "demo_request", "purchase"]).notNull(),
+  conversionType: text("conversionType").notNull(),
   sourcePage: varchar("sourcePage", { length: 255 }),
   sourceForm: varchar("sourceForm", { length: 100 }),
   utmSource: varchar("utmSource", { length: 100 }),
   utmMedium: varchar("utmMedium", { length: 100 }),
   utmCampaign: varchar("utmCampaign", { length: 100 }),
   referrer: varchar("referrer", { length: 500 }),
-  deviceType: text("deviceType", ["desktop", "mobile", "tablet"]),
+  deviceType: text("deviceType"),
   browser: varchar("browser", { length: 50 }),
   country: varchar("country", { length: 100 }),
   convertedAt: int("convertedAt").notNull(),
@@ -252,7 +252,7 @@ export const pageViews = mysqlTable("pageViews", {
   utmSource: varchar("utmSource", { length: 100 }),
   utmMedium: varchar("utmMedium", { length: 100 }),
   utmCampaign: varchar("utmCampaign", { length: 100 }),
-  deviceType: text("deviceType", ["desktop", "mobile", "tablet"]),
+  deviceType: text("deviceType"),
   browser: varchar("browser", { length: 50 }),
   country: varchar("country", { length: 100 }),
   timeOnPage: int("timeOnPage"), // in seconds
@@ -320,7 +320,7 @@ export const caseSubmissions = mysqlTable("caseSubmissions", {
   results: text("results").notNull(),
   metrics: text("metrics"), // JSON string
   documentUrl: varchar("documentUrl", { length: 500 }),
-  status: text("status", ["pending", "reviewing", "approved", "rejected"]).default("pending").notNull(),
+  status: text("status").default("pending").notNull(),
   reviewNotes: text("reviewNotes"),
   reviewedAt: int("reviewedAt"),
   reviewedBy: int("reviewedBy"),
@@ -394,7 +394,7 @@ export const badges = mysqlTable("badges", {
   requirement: varchar("requirement", { length: 50 }).notNull(), // e.g., "interactions_10", "streak_7"
   requiredValue: int("requiredValue").notNull(),
   pointsReward: int("pointsReward").default(100).notNull(),
-  rarity: text("rarity", ["common", "uncommon", "rare", "epic", "legendary"]).default("common").notNull(),
+  rarity: text("rarity").default("common").notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
 });
 
@@ -442,7 +442,7 @@ export const apiKeys = mysqlTable("apiKeys", {
   rateLimit: int("rateLimit").default(1000).notNull(), // requests per hour
   lastUsedAt: int("lastUsedAt"),
   expiresAt: int("expiresAt").$type<number>(),
-  isActive: int("isActive").default(true).notNull(),
+  isActive: int("isActive").default(1).notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
 });
 
@@ -460,7 +460,7 @@ export const webhooks = mysqlTable("webhooks", {
   url: varchar("url", { length: 500 }).notNull(),
   secret: varchar("secret", { length: 64 }).notNull(), // For signature verification
   events: text("events").notNull(), // JSON array of subscribed events
-  isActive: int("isActive").default(true).notNull(),
+  isActive: int("isActive").default(1).notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
 });
@@ -499,7 +499,7 @@ export const oauthClients = mysqlTable("oauthClients", {
   clientSecretHash: varchar("clientSecretHash", { length: 64 }).notNull(),
   redirectUris: text("redirectUris").notNull(), // JSON array
   scopes: text("scopes").notNull(), // JSON array of allowed scopes
-  isActive: int("isActive").default(true).notNull(),
+  isActive: int("isActive").default(1).notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
 });
@@ -551,14 +551,14 @@ export type InsertOAuthToken = typeof oauthTokens.$inferInsert;
 export const jarvisMemory = mysqlTable("jarvisMemory", {
   id: int("id").primaryKey({ autoIncrement: true }),
   userId: int("userId").notNull(),
-  memoryType: text("memoryType", ["preference", "fact", "context", "goal", "project", "interaction"]).notNull(),
+  memoryType: text("memoryType").notNull(),
   key: varchar("key", { length: 255 }).notNull(),
   value: text("value").notNull(),
   importance: int("importance").default(5).notNull(), // 1-10 scale
   lastAccessed: int("lastAccessed").notNull(),
   accessCount: int("accessCount").default(1).notNull(),
   expiresAt: int("expiresAt").$type<number>(),
-  isActive: int("isActive").default(true).notNull(),
+  isActive: int("isActive").default(1).notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
 });
@@ -573,13 +573,13 @@ export const jarvisReports = mysqlTable("jarvisReports", {
   id: int("id").primaryKey({ autoIncrement: true }),
   userId: int("userId").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
-  reportType: text("reportType", ["impact", "executive_summary", "progress", "comparison", "forecast", "custom"]).notNull(),
+  reportType: text("reportType").notNull(),
   content: text("content").notNull(), // JSON or Markdown content
   summary: text("summary"),
   metrics: text("metrics"), // JSON with key metrics
   pdfUrl: varchar("pdfUrl", { length: 500 }),
   wordUrl: varchar("wordUrl", { length: 500 }),
-  status: text("status", ["generating", "completed", "failed"]).default("generating").notNull(),
+  status: text("status").default("generating").notNull(),
   generatedAt: int("generatedAt"),
   createdAt: int("createdAt").$type<number>().notNull(),
 });
@@ -613,7 +613,7 @@ export const impactCertificates = mysqlTable("impactCertificates", {
   blockNumber: int("blockNumber"), // Simulated block number
   
   // Verification
-  verificationStatus: text("verificationStatus", ["pending", "verified", "revoked"]).default("pending").notNull(),
+  verificationStatus: text("verificationStatus").default("pending").notNull(),
   verifiedBy: int("verifiedBy"),
   verifiedAt: int("verifiedAt"),
   
@@ -641,7 +641,7 @@ export const impactTokens = mysqlTable("impactTokens", {
   certificateId: int("certificateId"), // Link to certificate
   
   // Token details
-  tokenType: text("tokenType", ["impact_credit", "verification_badge", "achievement", "contribution"]).notNull(),
+  tokenType: text("tokenType").notNull(),
   amount: int("amount").default(1).notNull(),
   value: int("value").default(0).notNull(), // Value in cents
   
@@ -656,7 +656,7 @@ export const impactTokens = mysqlTable("impactTokens", {
   transferCount: int("transferCount").default(0).notNull(),
   
   // Status
-  status: text("status", ["active", "transferred", "burned", "expired"]).default("active").notNull(),
+  status: text("status").default("active").notNull(),
   mintedAt: int("mintedAt").notNull(),
   expiresAt: int("expiresAt").$type<number>(),
   
@@ -673,7 +673,7 @@ export type InsertImpactToken = typeof impactTokens.$inferInsert;
 export const tokenTransactions = mysqlTable("tokenTransactions", {
   id: int("id").primaryKey({ autoIncrement: true }),
   tokenId: int("tokenId").notNull(),
-  transactionType: text("transactionType", ["mint", "transfer", "burn", "stake", "unstake"]).notNull(),
+  transactionType: text("transactionType").notNull(),
   fromUserId: int("fromUserId"),
   toUserId: int("toUserId"),
   amount: int("amount").default(1).notNull(),
@@ -693,11 +693,11 @@ export const userPreferences = mysqlTable("userPreferences", {
   id: int("id").primaryKey({ autoIncrement: true }),
   userId: int("userId").notNull().unique(),
   language: varchar("language", { length: 10 }).default("pt").notNull(),
-  theme: text("theme", ["light", "dark", "system"]).default("system").notNull(),
+  theme: text("theme").default("system").notNull(),
   timezone: varchar("timezone", { length: 50 }).default("America/Sao_Paulo").notNull(),
-  emailNotifications: int("emailNotifications").default(true).notNull(),
-  pushNotifications: int("pushNotifications").default(true).notNull(),
-  weeklyDigest: int("weeklyDigest").default(true).notNull(),
+  emailNotifications: int("emailNotifications").default(1).notNull(),
+  pushNotifications: int("pushNotifications").default(1).notNull(),
+  weeklyDigest: int("weeklyDigest").default(1).notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
 });
@@ -712,11 +712,11 @@ export type InsertUserPreference = typeof userPreferences.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").primaryKey({ autoIncrement: true }),
   userId: int("userId").notNull(),
-  type: text("type", ["info", "success", "warning", "error", "case_pending", "case_approved", "case_rejected", "certificate_issued", "token_earned", "system"]).default("info").notNull(),
+  type: text("type").default("info").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
   link: varchar("link", { length: 500 }),
-  isRead: int("isRead").default(false).notNull(),
+  isRead: int("isRead").default(0).notNull(),
   metadata: text("metadata").$type<Record<string, unknown>>(),
   createdAt: int("createdAt").$type<number>().notNull(),
   readAt: int("readAt"),
@@ -733,21 +733,21 @@ export const notificationPreferences = mysqlTable("notificationPreferences", {
   id: int("id").primaryKey({ autoIncrement: true }),
   userId: int("userId").notNull(),
   // Notification type preferences (true = enabled, false = disabled)
-  infoEnabled: int("infoEnabled").default(true).notNull(),
-  successEnabled: int("successEnabled").default(true).notNull(),
-  warningEnabled: int("warningEnabled").default(true).notNull(),
-  errorEnabled: int("errorEnabled").default(true).notNull(),
-  casePendingEnabled: int("casePendingEnabled").default(true).notNull(),
-  caseApprovedEnabled: int("caseApprovedEnabled").default(true).notNull(),
-  caseRejectedEnabled: int("caseRejectedEnabled").default(true).notNull(),
-  certificateIssuedEnabled: int("certificateIssuedEnabled").default(true).notNull(),
-  tokenEarnedEnabled: int("tokenEarnedEnabled").default(true).notNull(),
-  systemEnabled: int("systemEnabled").default(true).notNull(),
+  infoEnabled: int("infoEnabled").default(1).notNull(),
+  successEnabled: int("successEnabled").default(1).notNull(),
+  warningEnabled: int("warningEnabled").default(1).notNull(),
+  errorEnabled: int("errorEnabled").default(1).notNull(),
+  casePendingEnabled: int("casePendingEnabled").default(1).notNull(),
+  caseApprovedEnabled: int("caseApprovedEnabled").default(1).notNull(),
+  caseRejectedEnabled: int("caseRejectedEnabled").default(1).notNull(),
+  certificateIssuedEnabled: int("certificateIssuedEnabled").default(1).notNull(),
+  tokenEarnedEnabled: int("tokenEarnedEnabled").default(1).notNull(),
+  systemEnabled: int("systemEnabled").default(1).notNull(),
   // Email preferences
-  emailEnabled: int("emailEnabled").default(true).notNull(),
-  emailDigestFrequency: text("emailDigestFrequency", ["instant", "daily", "weekly", "never"]).default("instant").notNull(),
+  emailEnabled: int("emailEnabled").default(1).notNull(),
+  emailDigestFrequency: text("emailDigestFrequency").default("instant").notNull(),
   // Push preferences
-  pushEnabled: int("pushEnabled").default(true).notNull(),
+  pushEnabled: int("pushEnabled").default(1).notNull(),
   // Timestamps
   createdAt: int("createdAt").$type<number>().notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
@@ -767,15 +767,15 @@ export const notificationTemplates = mysqlTable("notificationTemplates", {
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   // Template type
-  type: text("type", ["info", "success", "warning", "error", "case_pending", "case_approved", "case_rejected", "certificate_issued", "token_earned", "system"]).notNull(),
+  type: text("type").notNull(),
   // Template content
   titleTemplate: varchar("titleTemplate", { length: 255 }).notNull(), // e.g., "Seu case {{caseName}} foi aprovado!"
   messageTemplate: text("messageTemplate").notNull(), // e.g., "Parabéns! O case {{caseName}} foi aprovado em {{approvalDate}}."
   // Available variables (JSON array of variable names)
   availableVariables: text("availableVariables"), // e.g., '["caseName", "approvalDate", "reviewerName"]'
   // Status
-  isActive: int("isActive").default(true).notNull(),
-  isSystem: int("isSystem").default(false).notNull(), // System templates cannot be deleted
+  isActive: int("isActive").default(1).notNull(),
+  isSystem: int("isSystem").default(0).notNull(), // System templates cannot be deleted
   // Timestamps
   createdAt: int("createdAt").$type<number>().notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
@@ -796,9 +796,9 @@ export const systemSettings = mysqlTable("systemSettings", {
   value: text("value"),
   // Metadata
   description: varchar("description", { length: 255 }),
-  category: text("category", ["general", "notifications", "security", "integrations"]).default("general").notNull(),
+  category: text("category").default("general").notNull(),
   // Type hint for parsing
-  valueType: text("valueType", ["string", "number", "boolean", "json"]).default("string").notNull(),
+  valueType: text("valueType").default("string").notNull(),
   // Timestamps
   createdAt: int("createdAt").$type<number>().notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
@@ -818,10 +818,7 @@ export const auditLogs = mysqlTable("auditLogs", {
   userName: varchar("userName", { length: 255 }),
   userEmail: varchar("userEmail", { length: 255 }),
   // What action was performed
-  action: text("action", [
-    "create", "update", "delete", "login", "logout",
-    "approve", "reject", "export", "import", "config_change"
-  ]).notNull(),
+  action: text("action").notNull(),
   // What resource was affected
   resourceType: varchar("resourceType", { length: 100 }).notNull(), // e.g., "case", "user", "setting"
   resourceId: varchar("resourceId", { length: 100 }), // ID of the affected resource
@@ -853,14 +850,14 @@ export const referrals = mysqlTable("referrals", {
   referredId: int("referredId"),
   referredEmail: varchar("referredEmail", { length: 320 }),
   // Status
-  status: text("status", ["pending", "signed_up", "converted", "rewarded"]).default("pending").notNull(),
+  status: text("status").default("pending").notNull(),
   // Rewards
-  referrerRewardType: text("referrerRewardType", ["tokens", "discount", "credit", "none"]).default("none"),
+  referrerRewardType: text("referrerRewardType").default("none"),
   referrerRewardAmount: int("referrerRewardAmount").default(0),
-  referrerRewardApplied: int("referrerRewardApplied").default(false),
-  referredRewardType: text("referredRewardType", ["tokens", "discount", "credit", "none"]).default("none"),
+  referrerRewardApplied: int("referrerRewardApplied").default(0),
+  referredRewardType: text("referredRewardType").default("none"),
   referredRewardAmount: int("referredRewardAmount").default(0),
-  referredRewardApplied: int("referredRewardApplied").default(false),
+  referredRewardApplied: int("referredRewardApplied").default(0),
   // Timestamps
   invitedAt: int("invitedAt").notNull(),
   signedUpAt: int("signedUpAt"),
@@ -885,11 +882,9 @@ export const supportTickets = mysqlTable("supportTickets", {
   // Ticket details
   subject: varchar("subject", { length: 255 }).notNull(),
   description: text("description").notNull(),
-  category: text("category", [
-    "billing", "technical", "account", "feature_request", "bug_report", "general"
-  ]).default("general").notNull(),
-  priority: text("priority", ["low", "medium", "high", "urgent"]).default("medium").notNull(),
-  status: text("status", ["open", "in_progress", "waiting_customer", "resolved", "closed"]).default("open").notNull(),
+  category: text("category").default("general").notNull(),
+  priority: text("priority").default("medium").notNull(),
+  status: text("status").default("open").notNull(),
   // Assignment
   assignedToId: int("assignedToId"),
   assignedToName: varchar("assignedToName", { length: 255 }),
@@ -918,7 +913,7 @@ export const ticketMessages = mysqlTable("ticketMessages", {
   senderId: int("senderId"),
   senderName: varchar("senderName", { length: 255 }).notNull(),
   senderEmail: varchar("senderEmail", { length: 320 }),
-  isStaff: int("isStaff").default(false).notNull(),
+  isStaff: int("isStaff").default(0).notNull(),
   // Message content
   message: text("message").notNull(),
   attachments: text("attachments"), // JSON array of file URLs
@@ -939,14 +934,14 @@ export const featureFlags = mysqlTable("featureFlags", {
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   // Flag configuration
-  isEnabled: int("isEnabled").default(false).notNull(),
+  isEnabled: int("isEnabled").default(0).notNull(),
   rolloutPercentage: int("rolloutPercentage").default(0), // 0-100
   // Targeting
   targetUserIds: text("targetUserIds"), // JSON array of user IDs
   targetRoles: text("targetRoles"), // JSON array of roles
   targetPlans: text("targetPlans"), // JSON array of plan types
   // A/B testing
-  isExperiment: int("isExperiment").default(false).notNull(),
+  isExperiment: int("isExperiment").default(0).notNull(),
   variants: text("variants"), // JSON array of variant configs
   // Timestamps
   createdAt: int("createdAt").$type<number>().notNull(),
@@ -966,12 +961,7 @@ export const conversionEvents = mysqlTable("conversionEvents", {
   userId: int("userId"),
   sessionId: varchar("sessionId", { length: 100 }),
   // Event details
-  eventType: text("eventType", [
-    "page_view", "signup", "login", "calculator_start", "calculator_complete",
-    "whitepaper_download", "contact_form", "pricing_view", "checkout_start",
-    "checkout_complete", "subscription_start", "subscription_cancel",
-    "case_submit", "case_approve", "certificate_view", "certificate_download"
-  ]).notNull(),
+  eventType: text("eventType").notNull(),
   eventValue: varchar("eventValue", { length: 255 }), // e.g., page path, plan name
   // Attribution
   source: varchar("source", { length: 100 }), // utm_source
@@ -996,21 +986,16 @@ export const emailCampaigns = mysqlTable("emailCampaigns", {
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   // Campaign type
-  type: text("type", [
-    "welcome", "onboarding", "trial_ending", "reengagement",
-    "newsletter", "product_update", "promotional"
-  ]).notNull(),
+  type: text("type").notNull(),
   // Email content
   subject: varchar("subject", { length: 255 }).notNull(),
   preheader: varchar("preheader", { length: 255 }),
   htmlContent: text("htmlContent").notNull(),
   textContent: text("textContent"),
   // Targeting
-  targetSegment: text("targetSegment", [
-    "all", "free_users", "paid_users", "trial_users", "inactive_users", "leads"
-  ]).default("all").notNull(),
+  targetSegment: text("targetSegment").default("all").notNull(),
   // Schedule
-  status: text("status", ["draft", "scheduled", "sending", "sent", "paused"]).default("draft").notNull(),
+  status: text("status").default("draft").notNull(),
   scheduledAt: int("scheduledAt"),
   sentAt: int("sentAt").$type<number>(),
   // Stats
@@ -1037,8 +1022,8 @@ export const twoFactorAuth = mysqlTable("twoFactorAuth", {
   // TOTP secret (encrypted)
   secret: varchar("secret", { length: 255 }).notNull(),
   // Status
-  isEnabled: int("isEnabled").default(false).notNull(),
-  isVerified: int("isVerified").default(false).notNull(),
+  isEnabled: int("isEnabled").default(0).notNull(),
+  isVerified: int("isVerified").default(0).notNull(),
   // Backup codes (JSON array of hashed codes)
   backupCodes: text("backupCodes"),
   backupCodesUsed: int("backupCodesUsed").default(0).notNull(),
@@ -1065,7 +1050,7 @@ export const twoFactorSessions = mysqlTable("twoFactorSessions", {
   userId: int("userId").notNull(),
   sessionToken: varchar("sessionToken", { length: 64 }).notNull().unique(),
   // Status
-  isVerified: int("isVerified").default(false).notNull(),
+  isVerified: int("isVerified").default(0).notNull(),
   verifiedAt: int("verifiedAt"),
   // Expiration
   expiresAt: int("expiresAt").$type<number>().notNull(),
@@ -1101,7 +1086,7 @@ export const userAccessTokens = mysqlTable("userAccessTokens", {
   lastUsedAt: int("lastUsedAt"),
   usageCount: int("usageCount").default(0).notNull(),
   // Status
-  isActive: int("isActive").default(true).notNull(),
+  isActive: int("isActive").default(1).notNull(),
   expiresAt: int("expiresAt").$type<number>(),
   // Timestamps
   createdAt: int("createdAt").$type<number>().notNull(),
@@ -1148,8 +1133,8 @@ export const testimonials = mysqlTable("testimonials", {
   imageUrl: varchar("imageUrl", { length: 500 }),
   videoUrl: varchar("videoUrl", { length: 500 }),
   metrics: text("metrics"), // JSON array of {label, value}
-  isActive: int("isActive").default(true).notNull(),
-  isFeatured: int("isFeatured").default(false).notNull(),
+  isActive: int("isActive").default(1).notNull(),
+  isFeatured: int("isFeatured").default(0).notNull(),
   displayOrder: int("displayOrder").default(0).notNull(),
   language: varchar("language", { length: 5 }).default("pt").notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
@@ -1169,10 +1154,10 @@ export const partners = mysqlTable("partners", {
   logoUrl: varchar("logoUrl", { length: 500 }),
   websiteUrl: varchar("websiteUrl", { length: 500 }),
   sector: varchar("sector", { length: 100 }),
-  partnerType: text("partnerType", ["strategic", "technology", "implementation", "academic", "government", "ngo"]).default("strategic").notNull(),
-  tier: text("tier", ["platinum", "gold", "silver", "bronze"]).default("silver").notNull(),
-  isActive: int("isActive").default(true).notNull(),
-  isFeatured: int("isFeatured").default(false).notNull(),
+  partnerType: text("partnerType").default("strategic").notNull(),
+  tier: text("tier").default("silver").notNull(),
+  isActive: int("isActive").default(1).notNull(),
+  isFeatured: int("isFeatured").default(0).notNull(),
   displayOrder: int("displayOrder").default(0).notNull(),
   contactName: varchar("contactName", { length: 255 }),
   contactEmail: varchar("contactEmail", { length: 320 }),
@@ -1196,7 +1181,7 @@ export const socialProofMetrics = mysqlTable("socialProofMetrics", {
   labelEs: varchar("labelEs", { length: 255 }),
   icon: varchar("icon", { length: 50 }), // Icon name from lucide-react
   displayOrder: int("displayOrder").default(0).notNull(),
-  isActive: int("isActive").default(true).notNull(),
+  isActive: int("isActive").default(1).notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
@@ -1239,13 +1224,13 @@ export const set7Tasklog = mysqlTable("set7Tasklog", {
   
   // Identificação da task
   phase: varchar("phase", { length: 20 }).notNull(), // SET7.01, SET7.02, etc.
-  taskType: text("taskType", ["planning", "execution", "validation", "documentation", "review"]).notNull(),
+  taskType: text("taskType").notNull(),
   taskName: varchar("taskName", { length: 255 }).notNull(),
   description: text("description"),
   
   // Agente responsável
   agentId: varchar("agentId", { length: 64 }).notNull(),
-  agentType: text("agentType", ["vertical", "horizontal", "orchestrator", "human"]).notNull(),
+  agentType: text("agentType").notNull(),
   agentName: varchar("agentName", { length: 100 }).notNull(),
   
   // Taxonomia SET7
@@ -1264,7 +1249,7 @@ export const set7Tasklog = mysqlTable("set7Tasklog", {
   costUsd: int("costUsd").default(0).notNull(), // Em centavos de dólar
   
   // Status e resultado
-  status: text("status", ["pending", "running", "completed", "failed", "cancelled"]).default("pending").notNull(),
+  status: text("status").default("pending").notNull(),
   result: text("result"), // JSON com resultado
   errorMessage: text("errorMessage"),
   
@@ -1273,7 +1258,7 @@ export const set7Tasklog = mysqlTable("set7Tasklog", {
   
   // Gate associado
   gateId: varchar("gateId", { length: 64 }),
-  gateStatus: text("gateStatus", ["pending", "pass", "fail", "mitigation"]),
+  gateStatus: text("gateStatus"),
   
   // Timestamps
   startedAt: int("startedAt"),
@@ -1294,11 +1279,11 @@ export const set7Agents = mysqlTable("set7Agents", {
   // Identificação
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
-  agentType: text("agentType", ["vertical", "horizontal", "orchestrator"]).notNull(),
+  agentType: text("agentType").notNull(),
   
   // Configuração
   phase: varchar("phase", { length: 20 }), // Para agentes verticais
-  hookType: text("hookType", ["roi", "tokens", "quality", "security", "gtl"]), // Para agentes horizontais
+  hookType: text("hookType"), // Para agentes horizontais
   
   // Modelo e capabilities
   defaultModel: varchar("defaultModel", { length: 50 }).default("gpt-4o").notNull(),
@@ -1315,7 +1300,7 @@ export const set7Agents = mysqlTable("set7Agents", {
   canAccessDatabase: int("canAccessDatabase").default(0).notNull(),
   
   // Status
-  status: text("status", ["active", "paused", "disabled", "killed"]).default("active").notNull(),
+  status: text("status").default("active").notNull(),
   killSwitchTriggered: int("killSwitchTriggered").default(0).notNull(),
   killSwitchReason: text("killSwitchReason"),
   killSwitchAt: int("killSwitchAt"),
@@ -1346,7 +1331,7 @@ export const set7Integrations = mysqlTable("set7Integrations", {
   // Identificação
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
-  integrationType: text("integrationType", ["api", "webhook", "database", "file", "service", "external"]).notNull(),
+  integrationType: text("integrationType").notNull(),
   
   // Contrato
   contractVersion: varchar("contractVersion", { length: 20 }).notNull(),
@@ -1363,7 +1348,7 @@ export const set7Integrations = mysqlTable("set7Integrations", {
   qrCodeUrl: varchar("qrCodeUrl", { length: 500 }),
   
   // Verificação
-  verificationStatus: text("verificationStatus", ["pending", "verified", "failed", "revoked"]).default("pending").notNull(),
+  verificationStatus: text("verificationStatus").default("pending").notNull(),
   lastVerifiedAt: int("lastVerifiedAt"),
   verificationCount: int("verificationCount").default(0).notNull(),
   
@@ -1373,7 +1358,7 @@ export const set7Integrations = mysqlTable("set7Integrations", {
   authentication: text("authentication"), // JSON com auth config
   
   // Status
-  status: text("status", ["active", "deprecated", "disabled"]).default("active").notNull(),
+  status: text("status").default("active").notNull(),
   
   // Métricas
   totalCalls: int("totalCalls").default(0).notNull(),
@@ -1397,7 +1382,7 @@ export const set7TokenBudgets = mysqlTable("set7TokenBudgets", {
   budgetId: varchar("budgetId", { length: 64 }).notNull().unique(),
   
   // Escopo do budget
-  scope: text("scope", ["project", "phase", "flow", "agent", "user"]).notNull(),
+  scope: text("scope").notNull(),
   scopeId: varchar("scopeId", { length: 64 }).notNull(), // ID do projeto/fase/fluxo/agente/usuário
   scopeName: varchar("scopeName", { length: 255 }).notNull(),
   
@@ -1412,15 +1397,15 @@ export const set7TokenBudgets = mysqlTable("set7TokenBudgets", {
   usedUsd: int("usedUsd").default(0).notNull(),
   
   // Período
-  periodType: text("periodType", ["daily", "weekly", "monthly", "project", "unlimited"]).default("monthly").notNull(),
+  periodType: text("periodType").default("monthly").notNull(),
   periodStart: int("periodStart"),
   periodEnd: int("periodEnd"),
   
   // Status
-  status: text("status", ["active", "warning", "critical", "exceeded", "paused"]).default("active").notNull(),
+  status: text("status").default("active").notNull(),
   
   // Circuit breaker
-  circuitBreakerTriggered: int("circuitBreakerTriggered").default(false).notNull(),
+  circuitBreakerTriggered: int("circuitBreakerTriggered").default(0).notNull(),
   circuitBreakerAt: int("circuitBreakerAt"),
   circuitBreakerReason: text("circuitBreakerReason"),
   
@@ -1445,14 +1430,14 @@ export const set7Gates = mysqlTable("set7Gates", {
   description: text("description"),
   
   // Modo de execução
-  mode: text("mode", ["mvp", "standard", "enterprise", "regulated"]).default("standard").notNull(),
+  mode: text("mode").default("standard").notNull(),
   
   // Checklist
   checklistItems: text("checklistItems"), // JSON array de itens
   requiredItems: text("requiredItems"), // JSON array de IDs obrigatórios
   
   // Status
-  status: text("status", ["pending", "in_progress", "pass", "fail", "mitigation"]).default("pending").notNull(),
+  status: text("status").default("pending").notNull(),
   
   // Evidências
   evidences: text("evidences"), // JSON array de URLs/paths
@@ -1465,7 +1450,7 @@ export const set7Gates = mysqlTable("set7Gates", {
   // Aprovação
   approvedBy: int("approvedBy"),
   approvedAt: int("approvedAt").$type<number>(),
-  humanApprovalRequired: int("humanApprovalRequired").default(false).notNull(),
+  humanApprovalRequired: int("humanApprovalRequired").default(0).notNull(),
   
   // Timestamps
   createdAt: int("createdAt").$type<number>().notNull(),
@@ -1483,7 +1468,7 @@ export const set7RoiTracking = mysqlTable("set7RoiTracking", {
   trackingId: varchar("trackingId", { length: 64 }).notNull().unique(),
   
   // Tipo de ROI
-  roiType: text("roiType", ["baseline", "partial", "real", "final"]).notNull(),
+  roiType: text("roiType").notNull(),
   phase: varchar("phase", { length: 20 }), // Fase associada (para partial)
   
   // Métricas de custo
@@ -1530,21 +1515,21 @@ export const set7RuntimeConfig = mysqlTable("set7RuntimeConfig", {
   configId: varchar("configId", { length: 64 }).notNull().unique(),
   
   // Modo de execução
-  mode: text("mode", ["mvp", "standard", "enterprise", "regulated"]).default("standard").notNull(),
+  mode: text("mode").default("standard").notNull(),
   
   // Hooks ativos
   hooksEnabled: text("hooksEnabled"), // JSON array de hooks ativos
-  hookRoiEnabled: int("hookRoiEnabled").default(true).notNull(),
-  hookTokensEnabled: int("hookTokensEnabled").default(true).notNull(),
-  hookQualityEnabled: int("hookQualityEnabled").default(true).notNull(),
-  hookSecurityEnabled: int("hookSecurityEnabled").default(true).notNull(),
-  hookGtlEnabled: int("hookGtlEnabled").default(true).notNull(),
+  hookRoiEnabled: int("hookRoiEnabled").default(1).notNull(),
+  hookTokensEnabled: int("hookTokensEnabled").default(1).notNull(),
+  hookQualityEnabled: int("hookQualityEnabled").default(1).notNull(),
+  hookSecurityEnabled: int("hookSecurityEnabled").default(1).notNull(),
+  hookGtlEnabled: int("hookGtlEnabled").default(1).notNull(),
   
   // Frequência dos hooks
-  hookFrequency: text("hookFrequency", ["per_task", "per_phase", "daily", "weekly"]).default("per_phase").notNull(),
+  hookFrequency: text("hookFrequency").default("per_phase").notNull(),
   
   // GTL (Go-to-Live)
-  gtlType: text("gtlType", ["saas", "on_premise", "hybrid", "api_only"]).default("saas").notNull(),
+  gtlType: text("gtlType").default("saas").notNull(),
   gtlPlans: text("gtlPlans"), // JSON com planos disponíveis
   
   // Configurações de tokens
@@ -1556,7 +1541,7 @@ export const set7RuntimeConfig = mysqlTable("set7RuntimeConfig", {
   humanApprovalPhases: text("humanApprovalPhases"), // JSON array de fases que requerem aprovação humana
   
   // Status
-  isActive: int("isActive").default(true).notNull(),
+  isActive: int("isActive").default(1).notNull(),
   
   // Timestamps
   createdAt: int("createdAt").$type<number>().notNull(),
@@ -1574,14 +1559,7 @@ export const set7AuditLog = mysqlTable("set7AuditLog", {
   auditId: varchar("auditId", { length: 64 }).notNull().unique(),
   
   // Tipo de evento
-  eventType: text("eventType", [
-    "task_created", "task_completed", "task_failed",
-    "gate_passed", "gate_failed", "gate_mitigated",
-    "agent_started", "agent_stopped", "agent_killed",
-    "budget_warning", "budget_exceeded", "circuit_breaker",
-    "integration_verified", "integration_failed",
-    "roi_calculated", "config_changed"
-  ]).notNull(),
+  eventType: text("eventType").notNull(),
   
   // Contexto
   phase: varchar("phase", { length: 20 }),
@@ -1599,7 +1577,7 @@ export const set7AuditLog = mysqlTable("set7AuditLog", {
   userName: varchar("userName", { length: 255 }),
   
   // Severidade
-  severity: text("severity", ["info", "warning", "error", "critical"]).default("info").notNull(),
+  severity: text("severity").default("info").notNull(),
   
   // Timestamps
   createdAt: int("createdAt").$type<number>().notNull(),
@@ -1621,30 +1599,14 @@ export const set7Nfrs = mysqlTable("set7Nfrs", {
   phase: varchar("phase", { length: 20 }), // Fase associada
   
   // Dimensão NFR (15 dimensões SET7)
-  dimension: text("dimension", [
-    "architecture",      // Arquitetura e modularidade
-    "microservices",     // Microsserviços e responsabilidade
-    "whitelabel",        // White label e multi-instâncias
-    "ux_usability",      // UX/Usabilidade
-    "accessibility",     // Acessibilidade (WCAG 2.2 AA)
-    "voice",             // Voz / navegação por voz
-    "avatars",           // Avatares / multimodalidade
-    "gamification",      // Gamificação
-    "security",          // Segurança (Zero Trust)
-    "governance",        // Governança e auditoria
-    "performance",       // Performance e escalabilidade
-    "observability",     // Observabilidade
-    "availability",      // Disponibilidade e resiliência
-    "sovereignty",       // Soberania (dados/modelos)
-    "cognitive_efficiency" // Eficiência cognitiva (tokens)
-  ]).notNull(),
+  dimension: text("dimension").notNull(),
   
   // Detalhes
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   
   // Priorização
-  priority: text("priority", ["P0", "P1", "P2"]).default("P1").notNull(),
+  priority: text("priority").default("P1").notNull(),
   
   // Critérios de medição
   measurementCriteria: text("measurementCriteria"), // JSON com critérios
@@ -1652,7 +1614,7 @@ export const set7Nfrs = mysqlTable("set7Nfrs", {
   currentValue: varchar("currentValue", { length: 100 }), // Valor atual
   
   // Status
-  status: text("status", ["not_started", "in_progress", "met", "not_met", "na"]).default("not_started").notNull(),
+  status: text("status").default("not_started").notNull(),
   
   // Evidências
   evidences: text("evidences"), // JSON array de evidências
