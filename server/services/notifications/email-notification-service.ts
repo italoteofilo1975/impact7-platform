@@ -208,7 +208,7 @@ export const emailNotificationService = {
           // Marcar como enviado
           await db
             .update(notifications)
-            .set({ emailSentAt: new Date() })
+            .set({ emailSentAt: Date.now() })
             .where(eq(notifications.id, notification.id));
           
           sentCount++;

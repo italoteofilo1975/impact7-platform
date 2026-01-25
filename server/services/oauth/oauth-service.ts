@@ -68,7 +68,9 @@ export async function createOAuthClient(
     redirectUris: JSON.stringify(redirectUris),
     scopes: JSON.stringify(scopes),
     isActive: true,
-  });
+  
+          createdAt: Date.now(),
+        });
   
   return { clientId, clientSecret };
 }
@@ -82,7 +84,7 @@ export async function listUserOAuthClients(userId: number): Promise<Array<{
   redirectUris: string[];
   scopes: OAuthScope[];
   isActive: boolean;
-  createdAt: Date;
+  createdAt: number;
 }>> {
   const db = await getDb();
   if (!db) return [];
@@ -162,7 +164,9 @@ export async function generateAuthCode(
     codeChallenge: codeChallenge || null,
     codeChallengeMethod: codeChallengeMethod || null,
     expiresAt,
-  });
+  
+          createdAt: Date.now(),
+        });
   
   return code;
 }
@@ -205,7 +209,7 @@ export async function exchangeCodeForTokens(
     .where(and(
       eq(oauthAuthCodes.code, code),
       eq(oauthAuthCodes.clientId, clientId),
-      gte(oauthAuthCodes.expiresAt, new Date())
+      gte(oauthAuthCodes.expiresAt, Date.now())
     ));
   
   if (codes.length === 0) {
@@ -254,7 +258,9 @@ export async function exchangeCodeForTokens(
     scopes: authCode.scopes,
     accessTokenExpiresAt,
     refreshTokenExpiresAt,
-  });
+  
+          createdAt: Date.now(),
+        });
   
   return {
     accessToken,
@@ -300,7 +306,7 @@ export async function refreshAccessToken(
     .where(and(
       eq(oauthTokens.refreshToken, refreshToken),
       eq(oauthTokens.clientId, clientId),
-      gte(oauthTokens.refreshTokenExpiresAt, new Date())
+      gte(oauthTokens.refreshTokenExpiresAt, Date.now())
     ));
   
   if (tokens.length === 0) {
@@ -326,7 +332,9 @@ export async function refreshAccessToken(
     scopes: oldToken.scopes,
     accessTokenExpiresAt,
     refreshTokenExpiresAt,
-  });
+  
+          createdAt: Date.now(),
+        });
   
   return {
     accessToken: newAccessToken,
@@ -350,7 +358,7 @@ export async function validateAccessToken(accessToken: string): Promise<{
     .from(oauthTokens)
     .where(and(
       eq(oauthTokens.accessToken, accessToken),
-      gte(oauthTokens.accessTokenExpiresAt, new Date())
+      gte(oauthTokens.accessTokenExpiresAt, Date.now())
     ));
   
   if (tokens.length === 0) {

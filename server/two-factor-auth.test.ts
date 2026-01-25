@@ -72,7 +72,7 @@ describe('Two-Factor Authentication Service', () => {
           userId: 1,
           isEnabled: true,
           backupCodes: JSON.stringify(['code1', 'code2', 'code3']),
-          lastUsedAt: new Date(),
+          lastUsedAt: Date.now(),
         }]),
       };
       

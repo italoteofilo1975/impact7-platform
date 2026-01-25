@@ -68,7 +68,9 @@ export async function saveMemory(
     key: entry.key,
     value: entry.value,
     importance: entry.importance ?? 5,
-  });
+  
+          createdAt: Date.now(),
+        });
 
   const newMemory = await db
     .select()

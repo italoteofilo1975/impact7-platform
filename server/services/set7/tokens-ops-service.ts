@@ -80,7 +80,9 @@ export async function createBudget(input: CreateBudgetInput) {
     periodStart: input.periodStart,
     periodEnd: input.periodEnd,
     status: "active",
-  }).$returningId();
+  
+          createdAt: Date.now(),
+        }).$returningId();
 
   return { budgetId, id: budget.id };
 }
@@ -181,7 +183,7 @@ export async function recordTokenUsage(input: TokenUsageInput): Promise<{
       usedUsd: newUsedUsd,
       status: newStatus,
       circuitBreakerTriggered,
-      circuitBreakerAt: circuitBreakerTriggered ? new Date() : undefined,
+      circuitBreakerAt: circuitBreakerTriggered ? Date.now() : undefined,
       circuitBreakerReason: circuitBreakerTriggered ? "Budget limit exceeded" : undefined,
     })
     .where(eq(set7TokenBudgets.budgetId, input.budgetId));

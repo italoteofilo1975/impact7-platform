@@ -292,6 +292,8 @@ export const appRouter = router({
           phone: input.phone || null,
           organization: input.organization || null,
           source: input.source || "contact_form",
+        
+          createdAt: Date.now(),
         });
         
         return { success: true };
@@ -416,6 +418,8 @@ export const appRouter = router({
           phone: input.phone || null,
           subject: input.subject || null,
           message: input.message,
+        
+          createdAt: Date.now(),
         });
         
         return { success: true };
@@ -478,6 +482,8 @@ export const appRouter = router({
           name: input.name,
           email: input.email,
           organization: input.organization || null,
+        
+          createdAt: Date.now(),
         });
         
         // Also create a lead
@@ -486,6 +492,8 @@ export const appRouter = router({
           email: input.email,
           organization: input.organization || null,
           source: "whitepaper_download",
+        
+          createdAt: Date.now(),
         });
         
         return { success: true, downloadUrl: "/downloads/whitepaper-impact7.pdf" };
@@ -509,6 +517,8 @@ export const appRouter = router({
           organization: input.organization || null,
           role: input.role || null,
           phone: input.phone || null,
+        
+          createdAt: Date.now(),
         });
         
         // Also create a lead
@@ -518,6 +528,8 @@ export const appRouter = router({
           organization: input.organization || null,
           phone: input.phone || null,
           source: "ebook",
+        
+          createdAt: Date.now(),
         });
         
         return { success: true, downloadUrl: "/downloads/ebook-impact7.pdf" };
@@ -544,7 +556,7 @@ export const appRouter = router({
         if (!db) return { csv: '', count: 0 };
         
         const type = input?.type || 'all';
-        let allDownloads: Array<{ id: number; name: string | null; email: string; organization: string | null; downloadedAt: Date | null; type: string }> = [];
+        let allDownloads: Array<{ id: number; name: string | null; email: string; organization: string | null; downloadedAt: number | null; type: string }> = [];
         
         if (type === 'all' || type === 'whitepaper') {
           const wpDownloads = await db.select().from(whitepaperDownloads).orderBy(desc(whitepaperDownloads.downloadedAt));
@@ -587,6 +599,8 @@ export const appRouter = router({
           email: input.email,
           name: input.name || null,
           segment: input.segment || "general",
+        
+          createdAt: Date.now(),
         }).onDuplicateKeyUpdate({
           set: { name: input.name || null },
         });
@@ -642,7 +656,9 @@ export const appRouter = router({
             projectName: input.projectName || null,
             sector: input.sector || null,
             sessionId: input.sessionId || null,
-          });
+          
+          createdAt: Date.now(),
+        });
         }
         
         return {
@@ -1256,6 +1272,8 @@ export const appRouter = router({
         await db.insert(caseFavorites).values({
           userId: ctx.user.id,
           caseId: input.caseId,
+        
+          createdAt: Date.now(),
         });
         return { success: true };
       }),
@@ -1304,6 +1322,8 @@ export const appRouter = router({
           ...input,
           metrics: JSON.stringify(input.metrics),
           status: 'pending',
+        
+          createdAt: Date.now(),
         }).$returningId();
         
         // Enviar notificação ao owner sobre nova submissão
@@ -1357,7 +1377,7 @@ export const appRouter = router({
           .set({
             status: input.status,
             reviewNotes: input.reviewNotes,
-            reviewedAt: new Date(),
+            reviewedAt: Date.now(),
             reviewedBy: ctx.user.id,
           })
           .where(eq(caseSubmissions.id, input.submissionId));
@@ -1426,6 +1446,8 @@ export const appRouter = router({
           color: input.color || '#f97316',
           description: input.description,
           createdBy: ctx.user.id,
+        
+          createdAt: Date.now(),
         }).$returningId();
         
         return { success: true, id: result[0].id };
@@ -1493,6 +1515,8 @@ export const appRouter = router({
         await db.insert(caseTagRelations).values({
           caseId: input.caseId,
           tagId: input.tagId,
+        
+          createdAt: Date.now(),
         });
         return { success: true };
       }),
@@ -2474,7 +2498,9 @@ export const appRouter = router({
           return db.insert(notificationPreferences).values({
             userId: ctx.user.id,
             ...input,
-          });
+          
+          createdAt: Date.now(),
+        });
         }
       }),
   }),
@@ -2772,7 +2798,9 @@ export const appRouter = router({
             description: input.description,
             category: input.category || 'general',
             valueType: input.valueType || 'string',
-          });
+          
+          createdAt: Date.now(),
+        });
         }
         
         // Log de auditoria
@@ -2817,7 +2845,9 @@ export const appRouter = router({
             await db.insert(systemSettings).values({
               key: setting.key,
               value: setting.value,
-            });
+            
+          createdAt: Date.now(),
+        });
           }
         }
         
@@ -2974,7 +3004,7 @@ export const appRouter = router({
         const { pdfReportService } = await import('./services/reports/pdf-report-service');
         const pdfBuffer = pdfReportService.generateConsolidatedReport({
           ...input,
-          generatedAt: new Date(),
+          generatedAt: Date.now(),
         });
         
         // Log de auditoria
@@ -3449,6 +3479,8 @@ export const appRouter = router({
           tokenPrefix,
           scopes: JSON.stringify(input.permissions || ['read']),
           expiresAt,
+        
+          createdAt: Date.now(),
         });
         
         // Return the full token only once
@@ -3809,7 +3841,9 @@ export const appRouter = router({
               roleId: adminRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            
+          createdAt: Date.now(),
+        }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
           }
         }
         
@@ -3821,7 +3855,9 @@ export const appRouter = router({
               roleId: managerRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            
+          createdAt: Date.now(),
+        }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
           }
         }
         
@@ -3833,7 +3869,9 @@ export const appRouter = router({
               roleId: userRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            
+          createdAt: Date.now(),
+        }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
           }
         }
         
@@ -3845,7 +3883,9 @@ export const appRouter = router({
               roleId: guestRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            
+          createdAt: Date.now(),
+        }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
           }
         }
         

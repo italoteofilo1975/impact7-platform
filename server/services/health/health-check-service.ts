@@ -16,7 +16,7 @@ export interface ComponentHealth {
 
 export interface SystemHealth {
   status: HealthStatus;
-  timestamp: Date;
+  timestamp: number;
   uptime: number;
   version: string;
   components: ComponentHealth[];
@@ -206,7 +206,7 @@ export async function runHealthChecks(): Promise<SystemHealth> {
   
   return {
     status: overallStatus,
-    timestamp: new Date(),
+    timestamp: Date.now(),
     uptime: Math.floor((Date.now() - startTime) / 1000),
     version: "1.0.0",
     components: checks,

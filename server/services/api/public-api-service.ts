@@ -42,7 +42,9 @@ export async function createApiKey(
     rateLimit,
     expiresAt,
     isActive: true,
-  });
+  
+          createdAt: Date.now(),
+        });
   
   const insertId = result[0]?.insertId;
   if (!insertId) return null;
@@ -71,7 +73,7 @@ export async function validateApiKey(key: string): Promise<{
         eq(apiKeys.isActive, true),
         or(
           isNull(apiKeys.expiresAt),
-          gte(apiKeys.expiresAt, new Date())
+          gte(apiKeys.expiresAt, Date.now())
         )
       )
     );
@@ -84,7 +86,7 @@ export async function validateApiKey(key: string): Promise<{
   
   // Atualizar lastUsedAt
   await db.update(apiKeys)
-    .set({ lastUsedAt: new Date() })
+    .set({ lastUsedAt: Date.now() })
     .where(eq(apiKeys.id, apiKey.id));
   
   return {
@@ -103,9 +105,9 @@ export async function listUserApiKeys(userId: number): Promise<Array<{
   permissions: string[];
   rateLimit: number;
   lastUsedAt: Date | null;
-  expiresAt: Date | null;
+  expiresAt: number | null;
   isActive: boolean;
-  createdAt: Date;
+  createdAt: number;
 }>> {
   const db = await getDb();
   if (!db) return [];

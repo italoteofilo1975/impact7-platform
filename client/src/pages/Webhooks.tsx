@@ -409,7 +409,7 @@ function WebhookCard({
     url: string;
     events: string[];
     isActive: boolean;
-    createdAt: Date;
+    createdAt: number;
   };
   isExpanded: boolean;
   onToggleExpand: () => void;

@@ -19,7 +19,7 @@ interface ErrorContext {
 
 interface ErrorReport {
   id: string;
-  timestamp: Date;
+  timestamp: number;
   level: 'error' | 'warning' | 'critical';
   message: string;
   stack?: string;

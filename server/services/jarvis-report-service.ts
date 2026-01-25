@@ -48,7 +48,9 @@ export async function generateReport(options: ReportGenerationOptions): Promise<
     reportType,
     content: '',
     status: 'generating',
-  });
+  
+          createdAt: Date.now(),
+        });
 
   const reportId = Number(insertResult[0].insertId);
 
@@ -98,7 +100,7 @@ export async function generateReport(options: ReportGenerationOptions): Promise<
         summary,
         metrics: metrics ? JSON.stringify(metrics) : null,
         status: 'completed',
-        generatedAt: new Date(),
+        generatedAt: Date.now(),
       })
       .where(eq(jarvisReports.id, reportId));
 

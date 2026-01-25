@@ -48,7 +48,9 @@ export async function trackJarvisInteraction(data: {
       tokensUsed: data.tokensUsed,
       successful: data.successful ?? true,
       errorMessage: data.errorMessage,
-    });
+    
+          createdAt: Date.now(),
+        });
   } catch (error) {
     console.error("[Analytics] Failed to track Jarvis interaction:", error);
   }

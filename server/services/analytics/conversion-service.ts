@@ -36,7 +36,9 @@ export const conversionService = {
       campaign: data.campaign,
       referrer: data.referrer,
       metadata: data.metadata ? JSON.stringify(data.metadata) : null,
-    });
+    
+          createdAt: Date.now(),
+        });
     
     return result.insertId;
   },

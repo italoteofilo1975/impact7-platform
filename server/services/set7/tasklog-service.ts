@@ -83,8 +83,10 @@ export async function createTask(input: CreateTaskInput) {
     taxonomyTags: input.taxonomyTags ? JSON.stringify(input.taxonomyTags) : null,
     gateId: input.gateId,
     status: "pending",
-    startedAt: new Date(),
-  }).$returningId();
+    startedAt: Date.now(),
+  
+          createdAt: Date.now(),
+        }).$returningId();
 
   // Registrar no audit log
   await logAuditEvent({
@@ -110,7 +112,7 @@ export async function startTask(taskId: string) {
   await db.update(set7Tasklog)
     .set({
       status: "running",
-      startedAt: new Date(),
+      startedAt: Date.now(),
     })
     .where(eq(set7Tasklog.taskId, taskId));
 
@@ -138,7 +140,7 @@ export async function completeTask(taskId: string, input: UpdateTaskInput) {
       result: input.result ? JSON.stringify(input.result) : null,
       outputArtifacts: input.outputArtifacts ? JSON.stringify(input.outputArtifacts) : null,
       gateStatus: input.gateStatus,
-      completedAt: new Date(),
+      completedAt: Date.now(),
     })
     .where(eq(set7Tasklog.taskId, taskId));
 
@@ -169,7 +171,7 @@ export async function failTask(taskId: string, errorMessage: string) {
     .set({
       status: "failed",
       errorMessage,
-      completedAt: new Date(),
+      completedAt: Date.now(),
     })
     .where(eq(set7Tasklog.taskId, taskId));
 
@@ -199,7 +201,7 @@ export async function cancelTask(taskId: string, reason?: string) {
     .set({
       status: "cancelled",
       errorMessage: reason,
-      completedAt: new Date(),
+      completedAt: Date.now(),
     })
     .where(eq(set7Tasklog.taskId, taskId));
 
@@ -502,7 +504,9 @@ export async function logAuditEvent(input: AuditEventInput) {
     userId: input.userId,
     userName: input.userName,
     severity: input.severity || "info",
-  });
+  
+          createdAt: Date.now(),
+        });
 
   return { auditId };
 }

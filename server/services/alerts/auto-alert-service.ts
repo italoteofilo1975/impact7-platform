@@ -34,7 +34,7 @@ export const autoAlertService = {
   /**
    * Verifica cases pendentes há mais de X horas
    */
-  async checkPendingCases(): Promise<{ count: number; cases: { id: number; projectName: string | null; createdAt: Date | null }[] }> {
+  async checkPendingCases(): Promise<{ count: number; cases: { id: number; projectName: string | null; createdAt: number | null }[] }> {
     const db = await getDb();
     if (!db) return { count: 0, cases: [] };
 

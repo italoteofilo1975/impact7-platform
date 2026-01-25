@@ -288,7 +288,9 @@ export async function createGate(input: CreateGateInput) {
     requiredItems: JSON.stringify(checklistItems), // Todos são obrigatórios por padrão
     status: "pending",
     humanApprovalRequired: input.humanApprovalRequired || input.mode === "regulated",
-  }).$returningId();
+  
+          createdAt: Date.now(),
+        }).$returningId();
 
   return { gateId, id: gate.id, checklistItems };
 }
@@ -455,7 +457,7 @@ export async function evaluateGate(gateId: string, evaluation: {
     .set({
       status: newStatus,
       approvedBy: evaluation.passed ? evaluation.evaluatedBy : undefined,
-      approvedAt: evaluation.passed ? new Date() : undefined,
+      approvedAt: evaluation.passed ? Date.now() : undefined,
       mitigationPlan: evaluation.mitigationPlan,
       mitigationDeadline: evaluation.mitigationDeadline,
       mitigationApprovedBy: evaluation.mitigationPlan ? evaluation.evaluatedBy : undefined,

@@ -25,8 +25,8 @@ interface Incident {
   id: number;
   title: string;
   status: "investigating" | "identified" | "monitoring" | "resolved";
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: number;
+  updatedAt: number;
   description: string;
 }
 

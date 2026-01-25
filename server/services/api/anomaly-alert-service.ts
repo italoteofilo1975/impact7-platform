@@ -134,7 +134,7 @@ class AnomalyAlertService {
     const anomaly: Anomaly = {
       ...data,
       id,
-      detectedAt: new Date(),
+      detectedAt: Date.now(),
       acknowledged: false,
     };
     

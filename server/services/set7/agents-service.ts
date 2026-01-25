@@ -97,7 +97,9 @@ export async function createAgent(input: CreateAgentInput) {
     canAccessNetwork: input.canAccessNetwork || false,
     canAccessDatabase: input.canAccessDatabase || false,
     status: "active",
-  }).$returningId();
+  
+          createdAt: Date.now(),
+        }).$returningId();
 
   await logAuditEvent({
     eventType: "agent_started",
@@ -205,7 +207,7 @@ export async function triggerKillSwitch(agentId: string, reason: string) {
       status: "killed",
       killSwitchTriggered: true,
       killSwitchReason: reason,
-      killSwitchAt: new Date(),
+      killSwitchAt: Date.now(),
     })
     .where(eq(set7Agents.agentId, agentId));
 
@@ -328,7 +330,7 @@ export async function recordAgentExecution(agentId: string, tokensUsed: number, 
       totalTokensUsed: newTotalTokens,
       avgExecutionTimeMs: newAvgTime,
       successRate: newSuccessRate,
-      lastActiveAt: new Date(),
+      lastActiveAt: Date.now(),
     })
     .where(eq(set7Agents.agentId, agentId));
 }

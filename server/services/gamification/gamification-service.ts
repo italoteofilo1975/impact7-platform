@@ -193,7 +193,9 @@ export async function getUserPoints(userId: number): Promise<typeof userPoints.$
   const existing = await db.select().from(userPoints).where(eq(userPoints.userId, userId));
   
   if (existing.length === 0) {
-    await db.insert(userPoints).values({ userId, points: 0, level: 1 });
+    await db.insert(userPoints).values({ userId, points: 0, level: 1 ,
+          createdAt: Date.now(),
+        });
     const created = await db.select().from(userPoints).where(eq(userPoints.userId, userId));
     return created[0] || null;
   }
@@ -228,7 +230,7 @@ export async function addPoints(
       points: newPoints, 
       level: newLevel,
       totalInteractions: sql`${userPoints.totalInteractions} + 1`,
-      lastInteractionAt: new Date(),
+      lastInteractionAt: Date.now(),
     })
     .where(eq(userPoints.userId, userId));
   
@@ -238,7 +240,9 @@ export async function addPoints(
     points,
     reason,
     metadata: metadata ? JSON.stringify(metadata) : null,
-  });
+  
+          createdAt: Date.now(),
+        });
   
   // Verificar e conceder badges
   const newBadges = await checkAndAwardBadges(userId, newPoints, newLevel);
@@ -332,7 +336,9 @@ export async function checkAndAwardBadges(
       await db.insert(userBadges).values({
         userId,
         badgeId: badge.id,
-      });
+      
+          createdAt: Date.now(),
+        });
       
       // Dar pontos de recompensa
       await db.insert(pointTransactions).values({

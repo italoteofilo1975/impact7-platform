@@ -13,7 +13,7 @@ export interface DigestNotification {
   type: string;
   title: string;
   message: string;
-  createdAt: Date;
+  createdAt: number;
 }
 
 export interface UserDigest {

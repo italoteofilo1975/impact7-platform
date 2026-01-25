@@ -31,7 +31,9 @@ export const ticketService = {
       category: data.category || "general",
       priority: data.priority || "medium",
       status: "open",
-    });
+    
+          createdAt: Date.now(),
+        });
     
     return { ticketNumber, id: result.insertId };
   },
@@ -57,7 +59,9 @@ export const ticketService = {
       senderEmail: data.senderEmail,
       message: data.message,
       isStaff: data.isStaff || false,
-    });
+    
+          createdAt: Date.now(),
+        });
     
     // Update ticket's updatedAt and first response time if staff
     if (data.isStaff) {
@@ -70,7 +74,7 @@ export const ticketService = {
       if (ticket.length > 0 && !ticket[0].firstResponseAt) {
         await db
           .update(supportTickets)
-          .set({ firstResponseAt: new Date() })
+          .set({ firstResponseAt: Date.now() })
           .where(eq(supportTickets.id, data.ticketId));
       }
     }

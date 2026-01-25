@@ -99,7 +99,9 @@ export async function createRoiBaseline(input: CreateRoiInput) {
     roiRatio: "N/A",
     assumptions: input.assumptions ? JSON.stringify(input.assumptions) : null,
     documentHash,
-  }).$returningId();
+  
+          createdAt: Date.now(),
+        }).$returningId();
 
   await logAuditEvent({
     eventType: "roi_calculated",
@@ -160,7 +162,7 @@ export async function updateRoiWithActuals(trackingId: string, input: UpdateRoiI
       roiRatio,
       deviations: JSON.stringify(deviations),
       deviationAnalysis: input.deviationAnalysis,
-      calculatedAt: new Date(),
+      calculatedAt: Date.now(),
     })
     .where(eq(set7RoiTracking.trackingId, trackingId));
 
@@ -212,7 +214,9 @@ export async function createPartialRoi(baselineTrackingId: string) {
     roiPercentage,
     roiRatio,
     assumptions: baseline.assumptions,
-    documentHash: generateDocumentHash({ type: "partial", baselineId: baselineTrackingId, metrics }),
+    documentHash: generateDocumentHash({ type: "partial", baselineId: baselineTrackingId, metrics ,
+          createdAt: Date.now(),
+        }),
   }).$returningId();
 
   return { trackingId, id: roi.id, roiPercentage, roiRatio, metrics };
@@ -288,7 +292,9 @@ export async function createFinalRoi(baselineTrackingId: string, actualValueUsd:
     assumptions: baseline.assumptions,
     deviations: JSON.stringify(deviations),
     documentHash: generateDocumentHash(documentData),
-  }).$returningId();
+  
+          createdAt: Date.now(),
+        }).$returningId();
 
   await logAuditEvent({
     eventType: "roi_calculated",

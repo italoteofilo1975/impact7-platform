@@ -21,7 +21,7 @@ import {
 
 interface BackupResult {
   success: boolean;
-  timestamp: Date;
+  timestamp: number;
   tables: string[];
   fileKey?: string;
   url?: string;

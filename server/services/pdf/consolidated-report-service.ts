@@ -447,7 +447,7 @@ export function prepareConsolidatedReport(
 ): ConsolidatedReportData {
   return {
     title: customTitle || 'Relatório de Cases IMPACT7',
-    generatedAt: new Date(),
+    generatedAt: Date.now(),
     filters,
     cases,
     summary: calculateSummary(cases),

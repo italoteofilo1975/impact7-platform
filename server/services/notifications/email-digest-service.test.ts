@@ -15,7 +15,7 @@ describe('EmailDigestService', () => {
             type: 'case_approved',
             title: 'Case Aprovado',
             message: 'Seu case foi aprovado!',
-            createdAt: new Date(),
+            createdAt: Date.now(),
           },
         ],
       };
@@ -41,14 +41,14 @@ describe('EmailDigestService', () => {
             type: 'certificate_issued',
             title: 'Certificado Emitido',
             message: 'Seu certificado está pronto!',
-            createdAt: new Date(),
+            createdAt: Date.now(),
           },
           {
             id: 2,
             type: 'token_earned',
             title: 'Tokens Ganhos',
             message: 'Você ganhou 50 tokens!',
-            createdAt: new Date(),
+            createdAt: Date.now(),
           },
         ],
       };
@@ -90,7 +90,7 @@ describe('EmailDigestService', () => {
             type: 'info',
             title: 'Informação',
             message: 'Uma mensagem de teste',
-            createdAt: new Date(),
+            createdAt: Date.now(),
           },
         ],
       };
@@ -115,14 +115,14 @@ describe('EmailDigestService', () => {
             type: 'success',
             title: 'Sucesso 1',
             message: 'Mensagem 1',
-            createdAt: new Date(),
+            createdAt: Date.now(),
           },
           {
             id: 2,
             type: 'warning',
             title: 'Aviso 2',
             message: 'Mensagem 2',
-            createdAt: new Date(),
+            createdAt: Date.now(),
           },
         ],
       };

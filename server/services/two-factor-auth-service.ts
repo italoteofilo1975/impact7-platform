@@ -77,7 +77,7 @@ export async function generateSecret(userId: number): Promise<{
         isEnabled: false,
         failedAttempts: 0,
         lockedUntil: null,
-        updatedAt: new Date(),
+        updatedAt: Date.now(),
       })
       .where(eq(twoFactorAuth.userId, userId));
   } else {
@@ -88,7 +88,9 @@ export async function generateSecret(userId: number): Promise<{
       backupCodes: JSON.stringify(hashedBackupCodes),
       isEnabled: false,
       isVerified: false,
-    });
+    
+          createdAt: Date.now(),
+        });
   }
 
   return {
@@ -152,8 +154,8 @@ export async function verifyAndEnable(userId: number, code: string): Promise<{
       isVerified: true,
       failedAttempts: 0,
       lockedUntil: null,
-      lastUsedAt: new Date(),
-      updatedAt: new Date(),
+      lastUsedAt: Date.now(),
+      updatedAt: Date.now(),
     })
     .where(eq(twoFactorAuth.userId, userId));
 
@@ -200,7 +202,7 @@ export async function verifyCode(userId: number, code: string): Promise<{
         .set({
           backupCodes: JSON.stringify(backupCodes),
           backupCodesUsed: tfa.backupCodesUsed + 1,
-          updatedAt: new Date(),
+          updatedAt: Date.now(),
         })
         .where(eq(twoFactorAuth.userId, userId));
       
@@ -234,8 +236,8 @@ export async function verifyCode(userId: number, code: string): Promise<{
     .set({
       failedAttempts: 0,
       lockedUntil: null,
-      lastUsedAt: new Date(),
-      updatedAt: new Date(),
+      lastUsedAt: Date.now(),
+      updatedAt: Date.now(),
     })
     .where(eq(twoFactorAuth.userId, userId));
 
@@ -266,7 +268,7 @@ export async function disable2FA(userId: number, code: string): Promise<{
       secret: otpGenerateSecret(), // Generate new secret to invalidate old one
       backupCodes: null,
       backupCodesUsed: 0,
-      updatedAt: new Date(),
+      updatedAt: Date.now(),
     })
     .where(eq(twoFactorAuth.userId, userId));
 
@@ -341,7 +343,9 @@ export async function createVerificationSession(userId: number, ipAddress?: stri
     expiresAt,
     ipAddress,
     userAgent,
-  });
+  
+          createdAt: Date.now(),
+        });
 
   return sessionToken;
 }
@@ -360,7 +364,7 @@ export async function verifySession(sessionToken: string): Promise<{
     .from(twoFactorSessions)
     .where(and(
       eq(twoFactorSessions.sessionToken, sessionToken),
-      gt(twoFactorSessions.expiresAt, new Date()),
+      gt(twoFactorSessions.expiresAt, Date.now()),
     ))
     .limit(1);
 
@@ -381,7 +385,7 @@ export async function markSessionVerified(sessionToken: string): Promise<void> {
   await db.update(twoFactorSessions)
     .set({
       isVerified: true,
-      verifiedAt: new Date(),
+      verifiedAt: Date.now(),
     })
     .where(eq(twoFactorSessions.sessionToken, sessionToken));
 }
@@ -411,7 +415,7 @@ export async function regenerateBackupCodes(userId: number, code: string): Promi
     .set({
       backupCodes: JSON.stringify(hashedBackupCodes),
       backupCodesUsed: 0,
-      updatedAt: new Date(),
+      updatedAt: Date.now(),
     })
     .where(eq(twoFactorAuth.userId, userId));
 

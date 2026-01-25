@@ -99,7 +99,7 @@ describe("Fluxos Críticos de Integração", () => {
       const saveResult = {
         success: true,
         calculationId: "calc_123",
-        savedAt: new Date(),
+        savedAt: Date.now(),
       };
       
       expect(saveResult.success).toBe(true);
@@ -325,7 +325,7 @@ describe("Fluxos Críticos de Integração", () => {
           name: "Primeira Conversa",
           rarity: "common",
         },
-        unlockedAt: new Date(),
+        unlockedAt: Date.now(),
       };
       
       expect(badgeResult.success).toBe(true);

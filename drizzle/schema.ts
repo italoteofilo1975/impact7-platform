@@ -5,7 +5,7 @@ import { sql } from "drizzle-orm";
  * Core user table backing auth flow.
  */
 export const users = mysqlTable("users", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   name: text("name"),
   email: varchar("email", { length: 320 }).unique(), // Unique for local auth
   passwordHash: varchar("passwordHash", { length: 255 }),
@@ -27,7 +27,7 @@ export type InsertUser = typeof users.$inferInsert;
  * Leads table for contact form submissions and whitepaper downloads.
  */
 export const leads = mysqlTable("leads", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 320 }).notNull(),
   organization: varchar("organization", { length: 255 }),
@@ -48,7 +48,7 @@ export type InsertLead = typeof leads.$inferInsert;
  * Newsletter subscriptions.
  */
 export const newsletterSubscribers = mysqlTable("newsletterSubscribers", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   email: varchar("email", { length: 320 }).notNull().unique(),
   name: varchar("name", { length: 255 }),
   segment: text("segment").default("general").notNull(),
@@ -66,7 +66,7 @@ export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInse
  * User calculations history for impact calculator.
  */
 export const calculations = mysqlTable("calculations", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   sessionId: varchar("sessionId", { length: 64 }),
   userId: int("userId"),
   projectName: varchar("projectName", { length: 255 }),
@@ -88,7 +88,7 @@ export type InsertCalculation = typeof calculations.$inferInsert;
  * Ebook downloads tracking.
  */
 export const ebookDownloads = mysqlTable("ebookDownloads", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
   organization: varchar("organization", { length: 255 }),
@@ -106,7 +106,7 @@ export type InsertEbookDownload = typeof ebookDownloads.$inferInsert;
  * Whitepaper downloads tracking.
  */
 export const whitepaperDownloads = mysqlTable("whitepaperDownloads", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
   organization: varchar("organization", { length: 255 }),
@@ -120,7 +120,7 @@ export type InsertWhitepaperDownload = typeof whitepaperDownloads.$inferInsert;
  * Contact form submissions.
  */
 export const contacts = mysqlTable("contacts", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
   phone: varchar("phone", { length: 20 }),
@@ -137,7 +137,7 @@ export type InsertContact = typeof contacts.$inferInsert;
  * Jarvis chat sessions.
  */
 export const jarvisSessions = mysqlTable("jarvisSessions", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   sessionId: varchar("sessionId", { length: 64 }).notNull().unique(),
   userId: int("userId"),
   context: text("context"),
@@ -152,7 +152,7 @@ export type InsertJarvisSession = typeof jarvisSessions.$inferInsert;
  * Jarvis chat messages.
  */
 export const jarvisMessages = mysqlTable("jarvisMessages", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   sessionId: varchar("sessionId", { length: 64 }).notNull(),
   role: text("role").notNull(),
   content: text("content").notNull(),
@@ -167,7 +167,7 @@ export type InsertJarvisMessage = typeof jarvisMessages.$inferInsert;
  * Knowledge base documents for RAG.
  */
 export const knowledgeDocuments = mysqlTable("knowledgeDocuments", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   title: varchar("title", { length: 255 }).notNull(),
   content: text("content").notNull(),
   category: varchar("category", { length: 100 }).notNull(),
@@ -185,7 +185,7 @@ export type InsertKnowledgeDocument = typeof knowledgeDocuments.$inferInsert;
  * Site analytics and metrics.
  */
 export const siteMetrics = mysqlTable("siteMetrics", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   metricType: varchar("metricType", { length: 50 }).notNull(),
   metricValue: int("metricValue").notNull(),
   metricDate: int("metricDate").notNull(),
@@ -200,7 +200,7 @@ export type InsertSiteMetric = typeof siteMetrics.$inferInsert;
  * Jarvis interaction analytics.
  */
 export const jarvisAnalytics = mysqlTable("jarvisAnalytics", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   sessionId: varchar("sessionId", { length: 64 }).notNull(),
   userId: int("userId"),
   interactionType: text("interactionType").notNull(),
@@ -221,7 +221,7 @@ export type InsertJarvisAnalytic = typeof jarvisAnalytics.$inferInsert;
  * Lead conversion tracking.
  */
 export const leadConversions = mysqlTable("leadConversions", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   leadId: int("leadId").notNull(),
   conversionType: text("conversionType").notNull(),
   sourcePage: varchar("sourcePage", { length: 255 }),
@@ -243,7 +243,7 @@ export type InsertLeadConversion = typeof leadConversions.$inferInsert;
  * Page view analytics.
  */
 export const pageViews = mysqlTable("pageViews", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   sessionId: varchar("sessionId", { length: 64 }).notNull(),
   userId: int("userId"),
   pagePath: varchar("pagePath", { length: 255 }).notNull(),
@@ -267,7 +267,7 @@ export type InsertPageView = typeof pageViews.$inferInsert;
  * Daily aggregated metrics.
  */
 export const dailyMetrics = mysqlTable("dailyMetrics", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   metricDate: int("metricDate").notNull(),
   totalPageViews: int("totalPageViews").default(0).notNull(),
   uniqueVisitors: int("uniqueVisitors").default(0).notNull(),
@@ -290,7 +290,7 @@ export type InsertDailyMetric = typeof dailyMetrics.$inferInsert;
  * Case favorites - users can save cases for later.
  */
 export const caseFavorites = mysqlTable("caseFavorites", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   caseId: int("caseId").notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
@@ -303,7 +303,7 @@ export type InsertCaseFavorite = typeof caseFavorites.$inferInsert;
  * Case submissions - organizations can submit their own cases.
  */
 export const caseSubmissions = mysqlTable("caseSubmissions", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   organizationName: varchar("organizationName", { length: 255 }).notNull(),
   contactName: varchar("contactName", { length: 255 }).notNull(),
   contactEmail: varchar("contactEmail", { length: 320 }).notNull(),
@@ -336,7 +336,7 @@ export type InsertCaseSubmission = typeof caseSubmissions.$inferInsert;
  * Tags for cases - customizable labels for organization
  */
 export const caseTags = mysqlTable("caseTags", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 100 }).notNull(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),
   color: varchar("color", { length: 7 }).default("#f97316").notNull(), // hex color
@@ -353,7 +353,7 @@ export type InsertCaseTag = typeof caseTags.$inferInsert;
  * Junction table for case-tag relationships
  */
 export const caseTagRelations = mysqlTable("caseTagRelations", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   caseId: int("caseId").notNull(),
   tagId: int("tagId").notNull(),
   createdAt: int("createdAt").$type<number>().notNull(),
@@ -367,7 +367,7 @@ export type InsertCaseTagRelation = typeof caseTagRelations.$inferInsert;
  * User points for gamification
  */
 export const userPoints = mysqlTable("userPoints", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   points: int("points").default(0).notNull(),
   level: int("level").default(1).notNull(),
@@ -385,7 +385,7 @@ export type InsertUserPoints = typeof userPoints.$inferInsert;
  * Badge definitions
  */
 export const badges = mysqlTable("badges", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   slug: varchar("slug", { length: 50 }).notNull().unique(),
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
@@ -405,7 +405,7 @@ export type InsertBadge = typeof badges.$inferInsert;
  * User earned badges
  */
 export const userBadges = mysqlTable("userBadges", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   badgeId: int("badgeId").notNull(),
   earnedAt: int("earnedAt").notNull(),
@@ -418,7 +418,7 @@ export type InsertUserBadge = typeof userBadges.$inferInsert;
  * Point transactions log
  */
 export const pointTransactions = mysqlTable("pointTransactions", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   points: int("points").notNull(), // positive or negative
   reason: varchar("reason", { length: 100 }).notNull(),
@@ -433,7 +433,7 @@ export type InsertPointTransaction = typeof pointTransactions.$inferInsert;
  * API keys for public API access
  */
 export const apiKeys = mysqlTable("apiKeys", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   name: varchar("name", { length: 100 }).notNull(),
   keyHash: varchar("keyHash", { length: 64 }).notNull(), // SHA-256 hash
@@ -454,7 +454,7 @@ export type InsertApiKey = typeof apiKeys.$inferInsert;
  * Webhooks for external integrations
  */
 export const webhooks = mysqlTable("webhooks", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   name: varchar("name", { length: 100 }).notNull(),
   url: varchar("url", { length: 500 }).notNull(),
@@ -472,7 +472,7 @@ export type InsertWebhook = typeof webhooks.$inferInsert;
  * Webhook delivery logs
  */
 export const webhookDeliveries = mysqlTable("webhookDeliveries", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   webhookId: int("webhookId").notNull(),
   event: varchar("event", { length: 50 }).notNull(),
   payload: text("payload").notNull(), // JSON payload sent
@@ -491,7 +491,7 @@ export type InsertWebhookDelivery = typeof webhookDeliveries.$inferInsert;
  * OAuth2 clients for API authentication
  */
 export const oauthClients = mysqlTable("oauthClients", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(), // Owner of the OAuth app
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
@@ -511,7 +511,7 @@ export type InsertOAuthClient = typeof oauthClients.$inferInsert;
  * OAuth2 authorization codes
  */
 export const oauthAuthCodes = mysqlTable("oauthAuthCodes", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   clientId: varchar("clientId", { length: 64 }).notNull(),
   userId: int("userId").notNull(),
   code: varchar("code", { length: 64 }).notNull().unique(),
@@ -530,7 +530,7 @@ export type InsertOAuthAuthCode = typeof oauthAuthCodes.$inferInsert;
  * OAuth2 access tokens
  */
 export const oauthTokens = mysqlTable("oauthTokens", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   clientId: varchar("clientId", { length: 64 }).notNull(),
   userId: int("userId").notNull(),
   accessToken: varchar("accessToken", { length: 64 }).notNull().unique(),
@@ -549,7 +549,7 @@ export type InsertOAuthToken = typeof oauthTokens.$inferInsert;
  * Jarvis long-term memory for persistent context per user.
  */
 export const jarvisMemory = mysqlTable("jarvisMemory", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   memoryType: text("memoryType").notNull(),
   key: varchar("key", { length: 255 }).notNull(),
@@ -570,7 +570,7 @@ export type InsertJarvisMemory = typeof jarvisMemory.$inferInsert;
  * Jarvis generated reports for users.
  */
 export const jarvisReports = mysqlTable("jarvisReports", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   reportType: text("reportType").notNull(),
@@ -591,7 +591,7 @@ export type InsertJarvisReport = typeof jarvisReports.$inferInsert;
  * Impact certificates with blockchain-style verification.
  */
 export const impactCertificates = mysqlTable("impactCertificates", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   certificateId: varchar("certificateId", { length: 64 }).notNull().unique(), // Unique public ID
   userId: int("userId"),
   organizationName: varchar("organizationName", { length: 255 }).notNull(),
@@ -634,7 +634,7 @@ export type InsertImpactCertificate = typeof impactCertificates.$inferInsert;
  * Social Impact Tokens (SIT) - Tokenized impact credits.
  */
 export const impactTokens = mysqlTable("impactTokens", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   tokenId: varchar("tokenId", { length: 64 }).notNull().unique(),
   userId: int("userId"),
   organizationId: int("organizationId"),
@@ -671,7 +671,7 @@ export type InsertImpactToken = typeof impactTokens.$inferInsert;
  * Token transactions for audit trail.
  */
 export const tokenTransactions = mysqlTable("tokenTransactions", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   tokenId: int("tokenId").notNull(),
   transactionType: text("transactionType").notNull(),
   fromUserId: int("fromUserId"),
@@ -690,7 +690,7 @@ export type InsertTokenTransaction = typeof tokenTransactions.$inferInsert;
  * User language preferences.
  */
 export const userPreferences = mysqlTable("userPreferences", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull().unique(),
   language: varchar("language", { length: 10 }).default("pt").notNull(),
   theme: text("theme").default("system").notNull(),
@@ -710,7 +710,7 @@ export type InsertUserPreference = typeof userPreferences.$inferInsert;
  * User notifications table for persistent notification storage.
  */
 export const notifications = mysqlTable("notifications", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   type: text("type").default("info").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
@@ -730,7 +730,7 @@ export type InsertNotification = typeof notifications.$inferInsert;
  * User notification preferences - allows users to customize which notifications they receive
  */
 export const notificationPreferences = mysqlTable("notificationPreferences", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   // Notification type preferences (true = enabled, false = disabled)
   infoEnabled: int("infoEnabled").default(1).notNull(),
@@ -761,7 +761,7 @@ export type InsertNotificationPreference = typeof notificationPreferences.$infer
  * Notification templates - customizable templates for automated notifications
  */
 export const notificationTemplates = mysqlTable("notificationTemplates", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   // Template identification
   code: varchar("code", { length: 100 }).notNull().unique(), // e.g., "case_approved", "certificate_issued"
   name: varchar("name", { length: 255 }).notNull(),
@@ -790,7 +790,7 @@ export type InsertNotificationTemplate = typeof notificationTemplates.$inferInse
  * System settings - persistent configuration for the platform
  */
 export const systemSettings = mysqlTable("systemSettings", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   // Setting identification
   key: varchar("key", { length: 100 }).notNull().unique(),
   value: text("value"),
@@ -812,7 +812,7 @@ export type InsertSystemSetting = typeof systemSettings.$inferInsert;
  * Audit logs - track administrative actions for compliance and traceability
  */
 export const auditLogs = mysqlTable("auditLogs", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   // Who performed the action
   userId: int("userId"),
   userName: varchar("userName", { length: 255 }),
@@ -842,7 +842,7 @@ export type InsertAuditLog = typeof auditLogs.$inferInsert;
  * Referrals - track user referrals and rewards
  */
 export const referrals = mysqlTable("referrals", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   // Referrer (who invited)
   referrerId: int("referrerId").notNull(),
   referrerCode: varchar("referrerCode", { length: 20 }).notNull(),
@@ -872,7 +872,7 @@ export type InsertReferral = typeof referrals.$inferInsert;
  * Support tickets - customer support system
  */
 export const supportTickets = mysqlTable("supportTickets", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   // Ticket identification
   ticketNumber: varchar("ticketNumber", { length: 20 }).notNull().unique(),
   // User info
@@ -907,7 +907,7 @@ export type InsertSupportTicket = typeof supportTickets.$inferInsert;
  * Support ticket messages - conversation thread
  */
 export const ticketMessages = mysqlTable("ticketMessages", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   ticketId: int("ticketId").notNull(),
   // Sender info
   senderId: int("senderId"),
@@ -928,7 +928,7 @@ export type InsertTicketMessage = typeof ticketMessages.$inferInsert;
  * Feature flags - A/B testing and feature rollout
  */
 export const featureFlags = mysqlTable("featureFlags", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   // Flag identification
   key: varchar("key", { length: 100 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
@@ -956,7 +956,7 @@ export type InsertFeatureFlag = typeof featureFlags.$inferInsert;
  * Conversion events - track user actions for analytics
  */
 export const conversionEvents = mysqlTable("conversionEvents", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   // User info
   userId: int("userId"),
   sessionId: varchar("sessionId", { length: 100 }),
@@ -981,7 +981,7 @@ export type InsertConversionEvent = typeof conversionEvents.$inferInsert;
  * Email campaigns - marketing automation
  */
 export const emailCampaigns = mysqlTable("emailCampaigns", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   // Campaign identification
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
@@ -1017,7 +1017,7 @@ export type InsertEmailCampaign = typeof emailCampaigns.$inferInsert;
  * Two-Factor Authentication (2FA) configuration per user.
  */
 export const twoFactorAuth = mysqlTable("twoFactorAuth", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull().unique(),
   // TOTP secret (encrypted)
   secret: varchar("secret", { length: 255 }).notNull(),
@@ -1046,7 +1046,7 @@ export type InsertTwoFactorAuth = typeof twoFactorAuth.$inferInsert;
  * 2FA verification sessions - temporary tokens for login flow.
  */
 export const twoFactorSessions = mysqlTable("twoFactorSessions", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   sessionToken: varchar("sessionToken", { length: 64 }).notNull().unique(),
   // Status
@@ -1068,7 +1068,7 @@ export type InsertTwoFactorSession = typeof twoFactorSessions.$inferInsert;
  * User access tokens - API tokens for programmatic access.
  */
 export const userAccessTokens = mysqlTable("userAccessTokens", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   // Token identification
   name: varchar("name", { length: 100 }).notNull(),
@@ -1100,7 +1100,7 @@ export type InsertUserAccessToken = typeof userAccessTokens.$inferInsert;
  * Token usage logs - audit trail for API token usage.
  */
 export const tokenUsageLogs = mysqlTable("tokenUsageLogs", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   tokenId: int("tokenId").notNull(),
   userId: int("userId").notNull(),
   // Request details
@@ -1123,7 +1123,7 @@ export type InsertTokenUsageLog = typeof tokenUsageLogs.$inferInsert;
  * Testimonials/Depoimentos - Depoimentos de clientes e parceiros
  */
 export const testimonials = mysqlTable("testimonials", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }).notNull(),
   role: varchar("role", { length: 255 }).notNull(),
   company: varchar("company", { length: 255 }).notNull(),
@@ -1148,7 +1148,7 @@ export type InsertTestimonial = typeof testimonials.$inferInsert;
  * Partners - Parceiros e organizações associadas
  */
 export const partners = mysqlTable("partners", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   logoUrl: varchar("logoUrl", { length: 500 }),
@@ -1173,7 +1173,7 @@ export type InsertPartner = typeof partners.$inferInsert;
  * Social Proof Metrics - Métricas de prova social para landing page
  */
 export const socialProofMetrics = mysqlTable("socialProofMetrics", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   key: varchar("key", { length: 50 }).notNull().unique(), // e.g., "organizations", "beneficiaries", "sroi_avg"
   value: varchar("value", { length: 50 }).notNull(), // e.g., "500+", "2M+", "12x"
   label: varchar("label", { length: 255 }).notNull(),
@@ -1192,7 +1192,7 @@ export type InsertSocialProofMetric = typeof socialProofMetrics.$inferInsert;
  * Platform Stats - Estatísticas reais da plataforma
  */
 export const platformStats = mysqlTable("platformStats", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   date: int("date").$type<number>().notNull(),
   totalUsers: int("totalUsers").default(0).notNull(),
   activeUsers: int("activeUsers").default(0).notNull(),
@@ -1219,7 +1219,7 @@ export type InsertPlatformStat = typeof platformStats.$inferInsert;
  * Registra cada task, agente, tokens consumidos e tempo para ROI auditável
  */
 export const set7Tasklog = mysqlTable("set7Tasklog", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   taskId: varchar("taskId", { length: 64 }).notNull().unique(), // UUID único da task
   
   // Identificação da task
@@ -1273,7 +1273,7 @@ export type InsertSet7Tasklog = typeof set7Tasklog.$inferInsert;
  * SET7 Agentes - Registro de agentes do sistema
  */
 export const set7Agents = mysqlTable("set7Agents", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   agentId: varchar("agentId", { length: 64 }).notNull().unique(),
   
   // Identificação
@@ -1325,7 +1325,7 @@ export type InsertSet7Agent = typeof set7Agents.$inferInsert;
  * SET7 Integration Identity - Hash/QR Code para integrações verificáveis
  */
 export const set7Integrations = mysqlTable("set7Integrations", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   integrationId: varchar("integrationId", { length: 64 }).notNull().unique(),
   
   // Identificação
@@ -1378,7 +1378,7 @@ export type InsertSet7Integration = typeof set7Integrations.$inferInsert;
  * SET7 Token Budgets - Orçamento de tokens por fase/projeto/fluxo
  */
 export const set7TokenBudgets = mysqlTable("set7TokenBudgets", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   budgetId: varchar("budgetId", { length: 64 }).notNull().unique(),
   
   // Escopo do budget
@@ -1421,7 +1421,7 @@ export type InsertSet7TokenBudget = typeof set7TokenBudgets.$inferInsert;
  * SET7 Gates - Condições de avanço entre fases
  */
 export const set7Gates = mysqlTable("set7Gates", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   gateId: varchar("gateId", { length: 64 }).notNull().unique(),
   
   // Identificação
@@ -1464,7 +1464,7 @@ export type InsertSet7Gate = typeof set7Gates.$inferInsert;
  * SET7 ROI Tracking - Rastreamento de ROI por fase
  */
 export const set7RoiTracking = mysqlTable("set7RoiTracking", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   trackingId: varchar("trackingId", { length: 64 }).notNull().unique(),
   
   // Tipo de ROI
@@ -1511,7 +1511,7 @@ export type InsertSet7RoiTracking = typeof set7RoiTracking.$inferInsert;
  * SET7 Runtime Config - Configuração do runtime S7L
  */
 export const set7RuntimeConfig = mysqlTable("set7RuntimeConfig", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   configId: varchar("configId", { length: 64 }).notNull().unique(),
   
   // Modo de execução
@@ -1555,7 +1555,7 @@ export type InsertSet7RuntimeConfig = typeof set7RuntimeConfig.$inferInsert;
  * SET7 Audit Log - Log de auditoria para compliance
  */
 export const set7AuditLog = mysqlTable("set7AuditLog", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   auditId: varchar("auditId", { length: 64 }).notNull().unique(),
   
   // Tipo de evento
@@ -1591,7 +1591,7 @@ export type InsertSet7AuditLog = typeof set7AuditLog.$inferInsert;
  * 15 dimensões de qualidade conforme SET7.01
  */
 export const set7Nfrs = mysqlTable("set7Nfrs", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   nfrId: varchar("nfrId", { length: 64 }).notNull().unique(),
   
   // Identificação
@@ -1637,7 +1637,7 @@ export type InsertSet7Nfr = typeof set7Nfrs.$inferInsert;
  * White Label Configuration table for multi-tenant branding.
  */
 export const whiteLabelConfig = mysqlTable("white_label_config", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   organizationId: varchar("organizationId", { length: 255 }).notNull().unique(),
   
   // Branding
@@ -1679,7 +1679,7 @@ export type InsertWhiteLabelConfig = typeof whiteLabelConfig.$inferInsert;
 
 // Roles table
 export const roles = mysqlTable("roles", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   code: varchar("code", { length: 50 }).notNull().unique(),
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
@@ -1694,7 +1694,7 @@ export type InsertRole = typeof roles.$inferInsert;
 
 // Permissions table
 export const permissions = mysqlTable("permissions", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   code: varchar("code", { length: 100 }).notNull().unique(),
   name: varchar("name", { length: 150 }).notNull(),
   description: text("description"),
@@ -1709,7 +1709,7 @@ export type InsertPermission = typeof permissions.$inferInsert;
 
 // RolePermissions junction table
 export const rolePermissions = mysqlTable("rolePermissions", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   roleId: int("roleId").notNull(),
   permissionId: int("permissionId").notNull(),
   assignedAt: int("assignedAt").notNull(),
@@ -1720,7 +1720,7 @@ export type InsertRolePermission = typeof rolePermissions.$inferInsert;
 
 // UserRoles junction table
 export const userRoles = mysqlTable("userRoles", {
-  id: int("id").primaryKey({ autoIncrement: true }),
+  id: int("id").primaryKey().autoincrement(),
   userId: int("userId").notNull(),
   roleId: int("roleId").notNull(),
   assignedAt: int("assignedAt").notNull(),

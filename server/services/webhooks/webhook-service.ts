@@ -53,7 +53,9 @@ export async function createWebhook(
     secret,
     events: JSON.stringify(events),
     isActive: true,
-  });
+  
+          createdAt: Date.now(),
+        });
   
   const insertId = result[0]?.insertId;
   if (!insertId) return null;
@@ -68,7 +70,7 @@ export async function listUserWebhooks(userId: number): Promise<Array<{
   url: string;
   events: WebhookEvent[];
   isActive: boolean;
-  createdAt: Date;
+  createdAt: number;
 }>> {
   const db = await getDb();
   if (!db) return [];
@@ -191,7 +193,9 @@ async function deliverWebhook(
     event,
     payload: payloadString,
     attempts: 1,
-  });
+  
+          createdAt: Date.now(),
+        });
   
   const deliveryId = deliveryResult[0]?.insertId;
   if (!deliveryId) return;
@@ -216,7 +220,7 @@ async function deliverWebhook(
       .set({
         responseStatus: response.status,
         responseBody: responseBody.substring(0, 1000),
-        deliveredAt: response.ok ? new Date() : null,
+        deliveredAt: response.ok ? Date.now() : null,
         nextRetryAt: response.ok ? null : calculateNextRetry(1),
       })
       .where(eq(webhookDeliveries.id, deliveryId));
@@ -234,11 +238,11 @@ async function deliverWebhook(
 }
 
 // Calcular próximo retry com backoff exponencial
-function calculateNextRetry(attempt: number): Date {
+function calculateNextRetry(attempt: number): number {
   // Backoff: 1min, 5min, 15min, 1h, 4h (max 5 tentativas)
   const delays = [60, 300, 900, 3600, 14400];
   const delaySeconds = delays[Math.min(attempt - 1, delays.length - 1)];
-  return new Date(Date.now() + delaySeconds * 1000);
+  return Date.now() + delaySeconds * 1000;
 }
 
 // Processar retries pendentes
@@ -246,7 +250,7 @@ export async function processWebhookRetries(): Promise<number> {
   const db = await getDb();
   if (!db) return 0;
   
-  const now = new Date();
+  const now = Date.now();
   
   // Buscar entregas pendentes de retry
   const pendingDeliveries = await db.select()
@@ -301,7 +305,7 @@ export async function processWebhookRetries(): Promise<number> {
           responseStatus: response.status,
           responseBody: responseBody.substring(0, 1000),
           attempts: delivery.attempts + 1,
-          deliveredAt: response.ok ? new Date() : null,
+          deliveredAt: response.ok ? Date.now() : null,
           nextRetryAt: response.ok ? null : calculateNextRetry(delivery.attempts + 1),
         })
         .where(eq(webhookDeliveries.id, delivery.id));
@@ -333,8 +337,8 @@ export async function getWebhookDeliveries(
   event: string;
   responseStatus: number | null;
   attempts: number;
-  deliveredAt: Date | null;
-  createdAt: Date;
+  deliveredAt: number | null;
+  createdAt: number;
 }>> {
   const db = await getDb();
   if (!db) return [];

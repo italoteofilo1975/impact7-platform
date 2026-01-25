@@ -46,7 +46,9 @@ class AuditService {
         metadata: entry.metadata ? JSON.stringify(entry.metadata) : null,
         ipAddress: entry.ipAddress,
         userAgent: entry.userAgent,
-      });
+      
+          createdAt: Date.now(),
+        });
     } catch (error) {
       console.error('[Audit] Failed to log action:', error);
     }

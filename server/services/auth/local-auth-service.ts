@@ -63,7 +63,9 @@ export const localAuthService = {
       passwordHash,
       loginMethod: 'local',
       role: data.role || 'user',
-    });
+    
+          createdAt: Date.now(),
+        });
 
     // Buscar o usuario recem criado
     const newUser = await db
@@ -117,7 +119,7 @@ export const localAuthService = {
     if (!db2) throw new Error('Database not available');
     await db2
       .update(users)
-      .set({ lastSignedIn: new Date() })
+      .set({ lastSignedIn: Date.now() })
       .where(eq(users.id, user.id));
 
     return {

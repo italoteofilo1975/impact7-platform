@@ -31,7 +31,7 @@ export type AuditSeverity = "info" | "warning" | "critical";
 
 export interface AuditLogEntry {
   id: string;
-  timestamp: Date;
+  timestamp: number;
   action: AuditAction;
   severity: AuditSeverity;
   userId?: string;
@@ -91,7 +91,7 @@ export function logAudit(params: {
 }): AuditLogEntry {
   const entry: AuditLogEntry = {
     id: `audit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    timestamp: new Date(),
+    timestamp: Date.now(),
     action: params.action,
     severity: getSeverity(params.action),
     userId: params.userId,

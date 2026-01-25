@@ -135,7 +135,9 @@ export async function issueCertificate(
     dataHash,
     blockNumber,
     verificationStatus: 'pending',
-  });
+  
+          createdAt: Date.now(),
+        });
 
   const certId = Number(insertResult[0].insertId);
 
@@ -210,7 +212,7 @@ export async function approveCertificate(
     .set({
       verificationStatus: 'verified',
       verifiedBy: verifierId,
-      verifiedAt: new Date(),
+      verifiedAt: Date.now(),
     })
     .where(eq(impactCertificates.certificateId, certificateId));
 
@@ -238,7 +240,7 @@ export async function revokeCertificate(
     .set({
       verificationStatus: 'revoked',
       verifiedBy: verifierId,
-      verifiedAt: new Date(),
+      verifiedAt: Date.now(),
     })
     .where(eq(impactCertificates.certificateId, certificateId));
 
@@ -320,7 +322,9 @@ export async function mintToken(
     name: data.name,
     description: data.description,
     status: 'active',
-  });
+  
+          createdAt: Date.now(),
+        });
 
   const newTokenId = Number(insertResult[0].insertId);
 
@@ -331,7 +335,9 @@ export async function mintToken(
     toUserId: userId,
     amount: data.amount ?? 1,
     transactionHash,
-  });
+  
+          createdAt: Date.now(),
+        });
 
   // Fetch and return the token
   const tokens = await db
@@ -411,7 +417,9 @@ export async function transferToken(
     amount: token.amount,
     transactionHash,
     previousTransactionHash,
-  });
+  
+          createdAt: Date.now(),
+        });
 
   // Fetch and return updated token
   const updatedTokens = await db

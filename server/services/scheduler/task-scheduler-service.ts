@@ -14,8 +14,8 @@ export interface ScheduledTask {
 export interface TaskExecutionLog {
   taskId: string;
   taskName: string;
-  startedAt: Date;
-  completedAt: Date | null;
+  startedAt: number;
+  completedAt: number | null;
   status: 'running' | 'success' | 'failed';
   result?: string;
   error?: string;
@@ -220,7 +220,7 @@ class TaskSchedulerService {
     const log: TaskExecutionLog = {
       taskId,
       taskName: task.name,
-      startedAt: new Date(),
+      startedAt: Date.now(),
       completedAt: null,
       status: 'running',
     };

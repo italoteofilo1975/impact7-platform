@@ -16,9 +16,9 @@ interface Incident {
   title: string;
   status: "investigating" | "identified" | "monitoring" | "resolved";
   severity: "minor" | "major" | "critical";
-  createdAt: Date;
-  updatedAt: Date;
-  updates: { message: string; timestamp: Date }[];
+  createdAt: number;
+  updatedAt: number;
+  updates: { message: string; timestamp: number }[];
 }
 
 export default function ApiStatus() {

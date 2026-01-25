@@ -50,6 +50,13 @@
       "when": 1769366056099,
       "tag": "0006_lovely_bucky",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1769369288106,
+      "tag": "0007_naive_wildside",
+      "breakpoints": true
     }
   ]
 }

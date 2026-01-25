@@ -20,9 +20,9 @@ function createAuthContext(): { ctx: TrpcContext; clearedCookies: CookieCall[] }
     name: "Sample User",
     loginMethod: "manus",
     role: "user",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    lastSignedIn: new Date(),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    lastSignedIn: Date.now(),
   };
 
   const ctx: TrpcContext = {

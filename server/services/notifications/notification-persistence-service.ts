@@ -37,7 +37,9 @@ export const notificationPersistenceService = {
       message: input.message,
       link: input.link,
       metadata: input.metadata,
-    });
+    
+          createdAt: Date.now(),
+        });
     
     const [notification] = await db
       .select()
@@ -111,7 +113,7 @@ export const notificationPersistenceService = {
     if (!db) return false;
     const result = await db
       .update(notifications)
-      .set({ isRead: true, readAt: new Date() })
+      .set({ isRead: true, readAt: Date.now() })
       .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)));
     
     return result[0].affectedRows > 0;
@@ -125,7 +127,7 @@ export const notificationPersistenceService = {
     if (!db) return 0;
     const result = await db
       .update(notifications)
-      .set({ isRead: true, readAt: new Date() })
+      .set({ isRead: true, readAt: Date.now() })
       .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
     
     return result[0].affectedRows;

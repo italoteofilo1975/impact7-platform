@@ -71,7 +71,7 @@ export const whiteLabelRouter = router({
           .update(whiteLabelConfig)
           .set({
             ...data,
-            updatedAt: new Date(),
+            updatedAt: Date.now(),
           })
           .where(eq(whiteLabelConfig.organizationId, organizationId));
       } else {
@@ -79,8 +79,8 @@ export const whiteLabelRouter = router({
         await db.insert(whiteLabelConfig).values({
           organizationId,
           ...data,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
         });
       }
 

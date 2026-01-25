@@ -15,7 +15,7 @@ interface Activity {
   type: "calculation" | "chat" | "case_view" | "favorite" | "download";
   title: string;
   description: string;
-  timestamp: Date;
+  timestamp: number;
   metadata?: Record<string, unknown>;
 }
 

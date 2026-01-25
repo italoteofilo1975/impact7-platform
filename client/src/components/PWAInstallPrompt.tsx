@@ -29,7 +29,7 @@ export default function PWAInstallPrompt() {
     const dismissedAt = localStorage.getItem("pwa-prompt-dismissed");
     if (dismissedAt) {
       const dismissedTime = new Date(dismissedAt).getTime();
-      const now = new Date().getTime();
+      const now = Date.now();
       const daysSinceDismissed = (now - dismissedTime) / (1000 * 60 * 60 * 24);
       
       // Show again after 7 days

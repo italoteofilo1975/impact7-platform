@@ -120,7 +120,9 @@ export async function createIntegration(input: CreateIntegrationInput) {
     authentication: input.authentication ? JSON.stringify(input.authentication) : null,
     verificationStatus: "pending",
     status: "active",
-  }).$returningId();
+  
+          createdAt: Date.now(),
+        }).$returningId();
 
   // Registrar no audit log
   await logAuditEvent({
@@ -191,7 +193,7 @@ export async function verifyIntegration(integrationId: string): Promise<{
   await db.update(set7Integrations)
     .set({
       verificationStatus: isValid ? "verified" : "failed",
-      lastVerifiedAt: new Date(),
+      lastVerifiedAt: Date.now(),
       verificationCount: integration.verificationCount + 1,
     })
     .where(eq(set7Integrations.integrationId, integrationId));
@@ -210,7 +212,7 @@ export async function verifyIntegration(integrationId: string): Promise<{
       identityHash: integration.identityHash,
       contractVersion: integration.contractVersion,
       verificationStatus: isValid ? "verified" : "failed",
-      lastVerifiedAt: new Date(),
+      lastVerifiedAt: Date.now(),
       verificationCount: integration.verificationCount + 1,
     },
   };

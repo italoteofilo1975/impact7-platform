@@ -182,7 +182,9 @@ export async function createRuntimeConfig(input: CreateRuntimeConfigInput) {
       quality: input.customHooks?.hookQualityEnabled ?? defaults.hookQuality,
       security: input.customHooks?.hookSecurityEnabled ?? defaults.hookSecurity,
       gtl: input.customHooks?.hookGtlEnabled ?? defaults.hookGtl,
-    }),
+    
+          createdAt: Date.now(),
+        }),
     hookRoiEnabled: input.customHooks?.hookRoiEnabled ?? defaults.hookRoi,
     hookTokensEnabled: input.customHooks?.hookTokensEnabled ?? defaults.hookTokens,
     hookQualityEnabled: input.customHooks?.hookQualityEnabled ?? defaults.hookQuality,

@@ -108,7 +108,9 @@ class NotificationTemplateService {
         isActive: input.isActive ?? true,
         isSystem: false,
         createdBy,
-      });
+      
+          createdAt: Date.now(),
+        });
 
       return { success: true, id: result[0].insertId };
     } catch (error) {
@@ -329,6 +331,8 @@ class NotificationTemplateService {
           availableVariables: JSON.stringify(template.availableVariables),
           isSystem: true,
           isActive: true,
+        
+          createdAt: Date.now(),
         });
         console.log(`[NotificationTemplate] Seeded: ${template.code}`);
       }

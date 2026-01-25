@@ -377,7 +377,9 @@ router.post('/leads', async (req: Request, res: Response) => {
       phone: input.phone,
       source: input.source || 'contact_form',
       message: input.message,
-    }).$returningId();
+    
+          createdAt: Date.now(),
+        }).$returningId();
     
     const lead = result[0];
     

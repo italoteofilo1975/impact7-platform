@@ -11,7 +11,7 @@ import { sql, count, gte, and, eq } from "drizzle-orm";
 
 // Interfaces
 export interface SystemMetrics {
-  timestamp: Date;
+  timestamp: number;
   uptime: number;
   memory: MemoryMetrics;
   database: DatabaseMetrics;
@@ -316,7 +316,7 @@ export async function getSystemMetrics(): Promise<SystemMetrics> {
   const sloMetrics = getSLOMetrics(performanceMetrics);
   
   return {
-    timestamp: new Date(),
+    timestamp: Date.now(),
     uptime: process.uptime(),
     memory: memoryMetrics,
     database: databaseMetrics,

@@ -26,7 +26,9 @@ export const referralService = {
         referrerId: userId,
         referrerCode: code,
         status: "pending",
-      });
+      
+          createdAt: Date.now(),
+        });
       return code;
     }
     
@@ -89,7 +91,9 @@ export const referralService = {
       referrerRewardAmount: 100,
       referredRewardType: "discount",
       referredRewardAmount: 10,
-    });
+    
+          createdAt: Date.now(),
+        });
     
     return true;
   },
@@ -106,7 +110,7 @@ export const referralService = {
       .set({
         referredId: referredUserId,
         status: "signed_up",
-        signedUpAt: new Date(),
+        signedUpAt: Date.now(),
       })
       .where(
         and(
@@ -127,7 +131,7 @@ export const referralService = {
       .update(referrals)
       .set({
         status: "converted",
-        convertedAt: new Date(),
+        convertedAt: Date.now(),
       })
       .where(
         and(
