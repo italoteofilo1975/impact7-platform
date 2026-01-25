@@ -15,8 +15,8 @@ export const users = mysqlTable("users", {
   stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
   subscriptionStatus: text("subscriptionStatus").default("none"), // active, canceled, past_due, trialing, none
   planType: text("planType").default("free"), // free, starter, professional, enterprise
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
   lastSignedIn: int("lastSignedIn").notNull(),
 });
 
@@ -34,7 +34,7 @@ export const leads = mysqlTable("leads", {
   phone: varchar("phone", { length: 20 }),
   message: text("message"),
   source: text("source").default("contact_form").notNull(),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
   welcomeEmailSent: int("welcomeEmailSent").default(false).notNull(),
   nurturingStep: int("nurturingStep").default(0).notNull(),
   lastEmailSentAt: int("lastEmailSentAt"),
@@ -56,7 +56,7 @@ export const newsletterSubscribers = mysqlTable("newsletterSubscribers", {
   isActive: int("isActive").default(true).notNull(),
   confirmedAt: int("confirmedAt"),
   unsubscribedAt: int("unsubscribedAt"),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
@@ -78,7 +78,7 @@ export const calculations = mysqlTable("calculations", {
   impactScore: int("impactScore").notNull(),
   sRoi: int("sRoi").notNull(),
   sector: varchar("sector", { length: 100 }),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type Calculation = typeof calculations.$inferSelect;
@@ -127,7 +127,7 @@ export const contacts = mysqlTable("contacts", {
   subject: varchar("subject", { length: 255 }),
   message: text("message").notNull(),
   status: text("status").default("new").notNull(),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type Contact = typeof contacts.$inferSelect;
@@ -141,8 +141,8 @@ export const jarvisSessions = mysqlTable("jarvisSessions", {
   sessionId: varchar("sessionId", { length: 64 }).notNull().unique(),
   userId: int("userId"),
   context: text("context"),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type JarvisSession = typeof jarvisSessions.$inferSelect;
@@ -157,7 +157,7 @@ export const jarvisMessages = mysqlTable("jarvisMessages", {
   role: text("role").notNull(),
   content: text("content").notNull(),
   metadata: text("metadata"),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type JarvisMessage = typeof jarvisMessages.$inferSelect;
@@ -174,8 +174,8 @@ export const knowledgeDocuments = mysqlTable("knowledgeDocuments", {
   tags: text("tags"),
   embedding: text("embedding"),
   isActive: int("isActive").default(true).notNull(),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type KnowledgeDocument = typeof knowledgeDocuments.$inferSelect;
@@ -211,7 +211,7 @@ export const jarvisAnalytics = mysqlTable("jarvisAnalytics", {
   successful: int("successful").default(true).notNull(),
   errorMessage: text("errorMessage"),
   userFeedback: text("userFeedback", ["positive", "negative", "neutral"]),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type JarvisAnalytic = typeof jarvisAnalytics.$inferSelect;
@@ -279,7 +279,7 @@ export const dailyMetrics = mysqlTable("dailyMetrics", {
   whitepaperDownloads: int("whitepaperDownloads").default(0).notNull(),
   avgTimeOnSite: int("avgTimeOnSite").default(0), // in seconds
   bounceRate: int("bounceRate").default(0), // percentage 0-100
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type DailyMetric = typeof dailyMetrics.$inferSelect;
@@ -293,7 +293,7 @@ export const caseFavorites = mysqlTable("caseFavorites", {
   id: int("id").primaryKey({ autoIncrement: true }),
   userId: int("userId").notNull(),
   caseId: int("caseId").notNull(),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type CaseFavorite = typeof caseFavorites.$inferSelect;
@@ -324,8 +324,8 @@ export const caseSubmissions = mysqlTable("caseSubmissions", {
   reviewNotes: text("reviewNotes"),
   reviewedAt: int("reviewedAt"),
   reviewedBy: int("reviewedBy"),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type CaseSubmission = typeof caseSubmissions.$inferSelect;
@@ -342,8 +342,8 @@ export const caseTags = mysqlTable("caseTags", {
   color: varchar("color", { length: 7 }).default("#f97316").notNull(), // hex color
   description: text("description"),
   createdBy: int("createdBy").notNull(),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type CaseTag = typeof caseTags.$inferSelect;
@@ -356,7 +356,7 @@ export const caseTagRelations = mysqlTable("caseTagRelations", {
   id: int("id").primaryKey({ autoIncrement: true }),
   caseId: int("caseId").notNull(),
   tagId: int("tagId").notNull(),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type CaseTagRelation = typeof caseTagRelations.$inferSelect;
@@ -374,8 +374,8 @@ export const userPoints = mysqlTable("userPoints", {
   totalInteractions: int("totalInteractions").default(0).notNull(),
   streak: int("streak").default(0).notNull(), // consecutive days
   lastInteractionAt: int("lastInteractionAt"),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type UserPoints = typeof userPoints.$inferSelect;
@@ -395,7 +395,7 @@ export const badges = mysqlTable("badges", {
   requiredValue: int("requiredValue").notNull(),
   pointsReward: int("pointsReward").default(100).notNull(),
   rarity: text("rarity", ["common", "uncommon", "rare", "epic", "legendary"]).default("common").notNull(),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type Badge = typeof badges.$inferSelect;
@@ -423,7 +423,7 @@ export const pointTransactions = mysqlTable("pointTransactions", {
   points: int("points").notNull(), // positive or negative
   reason: varchar("reason", { length: 100 }).notNull(),
   metadata: text("metadata"), // JSON with extra info
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type PointTransaction = typeof pointTransactions.$inferSelect;
@@ -441,9 +441,9 @@ export const apiKeys = mysqlTable("apiKeys", {
   permissions: text("permissions"), // JSON array of allowed endpoints
   rateLimit: int("rateLimit").default(1000).notNull(), // requests per hour
   lastUsedAt: int("lastUsedAt"),
-  expiresAt: int("expiresAt"),
+  expiresAt: int("expiresAt").$type<number>(),
   isActive: int("isActive").default(true).notNull(),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type ApiKey = typeof apiKeys.$inferSelect;
@@ -461,8 +461,8 @@ export const webhooks = mysqlTable("webhooks", {
   secret: varchar("secret", { length: 64 }).notNull(), // For signature verification
   events: text("events").notNull(), // JSON array of subscribed events
   isActive: int("isActive").default(true).notNull(),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Webhook = typeof webhooks.$inferSelect;
@@ -480,8 +480,8 @@ export const webhookDeliveries = mysqlTable("webhookDeliveries", {
   responseBody: text("responseBody"),
   attempts: int("attempts").default(1).notNull(),
   nextRetryAt: int("nextRetryAt"),
-  deliveredAt: int("deliveredAt"),
-  createdAt: int("createdAt").notNull(),
+  deliveredAt: int("deliveredAt").$type<number>(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type WebhookDelivery = typeof webhookDeliveries.$inferSelect;
@@ -500,8 +500,8 @@ export const oauthClients = mysqlTable("oauthClients", {
   redirectUris: text("redirectUris").notNull(), // JSON array
   scopes: text("scopes").notNull(), // JSON array of allowed scopes
   isActive: int("isActive").default(true).notNull(),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type OAuthClient = typeof oauthClients.$inferSelect;
@@ -519,8 +519,8 @@ export const oauthAuthCodes = mysqlTable("oauthAuthCodes", {
   scopes: text("scopes").notNull(), // JSON array
   codeChallenge: varchar("codeChallenge", { length: 128 }), // PKCE
   codeChallengeMethod: varchar("codeChallengeMethod", { length: 10 }), // plain or S256
-  expiresAt: int("expiresAt").notNull(),
-  createdAt: int("createdAt").notNull(),
+  expiresAt: int("expiresAt").$type<number>().notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type OAuthAuthCode = typeof oauthAuthCodes.$inferSelect;
@@ -538,7 +538,7 @@ export const oauthTokens = mysqlTable("oauthTokens", {
   scopes: text("scopes").notNull(), // JSON array
   accessTokenExpiresAt: int("accessTokenExpiresAt").notNull(),
   refreshTokenExpiresAt: int("refreshTokenExpiresAt"),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type OAuthToken = typeof oauthTokens.$inferSelect;
@@ -557,10 +557,10 @@ export const jarvisMemory = mysqlTable("jarvisMemory", {
   importance: int("importance").default(5).notNull(), // 1-10 scale
   lastAccessed: int("lastAccessed").notNull(),
   accessCount: int("accessCount").default(1).notNull(),
-  expiresAt: int("expiresAt"),
+  expiresAt: int("expiresAt").$type<number>(),
   isActive: int("isActive").default(true).notNull(),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type JarvisMemory = typeof jarvisMemory.$inferSelect;
@@ -581,7 +581,7 @@ export const jarvisReports = mysqlTable("jarvisReports", {
   wordUrl: varchar("wordUrl", { length: 500 }),
   status: text("status", ["generating", "completed", "failed"]).default("generating").notNull(),
   generatedAt: int("generatedAt"),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type JarvisReport = typeof jarvisReports.$inferSelect;
@@ -619,12 +619,12 @@ export const impactCertificates = mysqlTable("impactCertificates", {
   
   // Metadata
   issuedAt: int("issuedAt").notNull(),
-  validUntil: int("validUntil"),
+  validUntil: int("validUntil").$type<number>(),
   qrCodeUrl: varchar("qrCodeUrl", { length: 500 }),
   pdfUrl: varchar("pdfUrl", { length: 500 }),
   
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type ImpactCertificate = typeof impactCertificates.$inferSelect;
@@ -658,10 +658,10 @@ export const impactTokens = mysqlTable("impactTokens", {
   // Status
   status: text("status", ["active", "transferred", "burned", "expired"]).default("active").notNull(),
   mintedAt: int("mintedAt").notNull(),
-  expiresAt: int("expiresAt"),
+  expiresAt: int("expiresAt").$type<number>(),
   
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type ImpactToken = typeof impactTokens.$inferSelect;
@@ -680,7 +680,7 @@ export const tokenTransactions = mysqlTable("tokenTransactions", {
   transactionHash: varchar("transactionHash", { length: 64 }).notNull(), // SHA-256 hash
   previousTransactionHash: varchar("previousTransactionHash", { length: 64 }),
   metadata: text("metadata"), // JSON
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type TokenTransaction = typeof tokenTransactions.$inferSelect;
@@ -698,8 +698,8 @@ export const userPreferences = mysqlTable("userPreferences", {
   emailNotifications: int("emailNotifications").default(true).notNull(),
   pushNotifications: int("pushNotifications").default(true).notNull(),
   weeklyDigest: int("weeklyDigest").default(true).notNull(),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type UserPreference = typeof userPreferences.$inferSelect;
@@ -718,7 +718,7 @@ export const notifications = mysqlTable("notifications", {
   link: varchar("link", { length: 500 }),
   isRead: int("isRead").default(false).notNull(),
   metadata: text("metadata").$type<Record<string, unknown>>(),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
   readAt: int("readAt"),
   emailSentAt: int("emailSentAt"),
 });
@@ -749,8 +749,8 @@ export const notificationPreferences = mysqlTable("notificationPreferences", {
   // Push preferences
   pushEnabled: int("pushEnabled").default(true).notNull(),
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type NotificationPreference = typeof notificationPreferences.$inferSelect;
@@ -777,8 +777,8 @@ export const notificationTemplates = mysqlTable("notificationTemplates", {
   isActive: int("isActive").default(true).notNull(),
   isSystem: int("isSystem").default(false).notNull(), // System templates cannot be deleted
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
   createdBy: int("createdBy"),
 });
 
@@ -800,8 +800,8 @@ export const systemSettings = mysqlTable("systemSettings", {
   // Type hint for parsing
   valueType: text("valueType", ["string", "number", "boolean", "json"]).default("string").notNull(),
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type SystemSetting = typeof systemSettings.$inferSelect;
@@ -834,7 +834,7 @@ export const auditLogs = mysqlTable("auditLogs", {
   ipAddress: varchar("ipAddress", { length: 45 }),
   userAgent: varchar("userAgent", { length: 500 }),
   // Timestamps
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type AuditLog = typeof auditLogs.$inferSelect;
@@ -900,8 +900,8 @@ export const supportTickets = mysqlTable("supportTickets", {
   attachments: text("attachments"), // JSON array of file URLs
   tags: text("tags"), // JSON array of tags
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
   firstResponseAt: int("firstResponseAt"),
 });
 
@@ -923,7 +923,7 @@ export const ticketMessages = mysqlTable("ticketMessages", {
   message: text("message").notNull(),
   attachments: text("attachments"), // JSON array of file URLs
   // Timestamps
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type TicketMessage = typeof ticketMessages.$inferSelect;
@@ -949,9 +949,9 @@ export const featureFlags = mysqlTable("featureFlags", {
   isExperiment: int("isExperiment").default(false).notNull(),
   variants: text("variants"), // JSON array of variant configs
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
-  expiresAt: int("expiresAt"),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
+  expiresAt: int("expiresAt").$type<number>(),
 });
 
 export type FeatureFlag = typeof featureFlags.$inferSelect;
@@ -981,7 +981,7 @@ export const conversionEvents = mysqlTable("conversionEvents", {
   // Metadata
   metadata: text("metadata"), // JSON additional data
   // Timestamps
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type ConversionEvent = typeof conversionEvents.$inferSelect;
@@ -1012,7 +1012,7 @@ export const emailCampaigns = mysqlTable("emailCampaigns", {
   // Schedule
   status: text("status", ["draft", "scheduled", "sending", "sent", "paused"]).default("draft").notNull(),
   scheduledAt: int("scheduledAt"),
-  sentAt: int("sentAt"),
+  sentAt: int("sentAt").$type<number>(),
   // Stats
   totalRecipients: int("totalRecipients").default(0),
   totalSent: int("totalSent").default(0),
@@ -1020,8 +1020,8 @@ export const emailCampaigns = mysqlTable("emailCampaigns", {
   totalClicked: int("totalClicked").default(0),
   totalUnsubscribed: int("totalUnsubscribed").default(0),
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type EmailCampaign = typeof emailCampaigns.$inferSelect;
@@ -1050,8 +1050,8 @@ export const twoFactorAuth = mysqlTable("twoFactorAuth", {
   failedAttempts: int("failedAttempts").default(0).notNull(),
   lockedUntil: int("lockedUntil"),
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type TwoFactorAuth = typeof twoFactorAuth.$inferSelect;
@@ -1068,12 +1068,12 @@ export const twoFactorSessions = mysqlTable("twoFactorSessions", {
   isVerified: int("isVerified").default(false).notNull(),
   verifiedAt: int("verifiedAt"),
   // Expiration
-  expiresAt: int("expiresAt").notNull(),
+  expiresAt: int("expiresAt").$type<number>().notNull(),
   // Audit
   ipAddress: varchar("ipAddress", { length: 45 }),
   userAgent: varchar("userAgent", { length: 500 }),
   // Timestamps
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type TwoFactorSession = typeof twoFactorSessions.$inferSelect;
@@ -1102,10 +1102,10 @@ export const userAccessTokens = mysqlTable("userAccessTokens", {
   usageCount: int("usageCount").default(0).notNull(),
   // Status
   isActive: int("isActive").default(true).notNull(),
-  expiresAt: int("expiresAt"),
+  expiresAt: int("expiresAt").$type<number>(),
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type UserAccessToken = typeof userAccessTokens.$inferSelect;
@@ -1127,7 +1127,7 @@ export const tokenUsageLogs = mysqlTable("tokenUsageLogs", {
   ipAddress: varchar("ipAddress", { length: 45 }),
   userAgent: varchar("userAgent", { length: 500 }),
   // Timestamps
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type TokenUsageLog = typeof tokenUsageLogs.$inferSelect;
@@ -1152,8 +1152,8 @@ export const testimonials = mysqlTable("testimonials", {
   isFeatured: int("isFeatured").default(false).notNull(),
   displayOrder: int("displayOrder").default(0).notNull(),
   language: varchar("language", { length: 5 }).default("pt").notNull(),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Testimonial = typeof testimonials.$inferSelect;
@@ -1177,8 +1177,8 @@ export const partners = mysqlTable("partners", {
   contactName: varchar("contactName", { length: 255 }),
   contactEmail: varchar("contactEmail", { length: 320 }),
   partnerSince: int("partnerSince"),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Partner = typeof partners.$inferSelect;
@@ -1197,7 +1197,7 @@ export const socialProofMetrics = mysqlTable("socialProofMetrics", {
   icon: varchar("icon", { length: 50 }), // Icon name from lucide-react
   displayOrder: int("displayOrder").default(0).notNull(),
   isActive: int("isActive").default(true).notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type SocialProofMetric = typeof socialProofMetrics.$inferSelect;
@@ -1208,7 +1208,7 @@ export type InsertSocialProofMetric = typeof socialProofMetrics.$inferInsert;
  */
 export const platformStats = mysqlTable("platformStats", {
   id: int("id").primaryKey({ autoIncrement: true }),
-  date: int("date").notNull(),
+  date: int("date").$type<number>().notNull(),
   totalUsers: int("totalUsers").default(0).notNull(),
   activeUsers: int("activeUsers").default(0).notNull(),
   totalCalculations: int("totalCalculations").default(0).notNull(),
@@ -1218,7 +1218,7 @@ export const platformStats = mysqlTable("platformStats", {
   avgSroi: int("avgSroi").default(0), // Stored as integer (e.g., 450 = 4.5x)
   totalImpactValue: int("totalImpactValue").default(0), // In cents (use int for simplicity)
   totalBeneficiaries: int("totalBeneficiaries").default(0),
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type PlatformStat = typeof platformStats.$inferSelect;
@@ -1277,8 +1277,8 @@ export const set7Tasklog = mysqlTable("set7Tasklog", {
   
   // Timestamps
   startedAt: int("startedAt"),
-  completedAt: int("completedAt"),
-  createdAt: int("createdAt").notNull(),
+  completedAt: int("completedAt").$type<number>(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type Set7Tasklog = typeof set7Tasklog.$inferSelect;
@@ -1329,8 +1329,8 @@ export const set7Agents = mysqlTable("set7Agents", {
   
   // Timestamps
   lastActiveAt: int("lastActiveAt"),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Set7Agent = typeof set7Agents.$inferSelect;
@@ -1382,8 +1382,8 @@ export const set7Integrations = mysqlTable("set7Integrations", {
   avgResponseTimeMs: int("avgResponseTimeMs").default(0).notNull(),
   
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Set7Integration = typeof set7Integrations.$inferSelect;
@@ -1425,8 +1425,8 @@ export const set7TokenBudgets = mysqlTable("set7TokenBudgets", {
   circuitBreakerReason: text("circuitBreakerReason"),
   
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Set7TokenBudget = typeof set7TokenBudgets.$inferSelect;
@@ -1464,12 +1464,12 @@ export const set7Gates = mysqlTable("set7Gates", {
   
   // Aprovação
   approvedBy: int("approvedBy"),
-  approvedAt: int("approvedAt"),
+  approvedAt: int("approvedAt").$type<number>(),
   humanApprovalRequired: int("humanApprovalRequired").default(false).notNull(),
   
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Set7Gate = typeof set7Gates.$inferSelect;
@@ -1515,8 +1515,8 @@ export const set7RoiTracking = mysqlTable("set7RoiTracking", {
   
   // Timestamps
   calculatedAt: int("calculatedAt").notNull(),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Set7RoiTracking = typeof set7RoiTracking.$inferSelect;
@@ -1559,8 +1559,8 @@ export const set7RuntimeConfig = mysqlTable("set7RuntimeConfig", {
   isActive: int("isActive").default(true).notNull(),
   
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Set7RuntimeConfig = typeof set7RuntimeConfig.$inferSelect;
@@ -1602,7 +1602,7 @@ export const set7AuditLog = mysqlTable("set7AuditLog", {
   severity: text("severity", ["info", "warning", "error", "critical"]).default("info").notNull(),
   
   // Timestamps
-  createdAt: int("createdAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
 });
 
 export type Set7AuditLog = typeof set7AuditLog.$inferSelect;
@@ -1662,8 +1662,8 @@ export const set7Nfrs = mysqlTable("set7Nfrs", {
   ownerName: varchar("ownerName", { length: 255 }),
   
   // Timestamps
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Set7Nfr = typeof set7Nfrs.$inferSelect;
@@ -1704,8 +1704,8 @@ export const whiteLabelConfig = mysqlTable("white_label_config", {
   twitterUrl: varchar("twitterUrl", { length: 500 }),
   
   // Metadata
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type WhiteLabelConfig = typeof whiteLabelConfig.$inferSelect;
@@ -1723,8 +1723,8 @@ export const roles = mysqlTable("roles", {
   description: text("description"),
   level: int("level").notNull().default(0),
   isActive: int("isActive").notNull().default(1),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Role = typeof roles.$inferSelect;
@@ -1738,8 +1738,8 @@ export const permissions = mysqlTable("permissions", {
   description: text("description"),
   category: varchar("category", { length: 50 }).notNull(),
   isActive: int("isActive").notNull().default(1),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
 });
 
 export type Permission = typeof permissions.$inferSelect;
