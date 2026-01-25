@@ -1,19 +1,18 @@
-import { getSqlite } from "./db";
+import { getPool } from "./db";
 
 /**
  * Execute raw SQL query and return all results
  * Use this for complex queries that are hard to express with Drizzle ORM
  */
 export async function executeRawQuery<T = any>(query: string, params: any[] = []): Promise<T[]> {
-  const sqlite = await getSqlite();
-  if (!sqlite) {
+  const pool = await getPool();
+  if (!pool) {
     throw new Error("Database not available");
   }
   
   try {
-    const stmt = sqlite.prepare(query);
-    const result = stmt.all(...params);
-    return result as T[];
+    const [rows] = await pool.query(query, params);
+    return rows as T[];
   } catch (error) {
     console.error(`[Database] Error executing query: ${query}`, error);
     throw error;
@@ -22,20 +21,19 @@ export async function executeRawQuery<T = any>(query: string, params: any[] = []
 
 /**
  * Execute raw SQL statement (INSERT, UPDATE, DELETE)
- * Returns info about the operation (changes, lastInsertRowid)
+ * Returns info about the operation (affectedRows, insertId)
  */
 export async function executeRawStatement(query: string, params: any[] = []): Promise<{ changes: number; lastInsertRowid: number | bigint }> {
-  const sqlite = await getSqlite();
-  if (!sqlite) {
+  const pool = await getPool();
+  if (!pool) {
     throw new Error("Database not available");
   }
   
   try {
-    const stmt = sqlite.prepare(query);
-    const result = stmt.run(...params);
+    const [result]: any = await pool.query(query, params);
     return {
-      changes: result.changes,
-      lastInsertRowid: result.lastInsertRowid
+      changes: result.affectedRows || 0,
+      lastInsertRowid: result.insertId || 0
     };
   } catch (error) {
     console.error(`[Database] Error executing statement: ${query}`, error);
@@ -47,20 +45,24 @@ export async function executeRawStatement(query: string, params: any[] = []): Pr
  * Execute multiple raw SQL statements in a transaction
  */
 export async function executeRawTransaction(queries: string[]): Promise<void> {
-  const sqlite = await getSqlite();
-  if (!sqlite) {
+  const pool = await getPool();
+  if (!pool) {
     throw new Error("Database not available");
   }
   
-  const transaction = sqlite.transaction(() => {
-    for (const query of queries) {
-      sqlite.exec(query);
-    }
-  });
-  
   try {
-    transaction();
+    const connection = await pool.getConnection();
+    await connection.beginTransaction();
+    
+    for (const query of queries) {
+      await connection.query(query);
+    }
+    
+    await connection.commit();
+    connection.release();
   } catch (error) {
+    await connection.rollback();
+    connection.release();
     console.error('[Database] Error executing transaction', error);
     throw error;
   }

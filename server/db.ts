@@ -1,84 +1,47 @@
-import Database from "better-sqlite3";
-import { drizzle, BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
+import type { MySql2Database } from "drizzle-orm/mysql2";
 import { InsertUser, users } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import * as bcrypt from "bcryptjs";
 import * as fs from "fs";
 import * as path from "path";
 
-let _db: BetterSQLite3Database | null = null;
-let _sqlite: Database.Database | null = null;
+let _db: MySql2Database | null = null;
+let _pool: mysql.Pool | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
-export async function getSqlite() {
-  if (!_sqlite && process.env.DATABASE_URL) {
+export async function getPool() {
+  if (!_pool && process.env.DATABASE_URL) {
     await getDb(); // Ensure db is initialized
   }
-  return _sqlite;
+  return _pool;
 }
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      // Extract file path from DATABASE_URL (format: file:./data/impact7.db)
-      const dbPath = process.env.DATABASE_URL.replace('file:', '');
-      console.log(`[Database] Connecting to SQLite: ${dbPath}`);
+      console.log(`[Database] Connecting to MySQL with connection pool...`);
       
-      _sqlite = new Database(dbPath);
-      _db = drizzle(_sqlite);
+      _pool = mysql.createPool({
+        uri: process.env.DATABASE_URL,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+      });
+      _db = drizzle(_pool);
       
-      // Initialize database with tables if needed
-      await initializeDatabase();
-      
-      console.log('[Database] Connected successfully');
+      console.log('[Database] Connected successfully with pool');
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
-      _sqlite = null;
+      _pool = null;
     }
   }
   return _db;
 }
 
-async function initializeDatabase() {
-  if (!_sqlite) return;
-  
-  try {
-    // Check if database is already initialized
-    const tables = _sqlite.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='users'").all();
-    
-    if (tables.length === 0) {
-      console.log('[Database] Initializing database with Drizzle migration...');
-      
-      // Read and execute migration SQL
-      const migrationPath = path.join(process.cwd(), 'drizzle', 'migrations', '0000_hard_firestar.sql');
-      const migrationSQL = fs.readFileSync(migrationPath, 'utf-8');
-      
-      // Split by statement breakpoint and execute each statement
-      const statements = migrationSQL
-        .split('--> statement-breakpoint')
-        .map(s => s.trim())
-        .filter(s => s.length > 0);
-      
-      for (const statement of statements) {
-        try {
-          _sqlite.exec(statement);
-        } catch (error: any) {
-          console.warn(`[Database] Warning executing statement: ${error.message}`);
-        }
-      }
-      
-      console.log('[Database] Migration applied successfully');
-      
-      // Create default admin user
-      await createDefaultAdmin();
-    } else {
-      console.log('[Database] Database already initialized');
-    }
-  } catch (error) {
-    console.error('[Database] Error initializing database:', error);
-  }
-}
+// Database initialization is handled by Drizzle migrations (pnpm db:push)
 
 async function createDefaultAdmin() {
   if (!_db) return;
@@ -174,9 +137,12 @@ export async function createLocalUser(userData: {
     createdAt: Math.floor(Date.now() / 1000),
     updatedAt: Math.floor(Date.now() / 1000),
     lastSignedIn: Math.floor(Date.now() / 1000),
-  }).returning({ id: users.id });
+  });
   
-  return result[0].id;
+  // MySQL doesn't support .returning(), use insertId instead
+  // insertId can be bigint or number, convert to number safely
+  const insertId = result[0]?.insertId ?? result.insertId;
+  return typeof insertId === 'bigint' ? Number(insertId) : insertId;
 }
 
 export async function updateUserLastSignedIn(userId: number) {

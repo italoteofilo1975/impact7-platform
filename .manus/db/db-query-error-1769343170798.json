@@ -1,0 +1,8 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `users` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `openId` VARCHAR(64) UNIQUE,\n  `name` TEXT,\n  `email` VARCHAR(320) UNIQUE,\n  `passwordHash` VARCHAR(255),\n  `loginMethod` VARCHAR(64),\n  `role` TEXT NOT NULL DEFAULT 'user',\n  `stripeCustomerId` VARCHAR(255),\n  `stripeSubscriptionId` VARCHAR(255),\n  `subscriptionStatus` TEXT DEFAULT 'none',\n  `planType` TEXT DEFAULT 'free',\n  `createdAt` BIGINT NOT NULL,\n  `updatedAt` BIGINT NOT NULL,\n  `lastSignedIn` BIGINT NOT NULL\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user XKE5A2Cq4UPY6bR.5c42757569fc --database 5LJSracN9nNev8VCqJujeg --execute CREATE TABLE IF NOT EXISTS `users` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `openId` VARCHAR(64) UNIQUE,\n  `name` TEXT,\n  `email` VARCHAR(320) UNIQUE,\n  `passwordHash` VARCHAR(255),\n  `loginMethod` VARCHAR(64),\n  `role` TEXT NOT NULL DEFAULT 'user',\n  `stripeCustomerId` VARCHAR(255),\n  `stripeSubscriptionId` VARCHAR(255),\n  `subscriptionStatus` TEXT DEFAULT 'none',\n  `planType` TEXT DEFAULT 'free',\n  `createdAt` BIGINT NOT NULL,\n  `updatedAt` BIGINT NOT NULL,\n  `lastSignedIn` BIGINT NOT NULL\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1101 (42000) at line 1: BLOB/TEXT/JSON column 'role' can't have a default value"
+  ]
+}

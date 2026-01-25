@@ -17,14 +17,18 @@ export async function createContext(
   try {
     // Try local JWT authentication first
     const sessionCookie = opts.req.cookies?.session;
+    console.log('[Context] Session cookie:', sessionCookie ? 'present' : 'missing');
     if (sessionCookie) {
       const payload = verifySessionToken(sessionCookie);
+      console.log('[Context] JWT payload:', payload);
       if (payload && payload.userId) {
         user = await db.getUserById(payload.userId);
+        console.log('[Context] User loaded:', user ? `id=${user.id}` : 'null');
       }
     }
   } catch (error) {
     // Authentication is optional for public procedures.
+    console.error('[Context] Auth error:', error);
     user = null;
   }
 

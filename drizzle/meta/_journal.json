@@ -15,6 +15,20 @@
       "when": 1769281233491,
       "tag": "0001_cooing_mauler",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1769301377332,
+      "tag": "0002_volatile_psylocke",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1769301403027,
+      "tag": "0003_misty_felicia_hardy",
+      "breakpoints": true
     }
   ]
 }

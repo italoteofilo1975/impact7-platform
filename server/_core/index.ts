@@ -4,7 +4,7 @@ import compression from "compression";
 import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { registerOAuthRoutes } from "./oauth";
+// OAuth REMOVED - Using local auth only
 import { registerLocalAuthRoutes } from "./local-auth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -122,8 +122,7 @@ async function startServer() {
   // Local authentication routes (email + password)
   registerLocalAuthRoutes(app);
   
-  // OAuth callback under /api/oauth/callback (legacy, optional)
-  registerOAuthRoutes(app);
+  // OAuth REMOVED - Using local auth only
   // tRPC API
   app.use(
     "/api/trpc",
