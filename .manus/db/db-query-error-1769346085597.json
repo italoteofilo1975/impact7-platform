@@ -1,0 +1,8 @@
+{
+  "query": "\nALTER TABLE `testimonials` ADD COLUMN `isFeatured` TINYINT(1) DEFAULT 0;\nALTER TABLE `testimonials` ADD COLUMN `isActive` TINYINT(1) DEFAULT 1;\nALTER TABLE `socialProofMetrics` ADD COLUMN `isActive` TINYINT(1) DEFAULT 1;\nALTER TABLE `partners` ADD COLUMN `isActive` TINYINT(1) DEFAULT 1;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user XKE5A2Cq4UPY6bR.5c42757569fc --database 5LJSracN9nNev8VCqJujeg --execute \nALTER TABLE `testimonials` ADD COLUMN `isFeatured` TINYINT(1) DEFAULT 0;\nALTER TABLE `testimonials` ADD COLUMN `isActive` TINYINT(1) DEFAULT 1;\nALTER TABLE `socialProofMetrics` ADD COLUMN `isActive` TINYINT(1) DEFAULT 1;\nALTER TABLE `partners` ADD COLUMN `isActive` TINYINT(1) DEFAULT 1;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1060 (42S21) at line 2: Duplicate column name 'isFeatured'"
+  ]
+}

@@ -360,3 +360,11 @@
 ✅ Autenticação local funcionando perfeitamente
 ✅ 64 tabelas MySQL criadas e operacionais
 ✅ Pronto para publicação
+
+
+## 41. Corrigir Erros de Banco de Dados na Homepage (RODADA 7 - CONCLUÍDO)
+- [x] BUG-DB-01: Corrigir coluna `isfeatured` → `isFeatured` (camelCase)
+- [x] BUG-DB-02: Corrigir coluna `isactive` → `isActive` (camelCase)
+- [x] BUG-DB-03: Criar tabela `socialProofCertifications` faltante
+- [x] Testar homepage sem erros de banco
+- [x] Salvar checkpoint v1.2.1

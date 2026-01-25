@@ -1,0 +1,8 @@
+{
+  "query": "\nALTER TABLE `caseStudies` ADD COLUMN `isFeatured` BOOLEAN DEFAULT FALSE;\nALTER TABLE `caseStudies` ADD COLUMN `isActive` BOOLEAN DEFAULT TRUE;\nALTER TABLE `testimonials` ADD COLUMN `isFeatured` BOOLEAN DEFAULT FALSE;\nALTER TABLE `testimonials` ADD COLUMN `isActive` BOOLEAN DEFAULT TRUE;\nALTER TABLE `socialProofMetrics` ADD COLUMN `isActive` BOOLEAN DEFAULT TRUE;\nALTER TABLE `partners` ADD COLUMN `isActive` BOOLEAN DEFAULT TRUE;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user XKE5A2Cq4UPY6bR.5c42757569fc --database 5LJSracN9nNev8VCqJujeg --execute \nALTER TABLE `caseStudies` ADD COLUMN `isFeatured` BOOLEAN DEFAULT FALSE;\nALTER TABLE `caseStudies` ADD COLUMN `isActive` BOOLEAN DEFAULT TRUE;\nALTER TABLE `testimonials` ADD COLUMN `isFeatured` BOOLEAN DEFAULT FALSE;\nALTER TABLE `testimonials` ADD COLUMN `isActive` BOOLEAN DEFAULT TRUE;\nALTER TABLE `socialProofMetrics` ADD COLUMN `isActive` BOOLEAN DEFAULT TRUE;\nALTER TABLE `partners` ADD COLUMN `isActive` BOOLEAN DEFAULT TRUE;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1060 (42S21) at line 4: Duplicate column name 'isFeatured'"
+  ]
+}
