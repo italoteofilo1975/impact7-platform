@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE testimonials \n  ADD COLUMN IF NOT EXISTS `name` VARCHAR(255) NOT NULL DEFAULT '',\n  ADD COLUMN IF NOT EXISTS `role` VARCHAR(255) NOT NULL DEFAULT '',\n  ADD COLUMN IF NOT EXISTS `company` VARCHAR(255) NOT NULL DEFAULT '',\n  ADD COLUMN IF NOT EXISTS `sector` VARCHAR(100) NOT NULL DEFAULT '',\n  ADD COLUMN IF NOT EXISTS `content` TEXT NOT NULL,\n  ADD COLUMN IF NOT EXISTS `rating` INT NOT NULL DEFAULT 5,\n  ADD COLUMN IF NOT EXISTS `imageUrl` VARCHAR(500),\n  ADD COLUMN IF NOT EXISTS `videoUrl` VARCHAR(500),\n  ADD COLUMN IF NOT EXISTS `metrics` TEXT;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user XKE5A2Cq4UPY6bR.5c42757569fc --database 5LJSracN9nNev8VCqJujeg --execute ALTER TABLE testimonials \n  ADD COLUMN IF NOT EXISTS `name` VARCHAR(255) NOT NULL DEFAULT '',\n  ADD COLUMN IF NOT EXISTS `role` VARCHAR(255) NOT NULL DEFAULT '',\n  ADD COLUMN IF NOT EXISTS `company` VARCHAR(255) NOT NULL DEFAULT '',\n  ADD COLUMN IF NOT EXISTS `sector` VARCHAR(100) NOT NULL DEFAULT '',\n  ADD COLUMN IF NOT EXISTS `content` TEXT NOT NULL,\n  ADD COLUMN IF NOT EXISTS `rating` INT NOT NULL DEFAULT 5,\n  ADD COLUMN IF NOT EXISTS `imageUrl` VARCHAR(500),\n  ADD COLUMN IF NOT EXISTS `videoUrl` VARCHAR(500),\n  ADD COLUMN IF NOT EXISTS `metrics` TEXT;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 2364
+}
