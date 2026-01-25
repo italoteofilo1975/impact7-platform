@@ -483,3 +483,16 @@
 - [x] Validar compilação TypeScript (289 → 265 erros = 24 eliminados)
 - [x] Testar homepage - 100% funcional
 - [x] Salvar checkpoint v2.2.0
+
+
+## 54. Correção Boolean vs Number + Sync MySQL + Validação Zod (RODADA 18 - CONCLUÍDA)
+- [x] Criar helpers toBoolean() e fromBoolean() em shared/utils/boolean.ts
+- [x] Atualizar tipos de retorno em webhook-service.ts (isActive: toBoolean())
+- [x] Executar pnpm db:push - Schema já sincronizado ✅
+- [x] Verificar colunas faltantes - Corrigido erro "Unknown column" em public-api.ts
+- [x] Zod já instalado (v4.1.12)
+- [x] Criar schemas Zod para 6 formulários (shared/validation/schemas.ts)
+  - contactSchema, registrationSchema, impactCalculatorSchema
+  - newsletterSchema, whitepaperDownloadSchema, caseSubmissionSchema
+- [x] Validação TypeScript: 265 → 264 erros (1 erro eliminado)
+- [x] Salvar checkpoint v2.3.0

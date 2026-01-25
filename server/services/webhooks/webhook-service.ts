@@ -2,8 +2,8 @@
  * Serviço de Webhooks
  * Sistema de notificações automáticas para integrações externas
  */
-
 import { getDb } from "../../db";
+import { toBoolean } from "../../../shared/utils/boolean";
 import { webhooks, webhookDeliveries } from "../../../drizzle/schema";
 import { eq, and, lte, isNull, or, desc } from "drizzle-orm";
 import crypto from "crypto";
@@ -85,7 +85,7 @@ export async function listUserWebhooks(userId: number): Promise<Array<{
     name: w.name,
     url: w.url,
     events: w.events ? JSON.parse(w.events) : [],
-    isActive: w.isActive,
+    isActive: toBoolean(w.isActive),
     createdAt: w.createdAt,
   }));
 }

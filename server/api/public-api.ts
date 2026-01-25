@@ -434,10 +434,10 @@ router.get('/metrics', async (req: Request, res: Response) => {
     res.json({
       success: true,
       data: metrics.map((m: any) => ({
+        key: m.key,
         label: m.label,
         value: m.value,
-        suffix: m.suffix,
-        category: m.category,
+        icon: m.icon,
       })),
     });
   } catch (error) {
