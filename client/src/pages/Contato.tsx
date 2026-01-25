@@ -160,17 +160,16 @@ export default function Contato() {
                 ) : (
                   <Card>
                     <CardContent className="p-6">
-                      <form onSubmit={handleSubmit} className="space-y-4">
+                      <form onSubmit={onSubmit} className="space-y-4">
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="name">Nome Completo *</Label>
                             <Input
                               id="name"
                               placeholder="Seu nome"
-                              value={formData.name}
-                              onChange={(e) => handleChange("name", e.target.value)}
-                              required
+                              {...register("name")}
                             />
+                            {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="email">Email *</Label>
@@ -178,10 +177,9 @@ export default function Contato() {
                               id="email"
                               type="email"
                               placeholder="seu@email.com"
-                              value={formData.email}
-                              onChange={(e) => handleChange("email", e.target.value)}
-                              required
+                              {...register("email")}
                             />
+                            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
                           </div>
                         </div>
 
@@ -191,8 +189,7 @@ export default function Contato() {
                             <Input
                               id="phone"
                               placeholder="(11) 99999-9999"
-                              value={formData.phone}
-                              onChange={(e) => handleChange("phone", e.target.value)}
+                              {...register("phone")}
                             />
                           </div>
                           <div className="space-y-2">
@@ -200,15 +197,14 @@ export default function Contato() {
                             <Input
                               id="organization"
                               placeholder="Nome da organização"
-                              value={formData.organization}
-                              onChange={(e) => handleChange("organization", e.target.value)}
+                              {...register("organization")}
                             />
                           </div>
                         </div>
 
                         <div className="space-y-2">
                           <Label htmlFor="subject">Assunto</Label>
-                          <Select value={formData.subject} onValueChange={(v) => handleChange("subject", v)}>
+                          <Select onValueChange={(v) => form.setValue("subject", v)}>
                             <SelectTrigger>
                               <SelectValue placeholder="Selecione um assunto" />
                             </SelectTrigger>
@@ -227,11 +223,10 @@ export default function Contato() {
                           <Textarea
                             id="message"
                             placeholder="Descreva como podemos ajudar..."
-                            value={formData.message}
-                            onChange={(e) => handleChange("message", e.target.value)}
+                            {...register("message")}
                             rows={5}
-                            required
                           />
+                          {errors.message && <p className="text-sm text-destructive">{errors.message.message}</p>}
                         </div>
 
                         <Button 

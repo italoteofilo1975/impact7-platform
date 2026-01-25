@@ -535,3 +535,17 @@
 - [ ] Testar formulário de contato no browser (não testado)
 - [x] Validação TypeScript: 264 erros (mantido após reversão)
 - [x] Salvar checkpoint v2.5.0
+
+
+## 57. Correção Contact.tsx + Remoção UNIX_TIMESTAMP + Teste Browser (RODADA 21 - PARCIAL)
+- [x] Verificar erros TypeScript no Contact.tsx (10 erros encontrados)
+- [x] Substituir formData/handleChange por register() em todos os inputs
+- [x] Adicionar feedback visual de erros com errors.field.message
+- [x] Corrigir onSubmit para usar handleFormSubmit
+- [x] Ajustar Select para usar form.setValue()
+- [x] Verificar DEFAULT UNIX_TIMESTAMP() - NÃO EXISTE no schema atual
+- [x] Validação TypeScript: 278 → 265 erros (13 erros eliminados)
+- [x] Abrir formulário de contato no browser - PÁGINA EM BRANCO
+- [ ] Testar validação (não possível, página não renderiza)
+- [ ] Executar pnpm db:push (não executado)
+- [x] Salvar checkpoint v2.6.0
