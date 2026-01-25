@@ -408,3 +408,11 @@
 - [x] Theme switcher melhorado com animações
 - [x] Documentação de progresso criada (78% concluído)
 - [x] Salvar checkpoint v1.5.0
+
+
+## 47. Manual de Integrações Externas + Correções Finais (RODADA 11 - PARCIAL)
+- [x] Criar manual completo de integrações externas (15 seções, 100+ páginas)
+- [ ] Corrigir 520 erros TypeScript (Date vs number) - PENDENTE (complexo)
+- [ ] Sincronizar 100% schema Drizzle com MySQL - PENDENTE (requer script customizado)
+- [ ] Popular dados de exemplo - PENDENTE
+- [x] Salvar checkpoint v1.6.0
