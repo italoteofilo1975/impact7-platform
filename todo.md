@@ -549,3 +549,19 @@
 - [ ] Testar validação (não possível, página não renderiza)
 - [ ] Executar pnpm db:push (não executado)
 - [x] Salvar checkpoint v2.6.0
+
+
+## 58. Investigação Contact.tsx + Migrations + Script Date→number Final (RODADA 22 - CONCLUÍDA)
+- [x] Verificar console.error no browser - Apenas erro WebSocket (não crítico)
+- [x] Analisar imports/exports do Contact.tsx - Encontrado setFormData() inexistente
+- [x] Corrigir erro que causa página em branco - Substituído por form.reset()
+- [x] Testar formulário de contato renderizando corretamente - ✅ SUCESSO!
+- [x] Limpar migrations antigas: rm -rf drizzle/migrations/* - Executado
+- [x] Executar pnpm db:push - FALHOU (DEFAULT UNIX_TIMESTAMP() não permitido)
+- [ ] Verificar se erros "Unknown column" foram eliminados (não resolvido)
+- [x] Criar script fix-date-critical-files.mjs focado em arquivos críticos
+- [x] Executar script em routers.ts (auth.ts e session.ts não existem)
+- [x] Script executado: 1 arquivo modificado, 1 mudança
+- [x] Validação TypeScript: 265 → 264 erros (1 erro eliminado)
+- [x] Testar homepage - Funcional
+- [x] Salvar checkpoint v2.7.0

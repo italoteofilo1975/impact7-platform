@@ -60,7 +60,7 @@ export default function Contato() {
     onSuccess: () => {
       setIsSubmitted(true);
       toast.success("Mensagem enviada com sucesso!");
-      setFormData({ name: "", email: "", phone: "", organization: "", subject: "", message: "" });
+      form.reset();
     },
     onError: (error) => {
       toast.error(error.message || "Erro ao enviar mensagem. Tente novamente.");

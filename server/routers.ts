@@ -311,7 +311,7 @@ export const appRouter = router({
       const db = await getDb();
       if (!db) return { days: [], leads: [], downloads: [] };
       
-      const now = new Date();
+      const now = Date.now();
       const days: string[] = [];
       const leadsPerDay: number[] = [];
       const downloadsPerDay: number[] = [];
