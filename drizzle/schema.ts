@@ -6,7 +6,6 @@ import { sql } from "drizzle-orm";
  */
 export const users = mysqlTable("users", {
   id: int("id").primaryKey({ autoIncrement: true }),
-  openId: varchar("openId", { length: 64 }).unique(), // Optional: only for Manus OAuth users
   name: text("name"),
   email: varchar("email", { length: 320 }).unique(), // Unique for local auth
   passwordHash: varchar("passwordHash", { length: 255 }),

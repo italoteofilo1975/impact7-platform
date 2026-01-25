@@ -3743,5 +3743,118 @@ export const appRouter = router({
         return { success: true, message: 'Conta excluída com sucesso' };
       }),
   }),
+
+  // RBAC (Role-Based Access Control)
+  rbac: router({
+    // Seed inicial de roles e permissions
+    seedRBAC: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
+        
+        const db = await getDb();
+        if (!db) throw new Error('Database not available');
+        
+        const { roles, permissions, rolePermissions } = await import('../drizzle/schema');
+        const now = Date.now();
+        
+        // 1. Criar roles
+        const rolesData = [
+          { code: 'admin', name: 'Administrator', description: 'Full system access', level: 100, isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'manager', name: 'Manager', description: 'Manage content and users', level: 50, isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'user', name: 'User', description: 'Standard user access', level: 10, isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'guest', name: 'Guest', description: 'Limited read-only access', level: 1, isActive: 1, createdAt: now, updatedAt: now },
+        ];
+        
+        for (const roleData of rolesData) {
+          await db.insert(roles).values(roleData).onDuplicateKeyUpdate({ set: { updatedAt: now } });
+        }
+        
+        // 2. Criar permissions
+        const permsData = [
+          { code: 'content.read', name: 'Read Content', description: 'View content', category: 'content', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'content.create', name: 'Create Content', description: 'Create new content', category: 'content', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'content.update', name: 'Update Content', description: 'Edit existing content', category: 'content', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'content.delete', name: 'Delete Content', description: 'Delete content', category: 'content', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'users.read', name: 'Read Users', description: 'View user list', category: 'users', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'users.create', name: 'Create Users', description: 'Create new users', category: 'users', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'users.update', name: 'Update Users', description: 'Edit user details', category: 'users', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'users.delete', name: 'Delete Users', description: 'Delete users', category: 'users', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'system.settings', name: 'System Settings', description: 'Manage system settings', category: 'system', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'system.backup', name: 'System Backup', description: 'Create backups', category: 'system', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'system.logs', name: 'System Logs', description: 'View system logs', category: 'system', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'analytics.view', name: 'View Analytics', description: 'View analytics dashboard', category: 'analytics', isActive: 1, createdAt: now, updatedAt: now },
+          { code: 'analytics.export', name: 'Export Analytics', description: 'Export analytics data', category: 'analytics', isActive: 1, createdAt: now, updatedAt: now },
+        ];
+        
+        for (const permData of permsData) {
+          await db.insert(permissions).values(permData).onDuplicateKeyUpdate({ set: { updatedAt: now } });
+        }
+        
+        // 3. Buscar IDs criados
+        const allRoles = await db.select().from(roles);
+        const allPerms = await db.select().from(permissions);
+        
+        // 4. Associar permissions aos roles
+        const adminRole = allRoles.find(r => r.code === 'admin');
+        const managerRole = allRoles.find(r => r.code === 'manager');
+        const userRole = allRoles.find(r => r.code === 'user');
+        const guestRole = allRoles.find(r => r.code === 'guest');
+        
+        // Admin: todas as permissões
+        if (adminRole) {
+          for (const perm of allPerms) {
+            await db.insert(rolePermissions).values({
+              roleId: adminRole.id,
+              permissionId: perm.id,
+              assignedAt: now,
+            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+          }
+        }
+        
+        // Manager: content + analytics
+        if (managerRole) {
+          const managerPerms = allPerms.filter(p => p.category === 'content' || p.category === 'analytics');
+          for (const perm of managerPerms) {
+            await db.insert(rolePermissions).values({
+              roleId: managerRole.id,
+              permissionId: perm.id,
+              assignedAt: now,
+            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+          }
+        }
+        
+        // User: read content + view analytics
+        if (userRole) {
+          const userPerms = allPerms.filter(p => p.code === 'content.read' || p.code === 'analytics.view');
+          for (const perm of userPerms) {
+            await db.insert(rolePermissions).values({
+              roleId: userRole.id,
+              permissionId: perm.id,
+              assignedAt: now,
+            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+          }
+        }
+        
+        // Guest: apenas read content
+        if (guestRole) {
+          const guestPerms = allPerms.filter(p => p.code === 'content.read');
+          for (const perm of guestPerms) {
+            await db.insert(rolePermissions).values({
+              roleId: guestRole.id,
+              permissionId: perm.id,
+              assignedAt: now,
+            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+          }
+        }
+        
+        return {
+          success: true,
+          rolesCreated: allRoles.length,
+          permissionsCreated: allPerms.length,
+        };
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;

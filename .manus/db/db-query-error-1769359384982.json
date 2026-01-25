@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO roles (code, name, description, level, isActive, createdAt, updatedAt) VALUES ('admin', 'Administrator', 'Full system access', 100, 1, 1737824000000, 1737824000000);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user XKE5A2Cq4UPY6bR.5c42757569fc --database 5LJSracN9nNev8VCqJujeg --execute INSERT INTO roles (code, name, description, level, isActive, createdAt, updatedAt) VALUES ('admin', 'Administrator', 'Full system access', 100, 1, 1737824000000, 1737824000000);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'code' in 'field list'"
+  ]
+}

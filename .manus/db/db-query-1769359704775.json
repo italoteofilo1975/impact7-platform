@@ -1,0 +1,114 @@
+{
+  "query": "SHOW COLUMNS FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user XKE5A2Cq4UPY6bR.5c42757569fc --database 5LJSracN9nNev8VCqJujeg --execute SHOW COLUMNS FROM users;",
+  "rows": [
+    {
+      "Field": "id",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "PRI",
+      "Default": "NULL",
+      "Extra": "auto_increment"
+    },
+    {
+      "Field": "name",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "email",
+      "Type": "varchar(320)",
+      "Null": "YES",
+      "Key": "UNI",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "passwordHash",
+      "Type": "varchar(255)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "loginMethod",
+      "Type": "varchar(64)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "role",
+      "Type": "varchar(20)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "user",
+      "Extra": ""
+    },
+    {
+      "Field": "stripeCustomerId",
+      "Type": "varchar(255)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "stripeSubscriptionId",
+      "Type": "varchar(255)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "subscriptionStatus",
+      "Type": "varchar(20)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "none",
+      "Extra": ""
+    },
+    {
+      "Field": "planType",
+      "Type": "varchar(20)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "free",
+      "Extra": ""
+    },
+    {
+      "Field": "createdAt",
+      "Type": "bigint(20)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "updatedAt",
+      "Type": "bigint(20)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "lastSignedIn",
+      "Type": "bigint(20)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "Field\tType\tNull\tKey\tDefault\tExtra\nid\tint(11)\tNO\tPRI\tNULL\tauto_increment\nname\ttext\tYES\t\tNULL\t\nemail\tvarchar(320)\tYES\tUNI\tNULL\t\npasswordHash\tvarchar(255)\tYES\t\tNULL\t\nloginMethod\tvarchar(64)\tYES\t\tNULL\t\nrole\tvarchar(20)\tNO\t\tuser\t\nstripeCustomerId\tvarchar(255)\tYES\t\tNULL\t\nstripeSubscriptionId\tvarchar(255)\tYES\t\tNULL\t\nsubscriptionStatus\tvarchar(20)\tYES\t\tnone\t\nplanType\tvarchar(20)\tYES\t\tfree\t\ncreatedAt\tbigint(20)\tNO\t\tNULL\t\nupdatedAt\tbigint(20)\tNO\t\tNULL\t\nlastSignedIn\tbigint(20)\tNO\t\tNULL\t\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

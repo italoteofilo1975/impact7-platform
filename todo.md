@@ -368,3 +368,18 @@
 - [x] BUG-DB-03: Criar tabela `socialProofCertifications` faltante
 - [x] Testar homepage sem erros de banco
 - [x] Salvar checkpoint v1.2.1
+
+
+## 44. Finalizar Sistema RBAC Próprio (RODADA 8 - CONCLUÍDO)
+- [x] Criar arquivo `server/rbac.ts` com funções de controle de acesso
+- [x] Adicionar tabelas RBAC ao schema Drizzle (roles, permissions, rolePermissions, userRoles)
+- [x] Criar tabelas RBAC no MySQL (4 tabelas criadas)
+- [x] Criar tRPC procedure `rbac.seedRBAC` para popular dados
+- [x] Investigar estrutura real das tabelas no TiDB (SHOW COLUMNS)
+- [x] Dropar tabelas antigas e recriar com estrutura correta
+- [x] Remover campo openId do schema Drizzle
+- [x] Executar seed RBAC com sucesso via Python
+- [x] Usuário admin@impact7.com já existe
+- [x] Atribuir role 'admin' ao usuário ID 3
+- [x] Sistema RBAC 100% funcional (4 roles + 13 permissions)
+- [ ] Salvar checkpoint v1.3.0

@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO users (email, name, passwordHash, role, lastSignedIn, createdAt, updatedAt) \nVALUES ('admin@impact7.com', 'Administrator', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'admin', 0, UNIX_TIMESTAMP() * 1000, UNIX_TIMESTAMP() * 1000);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user XKE5A2Cq4UPY6bR.5c42757569fc --database 5LJSracN9nNev8VCqJujeg --execute INSERT INTO users (email, name, passwordHash, role, lastSignedIn, createdAt, updatedAt) \nVALUES ('admin@impact7.com', 'Administrator', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'admin', 0, UNIX_TIMESTAMP() * 1000, UNIX_TIMESTAMP() * 1000);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1062 (23000) at line 1: Duplicate entry '?' for key 'users.email'"
+  ]
+}
