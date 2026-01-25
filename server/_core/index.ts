@@ -5,6 +5,7 @@ import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
+import { registerLocalAuthRoutes } from "./local-auth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -118,7 +119,10 @@ async function startServer() {
   // Public REST API v1
   app.use('/api/v1', publicApi);
   
-  // OAuth callback under /api/oauth/callback
+  // Local authentication routes (email + password)
+  registerLocalAuthRoutes(app);
+  
+  // OAuth callback under /api/oauth/callback (legacy, optional)
   registerOAuthRoutes(app);
   // tRPC API
   app.use(

@@ -72,6 +72,8 @@ const TermosDeUso = lazy(() => import("./pages/TermosDeUso"));
 const PoliticaPrivacidade = lazy(() => import("./pages/PoliticaPrivacidade"));
 const Login = lazy(() => import("./pages/Login"));
 const LoginLocal = lazy(() => import("./pages/LoginLocal"));
+const Register = lazy(() => import("./pages/Register"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const MeusCertificados = lazy(() => import("./pages/MeusCertificados"));
 
 // API & Developer pages - lazy loaded
@@ -169,6 +171,8 @@ function Router() {
         <Route path="/termos" component={TermosDeUso} />
         <Route path="/privacidade" component={PoliticaPrivacidade} />
         <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/login-admin" component={LoginLocal} />
         <Route path="/precos" component={Precos} />
         <Route path="/checkout/success" component={CheckoutSuccess} />

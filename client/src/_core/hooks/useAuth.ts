@@ -1,4 +1,4 @@
-import { getLoginUrl } from "@/const";
+// Local authentication - no external OAuth
 import { trpc } from "@/lib/trpc";
 import { TRPCClientError } from "@trpc/client";
 import { useCallback, useEffect, useMemo } from "react";
@@ -33,7 +33,7 @@ export function clear2FAVerification() {
 export function useAuth(options?: UseAuthOptions) {
   const { 
     redirectOnUnauthenticated = false, 
-    redirectPath = getLoginUrl(),
+    redirectPath = "/login",
     require2FA = true 
   } = options ?? {};
   const utils = trpc.useUtils();

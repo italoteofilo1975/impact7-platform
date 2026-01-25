@@ -6,9 +6,9 @@ import { sql } from "drizzle-orm";
  */
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  openId: text("openId", { length: 64 }).notNull().unique(),
+  openId: text("openId", { length: 64 }).unique(), // Optional: only for Manus OAuth users
   name: text("name"),
-  email: text("email", { length: 320 }),
+  email: text("email", { length: 320 }).unique(), // Unique for local auth
   passwordHash: text("passwordHash", { length: 255 }),
   loginMethod: text("loginMethod", { length: 64 }),
   role: text("role").default("user").notNull(), // user, manager, admin

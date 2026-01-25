@@ -303,3 +303,14 @@
 - [x] Passo 1: Orientar publicação em produção via Management UI - Instruções fornecidas
 - [x] Passo 2: Implementar UI GDPR completa (botões exportar + excluir dados) - Tab Configurações adicionada ao perfil
 - [x] Passo 3: Orientar configuração de integrações opcionais (Stripe + SMTP) - Guia criado em docs/GUIA_INTEGRACOES_OPCIONAIS.md
+
+
+## 38. Migrar 100% do Controle de Acesso para Sistema Local Próprio
+- [ ] Auditar sistema e identificar todas as dependências do Manus OAuth
+- [ ] Substituir Manus OAuth por sistema de autenticação local (JWT + bcrypt)
+- [ ] Implementar registro de usuários (email + senha)
+- [ ] Implementar login local (email + senha)
+- [ ] Implementar recuperação de senha
+- [ ] Remover todas as referências ao Manus OAuth
+- [ ] Testar fluxo completo de autenticação local
+- [ ] Validar que 100% do controle de acesso é local

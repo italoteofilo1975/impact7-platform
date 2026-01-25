@@ -1,6 +1,7 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { User } from "../../drizzle/schema";
-import { sdk } from "./sdk";
+import { verifySessionToken } from "./local-auth";
+import * as db from "../db";
 
 export type TrpcContext = {
   req: CreateExpressContextOptions["req"];
@@ -14,7 +15,14 @@ export async function createContext(
   let user: User | null = null;
 
   try {
-    user = await sdk.authenticateRequest(opts.req);
+    // Try local JWT authentication first
+    const sessionCookie = opts.req.cookies?.session;
+    if (sessionCookie) {
+      const payload = verifySessionToken(sessionCookie);
+      if (payload && payload.userId) {
+        user = await db.getUserById(payload.userId);
+      }
+    }
   } catch (error) {
     // Authentication is optional for public procedures.
     user = null;

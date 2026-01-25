@@ -140,3 +140,62 @@ export async function upsertUser(userData: Partial<InsertUser> & { openId: strin
     return await getUserByOpenId(userData.openId);
   }
 }
+
+// Local Authentication Functions
+
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return user || null;
+}
+
+export async function getUserById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return user || null;
+}
+
+export async function createLocalUser(userData: {
+  email: string;
+  name: string | null;
+  passwordHash: string;
+  loginMethod: string;
+  role: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(users).values({
+    ...userData,
+    createdAt: Math.floor(Date.now() / 1000),
+    updatedAt: Math.floor(Date.now() / 1000),
+    lastSignedIn: Math.floor(Date.now() / 1000),
+  }).returning({ id: users.id });
+  
+  return result[0].id;
+}
+
+export async function updateUserLastSignedIn(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(users)
+    .set({ lastSignedIn: Math.floor(Date.now() / 1000) })
+    .where(eq(users.id, userId));
+}
+
+export async function updateUserPassword(userId: number, passwordHash: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(users)
+    .set({ 
+      passwordHash,
+      updatedAt: Math.floor(Date.now() / 1000),
+    })
+    .where(eq(users.id, userId));
+}
