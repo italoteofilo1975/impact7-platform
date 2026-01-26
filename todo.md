@@ -600,3 +600,37 @@
 - [x] Erros de runtime eliminados
 - [ ] Implementar 43 mocks identificados (não crítico, sistema 95% funcional)
 - [x] Salvar checkpoint v3.0.0
+
+
+## 60. Implementação dos 43 Mocks + Correção 264 Erros TS + Testes E2E (RODADA 24)
+**Meta:** Sistema 100% funcional sem código mockado e sem erros TypeScript
+
+### Passo 1: Implementar Mocks Identificados
+- [ ] Analisar Cases.tsx (5 mocks) - Identificar arrays hardcoded
+- [ ] Substituir arrays por queries tRPC em Cases.tsx
+- [ ] Analisar Certificacoes.tsx (3 mocks)
+- [ ] Substituir arrays por queries tRPC em Certificacoes.tsx
+- [ ] Analisar Comunidade.tsx (3 mocks)
+- [ ] Substituir arrays por queries tRPC em Comunidade.tsx
+- [ ] Implementar mocks restantes nos 24 arquivos (1-2 mocks cada)
+
+### Passo 2: Corrigir 264 Erros TypeScript
+- [ ] Criar script fix-all-typescript-errors.mjs massivo
+- [ ] Converter Date→number em todos os arquivos
+- [ ] Adicionar updatedAt faltante em inserts
+- [ ] Corrigir tipos de retorno de funções
+- [ ] Executar script e validar compilação (264 → 0 erros esperado)
+
+### Passo 3: Testar Fluxos E2E Críticos
+- [ ] Testar fluxo: Registro de usuário
+- [ ] Testar fluxo: Login
+- [ ] Testar fluxo: Calculadora de impacto
+- [ ] Testar fluxo: Geração de certificado
+- [ ] Testar fluxo: Download whitepaper
+- [ ] Validar que todos os fluxos funcionam 100%
+
+### Passo 4: Validação Final
+- [ ] Verificar que não há erros TypeScript
+- [ ] Verificar que não há erros SQL nos logs
+- [ ] Verificar que não há código mockado crítico
+- [ ] Salvar checkpoint v3.1.0 (Sistema 100% Funcional)
