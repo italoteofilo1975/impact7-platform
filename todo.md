@@ -634,3 +634,57 @@
 - [ ] Verificar que não há erros SQL nos logs
 - [ ] Verificar que não há código mockado crítico
 - [ ] Salvar checkpoint v3.1.0 (Sistema 100% Funcional)
+
+
+## 62. Plano Massivo de 35 Passos - Melhorias Abrangentes (RODADA 26)
+
+### Fase 1: Testes E2E Playwright (Passos 1-5) - ✅ CONCLUÍDA
+- [x] 1. Instalar Playwright e dependências (@playwright/test v1.58.0)
+- [x] 2. Criar playwright.config.ts (configurado para chromium)
+- [x] 3. Criar tests/calculator.spec.ts (2 testes)
+- [x] 4. Criar tests/whitepaper.spec.ts (3 testes)
+- [x] 5. Criar tests/contact.spec.ts (4 testes)
+
+### Fase 2: Correção TypeScript (Passos 6-15)
+- [ ] 6. Corrigir erros Date vs number em routers.ts (top 20)
+- [ ] 7. Corrigir erros Date vs number em webhook-service.ts
+- [ ] 8. Corrigir erros Date vs number em db.ts
+- [ ] 9. Adicionar updatedAt em inserts faltantes (manual, 10 arquivos)
+- [ ] 10. Converter tipos de retorno Date→number em services
+- [ ] 11. Adicionar type assertions onde necessário
+- [ ] 12. Corrigir erros TS2345 (argument type mismatch)
+- [ ] 13. Corrigir erros TS2339 (property does not exist)
+- [ ] 14. Validar compilação TypeScript (264 → esperado 150)
+- [ ] 15. Documentar erros TypeScript restantes
+
+### Fase 3: Implementação de Mocks (Passos 16-20)
+- [ ] 16. Implementar queries tRPC para Cases.tsx (5 mocks)
+- [ ] 17. Implementar queries tRPC para Certificacoes.tsx (3 mocks)
+- [ ] 18. Implementar queries tRPC para Comunidade.tsx (3 mocks)
+- [ ] 19. Implementar queries tRPC para outros arquivos (10 mocks)
+- [ ] 20. Validar que todos os mocks foram substituídos
+
+### Fase 4: Validações Zod (Passos 21-25)
+- [ ] 21. Integrar useCalculatorForm no ImpactCalculator.tsx
+- [ ] 22. Integrar useNewsletterForm em Newsletter.tsx
+- [ ] 23. Integrar useWhitepaperForm em Whitepaper.tsx
+- [ ] 24. Adicionar validação em formulários admin
+- [ ] 25. Testar todas as validações no browser
+
+### Fase 5: Sistema de Toast (Passos 26-28)
+- [ ] 26. Integrar toast em formulários (contato, calculadora, whitepaper)
+- [ ] 27. Integrar toast em ações admin (CRUD operations)
+- [ ] 28. Testar feedback visual de todas as ações
+
+### Fase 6: Otimizações (Passos 29-32)
+- [ ] 29. Adicionar SEO metadata em todas as páginas
+- [ ] 30. Otimizar imagens e assets
+- [ ] 31. Implementar lazy loading de componentes pesados
+- [ ] 32. Adicionar loading states em queries tRPC
+
+### Fase 7: Documentação (Passos 33-35)
+- [ ] 33. Criar README.md completo do projeto
+- [ ] 34. Documentar API tRPC (procedures e schemas)
+- [ ] 35. Salvar checkpoint v4.0.0 final
+
+**Meta:** Sistema 100% funcional, testado, documentado e pronto para produção
