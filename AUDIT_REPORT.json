@@ -1,0 +1,884 @@
+{
+  "timestamp": "2026-01-26T01:11:48.580Z",
+  "summary": {
+    "totalPages": 91,
+    "pagesWithInteractions": 49,
+    "totalProcedures": 235,
+    "totalMocks": 43
+  },
+  "frontendInteractions": [
+    {
+      "page": "Admin",
+      "path": "client/src/pages/Admin.tsx",
+      "mutations": [],
+      "queries": [
+        "leads.list",
+        "contacts.list",
+        "downloads.listWhitepaper",
+        "downloads.listEbook",
+        "cases.getSubmissions",
+        "userNotifications.getUnreadCount",
+        "leads.activityMetrics"
+      ]
+    },
+    {
+      "page": "AdminAdvanced",
+      "path": "client/src/pages/AdminAdvanced.tsx",
+      "mutations": [
+        "userNotifications.sendTestNotification",
+        "scheduler.start",
+        "scheduler.stop",
+        "scheduler.triggerTask",
+        "scheduler.setTaskEnabled",
+        "featureFlags.upsert",
+        "emailDigest.sendNow"
+      ],
+      "queries": [
+        "sseMetrics.getMetrics",
+        "sseMetrics.getClients",
+        "sseMetrics.getHistory",
+        "scheduler.getStatus",
+        "scheduler.getTasks",
+        "scheduler.getLogs",
+        "featureFlags.getAll",
+        "emailDigest.getStatus",
+        "emailDigest.preview"
+      ]
+    },
+    {
+      "page": "AdminAlerts",
+      "path": "client/src/pages/AdminAlerts.tsx",
+      "mutations": [
+        "alerts.acknowledge",
+        "alerts.resolve",
+        "autoAlerts.updateConfig"
+      ],
+      "queries": [
+        "alerts.summary",
+        "alerts.active",
+        "alerts.history",
+        "autoAlerts.getStatus"
+      ]
+    },
+    {
+      "page": "AdminAnalytics",
+      "path": "client/src/pages/AdminAnalytics.tsx",
+      "mutations": [],
+      "queries": [
+        "analytics.dashboard",
+        "analytics.metricsByDay",
+        "analytics.jarvisStats",
+        "analytics.jarvisByDay",
+        "analytics.topQueries",
+        "analytics.conversionFunnel",
+        "analytics.conversionsBySource",
+        "analytics.topPages",
+        "conversions.getFunnel",
+        "conversions.getAttribution",
+        "conversions.getTrends"
+      ]
+    },
+    {
+      "page": "AdminApiMetrics",
+      "path": "client/src/pages/AdminApiMetrics.tsx",
+      "mutations": [],
+      "queries": [
+        "apiMetrics.getSummary",
+        "apiMetrics.getEndpoints",
+        "apiMetrics.getClients",
+        "apiMetrics.getTimeSeries",
+        "apiMetrics.getErrors"
+      ]
+    },
+    {
+      "page": "AdminAudit",
+      "path": "client/src/pages/AdminAudit.tsx",
+      "mutations": [],
+      "queries": [
+        "audit.getLogs",
+        "audit.getStats",
+        "audit.getResourceTypes",
+        "audit.exportCsv"
+      ]
+    },
+    {
+      "page": "AdminBusinessMetrics",
+      "path": "client/src/pages/AdminBusinessMetrics.tsx",
+      "mutations": [],
+      "queries": [
+        "leads.list",
+        "tokens.getStats"
+      ]
+    },
+    {
+      "page": "AdminCaseReview",
+      "path": "client/src/pages/AdminCaseReview.tsx",
+      "mutations": [
+        "cases.updateSubmissionStatus"
+      ],
+      "queries": [
+        "cases.getSubmissions"
+      ]
+    },
+    {
+      "page": "AdminContacts",
+      "path": "client/src/pages/AdminContacts.tsx",
+      "mutations": [],
+      "queries": [
+        "contacts.list",
+        "contacts.exportCsv"
+      ]
+    },
+    {
+      "page": "AdminDownloads",
+      "path": "client/src/pages/AdminDownloads.tsx",
+      "mutations": [],
+      "queries": [
+        "downloads.listWhitepaper",
+        "downloads.listEbook",
+        "downloads.exportCsv"
+      ]
+    },
+    {
+      "page": "AdminLeads",
+      "path": "client/src/pages/AdminLeads.tsx",
+      "mutations": [],
+      "queries": [
+        "leads.list",
+        "leads.exportCsv"
+      ]
+    },
+    {
+      "page": "AdminMonitoring",
+      "path": "client/src/pages/AdminMonitoring.tsx",
+      "mutations": [
+        "alerts.acknowledge",
+        "alerts.resolve"
+      ],
+      "queries": [
+        "alerts.systemHealth",
+        "alerts.summary",
+        "alerts.active",
+        "alerts.circuitBreakers",
+        "alerts.cacheStats"
+      ]
+    },
+    {
+      "page": "AdminReports",
+      "path": "client/src/pages/AdminReports.tsx",
+      "mutations": [
+        "reports.generatePDF"
+      ],
+      "queries": [
+        "leads.list",
+        "downloads.listWhitepaper",
+        "downloads.listEbook",
+        "cases.getSubmissions",
+        "certificates.getPublic",
+        "tokens.getStats",
+        "leads.activityMetrics"
+      ]
+    },
+    {
+      "page": "AdminSettings",
+      "path": "client/src/pages/AdminSettings.tsx",
+      "mutations": [
+        "systemSettings.setBulk"
+      ],
+      "queries": [
+        "systemSettings.list"
+      ]
+    },
+    {
+      "page": "AdminSystemMetrics",
+      "path": "client/src/pages/AdminSystemMetrics.tsx",
+      "mutations": [],
+      "queries": [
+        "systemMetrics.getMetrics",
+        "systemMetrics.getHistory",
+        "systemMetrics.health"
+      ]
+    },
+    {
+      "page": "AdminTags",
+      "path": "client/src/pages/AdminTags.tsx",
+      "mutations": [
+        "tags.create",
+        "tags.update",
+        "tags.delete"
+      ],
+      "queries": [
+        "tags.list"
+      ]
+    },
+    {
+      "page": "AdminTemplates",
+      "path": "client/src/pages/AdminTemplates.tsx",
+      "mutations": [
+        "notificationTemplates.create",
+        "notificationTemplates.update",
+        "notificationTemplates.delete",
+        "notificationTemplates.seedDefaults"
+      ],
+      "queries": [
+        "notificationTemplates.list",
+        "notificationTemplates.getVariables"
+      ]
+    },
+    {
+      "page": "AdminTokensDashboard",
+      "path": "client/src/pages/AdminTokensDashboard.tsx",
+      "mutations": [],
+      "queries": [
+        "tokens.getUserTokens"
+      ]
+    },
+    {
+      "page": "AdminUsers",
+      "path": "client/src/pages/AdminUsers.tsx",
+      "mutations": [
+        "rbac.assignRole",
+        "rbac.removeRole"
+      ],
+      "queries": [
+        "rbac.listUsers",
+        "rbac.listRoles",
+        "rbac.getUserRBAC"
+      ]
+    },
+    {
+      "page": "ApiKeys",
+      "path": "client/src/pages/ApiKeys.tsx",
+      "mutations": [
+        "publicApi.createKey",
+        "publicApi.revokeKey"
+      ],
+      "queries": [
+        "publicApi.getPermissions",
+        "publicApi.listKeys",
+        "publicApi.getDocumentation"
+      ]
+    },
+    {
+      "page": "Calculadora",
+      "path": "client/src/pages/Calculadora.tsx",
+      "mutations": [
+        "calculator.calculate",
+        "calculator.exportPdf"
+      ],
+      "queries": []
+    },
+    {
+      "page": "CaseSubmit",
+      "path": "client/src/pages/CaseSubmit.tsx",
+      "mutations": [
+        "cases.submitCase"
+      ],
+      "queries": []
+    },
+    {
+      "page": "Cases",
+      "path": "client/src/pages/Cases.tsx",
+      "mutations": [
+        "cases.generatePDF",
+        "cases.addFavorite",
+        "cases.removeFavorite",
+        "cases.generateConsolidatedReport"
+      ],
+      "queries": [
+        "cases.getFavorites"
+      ]
+    },
+    {
+      "page": "CertificateVerify",
+      "path": "client/src/pages/CertificateVerify.tsx",
+      "mutations": [
+        "certificates.verify"
+      ],
+      "queries": []
+    },
+    {
+      "page": "ComponentShowcase",
+      "path": "client/src/pages/ComponentShowcase.tsx",
+      "mutations": [
+        "ai.chat"
+      ],
+      "queries": []
+    },
+    {
+      "page": "Contato",
+      "path": "client/src/pages/Contato.tsx",
+      "mutations": [
+        "contacts.create"
+      ],
+      "queries": []
+    },
+    {
+      "page": "Depoimentos",
+      "path": "client/src/pages/Depoimentos.tsx",
+      "mutations": [],
+      "queries": [
+        "socialProof.getTestimonials",
+        "socialProof.getTestimonialSectors"
+      ]
+    },
+    {
+      "page": "Favorites",
+      "path": "client/src/pages/Favorites.tsx",
+      "mutations": [
+        "cases.removeFavorite"
+      ],
+      "queries": [
+        "cases.getFavorites"
+      ]
+    },
+    {
+      "page": "Home",
+      "path": "client/src/pages/Home.tsx",
+      "mutations": [],
+      "queries": [
+        "socialProof.getTestimonials"
+      ]
+    },
+    {
+      "page": "ImpactTokens",
+      "path": "client/src/pages/ImpactTokens.tsx",
+      "mutations": [],
+      "queries": [
+        "tokens.getUserTokens",
+        "certificates.getUserCertificates"
+      ]
+    },
+    {
+      "page": "JarvisMemory",
+      "path": "client/src/pages/JarvisMemory.tsx",
+      "mutations": [
+        "jarvisMemory.delete",
+        "jarvisMemory.clearAll"
+      ],
+      "queries": [
+        "jarvisMemory.getAll",
+        "jarvisMemory.search",
+        "jarvisMemory.buildContext"
+      ]
+    },
+    {
+      "page": "JarvisReports",
+      "path": "client/src/pages/JarvisReports.tsx",
+      "mutations": [
+        "jarvisReports.generate",
+        "jarvisReports.delete"
+      ],
+      "queries": [
+        "jarvisReports.list",
+        "jarvisReports.get"
+      ]
+    },
+    {
+      "page": "LoginLocal",
+      "path": "client/src/pages/LoginLocal.tsx",
+      "mutations": [
+        "auth.loginLocal",
+        "auth.createAdmin"
+      ],
+      "queries": []
+    },
+    {
+      "page": "MeusCertificados",
+      "path": "client/src/pages/MeusCertificados.tsx",
+      "mutations": [],
+      "queries": [
+        "certificates.getUserCertificates"
+      ]
+    },
+    {
+      "page": "Notificacoes",
+      "path": "client/src/pages/Notificacoes.tsx",
+      "mutations": [
+        "userNotifications.markAsRead",
+        "userNotifications.markAllAsRead",
+        "userNotifications.delete"
+      ],
+      "queries": [
+        "userNotifications.list"
+      ]
+    },
+    {
+      "page": "NotificationPreferences",
+      "path": "client/src/pages/NotificationPreferences.tsx",
+      "mutations": [
+        "userNotifications.updatePreferences"
+      ],
+      "queries": [
+        "userNotifications.getPreferences"
+      ]
+    },
+    {
+      "page": "NotificationSettings",
+      "path": "client/src/pages/NotificationSettings.tsx",
+      "mutations": [
+        "notifications.updatePreferences",
+        "notifications.sendTest"
+      ],
+      "queries": [
+        "notifications.getPreferences"
+      ]
+    },
+    {
+      "page": "OAuthAuthorize",
+      "path": "client/src/pages/OAuthAuthorize.tsx",
+      "mutations": [
+        "oauth.authorize"
+      ],
+      "queries": [
+        "oauth.validateAuthorization"
+      ]
+    },
+    {
+      "page": "OAuthClients",
+      "path": "client/src/pages/OAuthClients.tsx",
+      "mutations": [
+        "oauth.createClient",
+        "oauth.deleteClient",
+        "oauth.regenerateSecret"
+      ],
+      "queries": [
+        "oauth.getScopes",
+        "oauth.listClients"
+      ]
+    },
+    {
+      "page": "Parceiros",
+      "path": "client/src/pages/Parceiros.tsx",
+      "mutations": [],
+      "queries": [
+        "socialProof.getPartners",
+        "socialProof.getTestimonials"
+      ]
+    },
+    {
+      "page": "Payments",
+      "path": "client/src/pages/Payments.tsx",
+      "mutations": [
+        "billing.createPortal"
+      ],
+      "queries": [
+        "billing.getSubscription"
+      ]
+    },
+    {
+      "page": "Precos",
+      "path": "client/src/pages/Precos.tsx",
+      "mutations": [
+        "billing.createCheckout"
+      ],
+      "queries": []
+    },
+    {
+      "page": "Profile",
+      "path": "client/src/pages/Profile.tsx",
+      "mutations": [
+        "gdpr.exportData",
+        "gdpr.requestDeletion"
+      ],
+      "queries": [
+        "gamification.getStats",
+        "gamification.getAllBadges",
+        "gamification.getLeaderboard"
+      ]
+    },
+    {
+      "page": "Referrals",
+      "path": "client/src/pages/Referrals.tsx",
+      "mutations": [
+        "referrals.invite"
+      ],
+      "queries": [
+        "referrals.getCode",
+        "referrals.getStats",
+        "referrals.getHistory"
+      ]
+    },
+    {
+      "page": "Security",
+      "path": "client/src/pages/Security.tsx",
+      "mutations": [
+        "twoFactor.setup",
+        "twoFactor.enable",
+        "twoFactor.disable",
+        "twoFactor.regenerateBackupCodes",
+        "accessTokens.create",
+        "accessTokens.revoke"
+      ],
+      "queries": [
+        "twoFactor.getStatus",
+        "accessTokens.list"
+      ]
+    },
+    {
+      "page": "Suporte",
+      "path": "client/src/pages/Suporte.tsx",
+      "mutations": [
+        "tickets.create",
+        "tickets.addMessage"
+      ],
+      "queries": [
+        "tickets.myTickets",
+        "tickets.getTicket"
+      ]
+    },
+    {
+      "page": "Verify2FA",
+      "path": "client/src/pages/Verify2FA.tsx",
+      "mutations": [
+        "twoFactor.verify"
+      ],
+      "queries": [
+        "twoFactor.getStatus"
+      ]
+    },
+    {
+      "page": "Webhooks",
+      "path": "client/src/pages/Webhooks.tsx",
+      "mutations": [
+        "webhooks.create",
+        "webhooks.update",
+        "webhooks.delete",
+        "webhooks.regenerateSecret",
+        "webhooks.test"
+      ],
+      "queries": [
+        "webhooks.getEvents",
+        "webhooks.list",
+        "webhooks.getDeliveries"
+      ]
+    },
+    {
+      "page": "Whitepaper",
+      "path": "client/src/pages/Whitepaper.tsx",
+      "mutations": [
+        "downloads.whitepaper"
+      ],
+      "queries": []
+    }
+  ],
+  "procedures": [
+    "getConfig",
+    "setConfig",
+    "sendTest",
+    "me",
+    "logout",
+    "loginLocal",
+    "createAdmin",
+    "changePassword",
+    "create",
+    "list",
+    "activityMetrics",
+    "exportCsv",
+    "create",
+    "list",
+    "exportCsv",
+    "whitepaper",
+    "ebook",
+    "listWhitepaper",
+    "listEbook",
+    "exportCsv",
+    "subscribe",
+    "calculate",
+    "history",
+    "exportPdf",
+    "trackPageView",
+    "updatePageMetrics",
+    "trackJarvis",
+    "jarvisFeedback",
+    "trackConversion",
+    "dashboard",
+    "metricsByDay",
+    "jarvisStats",
+    "jarvisByDay",
+    "topQueries",
+    "conversionStats",
+    "conversionsBySource",
+    "conversionFunnel",
+    "topPages",
+    "chat",
+    "calculate",
+    "mentorship",
+    "suggestions",
+    "search",
+    "categories",
+    "documentsByCategory",
+    "summary",
+    "active",
+    "history",
+    "acknowledge",
+    "resolve",
+    "circuitBreakers",
+    "cacheStats",
+    "systemHealth",
+    "errorStats",
+    "recentErrors",
+    "report",
+    "getPreferences",
+    "updatePreferences",
+    "list",
+    "markAsRead",
+    "unreadCount",
+    "sendTest",
+    "stats",
+    "list",
+    "getById",
+    "getSectors",
+    "getRegions",
+    "generatePDF",
+    "generateConsolidatedReport",
+    "getFavorites",
+    "addFavorite",
+    "removeFavorite",
+    "submitCase",
+    "getSubmissions",
+    "updateSubmissionStatus",
+    "list",
+    "create",
+    "update",
+    "delete",
+    "addToCase",
+    "removeFromCase",
+    "getForCase",
+    "getStats",
+    "getAllBadges",
+    "getUserBadges",
+    "getLeaderboard",
+    "recordInteraction",
+    "initBadges",
+    "getPermissions",
+    "listKeys",
+    "createKey",
+    "revokeKey",
+    "getDocumentation",
+    "getEvents",
+    "list",
+    "create",
+    "update",
+    "delete",
+    "regenerateSecret",
+    "getDeliveries",
+    "test",
+    "getScopes",
+    "listClients",
+    "createClient",
+    "deleteClient",
+    "regenerateSecret",
+    "validateAuthorization",
+    "authorize",
+    "token",
+    "issue",
+    "verify",
+    "approve",
+    "revoke",
+    "getUserCertificates",
+    "getPublic",
+    "generateQRCode",
+    "generateHTML",
+    "mint",
+    "getUserTokens",
+    "getOrgStats",
+    "getStats",
+    "save",
+    "getByType",
+    "getByKey",
+    "search",
+    "getAll",
+    "buildContext",
+    "delete",
+    "clearAll",
+    "generate",
+    "list",
+    "get",
+    "delete",
+    "generateHTML",
+    "getSummary",
+    "getEndpoints",
+    "getClients",
+    "getTimeSeries",
+    "getErrors",
+    "list",
+    "getUnreadCount",
+    "markAsRead",
+    "markAllAsRead",
+    "sendTestNotification",
+    "delete",
+    "cleanup",
+    "getPreferences",
+    "updatePreferences",
+    "getMetrics",
+    "getClients",
+    "getHistory",
+    "getStatus",
+    "getTasks",
+    "getLogs",
+    "triggerTask",
+    "setTaskEnabled",
+    "start",
+    "stop",
+    "list",
+    "getByCode",
+    "create",
+    "update",
+    "delete",
+    "preview",
+    "getVariables",
+    "seedDefaults",
+    "list",
+    "get",
+    "set",
+    "setBulk",
+    "delete",
+    "getLogs",
+    "getStats",
+    "getResourceTypes",
+    "exportCsv",
+    "getStatus",
+    "preview",
+    "sendNow",
+    "generatePDF",
+    "getStatus",
+    "runChecks",
+    "updateConfig",
+    "getPlans",
+    "getSubscription",
+    "createCheckout",
+    "createPortal",
+    "getCode",
+    "getStats",
+    "getHistory",
+    "invite",
+    "validateCode",
+    "create",
+    "myTickets",
+    "getTicket",
+    "addMessage",
+    "getAll",
+    "updateStatus",
+    "assign",
+    "getStats",
+    "isEnabled",
+    "getVariant",
+    "getAll",
+    "upsert",
+    "delete",
+    "getStatus",
+    "setup",
+    "enable",
+    "verify",
+    "disable",
+    "regenerateBackupCodes",
+    "list",
+    "create",
+    "revoke",
+    "getUsageLogs",
+    "track",
+    "getFunnel",
+    "getAttribution",
+    "getTrends",
+    "getUserJourney",
+    "getMetrics",
+    "getCertifications",
+    "getPartners",
+    "getFeaturedCases",
+    "getTestimonials",
+    "getTestimonialSectors",
+    "updateMetric",
+    "exportData",
+    "requestDeletion",
+    "seedRBAC",
+    "listUsers",
+    "getUserRBAC",
+    "assignRole",
+    "removeRole",
+    "listRoles",
+    "listPermissions"
+  ],
+  "mockFiles": [
+    {
+      "file": "client/src/pages/AdminAlerts.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/AdminAnalytics.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/AdminReports.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/AdminSystemMetrics.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/AdminTags.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/ApiDocs.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/Blog.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/Carreiras.tsx",
+      "mocks": 2
+    },
+    {
+      "file": "client/src/pages/CaseCompare.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/CaseSubmit.tsx",
+      "mocks": 2
+    },
+    {
+      "file": "client/src/pages/Cases.tsx",
+      "mocks": 5
+    },
+    {
+      "file": "client/src/pages/CasosSucesso.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/Certificacoes.tsx",
+      "mocks": 3
+    },
+    {
+      "file": "client/src/pages/Ciencia.tsx",
+      "mocks": 1
+    },
+    {
+      "file": "client/src/pages/Comunidade.tsx",
+      "mocks": 3
+    },
+    {
+      "file": "client/src/pages/Contato.tsx",
+      "mocks": 2
+    },
+    {
+      "file": "client/src/pages/Demo.tsx",
+      "mocks": 2
+    },
+    {
+      "file": "client/src/pages/Depoimentos.tsx",
+      "mocks": 2
+    },
+    {
+      "file": "client/src/pages/EarlyAdopters.tsx",
+      "mocks": 2
+    },
+    {
+      "file": "client/src/pages/Metodologia.tsx",
+      "mocks": 1
+    }
+  ]
+}
