@@ -1,0 +1,369 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - link "Pular para o conteúdo principal" [ref=e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - region "Notifications alt+T"
+  - main [ref=e4]:
+    - generic [ref=e5]:
+      - navigation [ref=e7]:
+        - generic [ref=e8]:
+          - link "7 IMPACT7" [ref=e9] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e10]: "7"
+            - generic [ref=e11]: IMPACT7
+          - generic [ref=e12]:
+            - link "Science" [ref=e13] [cursor=pointer]:
+              - /url: /ciencia
+              - button "Science" [ref=e14]
+            - link "Mathematics" [ref=e15] [cursor=pointer]:
+              - /url: /matematica
+              - button "Mathematics" [ref=e16]
+            - link "Technology" [ref=e17] [cursor=pointer]:
+              - /url: /tecnologia
+              - button "Technology" [ref=e18]
+            - link "Whitepaper" [ref=e19] [cursor=pointer]:
+              - /url: /whitepaper
+              - button "Whitepaper" [ref=e20]
+            - link "Cases" [ref=e21] [cursor=pointer]:
+              - /url: /cases
+              - button "Cases" [ref=e22]
+            - link "Impact Calculator" [ref=e23] [cursor=pointer]:
+              - /url: /calculadora
+              - button "Impact Calculator" [ref=e24]
+          - generic [ref=e25]:
+            - button "Ativar modo escuro" [ref=e26] [cursor=pointer]:
+              - img [ref=e28]
+            - button "Select language" [ref=e30] [cursor=pointer]:
+              - img
+              - generic [ref=e31]: EN
+              - img
+            - link "Contact" [ref=e32] [cursor=pointer]:
+              - /url: /contato
+              - button "Contact" [ref=e33]:
+                - img
+                - text: Contact
+            - link "Calculate Impact" [ref=e34] [cursor=pointer]:
+              - /url: /calculadora
+              - button "Calculate Impact" [ref=e35]:
+                - img
+                - text: Calculate Impact
+      - main [ref=e36]:
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - link "Home" [ref=e40] [cursor=pointer]:
+              - /url: /
+            - generic [ref=e41]: /
+            - generic [ref=e42]: Calculator
+          - generic [ref=e43]:
+            - img [ref=e44]
+            - text: Interactive Tool
+          - heading "Impact Calculator" [level=1] [ref=e46]
+          - paragraph [ref=e47]: Estimate the S-ROI (Social Return on Investment) of your project using the IMPACT7 Method equation.
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - generic [ref=e53]:
+                - img [ref=e54]
+                - text: Project Data
+              - paragraph [ref=e58]: Fill in the information to calculate potential impact
+            - generic [ref=e59]:
+              - generic [ref=e60]:
+                - generic [ref=e61]:
+                  - generic [ref=e62]:
+                    - text: Total Investment (E)
+                    - button "Total Investment (E)" [ref=e63] [cursor=pointer]:
+                      - img [ref=e64]
+                  - generic [ref=e66]: $100,000
+                - slider [ref=e71]
+                - generic [ref=e72]:
+                  - generic [ref=e73]: $10K
+                  - generic [ref=e74]: $10M
+              - generic [ref=e75]:
+                - generic [ref=e76]:
+                  - generic [ref=e77]:
+                    - text: Context Alignment (C)
+                    - button "Context Alignment (C)" [ref=e78] [cursor=pointer]:
+                      - img [ref=e79]
+                  - generic [ref=e81]: 5/10
+                - slider [ref=e86]
+                - generic [ref=e87]:
+                  - generic [ref=e88]: Low
+                  - generic [ref=e89]: High
+              - generic [ref=e90]:
+                - generic [ref=e91]:
+                  - generic [ref=e92]:
+                    - text: Barriers and Resistance (R)
+                    - button "Barriers and Resistance (R)" [ref=e93] [cursor=pointer]:
+                      - img [ref=e94]
+                  - generic [ref=e96]: 3/10
+                - slider [ref=e101]
+                - generic [ref=e102]:
+                  - generic [ref=e103]: Few
+                  - generic [ref=e104]: Many
+              - generic [ref=e105]:
+                - generic [ref=e106]:
+                  - generic [ref=e107]: Direct Beneficiaries
+                  - generic [ref=e108]: 1,000
+                - slider [ref=e113]
+                - generic [ref=e114]:
+                  - generic [ref=e115]: "100"
+                  - generic [ref=e116]: "100.000"
+              - generic [ref=e117]:
+                - generic [ref=e118]:
+                  - generic [ref=e119]: Project Duration (months)
+                  - generic [ref=e120]: 12 months
+                - slider [ref=e125]
+                - generic [ref=e126]:
+                  - generic [ref=e127]: 3 months
+                  - generic [ref=e128]: 5 years
+              - button "Calculate Impact" [ref=e129] [cursor=pointer]:
+                - img
+                - text: Calculate Impact
+          - generic [ref=e130]:
+            - generic [ref=e131]:
+              - generic [ref=e133]: The Impact Equation
+              - generic [ref=e134]:
+                - generic [ref=e135]:
+                  - text: I = (E × C
+                  - superscript [ref=e136]: "7"
+                  - text: ) / R
+                - generic [ref=e137]:
+                  - generic [ref=e138]:
+                    - generic [ref=e139]: E
+                    - generic [ref=e140]: Energy
+                  - generic [ref=e141]:
+                    - generic [ref=e142]: C
+                    - generic [ref=e143]: Context
+                  - generic [ref=e144]:
+                    - generic [ref=e145]: R
+                    - generic [ref=e146]: Resistance
+                  - generic [ref=e147]:
+                    - generic [ref=e148]: I
+                    - generic [ref=e149]: Impact
+            - generic [ref=e150]:
+              - generic [ref=e152]: Reference Benchmarks
+              - generic [ref=e154]:
+                - generic [ref=e155]:
+                  - generic [ref=e156]: Minimum Recommended S-ROI
+                  - generic [ref=e157]: 7x
+                - generic [ref=e158]:
+                  - generic [ref=e159]: Average S-ROI (Social Projects)
+                  - generic [ref=e160]: 3-4x
+                - generic [ref=e161]:
+                  - generic [ref=e162]: Top 10% S-ROI (IMPACT7)
+                  - generic [ref=e163]: 12x+
+        - generic [ref=e165]:
+          - heading "Want to maximize your project's impact?" [level=2] [ref=e166]
+          - paragraph [ref=e167]: Schedule a free consultation with our team to apply the IMPACT7 Method to your specific context.
+          - generic [ref=e168]:
+            - link "Schedule Consulting" [ref=e169] [cursor=pointer]:
+              - /url: /contato
+              - button "Schedule Consulting" [ref=e170]:
+                - img
+                - text: Schedule Consulting
+            - link "Download Whitepaper" [ref=e171] [cursor=pointer]:
+              - /url: /whitepaper
+              - button "Download Whitepaper" [ref=e172]:
+                - img
+                - text: Download Whitepaper
+      - generic [ref=e174]:
+        - generic [ref=e175]:
+          - generic [ref=e176]:
+            - generic [ref=e177]:
+              - generic [ref=e179]: "7"
+              - generic [ref=e180]: IMPACT7
+            - paragraph [ref=e181]: Exponential Social Innovation. Transforming social impact with science, mathematics, and technology.
+            - generic [ref=e182]:
+              - link [ref=e183] [cursor=pointer]:
+                - /url: https://linkedin.com
+                - img [ref=e184]
+              - link [ref=e188] [cursor=pointer]:
+                - /url: https://instagram.com
+                - img [ref=e189]
+              - link [ref=e192] [cursor=pointer]:
+                - /url: https://youtube.com
+                - img [ref=e193]
+          - generic [ref=e196]:
+            - heading "Quick Links" [level=4] [ref=e197]
+            - list [ref=e198]:
+              - listitem [ref=e199]:
+                - link "Administração" [ref=e200] [cursor=pointer]:
+                  - /url: /admin
+              - listitem [ref=e201]:
+                - link "Science" [ref=e202] [cursor=pointer]:
+                  - /url: /ciencia
+              - listitem [ref=e203]:
+                - link "Mathematics" [ref=e204] [cursor=pointer]:
+                  - /url: /matematica
+              - listitem [ref=e205]:
+                - link "Technology" [ref=e206] [cursor=pointer]:
+                  - /url: /tecnologia
+              - listitem [ref=e207]:
+                - link "Calculadora" [ref=e208] [cursor=pointer]:
+                  - /url: /calculadora
+              - listitem [ref=e209]:
+                - link "About Us" [ref=e210] [cursor=pointer]:
+                  - /url: /sobre
+              - listitem [ref=e211]:
+                - link "Partners" [ref=e212] [cursor=pointer]:
+                  - /url: /parceiros
+              - listitem [ref=e213]:
+                - link "Careers" [ref=e214] [cursor=pointer]:
+                  - /url: /carreiras
+              - listitem [ref=e215]:
+                - link "Schedule Demo" [ref=e216] [cursor=pointer]:
+                  - /url: /demo
+              - listitem [ref=e217]:
+                - link "Newsletter" [ref=e218] [cursor=pointer]:
+                  - /url: /newsletter
+              - listitem [ref=e219]:
+                - link "Success Cases" [ref=e220] [cursor=pointer]:
+                  - /url: /casos-sucesso
+              - listitem [ref=e221]:
+                - link "Compare Plans" [ref=e222] [cursor=pointer]:
+                  - /url: /comparacao
+              - listitem [ref=e223]:
+                - link "Testimonials" [ref=e224] [cursor=pointer]:
+                  - /url: /depoimentos
+          - generic [ref=e225]:
+            - heading "Resources" [level=4] [ref=e226]
+            - list [ref=e227]:
+              - listitem [ref=e228]:
+                - link "Whitepaper" [ref=e229] [cursor=pointer]:
+                  - /url: /whitepaper
+              - listitem [ref=e230]:
+                - link "Case Studies" [ref=e231] [cursor=pointer]:
+                  - /url: /cases
+              - listitem [ref=e232]:
+                - link "Free E-book" [ref=e233] [cursor=pointer]:
+                  - /url: /ebook
+              - listitem [ref=e234]:
+                - link "Blog" [ref=e235] [cursor=pointer]:
+                  - /url: /blog
+              - listitem [ref=e236]:
+                - link "FAQ" [ref=e237] [cursor=pointer]:
+                  - /url: /faq
+              - listitem [ref=e238]:
+                - link "Support" [ref=e239] [cursor=pointer]:
+                  - /url: /suporte
+              - listitem [ref=e240]:
+                - link "Pricing" [ref=e241] [cursor=pointer]:
+                  - /url: /precos
+              - listitem [ref=e242]:
+                - link "API Docs" [ref=e243] [cursor=pointer]:
+                  - /url: /api-docs
+              - listitem [ref=e244]:
+                - link "Status" [ref=e245] [cursor=pointer]:
+                  - /url: /status
+              - listitem [ref=e246]:
+                - link "Changelog" [ref=e247] [cursor=pointer]:
+                  - /url: /changelog
+              - listitem [ref=e248]:
+                - link "Roadmap" [ref=e249] [cursor=pointer]:
+                  - /url: /roadmap
+              - listitem [ref=e250]:
+                - link "Integrations" [ref=e251] [cursor=pointer]:
+                  - /url: /integracoes
+              - listitem [ref=e252]:
+                - link "Webinars" [ref=e253] [cursor=pointer]:
+                  - /url: /webinars
+              - listitem [ref=e254]:
+                - link "Security" [ref=e255] [cursor=pointer]:
+                  - /url: /seguranca
+              - listitem [ref=e256]:
+                - link "Community" [ref=e257] [cursor=pointer]:
+                  - /url: /comunidade
+              - listitem [ref=e258]:
+                - link "Resources" [ref=e259] [cursor=pointer]:
+                  - /url: /recursos
+              - listitem [ref=e260]:
+                - link "Methodology" [ref=e261] [cursor=pointer]:
+                  - /url: /metodologia
+              - listitem [ref=e262]:
+                - link "Glossary" [ref=e263] [cursor=pointer]:
+                  - /url: /glossario
+              - listitem [ref=e264]:
+                - link "Certifications" [ref=e265] [cursor=pointer]:
+                  - /url: /certificacoes
+          - generic [ref=e266]:
+            - heading "Contact" [level=4] [ref=e267]
+            - list [ref=e268]:
+              - listitem [ref=e269]:
+                - img [ref=e270]
+                - text: contato@impact7.com.br
+              - listitem [ref=e273]:
+                - img [ref=e274]
+                - text: +55 (11) 99999-9999
+              - listitem [ref=e276]:
+                - img [ref=e277]
+                - text: São Paulo, Brasil
+        - generic [ref=e280]:
+          - paragraph [ref=e281]: © 2026 IMPACT7. All rights reserved.
+          - generic [ref=e282]:
+            - link "Privacy" [ref=e283] [cursor=pointer]:
+              - /url: /privacidade
+            - link "Terms of Use" [ref=e284] [cursor=pointer]:
+              - /url: /termos
+      - button "Abrir WhatsApp" [ref=e286] [cursor=pointer]:
+        - img
+  - button "Abrir chat com Jarvis" [ref=e287] [cursor=pointer]:
+    - img [ref=e288]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - img
+        - generic:
+          - heading "Jarvis" [level=3]
+          - paragraph: Assistente IMPACT7
+      - generic:
+        - link "Ver memórias":
+          - /url: /jarvis/memorias
+          - button "Ver memórias":
+            - img
+        - link "Ver relatórios":
+          - /url: /jarvis/relatorios
+          - button "Ver relatórios":
+            - img
+        - button "Fechar chat":
+          - img
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - img
+              - heading "Olá! Sou o Jarvis" [level=4]
+              - paragraph: Seu assistente especialista no Método IMPACT7. Como posso ajudar?
+            - generic:
+              - button "Sobre o Método":
+                - img
+                - text: Sobre o Método
+              - button "Calcular S-ROI":
+                - img
+                - text: Calcular S-ROI
+              - button "Os 7 Pilares":
+                - img
+                - text: Os 7 Pilares
+              - button "A Equação":
+                - img
+                - text: A Equação
+            - generic:
+              - paragraph: "Sugestões:"
+              - generic:
+                - button "O que é o Método IMPACT7?"
+                - button "Como calcular o S-ROI do meu projeto?"
+                - button "Explique a equação I = (E × C⁷) / R"
+                - button "Quais são os 7 pilares do IMPACT7?"
+    - generic:
+      - generic:
+        - textbox "Digite sua mensagem..."
+        - button [disabled]:
+          - img
+      - paragraph: Powered by IMPACT7 Knowledge Base
+  - button "Abrir configurações de acessibilidade" [ref=e292] [cursor=pointer]:
+    - img
+```

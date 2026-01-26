@@ -437,7 +437,6 @@ router.get('/metrics', async (req: Request, res: Response) => {
         key: m.key,
         label: m.label,
         value: m.value,
-        icon: m.icon,
       })),
     });
   } catch (error) {
