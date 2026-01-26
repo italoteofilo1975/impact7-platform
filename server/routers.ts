@@ -322,7 +322,7 @@ export const appRouter = router({
       const allEbook = await db.select().from(ebookDownloads);
       
       for (let i = 6; i >= 0; i--) {
-        const date = new Date(now);
+        const date = now;
         date.setDate(date.getDate() - i);
         date.setHours(0, 0, 0, 0);
         const nextDate = new Date(date);
@@ -3618,7 +3618,7 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) return [];
         const result = await executeRawQuery(`
-          SELECT metricKey, value, icon, labelKey, descriptionKey, displayOrder 
+          SELECT metricKey, value, labelKey, descriptionKey, displayOrder 
           FROM socialProofMetrics 
           WHERE isActive = TRUE 
           ORDER BY displayOrder ASC
@@ -3646,7 +3646,7 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) return [];
         const result = await executeRawQuery(`
-          SELECT id, name, category, logoUrl, website, displayOrder 
+          SELECT id, name, logoUrl, website, displayOrder 
           FROM partners 
           WHERE isActive = TRUE 
           ORDER BY displayOrder ASC
@@ -3747,7 +3747,7 @@ export const appRouter = router({
           details: 'Exportação de dados GDPR',
         });
         
-        return { data, exportedAt: new Date().toISOString() };
+        return { data, exportedAt: Date.now().toISOString() };
       }),
 
     requestDeletion: protectedProcedure
