@@ -1,0 +1,375 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - link "Pular para o conteúdo principal" [ref=e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - region "Notifications alt+T"
+  - main [ref=e4]:
+    - generic [ref=e5]:
+      - navigation [ref=e7]:
+        - generic [ref=e8]:
+          - link "7 IMPACT7" [ref=e9] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e10]: "7"
+            - generic [ref=e11]: IMPACT7
+          - generic [ref=e12]:
+            - link "Science" [ref=e13] [cursor=pointer]:
+              - /url: /ciencia
+              - button "Science" [ref=e14]
+            - link "Mathematics" [ref=e15] [cursor=pointer]:
+              - /url: /matematica
+              - button "Mathematics" [ref=e16]
+            - link "Technology" [ref=e17] [cursor=pointer]:
+              - /url: /tecnologia
+              - button "Technology" [ref=e18]
+            - link "Whitepaper" [ref=e19] [cursor=pointer]:
+              - /url: /whitepaper
+              - button "Whitepaper" [ref=e20]
+            - link "Cases" [ref=e21] [cursor=pointer]:
+              - /url: /cases
+              - button "Cases" [ref=e22]
+            - link "Impact Calculator" [ref=e23] [cursor=pointer]:
+              - /url: /calculadora
+              - button "Impact Calculator" [ref=e24]
+          - generic [ref=e25]:
+            - button "Ativar modo escuro" [ref=e26] [cursor=pointer]:
+              - img [ref=e28]
+            - button "Select language" [ref=e30] [cursor=pointer]:
+              - img
+              - generic [ref=e31]: EN
+              - img
+            - link "Contact" [ref=e32] [cursor=pointer]:
+              - /url: /contato
+              - button "Contact" [ref=e33]:
+                - img
+                - text: Contact
+            - link "Calculate Impact" [ref=e34] [cursor=pointer]:
+              - /url: /calculadora
+              - button "Calculate Impact" [ref=e35]:
+                - img
+                - text: Calculate Impact
+      - main [ref=e36]:
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - link "Home" [ref=e40] [cursor=pointer]:
+              - /url: /
+            - generic [ref=e41]: /
+            - generic [ref=e42]: Whitepaper
+          - generic [ref=e43]:
+            - img [ref=e44]
+            - text: Technical Document
+          - heading "IMPACT7 Whitepaper" [level=1] [ref=e47]
+          - paragraph [ref=e48]: "The complete guide to the IMPACT7 Method: scientific foundation, mathematical model, and practical application to maximize social impact."
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e54]:
+              - generic [ref=e55]:
+                - img [ref=e57]
+                - generic [ref=e60]:
+                  - heading "IMPACT7 Method" [level=3] [ref=e61]
+                  - paragraph [ref=e62]: Complete Whitepaper
+                  - generic [ref=e63]:
+                    - generic [ref=e64]: 140 pages
+                    - generic [ref=e65]: •
+                    - generic [ref=e66]: PDF
+                    - generic [ref=e67]: •
+                    - generic [ref=e68]: v2.0
+              - generic [ref=e69]:
+                - generic [ref=e70]:
+                  - img [ref=e71]
+                  - text: Complete scientific foundation
+                - generic [ref=e74]:
+                  - img [ref=e75]
+                  - text: Detailed mathematical model
+                - generic [ref=e78]:
+                  - img [ref=e79]
+                  - text: 77 applicable techniques
+                - generic [ref=e82]:
+                  - img [ref=e83]
+                  - text: Real case studies
+                - generic [ref=e86]:
+                  - img [ref=e87]
+                  - text: Templates and tools
+                - generic [ref=e90]:
+                  - img [ref=e91]
+                  - text: Implementation guide
+            - generic [ref=e94]:
+              - generic [ref=e96]: Table of Contents
+              - generic [ref=e98]:
+                - generic [ref=e99]:
+                  - generic [ref=e100]:
+                    - generic [ref=e101]: "1"
+                    - generic [ref=e102]: Introduction to Social Impact
+                  - generic [ref=e103]: p. 1-15
+                - generic [ref=e104]:
+                  - generic [ref=e105]:
+                    - generic [ref=e106]: "2"
+                    - generic [ref=e107]: "The Impact Equation: I = (E × C⁷) / R"
+                  - generic [ref=e108]: p. 16-35
+                - generic [ref=e109]:
+                  - generic [ref=e110]:
+                    - generic [ref=e111]: "3"
+                    - generic [ref=e112]: The 7 Contexts of Impact
+                  - generic [ref=e113]: p. 36-55
+                - generic [ref=e114]:
+                  - generic [ref=e115]:
+                    - generic [ref=e116]: "4"
+                    - generic [ref=e117]: S-ROI Measurement Methodology
+                  - generic [ref=e118]: p. 56-75
+                - generic [ref=e119]:
+                  - generic [ref=e120]:
+                    - generic [ref=e121]: "5"
+                    - generic [ref=e122]: "7R Framework: Strategic Resources"
+                  - generic [ref=e123]: p. 76-95
+                - generic [ref=e124]:
+                  - generic [ref=e125]:
+                    - generic [ref=e126]: "6"
+                    - generic [ref=e127]: "7V Framework: Value Vectors"
+                  - generic [ref=e128]: p. 96-115
+                - generic [ref=e129]:
+                  - generic [ref=e130]:
+                    - generic [ref=e131]: "7"
+                    - generic [ref=e132]: Application Cases and Results
+                  - generic [ref=e133]: p. 116-140
+          - generic [ref=e135]:
+            - generic [ref=e136]:
+              - generic [ref=e137]:
+                - img [ref=e138]
+                - text: Download Free Whitepaper
+              - paragraph [ref=e141]: Fill out the form to receive the complete whitepaper.
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - generic [ref=e145]: Full Name *
+                - generic [ref=e146]:
+                  - img [ref=e147]
+                  - textbox "Full Name *" [ref=e150]:
+                    - /placeholder: Your name
+              - generic [ref=e151]:
+                - generic [ref=e152]: Email *
+                - generic [ref=e153]:
+                  - img [ref=e154]
+                  - textbox "Email *" [ref=e157]:
+                    - /placeholder: your@email.com
+              - generic [ref=e158]:
+                - generic [ref=e159]: Organization (optional)
+                - generic [ref=e160]:
+                  - img [ref=e161]
+                  - textbox "Organization (optional)" [ref=e164]:
+                    - /placeholder: Your organization name
+              - button "Download Free Whitepaper" [ref=e165] [cursor=pointer]:
+                - img
+                - text: Download Free Whitepaper
+              - paragraph [ref=e166]: By downloading, you agree to receive communications about the IMPACT7 Method. You can unsubscribe at any time.
+        - generic [ref=e168]:
+          - heading "Want to apply the method in practice?" [level=2] [ref=e169]
+          - paragraph [ref=e170]: Use our interactive calculator or schedule a consultation with our team.
+          - generic [ref=e171]:
+            - link "Calculate Impact" [ref=e172] [cursor=pointer]:
+              - /url: /calculadora
+              - button "Calculate Impact" [ref=e173]:
+                - img
+                - text: Calculate Impact
+                - img
+            - link "Schedule Consulting" [ref=e174] [cursor=pointer]:
+              - /url: /contato
+              - button "Schedule Consulting" [ref=e175]
+      - generic [ref=e177]:
+        - generic [ref=e178]:
+          - generic [ref=e179]:
+            - generic [ref=e180]:
+              - generic [ref=e182]: "7"
+              - generic [ref=e183]: IMPACT7
+            - paragraph [ref=e184]: Exponential Social Innovation. Transforming social impact with science, mathematics, and technology.
+            - generic [ref=e185]:
+              - link [ref=e186] [cursor=pointer]:
+                - /url: https://linkedin.com
+                - img [ref=e187]
+              - link [ref=e191] [cursor=pointer]:
+                - /url: https://instagram.com
+                - img [ref=e192]
+              - link [ref=e195] [cursor=pointer]:
+                - /url: https://youtube.com
+                - img [ref=e196]
+          - generic [ref=e199]:
+            - heading "Quick Links" [level=4] [ref=e200]
+            - list [ref=e201]:
+              - listitem [ref=e202]:
+                - link "Administração" [ref=e203] [cursor=pointer]:
+                  - /url: /admin
+              - listitem [ref=e204]:
+                - link "Science" [ref=e205] [cursor=pointer]:
+                  - /url: /ciencia
+              - listitem [ref=e206]:
+                - link "Mathematics" [ref=e207] [cursor=pointer]:
+                  - /url: /matematica
+              - listitem [ref=e208]:
+                - link "Technology" [ref=e209] [cursor=pointer]:
+                  - /url: /tecnologia
+              - listitem [ref=e210]:
+                - link "Calculadora" [ref=e211] [cursor=pointer]:
+                  - /url: /calculadora
+              - listitem [ref=e212]:
+                - link "About Us" [ref=e213] [cursor=pointer]:
+                  - /url: /sobre
+              - listitem [ref=e214]:
+                - link "Partners" [ref=e215] [cursor=pointer]:
+                  - /url: /parceiros
+              - listitem [ref=e216]:
+                - link "Careers" [ref=e217] [cursor=pointer]:
+                  - /url: /carreiras
+              - listitem [ref=e218]:
+                - link "Schedule Demo" [ref=e219] [cursor=pointer]:
+                  - /url: /demo
+              - listitem [ref=e220]:
+                - link "Newsletter" [ref=e221] [cursor=pointer]:
+                  - /url: /newsletter
+              - listitem [ref=e222]:
+                - link "Success Cases" [ref=e223] [cursor=pointer]:
+                  - /url: /casos-sucesso
+              - listitem [ref=e224]:
+                - link "Compare Plans" [ref=e225] [cursor=pointer]:
+                  - /url: /comparacao
+              - listitem [ref=e226]:
+                - link "Testimonials" [ref=e227] [cursor=pointer]:
+                  - /url: /depoimentos
+          - generic [ref=e228]:
+            - heading "Resources" [level=4] [ref=e229]
+            - list [ref=e230]:
+              - listitem [ref=e231]:
+                - link "Whitepaper" [ref=e232] [cursor=pointer]:
+                  - /url: /whitepaper
+              - listitem [ref=e233]:
+                - link "Case Studies" [ref=e234] [cursor=pointer]:
+                  - /url: /cases
+              - listitem [ref=e235]:
+                - link "Free E-book" [ref=e236] [cursor=pointer]:
+                  - /url: /ebook
+              - listitem [ref=e237]:
+                - link "Blog" [ref=e238] [cursor=pointer]:
+                  - /url: /blog
+              - listitem [ref=e239]:
+                - link "FAQ" [ref=e240] [cursor=pointer]:
+                  - /url: /faq
+              - listitem [ref=e241]:
+                - link "Support" [ref=e242] [cursor=pointer]:
+                  - /url: /suporte
+              - listitem [ref=e243]:
+                - link "Pricing" [ref=e244] [cursor=pointer]:
+                  - /url: /precos
+              - listitem [ref=e245]:
+                - link "API Docs" [ref=e246] [cursor=pointer]:
+                  - /url: /api-docs
+              - listitem [ref=e247]:
+                - link "Status" [ref=e248] [cursor=pointer]:
+                  - /url: /status
+              - listitem [ref=e249]:
+                - link "Changelog" [ref=e250] [cursor=pointer]:
+                  - /url: /changelog
+              - listitem [ref=e251]:
+                - link "Roadmap" [ref=e252] [cursor=pointer]:
+                  - /url: /roadmap
+              - listitem [ref=e253]:
+                - link "Integrations" [ref=e254] [cursor=pointer]:
+                  - /url: /integracoes
+              - listitem [ref=e255]:
+                - link "Webinars" [ref=e256] [cursor=pointer]:
+                  - /url: /webinars
+              - listitem [ref=e257]:
+                - link "Security" [ref=e258] [cursor=pointer]:
+                  - /url: /seguranca
+              - listitem [ref=e259]:
+                - link "Community" [ref=e260] [cursor=pointer]:
+                  - /url: /comunidade
+              - listitem [ref=e261]:
+                - link "Resources" [ref=e262] [cursor=pointer]:
+                  - /url: /recursos
+              - listitem [ref=e263]:
+                - link "Methodology" [ref=e264] [cursor=pointer]:
+                  - /url: /metodologia
+              - listitem [ref=e265]:
+                - link "Glossary" [ref=e266] [cursor=pointer]:
+                  - /url: /glossario
+              - listitem [ref=e267]:
+                - link "Certifications" [ref=e268] [cursor=pointer]:
+                  - /url: /certificacoes
+          - generic [ref=e269]:
+            - heading "Contact" [level=4] [ref=e270]
+            - list [ref=e271]:
+              - listitem [ref=e272]:
+                - img [ref=e273]
+                - text: contato@impact7.com.br
+              - listitem [ref=e276]:
+                - img [ref=e277]
+                - text: +55 (11) 99999-9999
+              - listitem [ref=e279]:
+                - img [ref=e280]
+                - text: São Paulo, Brasil
+        - generic [ref=e283]:
+          - paragraph [ref=e284]: © 2026 IMPACT7. All rights reserved.
+          - generic [ref=e285]:
+            - link "Privacy" [ref=e286] [cursor=pointer]:
+              - /url: /privacidade
+            - link "Terms of Use" [ref=e287] [cursor=pointer]:
+              - /url: /termos
+      - button "Abrir WhatsApp" [ref=e289] [cursor=pointer]:
+        - img
+  - button "Abrir chat com Jarvis" [ref=e290] [cursor=pointer]:
+    - img [ref=e291]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - img
+        - generic:
+          - heading "Jarvis" [level=3]
+          - paragraph: Assistente IMPACT7
+      - generic:
+        - link "Ver memórias":
+          - /url: /jarvis/memorias
+          - button "Ver memórias":
+            - img
+        - link "Ver relatórios":
+          - /url: /jarvis/relatorios
+          - button "Ver relatórios":
+            - img
+        - button "Fechar chat":
+          - img
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - img
+              - heading "Olá! Sou o Jarvis" [level=4]
+              - paragraph: Seu assistente especialista no Método IMPACT7. Como posso ajudar?
+            - generic:
+              - button "Sobre o Método":
+                - img
+                - text: Sobre o Método
+              - button "Calcular S-ROI":
+                - img
+                - text: Calcular S-ROI
+              - button "Os 7 Pilares":
+                - img
+                - text: Os 7 Pilares
+              - button "A Equação":
+                - img
+                - text: A Equação
+            - generic:
+              - paragraph: "Sugestões:"
+              - generic:
+                - button "O que é o Método IMPACT7?"
+                - button "Como calcular o S-ROI do meu projeto?"
+                - button "Explique a equação I = (E × C⁷) / R"
+                - button "Quais são os 7 pilares do IMPACT7?"
+    - generic:
+      - generic:
+        - textbox "Digite sua mensagem..."
+        - button [disabled]:
+          - img
+      - paragraph: Powered by IMPACT7 Knowledge Base
+  - button "Abrir configurações de acessibilidade" [ref=e295] [cursor=pointer]:
+    - img
+```

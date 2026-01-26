@@ -91,8 +91,8 @@ export async function getJarvisStats(startDate: Date, endDate: Date) {
     })
     .from(jarvisAnalytics)
     .where(and(
-      gte(jarvisAnalytics.createdAt, startDate),
-      lte(jarvisAnalytics.createdAt, endDate)
+      gte(jarvisAnalytics.createdAt, startDate.getTime()),
+      lte(jarvisAnalytics.createdAt, endDate.getTime())
     ));
 
     return stats[0];
@@ -113,8 +113,8 @@ export async function getJarvisInteractionsByDay(startDate: Date, endDate: Date)
     })
     .from(jarvisAnalytics)
     .where(and(
-      gte(jarvisAnalytics.createdAt, startDate),
-      lte(jarvisAnalytics.createdAt, endDate)
+      gte(jarvisAnalytics.createdAt, startDate.getTime()),
+      lte(jarvisAnalytics.createdAt, endDate.getTime())
     ))
     .groupBy(sql`DATE(${jarvisAnalytics.createdAt})`)
     .orderBy(sql`DATE(${jarvisAnalytics.createdAt})`);
@@ -191,8 +191,8 @@ export async function getConversionStats(startDate: Date, endDate: Date) {
     })
     .from(leadConversions)
     .where(and(
-      gte(leadConversions.convertedAt, startDate),
-      lte(leadConversions.convertedAt, endDate)
+      gte(leadConversions.convertedAt, startDate.getTime()),
+      lte(leadConversions.convertedAt, endDate.getTime())
     ));
 
     return stats[0];
@@ -213,8 +213,8 @@ export async function getConversionsBySource(startDate: Date, endDate: Date) {
     })
     .from(leadConversions)
     .where(and(
-      gte(leadConversions.convertedAt, startDate),
-      lte(leadConversions.convertedAt, endDate),
+      gte(leadConversions.convertedAt, startDate.getTime()),
+      lte(leadConversions.convertedAt, endDate.getTime()),
       sql`${leadConversions.utmSource} IS NOT NULL`
     ))
     .groupBy(leadConversions.utmSource)
@@ -236,8 +236,8 @@ export async function getConversionFunnel(startDate: Date, endDate: Date) {
     const pageViewsCount = await db.select({ count: count() })
       .from(pageViews)
       .where(and(
-        gte(pageViews.viewedAt, startDate),
-        lte(pageViews.viewedAt, endDate)
+        gte(pageViews.viewedAt, startDate.getTime()),
+        lte(pageViews.viewedAt, endDate.getTime())
       ));
 
     // Get unique visitors
@@ -246,24 +246,24 @@ export async function getConversionFunnel(startDate: Date, endDate: Date) {
     })
       .from(pageViews)
       .where(and(
-        gte(pageViews.viewedAt, startDate),
-        lte(pageViews.viewedAt, endDate)
+        gte(pageViews.viewedAt, startDate.getTime()),
+        lte(pageViews.viewedAt, endDate.getTime())
       ));
 
     // Get leads
     const leadsCount = await db.select({ count: count() })
       .from(leads)
       .where(and(
-        gte(leads.createdAt, startDate),
-        lte(leads.createdAt, endDate)
+        gte(leads.createdAt, startDate.getTime()),
+        lte(leads.createdAt, endDate.getTime())
       ));
 
     // Get conversions
     const conversionsCount = await db.select({ count: count() })
       .from(leadConversions)
       .where(and(
-        gte(leadConversions.convertedAt, startDate),
-        lte(leadConversions.convertedAt, endDate)
+        gte(leadConversions.convertedAt, startDate.getTime()),
+        lte(leadConversions.convertedAt, endDate.getTime())
       ));
 
     return {
@@ -340,8 +340,8 @@ export async function getTopPages(startDate: Date, endDate: Date, limit: number 
     })
     .from(pageViews)
     .where(and(
-      gte(pageViews.viewedAt, startDate),
-      lte(pageViews.viewedAt, endDate)
+      gte(pageViews.viewedAt, startDate.getTime()),
+      lte(pageViews.viewedAt, endDate.getTime())
     ))
     .groupBy(pageViews.pagePath, pageViews.pageTitle)
     .orderBy(desc(count()))
@@ -367,8 +367,8 @@ export async function getDashboardMetrics(startDate: Date, endDate: Date) {
     const pageViewsResult = await db.select({ count: count() })
       .from(pageViews)
       .where(and(
-        gte(pageViews.viewedAt, startDate),
-        lte(pageViews.viewedAt, endDate)
+        gte(pageViews.viewedAt, startDate.getTime()),
+        lte(pageViews.viewedAt, endDate.getTime())
       ));
 
     // Get unique visitors
@@ -377,48 +377,48 @@ export async function getDashboardMetrics(startDate: Date, endDate: Date) {
     })
       .from(pageViews)
       .where(and(
-        gte(pageViews.viewedAt, startDate),
-        lte(pageViews.viewedAt, endDate)
+        gte(pageViews.viewedAt, startDate.getTime()),
+        lte(pageViews.viewedAt, endDate.getTime())
       ));
 
     // Get leads
     const leadsResult = await db.select({ count: count() })
       .from(leads)
       .where(and(
-        gte(leads.createdAt, startDate),
-        lte(leads.createdAt, endDate)
+        gte(leads.createdAt, startDate.getTime()),
+        lte(leads.createdAt, endDate.getTime())
       ));
 
     // Get Jarvis interactions
     const jarvisResult = await db.select({ count: count() })
       .from(jarvisAnalytics)
       .where(and(
-        gte(jarvisAnalytics.createdAt, startDate),
-        lte(jarvisAnalytics.createdAt, endDate)
+        gte(jarvisAnalytics.createdAt, startDate.getTime()),
+        lte(jarvisAnalytics.createdAt, endDate.getTime())
       ));
 
     // Get calculator uses
     const calculatorResult = await db.select({ count: count() })
       .from(calculations)
       .where(and(
-        gte(calculations.createdAt, startDate),
-        lte(calculations.createdAt, endDate)
+        gte(calculations.createdAt, startDate.getTime()),
+        lte(calculations.createdAt, endDate.getTime())
       ));
 
     // Get ebook downloads
     const ebookResult = await db.select({ count: count() })
       .from(ebookDownloads)
       .where(and(
-        gte(ebookDownloads.downloadedAt, startDate),
-        lte(ebookDownloads.downloadedAt, endDate)
+        gte(ebookDownloads.downloadedAt, startDate.getTime()),
+        lte(ebookDownloads.downloadedAt, endDate.getTime())
       ));
 
     // Get whitepaper downloads
     const whitepaperResult = await db.select({ count: count() })
       .from(whitepaperDownloads)
       .where(and(
-        gte(whitepaperDownloads.downloadedAt, startDate),
-        lte(whitepaperDownloads.downloadedAt, endDate)
+        gte(whitepaperDownloads.downloadedAt, startDate.getTime()),
+        lte(whitepaperDownloads.downloadedAt, endDate.getTime())
       ));
 
     return {
@@ -449,8 +449,8 @@ export async function getMetricsByDay(startDate: Date, endDate: Date) {
     })
     .from(pageViews)
     .where(and(
-      gte(pageViews.viewedAt, startDate),
-      lte(pageViews.viewedAt, endDate)
+      gte(pageViews.viewedAt, startDate.getTime()),
+      lte(pageViews.viewedAt, endDate.getTime())
     ))
     .groupBy(sql`DATE(${pageViews.viewedAt})`)
     .orderBy(sql`DATE(${pageViews.viewedAt})`);
@@ -462,8 +462,8 @@ export async function getMetricsByDay(startDate: Date, endDate: Date) {
     })
     .from(leads)
     .where(and(
-      gte(leads.createdAt, startDate),
-      lte(leads.createdAt, endDate)
+      gte(leads.createdAt, startDate.getTime()),
+      lte(leads.createdAt, endDate.getTime())
     ))
     .groupBy(sql`DATE(${leads.createdAt})`)
     .orderBy(sql`DATE(${leads.createdAt})`);
@@ -475,8 +475,8 @@ export async function getMetricsByDay(startDate: Date, endDate: Date) {
     })
     .from(jarvisAnalytics)
     .where(and(
-      gte(jarvisAnalytics.createdAt, startDate),
-      lte(jarvisAnalytics.createdAt, endDate)
+      gte(jarvisAnalytics.createdAt, startDate.getTime()),
+      lte(jarvisAnalytics.createdAt, endDate.getTime())
     ))
     .groupBy(sql`DATE(${jarvisAnalytics.createdAt})`)
     .orderBy(sql`DATE(${jarvisAnalytics.createdAt})`);

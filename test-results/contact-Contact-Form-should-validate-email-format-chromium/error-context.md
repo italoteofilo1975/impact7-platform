@@ -1,0 +1,349 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - link "Pular para o conteúdo principal" [ref=e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - region "Notifications alt+T"
+  - main [ref=e4]:
+    - generic [ref=e5]:
+      - navigation [ref=e7]:
+        - generic [ref=e8]:
+          - link "7 IMPACT7" [ref=e9] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e10]: "7"
+            - generic [ref=e11]: IMPACT7
+          - generic [ref=e12]:
+            - link "Science" [ref=e13] [cursor=pointer]:
+              - /url: /ciencia
+              - button "Science" [ref=e14]
+            - link "Mathematics" [ref=e15] [cursor=pointer]:
+              - /url: /matematica
+              - button "Mathematics" [ref=e16]
+            - link "Technology" [ref=e17] [cursor=pointer]:
+              - /url: /tecnologia
+              - button "Technology" [ref=e18]
+            - link "Whitepaper" [ref=e19] [cursor=pointer]:
+              - /url: /whitepaper
+              - button "Whitepaper" [ref=e20]
+            - link "Cases" [ref=e21] [cursor=pointer]:
+              - /url: /cases
+              - button "Cases" [ref=e22]
+            - link "Impact Calculator" [ref=e23] [cursor=pointer]:
+              - /url: /calculadora
+              - button "Impact Calculator" [ref=e24]
+          - generic [ref=e25]:
+            - button "Ativar modo escuro" [ref=e26] [cursor=pointer]:
+              - img [ref=e28]
+            - button "Select language" [ref=e30] [cursor=pointer]:
+              - img
+              - generic [ref=e31]: EN
+              - img
+            - link "Contact" [ref=e32] [cursor=pointer]:
+              - /url: /contato
+              - button "Contact" [ref=e33]:
+                - img
+                - text: Contact
+            - link "Calculate Impact" [ref=e34] [cursor=pointer]:
+              - /url: /calculadora
+              - button "Calculate Impact" [ref=e35]:
+                - img
+                - text: Calculate Impact
+      - main [ref=e36]:
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - link "Home" [ref=e40] [cursor=pointer]:
+              - /url: /
+            - generic [ref=e41]: /
+            - generic [ref=e42]: Contato
+          - generic [ref=e43]:
+            - img [ref=e44]
+            - text: Fale Conosco
+          - heading "Entre em Contato" [level=1] [ref=e46]
+          - paragraph [ref=e47]: Estamos prontos para ajudar você a maximizar o impacto social do seu projeto.
+        - generic [ref=e50]:
+          - generic [ref=e52]:
+            - img [ref=e54]
+            - heading "Email" [level=4] [ref=e57]
+            - link "contato@impact7.com.br" [ref=e58] [cursor=pointer]:
+              - /url: mailto:contato@impact7.com.br
+          - generic [ref=e60]:
+            - img [ref=e62]
+            - heading "WhatsApp" [level=4] [ref=e64]
+            - link "+55 (11) 99999-9999" [ref=e65] [cursor=pointer]:
+              - /url: https://wa.me/5511999999999
+          - generic [ref=e67]:
+            - img [ref=e69]
+            - heading "Localização" [level=4] [ref=e72]
+            - paragraph [ref=e73]: São Paulo, SP - Brasil
+          - generic [ref=e75]:
+            - img [ref=e77]
+            - heading "Horário" [level=4] [ref=e80]
+            - paragraph [ref=e81]: "Seg-Sex: 9h às 18h"
+        - generic [ref=e84]:
+          - generic [ref=e85]:
+            - heading "Envie sua Mensagem" [level=2] [ref=e86]
+            - paragraph [ref=e87]: Preencha o formulário abaixo e retornaremos em até 24 horas úteis.
+            - generic [ref=e90]:
+              - generic [ref=e91]:
+                - generic [ref=e92]:
+                  - generic [ref=e93]: Nome Completo *
+                  - textbox "Nome Completo *" [ref=e94]:
+                    - /placeholder: Seu nome
+                - generic [ref=e95]:
+                  - generic [ref=e96]: Email *
+                  - textbox "Email *" [ref=e97]:
+                    - /placeholder: seu@email.com
+                    - text: invalid-email
+                  - paragraph [ref=e98]: Email inválido
+              - generic [ref=e99]:
+                - generic [ref=e100]:
+                  - generic [ref=e101]: Telefone
+                  - textbox "Telefone" [ref=e102]:
+                    - /placeholder: (11) 99999-9999
+                - generic [ref=e103]:
+                  - generic [ref=e104]: Organização
+                  - textbox "Organização" [ref=e105]:
+                    - /placeholder: Nome da organização
+              - generic [ref=e106]:
+                - generic [ref=e107]: Assunto
+                - combobox [ref=e108] [cursor=pointer]:
+                  - generic: Selecione um assunto
+                  - img
+                - combobox [ref=e109] [cursor=pointer]
+              - generic [ref=e110]:
+                - generic [ref=e111]: Mensagem *
+                - textbox "Mensagem *" [ref=e112]:
+                  - /placeholder: Descreva como podemos ajudar...
+              - button "Enviar Mensagem" [active] [ref=e113] [cursor=pointer]:
+                - img
+                - text: Enviar Mensagem
+          - generic [ref=e114]:
+            - generic [ref=e115]:
+              - generic [ref=e117]:
+                - img [ref=e118]
+                - text: Agende uma Consultoria
+              - generic [ref=e120]:
+                - paragraph [ref=e121]: Prefere uma conversa mais aprofundada? Agende uma sessão de consultoria gratuita de 30 minutos com nossa equipe.
+                - button "Agendar Horário" [ref=e122] [cursor=pointer]:
+                  - img
+                  - text: Agendar Horário
+            - generic [ref=e123]:
+              - generic [ref=e125]: Perguntas Frequentes
+              - generic [ref=e126]:
+                - generic [ref=e127]:
+                  - heading "Quanto custa uma consultoria?" [level=4] [ref=e128]
+                  - paragraph [ref=e129]: Oferecemos uma sessão inicial gratuita. Os valores de projetos variam conforme escopo e complexidade.
+                - generic [ref=e130]:
+                  - heading "Vocês atendem todo o Brasil?" [level=4] [ref=e131]
+                  - paragraph [ref=e132]: Sim, atendemos projetos em todo o território nacional, com opções presenciais e remotas.
+                - generic [ref=e133]:
+                  - heading "Qual o prazo de resposta?" [level=4] [ref=e134]
+                  - paragraph [ref=e135]: Respondemos todas as mensagens em até 24 horas úteis.
+            - generic [ref=e137]:
+              - heading "Precisa de Ajuda Imediata?" [level=4] [ref=e138]
+              - paragraph [ref=e139]: Nossa equipe está disponível via WhatsApp para atendimento rápido.
+              - link "Falar no WhatsApp" [ref=e140] [cursor=pointer]:
+                - /url: https://wa.me/5511999999999
+                - button "Falar no WhatsApp" [ref=e141]:
+                  - img
+                  - text: Falar no WhatsApp
+      - generic [ref=e143]:
+        - generic [ref=e144]:
+          - generic [ref=e145]:
+            - generic [ref=e146]:
+              - generic [ref=e148]: "7"
+              - generic [ref=e149]: IMPACT7
+            - paragraph [ref=e150]: Exponential Social Innovation. Transforming social impact with science, mathematics, and technology.
+            - generic [ref=e151]:
+              - link [ref=e152] [cursor=pointer]:
+                - /url: https://linkedin.com
+                - img [ref=e153]
+              - link [ref=e157] [cursor=pointer]:
+                - /url: https://instagram.com
+                - img [ref=e158]
+              - link [ref=e161] [cursor=pointer]:
+                - /url: https://youtube.com
+                - img [ref=e162]
+          - generic [ref=e165]:
+            - heading "Quick Links" [level=4] [ref=e166]
+            - list [ref=e167]:
+              - listitem [ref=e168]:
+                - link "Administração" [ref=e169] [cursor=pointer]:
+                  - /url: /admin
+              - listitem [ref=e170]:
+                - link "Science" [ref=e171] [cursor=pointer]:
+                  - /url: /ciencia
+              - listitem [ref=e172]:
+                - link "Mathematics" [ref=e173] [cursor=pointer]:
+                  - /url: /matematica
+              - listitem [ref=e174]:
+                - link "Technology" [ref=e175] [cursor=pointer]:
+                  - /url: /tecnologia
+              - listitem [ref=e176]:
+                - link "Calculadora" [ref=e177] [cursor=pointer]:
+                  - /url: /calculadora
+              - listitem [ref=e178]:
+                - link "About Us" [ref=e179] [cursor=pointer]:
+                  - /url: /sobre
+              - listitem [ref=e180]:
+                - link "Partners" [ref=e181] [cursor=pointer]:
+                  - /url: /parceiros
+              - listitem [ref=e182]:
+                - link "Careers" [ref=e183] [cursor=pointer]:
+                  - /url: /carreiras
+              - listitem [ref=e184]:
+                - link "Schedule Demo" [ref=e185] [cursor=pointer]:
+                  - /url: /demo
+              - listitem [ref=e186]:
+                - link "Newsletter" [ref=e187] [cursor=pointer]:
+                  - /url: /newsletter
+              - listitem [ref=e188]:
+                - link "Success Cases" [ref=e189] [cursor=pointer]:
+                  - /url: /casos-sucesso
+              - listitem [ref=e190]:
+                - link "Compare Plans" [ref=e191] [cursor=pointer]:
+                  - /url: /comparacao
+              - listitem [ref=e192]:
+                - link "Testimonials" [ref=e193] [cursor=pointer]:
+                  - /url: /depoimentos
+          - generic [ref=e194]:
+            - heading "Resources" [level=4] [ref=e195]
+            - list [ref=e196]:
+              - listitem [ref=e197]:
+                - link "Whitepaper" [ref=e198] [cursor=pointer]:
+                  - /url: /whitepaper
+              - listitem [ref=e199]:
+                - link "Case Studies" [ref=e200] [cursor=pointer]:
+                  - /url: /cases
+              - listitem [ref=e201]:
+                - link "Free E-book" [ref=e202] [cursor=pointer]:
+                  - /url: /ebook
+              - listitem [ref=e203]:
+                - link "Blog" [ref=e204] [cursor=pointer]:
+                  - /url: /blog
+              - listitem [ref=e205]:
+                - link "FAQ" [ref=e206] [cursor=pointer]:
+                  - /url: /faq
+              - listitem [ref=e207]:
+                - link "Support" [ref=e208] [cursor=pointer]:
+                  - /url: /suporte
+              - listitem [ref=e209]:
+                - link "Pricing" [ref=e210] [cursor=pointer]:
+                  - /url: /precos
+              - listitem [ref=e211]:
+                - link "API Docs" [ref=e212] [cursor=pointer]:
+                  - /url: /api-docs
+              - listitem [ref=e213]:
+                - link "Status" [ref=e214] [cursor=pointer]:
+                  - /url: /status
+              - listitem [ref=e215]:
+                - link "Changelog" [ref=e216] [cursor=pointer]:
+                  - /url: /changelog
+              - listitem [ref=e217]:
+                - link "Roadmap" [ref=e218] [cursor=pointer]:
+                  - /url: /roadmap
+              - listitem [ref=e219]:
+                - link "Integrations" [ref=e220] [cursor=pointer]:
+                  - /url: /integracoes
+              - listitem [ref=e221]:
+                - link "Webinars" [ref=e222] [cursor=pointer]:
+                  - /url: /webinars
+              - listitem [ref=e223]:
+                - link "Security" [ref=e224] [cursor=pointer]:
+                  - /url: /seguranca
+              - listitem [ref=e225]:
+                - link "Community" [ref=e226] [cursor=pointer]:
+                  - /url: /comunidade
+              - listitem [ref=e227]:
+                - link "Resources" [ref=e228] [cursor=pointer]:
+                  - /url: /recursos
+              - listitem [ref=e229]:
+                - link "Methodology" [ref=e230] [cursor=pointer]:
+                  - /url: /metodologia
+              - listitem [ref=e231]:
+                - link "Glossary" [ref=e232] [cursor=pointer]:
+                  - /url: /glossario
+              - listitem [ref=e233]:
+                - link "Certifications" [ref=e234] [cursor=pointer]:
+                  - /url: /certificacoes
+          - generic [ref=e235]:
+            - heading "Contact" [level=4] [ref=e236]
+            - list [ref=e237]:
+              - listitem [ref=e238]:
+                - img [ref=e239]
+                - text: contato@impact7.com.br
+              - listitem [ref=e242]:
+                - img [ref=e243]
+                - text: +55 (11) 99999-9999
+              - listitem [ref=e245]:
+                - img [ref=e246]
+                - text: São Paulo, Brasil
+        - generic [ref=e249]:
+          - paragraph [ref=e250]: © 2026 IMPACT7. All rights reserved.
+          - generic [ref=e251]:
+            - link "Privacy" [ref=e252] [cursor=pointer]:
+              - /url: /privacidade
+            - link "Terms of Use" [ref=e253] [cursor=pointer]:
+              - /url: /termos
+      - button "Abrir WhatsApp" [ref=e255] [cursor=pointer]:
+        - img
+  - button "Abrir chat com Jarvis" [ref=e256] [cursor=pointer]:
+    - img [ref=e257]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - img
+        - generic:
+          - heading "Jarvis" [level=3]
+          - paragraph: Assistente IMPACT7
+      - generic:
+        - link "Ver memórias":
+          - /url: /jarvis/memorias
+          - button "Ver memórias":
+            - img
+        - link "Ver relatórios":
+          - /url: /jarvis/relatorios
+          - button "Ver relatórios":
+            - img
+        - button "Fechar chat":
+          - img
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - img
+              - heading "Olá! Sou o Jarvis" [level=4]
+              - paragraph: Seu assistente especialista no Método IMPACT7. Como posso ajudar?
+            - generic:
+              - button "Sobre o Método":
+                - img
+                - text: Sobre o Método
+              - button "Calcular S-ROI":
+                - img
+                - text: Calcular S-ROI
+              - button "Os 7 Pilares":
+                - img
+                - text: Os 7 Pilares
+              - button "A Equação":
+                - img
+                - text: A Equação
+            - generic:
+              - paragraph: "Sugestões:"
+              - generic:
+                - button "O que é o Método IMPACT7?"
+                - button "Como calcular o S-ROI do meu projeto?"
+                - button "Explique a equação I = (E × C⁷) / R"
+                - button "Quais são os 7 pilares do IMPACT7?"
+    - generic:
+      - generic:
+        - textbox "Digite sua mensagem..."
+        - button [disabled]:
+          - img
+      - paragraph: Powered by IMPACT7 Knowledge Base
+  - button "Abrir configurações de acessibilidade" [ref=e261] [cursor=pointer]:
+    - img
+```
