@@ -37,11 +37,11 @@ export default function ApiStatus() {
       title: "Manutenção programada - Atualização de segurança",
       status: "resolved",
       severity: "minor",
-      createdAt: new Date(Date.now() - 86400000 * 2),
-      updatedAt: new Date(Date.now() - 86400000 * 2 + 3600000),
+      createdAt: Date.now() - 86400000 * 2,
+      updatedAt: Date.now() - 86400000 * 2 + 3600000,
       updates: [
-        { message: "Manutenção concluída com sucesso. Todos os sistemas operacionais.", timestamp: new Date(Date.now() - 86400000 * 2 + 3600000) },
-        { message: "Iniciando manutenção programada.", timestamp: new Date(Date.now() - 86400000 * 2) },
+        { message: "Manutenção concluída com sucesso. Todos os sistemas operacionais.", timestamp: Date.now() - 86400000 * 2 + 3600000 },
+        { message: "Iniciando manutenção programada.", timestamp: Date.now() - 86400000 * 2 },
       ],
     },
   ]);
@@ -281,7 +281,7 @@ export default function ApiStatus() {
                         <div>
                           <h3 className="font-semibold">{incident.title}</h3>
                           <p className="text-sm text-muted-foreground">
-                            {incident.createdAt.toLocaleDateString()} • {incident.createdAt.toLocaleTimeString()}
+                            {new Date(incident.createdAt).toLocaleDateString()} • {new Date(incident.createdAt).toLocaleTimeString()}
                           </p>
                         </div>
                         <Badge variant={incident.status === "resolved" ? "outline" : "destructive"}>
@@ -294,7 +294,7 @@ export default function ApiStatus() {
                         {incident.updates.map((update, i) => (
                           <div key={i} className="flex gap-3 text-sm">
                             <span className="text-muted-foreground whitespace-nowrap">
-                              {update.timestamp.toLocaleTimeString()}
+                              {new Date(update.timestamp).toLocaleTimeString()}
                             </span>
                             <span>{update.message}</span>
                           </div>

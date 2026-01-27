@@ -133,7 +133,7 @@ export const auditLogService = {
       query += ` OFFSET ${filters.offset}`;
     }
 
-    const result = await executeRawQuery(sql.raw(query));
+    const result = await executeRawQuery(query);
     return (result as any)[0] || [];
   },
 
