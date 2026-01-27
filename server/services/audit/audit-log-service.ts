@@ -152,11 +152,13 @@ export function getAuditLogs(params?: {
   }
   
   if (params?.startDate) {
-    filtered = filtered.filter(log => log.timestamp >= params.startDate!);
+    const startTimestamp = params.startDate.getTime();
+    filtered = filtered.filter(log => log.timestamp >= startTimestamp);
   }
   
   if (params?.endDate) {
-    filtered = filtered.filter(log => log.timestamp <= params.endDate!);
+    const endTimestamp = params.endDate.getTime();
+    filtered = filtered.filter(log => log.timestamp <= endTimestamp);
   }
   
   const total = filtered.length;
@@ -223,7 +225,7 @@ export function exportAuditLogs(format: "json" | "csv"): string {
   
   const rows = auditLogs.map(log => [
     log.id,
-    log.timestamp.toISOString(),
+    new Date(log.timestamp).toISOString(),
     log.action,
     log.severity,
     log.userId || "",
@@ -249,7 +251,8 @@ export function cleanupOldLogs(daysToKeep: number = 90): number {
   cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
   
   const initialCount = auditLogs.length;
-  const filtered = auditLogs.filter(log => log.timestamp >= cutoffDate);
+  const cutoffTimestamp = cutoffDate.getTime();
+  const filtered = auditLogs.filter(log => log.timestamp >= cutoffTimestamp);
   
   auditLogs.length = 0;
   auditLogs.push(...filtered);

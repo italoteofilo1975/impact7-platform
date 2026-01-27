@@ -3742,8 +3742,8 @@ export const appRouter = router({
   gdpr: router({
     exportData: protectedProcedure
       .mutation(async ({ ctx }) => {
-        const { complianceService } = await import('./security/audit/compliance');
-        const data = await complianceService.exportUserData(ctx.user.id);
+        const { exportUserData } = await import('./security/audit/compliance');
+        const data = await exportUserData(ctx.user.id, {});
         
         // Log de auditoria
         const { auditService } = await import('./services/audit/audit-service');
@@ -3754,10 +3754,9 @@ export const appRouter = router({
           action: 'export',
           resourceType: 'user_data',
           resourceId: String(ctx.user.id),
-          details: 'Exportação de dados GDPR',
         });
         
-        return { data, exportedAt: Date.now().toISOString() };
+        return { data, exportedAt: new Date().toISOString() };
       }),
 
     requestDeletion: protectedProcedure
@@ -3767,8 +3766,8 @@ export const appRouter = router({
           throw new Error('Confirmação inválida');
         }
         
-        const { complianceService } = await import('./security/audit/compliance');
-        await complianceService.deleteUserData(ctx.user.id);
+        const { anonymizeUserData } = await import('./security/audit/compliance');
+        await anonymizeUserData(ctx.user.id);
         
         // Log de auditoria
         const { auditService } = await import('./services/audit/audit-service');
@@ -3779,7 +3778,6 @@ export const appRouter = router({
           action: 'delete',
           resourceType: 'user_account',
           resourceId: String(ctx.user.id),
-          details: 'Exclusão de conta GDPR',
         });
         
         return { success: true, message: 'Conta excluída com sucesso' };

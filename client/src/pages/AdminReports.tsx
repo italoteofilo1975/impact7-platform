@@ -26,7 +26,7 @@ export default function AdminReports() {
   const { data: activityMetrics } = trpc.leads.activityMetrics.useQuery(undefined, { enabled: isAuthenticated });
 
   // Filter by period
-  const filterByPeriod = <T extends { createdAt?: Date | string | null; downloadedAt?: Date | string | null }>(
+  const filterByPeriod = <T extends Record<string, any>>(
     items: T[] | undefined,
     dateField: "createdAt" | "downloadedAt" = "createdAt"
   ): T[] => {

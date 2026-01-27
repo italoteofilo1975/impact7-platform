@@ -170,9 +170,9 @@ async function getApplicationMetrics(): Promise<ApplicationMetrics> {
     };
   }
   
-  const now = new Date();
-  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-  const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const now = Date.now();
+  const yesterday = now - 24 * 60 * 60 * 1000;
+  const lastWeek = now - 7 * 24 * 60 * 60 * 1000;
 
   const [
     activeUsers24hResult,
