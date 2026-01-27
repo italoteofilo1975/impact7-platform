@@ -696,3 +696,9 @@
 - [x] Recalcular cores dinamicamente quando tema mudar
 - [x] Testar transições suaves entre light/dark mode
 - [x] Validar consistência visual em todos os gráficos
+
+
+## Otimizações Dark Mode em Canvas
+- [x] Adicionar CSS transitions 300ms nos gráficos para transições suaves
+- [x] Criar teste E2E Playwright para validar dark mode em gráficos
+- [x] Adicionar debounce 100ms no MutationObserver para otimizar performance
