@@ -708,3 +708,9 @@
 - [x] Adicionar preferência de tema persistente no localStorage
 - [x] Implementar tema system (auto) com detecção de preferência do SO
 - [ ] Executar testes E2E de dark mode (manual)
+
+
+## Melhorias UX de Tema
+- [x] Adicionar dropdown de seleção de tema (Light, Dark, System)
+- [x] Criar teste E2E para tema system com emulateMedia
+- [x] Adicionar indicador visual de tema ativo no botão
