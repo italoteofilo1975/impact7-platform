@@ -3,7 +3,7 @@ export const ENV = {
   cookieSecret: process.env.JWT_SECRET ?? "",
   jwtSecret: process.env.JWT_SECRET ?? "",
   databaseUrl: process.env.DATABASE_URL ?? "",
-  // OAuth REMOVED - Using local auth only
+  oAuthServerUrl: process.env.OAUTH_SERVER_URL ?? "",
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
