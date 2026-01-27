@@ -2059,7 +2059,7 @@ export const appRouter = router({
           impactScore: cert.impactScore,
           sector: cert.sector,
           sdgs: cert.sdgs ? JSON.parse(cert.sdgs) : [],
-          issuedAt: cert.issuedAt,
+          issuedAt: new Date(cert.issuedAt),
           dataHash: cert.dataHash,
         });
         return { html };
@@ -2268,7 +2268,7 @@ export const appRouter = router({
           reportType: report.reportType,
           content: report.content,
           executiveSummary: report.summary || undefined,
-          generatedAt: report.createdAt,
+          generatedAt: new Date(report.createdAt),
           userId: report.userId,
         });
         return { html };
@@ -3013,7 +3013,7 @@ export const appRouter = router({
         const { pdfReportService } = await import('./services/reports/pdf-report-service');
         const pdfBuffer = pdfReportService.generateConsolidatedReport({
           ...input,
-          generatedAt: Date.now(),
+          generatedAt: new Date(),
         });
         
         // Log de auditoria
