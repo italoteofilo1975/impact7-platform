@@ -74,7 +74,7 @@ export async function generateSecret(userId: number): Promise<{
         backupCodes: JSON.stringify(hashedBackupCodes),
         backupCodesUsed: 0,
         isVerified: 0,
-        isEnabled: false,
+        isEnabled: 0,
         failedAttempts: 0,
         lockedUntil: null,
         updatedAt: Date.now(),
@@ -86,7 +86,7 @@ export async function generateSecret(userId: number): Promise<{
       userId,
       secret,
       backupCodes: JSON.stringify(hashedBackupCodes),
-      isEnabled: false,
+      isEnabled: 0,
       isVerified: 0,
     
           createdAt: Date.now(),
@@ -150,7 +150,7 @@ export async function verifyAndEnable(userId: number, code: string): Promise<{
   // Enable 2FA
   await db.update(twoFactorAuth)
     .set({
-      isEnabled: true,
+      isEnabled: 1,
       isVerified: 1,
       failedAttempts: 0,
       lockedUntil: null,
@@ -263,7 +263,7 @@ export async function disable2FA(userId: number, code: string): Promise<{
   // Disable 2FA
   await db.update(twoFactorAuth)
     .set({
-      isEnabled: false,
+      isEnabled: 0,
       isVerified: 0,
       secret: otpGenerateSecret(), // Generate new secret to invalidate old one
       backupCodes: null,
@@ -287,7 +287,7 @@ export async function getStatus(userId: number): Promise<{
   const db = await getDb();
   if (!db) {
     return {
-      isEnabled: false,
+      isEnabled: 0,
       isVerified: 0,
       backupCodesRemaining: 0,
       lastUsedAt: null,
@@ -298,7 +298,7 @@ export async function getStatus(userId: number): Promise<{
 
   if (!tfa) {
     return {
-      isEnabled: false,
+      isEnabled: 0,
       isVerified: 0,
       backupCodesRemaining: 0,
       lastUsedAt: null,
@@ -308,10 +308,10 @@ export async function getStatus(userId: number): Promise<{
   const backupCodes: string[] = tfa.backupCodes ? JSON.parse(tfa.backupCodes) : [];
 
   return {
-    isEnabled: tfa.isEnabled,
-    isVerified: tfa.isVerified,
+    isEnabled: tfa.isEnabled === 1,
+    isVerified: tfa.isVerified === 1,
     backupCodesRemaining: backupCodes.length,
-    lastUsedAt: tfa.lastUsedAt,
+    lastUsedAt: tfa.lastUsedAt ? new Date(tfa.lastUsedAt) : null,
   };
 }
 
@@ -324,7 +324,7 @@ export async function is2FAEnabled(userId: number): Promise<boolean> {
 
   const [tfa] = await db.select().from(twoFactorAuth).where(eq(twoFactorAuth.userId, userId)).limit(1);
 
-  return tfa?.isEnabled ?? false;
+  return tfa?.isEnabled === 1;
 }
 
 /**

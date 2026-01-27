@@ -483,8 +483,7 @@ export const appRouter = router({
           name: input.name,
           email: input.email,
           organization: input.organization || null,
-        
-          createdAt: Date.now(),
+          downloadedAt: Date.now(),
         });
         
         // Also create a lead
@@ -518,8 +517,8 @@ export const appRouter = router({
           organization: input.organization || null,
           role: input.role || null,
           phone: input.phone || null,
-        
-          createdAt: Date.now(),
+          downloadedAt: Date.now(),
+          emailSent: 0,
         });
         
         // Also create a lead
@@ -1323,8 +1322,8 @@ export const appRouter = router({
           ...input,
           metrics: JSON.stringify(input.metrics),
           status: 'pending',
-        
           createdAt: Date.now(),
+          updatedAt: Date.now(),
         }).$returningId();
         
         // Enviar notificação ao owner sobre nova submissão
@@ -1447,8 +1446,8 @@ export const appRouter = router({
           color: input.color || '#f97316',
           description: input.description,
           createdBy: ctx.user.id,
-        
           createdAt: Date.now(),
+          updatedAt: Date.now(),
         }).$returningId();
         
         return { success: true, id: result[0].id };
@@ -2061,7 +2060,7 @@ export const appRouter = router({
           impactScore: cert.impactScore,
           sector: cert.sector,
           sdgs: cert.sdgs ? JSON.parse(cert.sdgs) : [],
-          issuedAt: cert.issuedAt || new Date(),
+          issuedAt: cert.issuedAt || Date.now(),
           dataHash: cert.dataHash,
         });
         return { html };
@@ -2490,18 +2489,28 @@ export const appRouter = router({
           .from(notificationPreferences)
           .where(eq(notificationPreferences.userId, ctx.user.id))
           .limit(1);
+        // Converter boolean para number
+        const convertedInput: any = {};
+        for (const [key, value] of Object.entries(input)) {
+          if (typeof value === 'boolean') {
+            convertedInput[key] = value ? 1 : 0;
+          } else {
+            convertedInput[key] = value;
+          }
+        }
+        
         if (existing) {
           return db
             .update(notificationPreferences)
-            .set(input)
+            .set({ ...convertedInput, updatedAt: Date.now() })
             .where(eq(notificationPreferences.userId, ctx.user.id));
         } else {
           return db.insert(notificationPreferences).values({
             userId: ctx.user.id,
-            ...input,
-          
-          createdAt: Date.now(),
-        });
+            ...convertedInput,
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          });
         }
       }),
   }),
@@ -3790,7 +3799,7 @@ export const appRouter = router({
         if (!db) throw new Error('Database not available');
         
         const { roles, permissions, rolePermissions } = await import('../drizzle/schema');
-        const now = new Date();
+        const now = Date.now();
         
         // 1. Criar roles
         const rolesData = [
