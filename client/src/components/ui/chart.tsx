@@ -46,6 +46,28 @@ function ChartContainer({
 }) {
   const uniqueId = React.useId();
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
+  const [theme, setTheme] = React.useState<string>(
+    document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  );
+
+  // Listen for theme changes and force re-render
+  React.useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const isDark = document.documentElement.classList.contains('dark');
+          setTheme(isDark ? 'dark' : 'light');
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -58,8 +80,8 @@ function ChartContainer({
         )}
         {...props}
       >
-        <ChartStyle id={chartId} config={config} />
-        <RechartsPrimitive.ResponsiveContainer>
+        <ChartStyle key={theme} id={chartId} config={config} />
+        <RechartsPrimitive.ResponsiveContainer key={`container-${theme}`}>
           {children}
         </RechartsPrimitive.ResponsiveContainer>
       </div>

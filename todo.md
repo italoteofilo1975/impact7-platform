@@ -688,3 +688,11 @@
 - [ ] 35. Salvar checkpoint v4.0.0 final
 
 **Meta:** Sistema 100% funcional, testado, documentado e pronto para produção
+
+
+## Dark Mode Dinâmico em Canvas
+- [x] Identificar todos os componentes com canvas/gráficos
+- [x] Adicionar listener de mudança de tema em cada componente
+- [x] Recalcular cores dinamicamente quando tema mudar
+- [x] Testar transições suaves entre light/dark mode
+- [x] Validar consistência visual em todos os gráficos
