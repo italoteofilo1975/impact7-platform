@@ -1,9 +1,24 @@
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Monitor } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  
+  const getIcon = () => {
+    switch (theme) {
+      case 'light':
+        return { Icon: Moon, label: 'Ativar modo escuro', title: 'Modo Escuro' };
+      case 'dark':
+        return { Icon: Monitor, label: 'Ativar modo sistema', title: 'Modo Sistema' };
+      case 'system':
+        return { Icon: Sun, label: 'Ativar modo claro', title: 'Modo Claro' };
+      default:
+        return { Icon: Moon, label: 'Ativar modo escuro', title: 'Modo Escuro' };
+    }
+  };
+
+  const { Icon, label, title } = getIcon();
   
   return (
     <button
@@ -15,40 +30,25 @@ export function ThemeToggle() {
                  transition-all duration-300 ease-in-out
                  hover:scale-110 active:scale-95
                  shadow-lg hover:shadow-xl"
-      aria-label={theme === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
-      title={theme === 'light' ? 'Modo Escuro' : 'Modo Claro'}
+      aria-label={label}
+      title={title}
     >
       <AnimatePresence mode="wait">
-        {theme === 'light' ? (
-          <motion.div
-            key="moon"
-            initial={{ rotate: -90, scale: 0, opacity: 0 }}
-            animate={{ rotate: 0, scale: 1, opacity: 1 }}
-            exit={{ rotate: 90, scale: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="absolute"
-          >
-            <Moon 
-              size={24} 
-              className="text-primary drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" 
-            />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="sun"
-            initial={{ rotate: 90, scale: 0, opacity: 0 }}
-            animate={{ rotate: 0, scale: 1, opacity: 1 }}
-            exit={{ rotate: -90, scale: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="absolute"
-          >
-            <Sun 
-              size={24} 
-              className="text-primary drop-shadow-[0_0_12px_rgba(var(--primary-rgb),0.7)]
-                         animate-[spin_20s_linear_infinite]" 
-            />
-          </motion.div>
-        )}
+        <motion.div
+          key={theme}
+          initial={{ rotate: -90, scale: 0, opacity: 0 }}
+          animate={{ rotate: 0, scale: 1, opacity: 1 }}
+          exit={{ rotate: 90, scale: 0, opacity: 0 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="absolute"
+        >
+          <Icon 
+            size={24} 
+            className={`text-primary drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)] ${
+              theme === 'light' ? 'animate-[spin_20s_linear_infinite]' : ''
+            }`} 
+          />
+        </motion.div>
       </AnimatePresence>
       
       {/* Efeito de brilho ao clicar */}

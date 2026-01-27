@@ -702,3 +702,9 @@
 - [x] Adicionar CSS transitions 300ms nos gráficos para transições suaves
 - [x] Criar teste E2E Playwright para validar dark mode em gráficos
 - [x] Adicionar debounce 100ms no MutationObserver para otimizar performance
+
+
+## Melhorias de Tema
+- [x] Adicionar preferência de tema persistente no localStorage
+- [x] Implementar tema system (auto) com detecção de preferência do SO
+- [ ] Executar testes E2E de dark mode (manual)
