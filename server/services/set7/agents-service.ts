@@ -177,11 +177,11 @@ export async function updateAgent(agentId: string, input: UpdateAgentInput) {
       maxTokensPerRequest: input.maxTokensPerRequest,
       maxTokensPerDay: input.maxTokensPerDay,
       permissions: input.permissions ? JSON.stringify(input.permissions) : undefined,
-      canReadFiles: input.canReadFiles,
-      canWriteFiles: input.canWriteFiles,
-      canExecuteCode: input.canExecuteCode,
-      canAccessNetwork: input.canAccessNetwork,
-      canAccessDatabase: input.canAccessDatabase,
+      canReadFiles: input.canReadFiles !== undefined ? (input.canReadFiles ? 1 : 0) : undefined,
+      canWriteFiles: input.canWriteFiles !== undefined ? (input.canWriteFiles ? 1 : 0) : undefined,
+      canExecuteCode: input.canExecuteCode !== undefined ? (input.canExecuteCode ? 1 : 0) : undefined,
+      canAccessNetwork: input.canAccessNetwork !== undefined ? (input.canAccessNetwork ? 1 : 0) : undefined,
+      canAccessDatabase: input.canAccessDatabase !== undefined ? (input.canAccessDatabase ? 1 : 0) : undefined,
       status: input.status,
     })
     .where(eq(set7Agents.agentId, agentId));
@@ -205,7 +205,7 @@ export async function triggerKillSwitch(agentId: string, reason: string) {
   await db.update(set7Agents)
     .set({
       status: "killed",
-      killSwitchTriggered: true,
+      killSwitchTriggered: 1,
       killSwitchReason: reason,
       killSwitchAt: Date.now(),
     })
@@ -232,7 +232,7 @@ export async function resetKillSwitch(agentId: string, approvedBy: string) {
   await db.update(set7Agents)
     .set({
       status: "active",
-      killSwitchTriggered: false,
+      killSwitchTriggered: 0,
       killSwitchReason: null,
       killSwitchAt: null,
     })
@@ -347,15 +347,15 @@ export async function checkAgentPermission(agentId: string, permission: string):
   // Verificar permissões específicas
   switch (permission) {
     case "read_files":
-      return agent.canReadFiles;
+      return agent.canReadFiles === 1;
     case "write_files":
-      return agent.canWriteFiles;
+      return agent.canWriteFiles === 1;
     case "execute_code":
-      return agent.canExecuteCode;
+      return agent.canExecuteCode === 1;
     case "access_network":
-      return agent.canAccessNetwork;
+      return agent.canAccessNetwork === 1;
     case "access_database":
-      return agent.canAccessDatabase;
+      return agent.canAccessDatabase === 1;
     default:
       return agent.permissions.includes(permission);
   }

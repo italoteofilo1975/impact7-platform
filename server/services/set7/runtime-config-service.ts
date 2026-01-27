@@ -277,11 +277,11 @@ export async function updateConfig(configId: string, input: UpdateRuntimeConfigI
   await db.update(set7RuntimeConfig)
     .set({
       mode: input.mode,
-      hookRoiEnabled: input.hookRoiEnabled,
-      hookTokensEnabled: input.hookTokensEnabled,
-      hookQualityEnabled: input.hookQualityEnabled,
-      hookSecurityEnabled: input.hookSecurityEnabled,
-      hookGtlEnabled: input.hookGtlEnabled,
+      hookRoiEnabled: input.hookRoiEnabled !== undefined ? (input.hookRoiEnabled ? 1 : 0) : undefined,
+      hookTokensEnabled: input.hookTokensEnabled !== undefined ? (input.hookTokensEnabled ? 1 : 0) : undefined,
+      hookQualityEnabled: input.hookQualityEnabled !== undefined ? (input.hookQualityEnabled ? 1 : 0) : undefined,
+      hookSecurityEnabled: input.hookSecurityEnabled !== undefined ? (input.hookSecurityEnabled ? 1 : 0) : undefined,
+      hookGtlEnabled: input.hookGtlEnabled !== undefined ? (input.hookGtlEnabled ? 1 : 0) : undefined,
       hookFrequency: input.hookFrequency,
       gtlType: input.gtlType,
       gtlPlans: input.gtlPlans ? JSON.stringify(input.gtlPlans) : undefined,
@@ -289,7 +289,7 @@ export async function updateConfig(configId: string, input: UpdateRuntimeConfigI
       modelRouting: input.modelRouting,
       gateProfile: gateProfile ? JSON.stringify(gateProfile) : undefined,
       humanApprovalPhases: input.humanApprovalPhases ? JSON.stringify(input.humanApprovalPhases) : undefined,
-      isActive: input.isActive,
+      isActive: input.isActive !== undefined ? (input.isActive ? 1 : 0) : undefined,
     })
     .where(eq(set7RuntimeConfig.configId, configId));
 
@@ -338,15 +338,15 @@ export async function isHookEnabled(hookType: "roi" | "tokens" | "quality" | "se
   
   switch (hookType) {
     case "roi":
-      return config.hookRoiEnabled;
+      return config.hookRoiEnabled === 1;
     case "tokens":
-      return config.hookTokensEnabled;
+      return config.hookTokensEnabled === 1;
     case "quality":
-      return config.hookQualityEnabled;
+      return config.hookQualityEnabled === 1;
     case "security":
-      return config.hookSecurityEnabled;
+      return config.hookSecurityEnabled === 1;
     case "gtl":
-      return config.hookGtlEnabled;
+      return config.hookGtlEnabled === 1;
     default:
       return false;
   }

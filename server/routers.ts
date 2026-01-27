@@ -6,6 +6,7 @@ import { z } from "zod";
 import { getDb } from "./db";
 import { executeRawQuery } from "./db-raw";
 import { leads, contacts, whitepaperDownloads, ebookDownloads, newsletterSubscribers, calculations, caseFavorites, caseSubmissions, caseTags, caseTagRelations, notificationPreferences, systemSettings, impactTokens } from "../drizzle/schema";
+import { roles, permissions } from "../drizzle/schema";
 import { chatWithJarvis, jarvisSkills, getSuggestedQuestions, JarvisMessage } from "./services/jarvis/jarvis-service";
 import { searchKnowledge, listCategories, getDocumentsByCategory } from "./services/jarvis/knowledge-base";
 import { getAlertSummary, getActiveAlerts, getAlertHistory, acknowledgeAlert, resolveAlert, startAlertMonitoring } from "./services/alerts/alert-service";
@@ -311,7 +312,7 @@ export const appRouter = router({
       const db = await getDb();
       if (!db) return { days: [], leads: [], downloads: [] };
       
-      const now = Date.now();
+      const now = new Date();
       const days: string[] = [];
       const leadsPerDay: number[] = [];
       const downloadsPerDay: number[] = [];
@@ -2432,7 +2433,7 @@ export const appRouter = router({
         
         // Broadcast via SSE
         const { sseNotificationService } = await import('./services/sse/sse-notification-service');
-        sseNotificationService.broadcastToUser(ctx.user.openId, {
+        sseNotificationService.broadcastToUser(ctx.user.id.toString(), {
           type,
           title,
           message,
@@ -3789,7 +3790,7 @@ export const appRouter = router({
         if (!db) throw new Error('Database not available');
         
         const { roles, permissions, rolePermissions } = await import('../drizzle/schema');
-        const now = Date.now();
+        const now = new Date();
         
         // 1. Criar roles
         const rolesData = [
