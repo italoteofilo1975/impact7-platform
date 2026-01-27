@@ -656,9 +656,9 @@ export const appRouter = router({
             projectName: input.projectName || null,
             sector: input.sector || null,
             sessionId: input.sessionId || null,
-          
-          createdAt: Date.now(),
-        });
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          });
         }
         
         return {
@@ -2808,9 +2808,9 @@ export const appRouter = router({
             description: input.description,
             category: input.category || 'general',
             valueType: input.valueType || 'string',
-          
-          createdAt: Date.now(),
-        });
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          });
         }
         
         // Log de auditoria
@@ -2855,9 +2855,9 @@ export const appRouter = router({
             await db.insert(systemSettings).values({
               key: setting.key,
               value: setting.value,
-            
-          createdAt: Date.now(),
-        });
+              createdAt: Date.now(),
+            updatedAt: Date.now(),
+          });
           }
         }
         

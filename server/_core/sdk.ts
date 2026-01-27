@@ -283,7 +283,7 @@ class SDKServer {
     }
 
     const sessionUserId = session.openId;
-    const signedInAt = new Date();
+    const signedInAt = Date.now();
     let user = await db.getUserByOpenId(sessionUserId);
 
     // If user not in DB, sync from OAuth server automatically
@@ -309,7 +309,7 @@ class SDKServer {
     }
 
     await db.upsertUser({
-      openId: user.openId,
+      id: user.id,
       lastSignedIn: signedInAt,
     });
 
