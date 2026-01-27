@@ -51,8 +51,8 @@ export const conversionService = {
     if (!db) return null;
     
     const conditions = [];
-    if (startDate) conditions.push(gte(conversionEvents.createdAt, startDate));
-    if (endDate) conditions.push(lte(conversionEvents.createdAt, endDate));
+    if (startDate) conditions.push(gte(conversionEvents.createdAt, startDate.getTime()));
+    if (endDate) conditions.push(lte(conversionEvents.createdAt, endDate.getTime()));
     
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
     
@@ -112,8 +112,8 @@ export const conversionService = {
     if (!db) return [];
     
     const conditions = [eq(conversionEvents.eventType, "subscription_start")];
-    if (startDate) conditions.push(gte(conversionEvents.createdAt, startDate));
-    if (endDate) conditions.push(lte(conversionEvents.createdAt, endDate));
+    if (startDate) conditions.push(gte(conversionEvents.createdAt, startDate.getTime()));
+    if (endDate) conditions.push(lte(conversionEvents.createdAt, endDate.getTime()));
     
     return db
       .select({
@@ -135,7 +135,7 @@ export const conversionService = {
     const db = await getDb();
     if (!db) return [];
     
-    const startDate = new Date();
+    const startDate = Date.now();
     startDate.setDate(startDate.getDate() - days);
     
     return db
@@ -146,7 +146,7 @@ export const conversionService = {
         calculatorUses: sql<number>`SUM(CASE WHEN event_type = 'calculator_complete' THEN 1 ELSE 0 END)`,
       })
       .from(conversionEvents)
-      .where(gte(conversionEvents.createdAt, startDate))
+      .where(gte(conversionEvents.createdAt, startDate.getTime()))
       .groupBy(sql`DATE(created_at)`)
       .orderBy(sql`DATE(created_at)`);
   },

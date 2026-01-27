@@ -158,7 +158,7 @@ export const auditLogService = {
       };
     }
 
-    const startDate = new Date();
+    const startDate = Date.now();
     startDate.setDate(startDate.getDate() - days);
 
     // Total actions

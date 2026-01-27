@@ -39,7 +39,7 @@ interface BackupOptions {
  * Generate a unique backup filename
  */
 function generateBackupFilename(): string {
-  const now = new Date();
+  const now = Date.now();
   const timestamp = now.toISOString().replace(/[:.]/g, '-');
   const randomSuffix = Math.random().toString(36).substring(2, 8);
   return `backups/impact7-backup-${timestamp}-${randomSuffix}.json`;
@@ -166,7 +166,7 @@ async function exportCriticalData(options: BackupOptions = {}): Promise<{
  * Create a full backup of critical data
  */
 export async function createBackup(options: BackupOptions = {}): Promise<BackupResult> {
-  const timestamp = new Date();
+  const timestamp = Date.now();
   
   try {
     // Export data
@@ -220,7 +220,7 @@ export async function createIncrementalBackup(
   sinceTimestamp: Date,
   options: BackupOptions = {}
 ): Promise<BackupResult> {
-  const timestamp = new Date();
+  const timestamp = Date.now();
   
   try {
     // For incremental backup, we would need updatedAt tracking

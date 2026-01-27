@@ -657,7 +657,6 @@ export const appRouter = router({
             sector: input.sector || null,
             sessionId: input.sessionId || null,
             createdAt: Date.now(),
-            updatedAt: Date.now(),
           });
         }
         

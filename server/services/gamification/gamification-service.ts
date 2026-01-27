@@ -258,7 +258,7 @@ export async function updateStreak(userId: number): Promise<number> {
   const userPointsRecord = await getUserPoints(userId);
   if (!userPointsRecord) return 0;
   
-  const now = new Date();
+  const now = Date.now();
   const lastInteraction = userPointsRecord.lastInteractionAt;
   
   let newStreak = userPointsRecord.streak;
