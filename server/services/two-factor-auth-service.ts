@@ -88,9 +88,9 @@ export async function generateSecret(userId: number): Promise<{
       backupCodes: JSON.stringify(hashedBackupCodes),
       isEnabled: 0,
       isVerified: 0,
-    
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
   }
 
   return {
@@ -287,8 +287,8 @@ export async function getStatus(userId: number): Promise<{
   const db = await getDb();
   if (!db) {
     return {
-      isEnabled: 0,
-      isVerified: 0,
+      isEnabled: false,
+      isVerified: false,
       backupCodesRemaining: 0,
       lastUsedAt: null,
     };
@@ -298,8 +298,8 @@ export async function getStatus(userId: number): Promise<{
 
   if (!tfa) {
     return {
-      isEnabled: 0,
-      isVerified: 0,
+      isEnabled: false,
+      isVerified: false,
       backupCodesRemaining: 0,
       lastUsedAt: null,
     };
@@ -343,9 +343,9 @@ export async function createVerificationSession(userId: number, ipAddress?: stri
     expiresAt,
     ipAddress,
     userAgent,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  });
 
   return sessionToken;
 }

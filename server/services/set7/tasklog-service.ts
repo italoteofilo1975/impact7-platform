@@ -454,9 +454,9 @@ export async function exportTasklogToCsv(filters?: {
     task.status,
     task.gateId || "",
     task.gateStatus || "",
-    task.startedAt?.toISOString() || "",
-    task.completedAt?.toISOString() || "",
-    task.createdAt?.toISOString() || "",
+    task.startedAt ? new Date(task.startedAt).toISOString() : "",
+    task.completedAt ? new Date(task.completedAt).toISOString() : "",
+    task.createdAt ? new Date(task.createdAt).toISOString() : "",
   ]);
 
   const csv = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");

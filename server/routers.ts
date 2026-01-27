@@ -2060,7 +2060,7 @@ export const appRouter = router({
           impactScore: cert.impactScore,
           sector: cert.sector,
           sdgs: cert.sdgs ? JSON.parse(cert.sdgs) : [],
-          issuedAt: cert.issuedAt || Date.now(),
+          issuedAt: cert.issuedAt,
           dataHash: cert.dataHash,
         });
         return { html };
@@ -3743,7 +3743,7 @@ export const appRouter = router({
     exportData: protectedProcedure
       .mutation(async ({ ctx }) => {
         const { exportUserData } = await import('./security/audit/compliance');
-        const data = await exportUserData(ctx.user.id, {});
+        const data = await exportUserData(String(ctx.user.id), {});
         
         // Log de auditoria
         const { auditService } = await import('./services/audit/audit-service');
@@ -3767,7 +3767,7 @@ export const appRouter = router({
         }
         
         const { anonymizeUserData } = await import('./security/audit/compliance');
-        await anonymizeUserData(ctx.user.id);
+        await anonymizeUserData(String(ctx.user.id));
         
         // Log de auditoria
         const { auditService } = await import('./services/audit/audit-service');
