@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type Theme = "light" | "dark" | "system" | "auto";
+export type Theme = "light" | "dark" | "system" | "auto" | "sunset";
 export type ResolvedTheme = "light" | "dark";
 
 interface ThemeContextType {
@@ -13,6 +13,9 @@ interface ThemeContextType {
   autoSwitchEnabled: boolean;
   autoSwitchTimes: { lightStart: number; darkStart: number };
   setAutoSwitchTimes: (times: { lightStart: number; darkStart: number }) => void;
+  // Sunset/Sunrise settings
+  sunsetSunriseEnabled: boolean;
+  sunTimes: { sunrise: string; sunset: string } | null;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -44,140 +47,187 @@ function getAutoTheme(lightStart: number, darkStart: number): ResolvedTheme {
   }
 }
 
+async function fetchSunTimes(latitude: number, longitude: number): Promise<{ sunrise: string; sunset: string } | null> {
+  try {
+    const response = await fetch(
+      `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`
+    );
+    const data = await response.json();
+    if (data.status === "OK") {
+      return {
+        sunrise: data.results.sunrise,
+        sunset: data.results.sunset,
+      };
+    }
+  } catch (error) {
+    console.error("Failed to fetch sun times:", error);
+  }
+  return null;
+}
+
+function getSunsetTheme(sunTimes: { sunrise: string; sunset: string } | null): ResolvedTheme {
+  if (!sunTimes) return "light"; // Fallback to light if no sun times available
+  
+  const now = new Date();
+  const sunrise = new Date(sunTimes.sunrise);
+  const sunset = new Date(sunTimes.sunset);
+  
+  // Light during day (sunrise to sunset), dark during night
+  return now >= sunrise && now < sunset ? "light" : "dark";
+}
+
 function resolveTheme(
   theme: Theme,
-  autoSwitchTimes: { lightStart: number; darkStart: number }
+  autoSwitchTimes: { lightStart: number; darkStart: number },
+  sunTimes: { sunrise: string; sunset: string } | null
 ): ResolvedTheme {
-  if (theme === "system") return getSystemTheme();
-  if (theme === "auto") return getAutoTheme(autoSwitchTimes.lightStart, autoSwitchTimes.darkStart);
-  return theme;
+  switch (theme) {
+    case "light":
+      return "light";
+    case "dark":
+      return "dark";
+    case "system":
+      return getSystemTheme();
+    case "auto":
+      return getAutoTheme(autoSwitchTimes.lightStart, autoSwitchTimes.darkStart);
+    case "sunset":
+      return getSunsetTheme(sunTimes);
+    default:
+      return "light";
+  }
 }
 
 export function ThemeProvider({
   children,
-  defaultTheme = "light",
-  switchable = false,
+  defaultTheme = "system",
+  switchable = true,
 }: ThemeProviderProps) {
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window === "undefined") return defaultTheme;
+    return (localStorage.getItem("theme") as Theme) || defaultTheme;
+  });
+
   const [autoSwitchTimes, setAutoSwitchTimesState] = useState<{
     lightStart: number;
     darkStart: number;
   }>(() => {
-    if (switchable && typeof window !== "undefined") {
-      const stored = localStorage.getItem("autoSwitchTimes");
-      if (stored) {
-        try {
-          return JSON.parse(stored);
-        } catch {}
+    if (typeof window === "undefined") return { lightStart: 6, darkStart: 18 };
+    const saved = localStorage.getItem("autoSwitchTimes");
+    return saved ? JSON.parse(saved) : { lightStart: 6, darkStart: 18 };
+  });
+
+  const [sunTimes, setSunTimes] = useState<{ sunrise: string; sunset: string } | null>(null);
+
+  const resolvedTheme = resolveTheme(theme, autoSwitchTimes, sunTimes);
+
+  // Fetch sun times when sunset mode is enabled
+  useEffect(() => {
+    if (theme === "sunset" && !sunTimes) {
+      // Get user's geolocation
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            const times = await fetchSunTimes(latitude, longitude);
+            if (times) {
+              setSunTimes(times);
+              localStorage.setItem("sunTimes", JSON.stringify(times));
+              localStorage.setItem("sunTimesExpiry", String(Date.now() + 24 * 60 * 60 * 1000)); // 24h expiry
+            }
+          },
+          (error) => {
+            console.error("Geolocation error:", error);
+            // Fallback to default times (approximate for UTC)
+            setSunTimes({
+              sunrise: new Date().toISOString().replace(/T.*/, "T06:00:00Z"),
+              sunset: new Date().toISOString().replace(/T.*/, "T18:00:00Z"),
+            });
+          }
+        );
       }
     }
-    return { lightStart: 6, darkStart: 18 }; // Default: 6h-18h light, 18h-6h dark
-  });
 
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (switchable) {
-      const stored = localStorage.getItem("theme");
-      return (stored as Theme) || defaultTheme;
+    // Load cached sun times if available and not expired
+    if (theme === "sunset" && !sunTimes) {
+      const cached = localStorage.getItem("sunTimes");
+      const expiry = localStorage.getItem("sunTimesExpiry");
+      if (cached && expiry && Date.now() < parseInt(expiry)) {
+        setSunTimes(JSON.parse(cached));
+      }
     }
-    return defaultTheme;
-  });
+  }, [theme, sunTimes]);
 
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() =>
-    resolveTheme(theme, autoSwitchTimes)
-  );
-
+  // Apply theme to document
   useEffect(() => {
-    const newResolvedTheme = resolveTheme(theme, autoSwitchTimes);
-    setResolvedTheme(newResolvedTheme);
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(resolvedTheme);
+  }, [resolvedTheme]);
 
-    const root = document.documentElement;
-    if (newResolvedTheme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-
-    if (switchable) {
-      localStorage.setItem("theme", theme);
-    }
-  }, [theme, autoSwitchTimes, switchable]);
-
-  // Listen for system theme changes when theme is "system"
+  // Listen for system theme changes
   useEffect(() => {
     if (theme !== "system") return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () => {
-      const newResolvedTheme = getSystemTheme();
-      setResolvedTheme(newResolvedTheme);
-
-      const root = document.documentElement;
-      if (newResolvedTheme === "dark") {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
+      const root = window.document.documentElement;
+      root.classList.remove("light", "dark");
+      root.classList.add(getSystemTheme());
     };
 
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [theme]);
 
-  // Auto-switch timer when theme is "auto"
+  // Auto-switch timer (check every minute)
   useEffect(() => {
-    if (theme !== "auto") return;
+    if (theme !== "auto" && theme !== "sunset") return;
 
-    // Check every minute if theme should change
     const interval = setInterval(() => {
-      const newResolvedTheme = getAutoTheme(autoSwitchTimes.lightStart, autoSwitchTimes.darkStart);
-      if (newResolvedTheme !== resolvedTheme) {
-        setResolvedTheme(newResolvedTheme);
-
-        const root = document.documentElement;
-        if (newResolvedTheme === "dark") {
-          root.classList.add("dark");
-        } else {
-          root.classList.remove("dark");
-        }
+      const newResolved = resolveTheme(theme, autoSwitchTimes, sunTimes);
+      if (newResolved !== resolvedTheme) {
+        const root = window.document.documentElement;
+        root.classList.remove("light", "dark");
+        root.classList.add(newResolved);
       }
     }, 60000); // Check every minute
 
     return () => clearInterval(interval);
-  }, [theme, autoSwitchTimes, resolvedTheme]);
+  }, [theme, autoSwitchTimes, resolvedTheme, sunTimes]);
+
+  // Observe <html> class changes for dark mode
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          // Force re-render when theme class changes
+          setThemeState((prev) => prev);
+        }
+      });
+    });
+
+    observer.observe(root, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
+    localStorage.setItem("theme", newTheme);
   };
 
   const setAutoSwitchTimes = (times: { lightStart: number; darkStart: number }) => {
     setAutoSwitchTimesState(times);
-    if (switchable) {
-      localStorage.setItem("autoSwitchTimes", JSON.stringify(times));
-    }
-    // Force re-evaluation if in auto mode
-    if (theme === "auto") {
-      const newResolvedTheme = getAutoTheme(times.lightStart, times.darkStart);
-      setResolvedTheme(newResolvedTheme);
-
-      const root = document.documentElement;
-      if (newResolvedTheme === "dark") {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
-    }
+    localStorage.setItem("autoSwitchTimes", JSON.stringify(times));
   };
 
-  const toggleTheme = switchable
-    ? () => {
-        setThemeState(prev => {
-          // Cycle through: light -> dark -> system -> auto -> light
-          if (prev === "light") return "dark";
-          if (prev === "dark") return "system";
-          if (prev === "system") return "auto";
-          return "light";
-        });
-      }
-    : undefined;
+  const toggleTheme = () => {
+    if (!switchable) return;
+    const themes: Theme[] = ["light", "dark", "system", "auto", "sunset"];
+    const currentIndex = themes.indexOf(theme);
+    const nextTheme = themes[(currentIndex + 1) % themes.length];
+    setTheme(nextTheme);
+  };
 
   return (
     <ThemeContext.Provider
@@ -185,11 +235,13 @@ export function ThemeProvider({
         theme,
         resolvedTheme,
         setTheme,
-        toggleTheme,
+        toggleTheme: switchable ? toggleTheme : undefined,
         switchable,
         autoSwitchEnabled: theme === "auto",
         autoSwitchTimes,
         setAutoSwitchTimes,
+        sunsetSunriseEnabled: theme === "sunset",
+        sunTimes,
       }}
     >
       {children}
@@ -199,8 +251,8 @@ export function ThemeProvider({
 
 export function useTheme() {
   const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within ThemeProvider");
+  if (context === undefined) {
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
 }

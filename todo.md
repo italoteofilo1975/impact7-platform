@@ -732,3 +732,9 @@
 - [x] Implementar View Transitions API ou CSS transitions globais
 - [x] Validar sistema completo após correções
 - [x] Calcular % de conclusão final do sistema
+
+
+## Tarefas Finais para 98%+ Conclusão
+- [ ] Eliminar 135 erros TypeScript restantes (correções manuais direcionadas)
+- [x] Adicionar modo Sunset/Sunrise (5º modo de tema com geolocalização)
+- [x] Criar preview de tema em tempo real no dropdown ThemeSelector
