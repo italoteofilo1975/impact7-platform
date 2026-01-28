@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type Theme = "light" | "dark" | "system";
+export type Theme = "light" | "dark" | "system" | "auto";
 export type ResolvedTheme = "light" | "dark";
 
 interface ThemeContextType {
@@ -9,6 +9,10 @@ interface ThemeContextType {
   setTheme: (theme: Theme) => void;
   toggleTheme?: () => void;
   switchable: boolean;
+  // Auto-switch settings
+  autoSwitchEnabled: boolean;
+  autoSwitchTimes: { lightStart: number; darkStart: number };
+  setAutoSwitchTimes: (times: { lightStart: number; darkStart: number }) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -26,8 +30,27 @@ function getSystemTheme(): ResolvedTheme {
     : "light";
 }
 
-function resolveTheme(theme: Theme): ResolvedTheme {
-  return theme === "system" ? getSystemTheme() : theme;
+function getAutoTheme(lightStart: number, darkStart: number): ResolvedTheme {
+  const now = new Date();
+  const currentHour = now.getHours();
+  
+  // Default: light 6h-18h, dark 18h-6h
+  if (lightStart < darkStart) {
+    // Normal case: light during day, dark during night
+    return currentHour >= lightStart && currentHour < darkStart ? "light" : "dark";
+  } else {
+    // Inverted case: dark during day, light during night
+    return currentHour >= darkStart && currentHour < lightStart ? "dark" : "light";
+  }
+}
+
+function resolveTheme(
+  theme: Theme,
+  autoSwitchTimes: { lightStart: number; darkStart: number }
+): ResolvedTheme {
+  if (theme === "system") return getSystemTheme();
+  if (theme === "auto") return getAutoTheme(autoSwitchTimes.lightStart, autoSwitchTimes.darkStart);
+  return theme;
 }
 
 export function ThemeProvider({
@@ -35,6 +58,21 @@ export function ThemeProvider({
   defaultTheme = "light",
   switchable = false,
 }: ThemeProviderProps) {
+  const [autoSwitchTimes, setAutoSwitchTimesState] = useState<{
+    lightStart: number;
+    darkStart: number;
+  }>(() => {
+    if (switchable && typeof window !== "undefined") {
+      const stored = localStorage.getItem("autoSwitchTimes");
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {}
+      }
+    }
+    return { lightStart: 6, darkStart: 18 }; // Default: 6h-18h light, 18h-6h dark
+  });
+
   const [theme, setThemeState] = useState<Theme>(() => {
     if (switchable) {
       const stored = localStorage.getItem("theme");
@@ -44,11 +82,11 @@ export function ThemeProvider({
   });
 
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() =>
-    resolveTheme(theme)
+    resolveTheme(theme, autoSwitchTimes)
   );
 
   useEffect(() => {
-    const newResolvedTheme = resolveTheme(theme);
+    const newResolvedTheme = resolveTheme(theme, autoSwitchTimes);
     setResolvedTheme(newResolvedTheme);
 
     const root = document.documentElement;
@@ -61,7 +99,7 @@ export function ThemeProvider({
     if (switchable) {
       localStorage.setItem("theme", theme);
     }
-  }, [theme, switchable]);
+  }, [theme, autoSwitchTimes, switchable]);
 
   // Listen for system theme changes when theme is "system"
   useEffect(() => {
@@ -84,16 +122,58 @@ export function ThemeProvider({
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [theme]);
 
+  // Auto-switch timer when theme is "auto"
+  useEffect(() => {
+    if (theme !== "auto") return;
+
+    // Check every minute if theme should change
+    const interval = setInterval(() => {
+      const newResolvedTheme = getAutoTheme(autoSwitchTimes.lightStart, autoSwitchTimes.darkStart);
+      if (newResolvedTheme !== resolvedTheme) {
+        setResolvedTheme(newResolvedTheme);
+
+        const root = document.documentElement;
+        if (newResolvedTheme === "dark") {
+          root.classList.add("dark");
+        } else {
+          root.classList.remove("dark");
+        }
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [theme, autoSwitchTimes, resolvedTheme]);
+
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
+  };
+
+  const setAutoSwitchTimes = (times: { lightStart: number; darkStart: number }) => {
+    setAutoSwitchTimesState(times);
+    if (switchable) {
+      localStorage.setItem("autoSwitchTimes", JSON.stringify(times));
+    }
+    // Force re-evaluation if in auto mode
+    if (theme === "auto") {
+      const newResolvedTheme = getAutoTheme(times.lightStart, times.darkStart);
+      setResolvedTheme(newResolvedTheme);
+
+      const root = document.documentElement;
+      if (newResolvedTheme === "dark") {
+        root.classList.add("dark");
+      } else {
+        root.classList.remove("dark");
+      }
+    }
   };
 
   const toggleTheme = switchable
     ? () => {
         setThemeState(prev => {
-          // Cycle through: light -> dark -> system -> light
+          // Cycle through: light -> dark -> system -> auto -> light
           if (prev === "light") return "dark";
           if (prev === "dark") return "system";
+          if (prev === "system") return "auto";
           return "light";
         });
       }
@@ -101,7 +181,16 @@ export function ThemeProvider({
 
   return (
     <ThemeContext.Provider
-      value={{ theme, resolvedTheme, setTheme, toggleTheme, switchable }}
+      value={{
+        theme,
+        resolvedTheme,
+        setTheme,
+        toggleTheme,
+        switchable,
+        autoSwitchEnabled: theme === "auto",
+        autoSwitchTimes,
+        setAutoSwitchTimes,
+      }}
     >
       {children}
     </ThemeContext.Provider>

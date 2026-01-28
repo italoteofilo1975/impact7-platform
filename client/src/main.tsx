@@ -11,6 +11,7 @@ import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
+import "./theme-transition.css";
 
 // Import i18n configuration
 import "./lib/i18n";

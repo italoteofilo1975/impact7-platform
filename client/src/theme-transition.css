@@ -1,0 +1,104 @@
+/**
+ * Theme Transition Animations
+ * Provides smooth 500ms fade transitions when switching between light/dark themes
+ */
+
+/* Enable smooth transitions on all theme-dependent properties */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Disable transitions for elements that should change instantly */
+.no-theme-transition,
+.no-theme-transition *,
+input,
+textarea,
+select,
+button:active,
+[data-instant-theme] {
+  transition-duration: 0ms !important;
+}
+
+/* Smooth fade for page background */
+html {
+  transition: background-color 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth transitions for common UI elements */
+.card,
+.button,
+.input,
+.dropdown,
+.modal,
+.sidebar,
+.header,
+.footer {
+  transition: background-color 500ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 500ms cubic-bezier(0.4, 0, 0.2, 1),
+              color 500ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth transitions for text colors */
+h1, h2, h3, h4, h5, h6, p, span, a, label {
+  transition: color 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth transitions for borders */
+[class*="border"] {
+  transition: border-color 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth transitions for shadows */
+[class*="shadow"] {
+  transition: box-shadow 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* View Transitions API support (modern browsers) */
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 500ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  ::view-transition-old(root) {
+    animation-name: theme-fade-out;
+  }
+  
+  ::view-transition-new(root) {
+    animation-name: theme-fade-in;
+  }
+}
+
+@keyframes theme-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes theme-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}

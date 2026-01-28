@@ -3487,9 +3487,9 @@ export const appRouter = router({
           tokenHash,
           tokenPrefix,
           scopes: JSON.stringify(input.permissions || ['read']),
-          expiresAt,
-        
+          expiresAt: expiresAt ? expiresAt.getTime() : null,
           createdAt: Date.now(),
+          updatedAt: Date.now(),
         });
         
         // Return the full token only once
@@ -3848,9 +3848,7 @@ export const appRouter = router({
               roleId: adminRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            
-          createdAt: Date.now(),
-        }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
           }
         }
         
@@ -3862,9 +3860,7 @@ export const appRouter = router({
               roleId: managerRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            
-          createdAt: Date.now(),
-        }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
           }
         }
         
@@ -3876,9 +3872,7 @@ export const appRouter = router({
               roleId: userRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            
-          createdAt: Date.now(),
-        }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
           }
         }
         
@@ -3890,9 +3884,7 @@ export const appRouter = router({
               roleId: guestRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            
-          createdAt: Date.now(),
-        }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
           }
         }
         

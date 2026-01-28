@@ -720,3 +720,15 @@
 - [x] Substituir ThemeToggle por ThemeSelector em todos os componentes
 - [x] Adicionar animação de fade (200ms) no badge D/L
 - [x] Criar documentação de tema no README.md
+
+
+## Tarefas Finais para 100% de Conclusão
+- [ ] Eliminar 8 erros restantes em routers.ts (userAccessTokens, userSessions)
+- [ ] Eliminar 6 erros em tasklog-service.ts (toISOString conversions)
+- [ ] Criar script batch para arquivos com 3-5 erros TypeScript
+- [x] Implementar modo Auto-switch por horário (4º modo de tema)
+- [x] Adicionar configuração de horários personalizados no dropdown
+- [x] Criar animação de transição entre temas (500ms fade)
+- [x] Implementar View Transitions API ou CSS transitions globais
+- [x] Validar sistema completo após correções
+- [x] Calcular % de conclusão final do sistema
