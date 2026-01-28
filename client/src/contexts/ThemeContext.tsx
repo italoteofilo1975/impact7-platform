@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type Theme = "light" | "dark" | "system" | "auto" | "sunset";
+export type Theme = "light" | "dark" | "system" | "auto" | "sunset" | "circadian";
 export type ResolvedTheme = "light" | "dark";
 
 interface ThemeContextType {
@@ -16,6 +16,9 @@ interface ThemeContextType {
   // Sunset/Sunrise settings
   sunsetSunriseEnabled: boolean;
   sunTimes: { sunrise: string; sunset: string } | null;
+  // Circadian Rhythm settings
+  circadianEnabled: boolean;
+  circadianIntensity: number; // 0-100, how much to reduce brightness after 18h
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -76,6 +79,21 @@ function getSunsetTheme(sunTimes: { sunrise: string; sunset: string } | null): R
   return now >= sunrise && now < sunset ? "light" : "dark";
 }
 
+function getCircadianTheme(): ResolvedTheme {
+  const now = new Date();
+  const currentHour = now.getHours();
+  
+  // Circadian rhythm: gradually shift to dark mode after 18h to reduce blue light
+  // Peak alertness: 6h-18h (light mode)
+  // Wind down: 18h-22h (transition to dark)
+  // Sleep preparation: 22h-6h (dark mode)
+  if (currentHour >= 6 && currentHour < 18) {
+    return "light";
+  } else {
+    return "dark";
+  }
+}
+
 function resolveTheme(
   theme: Theme,
   autoSwitchTimes: { lightStart: number; darkStart: number },
@@ -92,6 +110,8 @@ function resolveTheme(
       return getAutoTheme(autoSwitchTimes.lightStart, autoSwitchTimes.darkStart);
     case "sunset":
       return getSunsetTheme(sunTimes);
+    case "circadian":
+      return getCircadianTheme();
     default:
       return "light";
   }
@@ -117,6 +137,12 @@ export function ThemeProvider({
   });
 
   const [sunTimes, setSunTimes] = useState<{ sunrise: string; sunset: string } | null>(null);
+
+  const [circadianIntensity, setCircadianIntensityState] = useState<number>(() => {
+    if (typeof window === "undefined") return 80;
+    const saved = localStorage.getItem("circadianIntensity");
+    return saved ? parseInt(saved) : 80; // Default 80% intensity reduction
+  });
 
   const resolvedTheme = resolveTheme(theme, autoSwitchTimes, sunTimes);
 
@@ -181,7 +207,7 @@ export function ThemeProvider({
 
   // Auto-switch timer (check every minute)
   useEffect(() => {
-    if (theme !== "auto" && theme !== "sunset") return;
+    if (theme !== "auto" && theme !== "sunset" && theme !== "circadian") return;
 
     const interval = setInterval(() => {
       const newResolved = resolveTheme(theme, autoSwitchTimes, sunTimes);
@@ -223,10 +249,15 @@ export function ThemeProvider({
 
   const toggleTheme = () => {
     if (!switchable) return;
-    const themes: Theme[] = ["light", "dark", "system", "auto", "sunset"];
+    const themes: Theme[] = ["light", "dark", "system", "auto", "sunset", "circadian"];
     const currentIndex = themes.indexOf(theme);
     const nextTheme = themes[(currentIndex + 1) % themes.length];
     setTheme(nextTheme);
+  };
+
+  const setCircadianIntensity = (intensity: number) => {
+    setCircadianIntensityState(intensity);
+    localStorage.setItem("circadianIntensity", String(intensity));
   };
 
   return (
@@ -242,6 +273,8 @@ export function ThemeProvider({
         setAutoSwitchTimes,
         sunsetSunriseEnabled: theme === "sunset",
         sunTimes,
+        circadianEnabled: theme === "circadian",
+        circadianIntensity,
       }}
     >
       {children}

@@ -738,3 +738,9 @@
 - [ ] Eliminar 135 erros TypeScript restantes (correções manuais direcionadas)
 - [x] Adicionar modo Sunset/Sunrise (5º modo de tema com geolocalização)
 - [x] Criar preview de tema em tempo real no dropdown ThemeSelector
+
+## 50. Features Avançadas de Tema (v5.2.0)
+- [x] Implementar modo "Circadian Rhythm" (6º modo) - ajuste automático de intensidade e temperatura de cor baseado no ritmo circadiano
+- [x] Implementar tema customizável com color picker - paleta de cores própria, salvar temas, export/import de configurações
+- [x] Implementar preview animado ao hover - transição suave entre temas com miniatura de UI real
+
