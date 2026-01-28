@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import NotificationBell from "@/components/NotificationBell";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemeSelector } from "@/components/ThemeSelector";
 import { useAuth } from "@/_core/hooks/useAuth";
 import {
   DropdownMenu,
@@ -64,7 +64,7 @@ export function MainNavbar() {
           {/* CTA Button + Language Selector + Theme Toggle + User Menu */}
           <div className="hidden lg:flex items-center gap-2">
             {user && <NotificationBell />}
-            <ThemeToggle />
+            <ThemeSelector />
             <LanguageSelector variant="default" />
             <Link href="/contato">
               <Button variant="outline" size="sm">

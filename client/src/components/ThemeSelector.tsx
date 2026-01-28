@@ -47,7 +47,7 @@ export function ThemeSelector() {
           />
           {/* Badge showing resolved theme for system mode */}
           {theme === 'system' && (
-            <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center shadow-md">
+            <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center shadow-md animate-in fade-in duration-200">
               {resolvedTheme === 'dark' ? 'D' : 'L'}
             </span>
           )}

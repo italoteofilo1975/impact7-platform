@@ -393,6 +393,176 @@ A plataforma utiliza 40+ componentes shadcn/ui customizados:
 
 ---
 
+## 🎨 Theme System
+
+A plataforma possui um sistema de temas avançado com suporte a **3 modos**: Light, Dark e System (auto).
+
+### Modos de Tema
+
+**1. Light Mode**
+- Tema claro com fundo branco e texto escuro
+- Otimizado para ambientes bem iluminados
+- Cores vibrantes e alto contraste
+
+**2. Dark Mode**
+- Tema escuro com fundo azul escuro (#0A0E27) e texto claro
+- Reduz fadiga ocular em ambientes com pouca luz
+- Cores suavizadas para conforto visual
+
+**3. System Mode (Auto)**
+- Detecta automaticamente a preferência do sistema operacional
+- Usa `window.matchMedia('(prefers-color-scheme: dark)')`
+- Atualiza em tempo real quando usuário muda configuração do SO
+- Badge visual mostra tema efetivo: "D" (Dark) ou "L" (Light)
+
+### Implementação Técnica
+
+**ThemeContext.tsx**
+```typescript
+// Detecta preferência do SO
+const getSystemTheme = () => {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+// Listener de mudanças
+useEffect(() => {
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  const handleChange = () => setResolvedTheme(getSystemTheme());
+  mediaQuery.addEventListener('change', handleChange);
+  return () => mediaQuery.removeEventListener('change', handleChange);
+}, []);
+```
+
+**ThemeSelector.tsx**
+- Dropdown com acesso direto aos 3 modos
+- Ícones: ☀️ (Light), 🌙 (Dark), 🖥️ (System)
+- Badge circular mostrando tema resolvido em modo system
+- Animação fade-in 200ms no badge
+- Persistência em localStorage
+- Checkmark (✓) na opção selecionada
+
+**Dark Mode Dinâmico em Canvas**
+
+Todos os gráficos (Recharts, Chart.js) atualizam automaticamente quando tema muda:
+
+```typescript
+// MutationObserver detecta mudança de classe .dark no <html>
+useEffect(() => {
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'class') {
+        const isDark = document.documentElement.classList.contains('dark');
+        setTheme(isDark ? 'dark' : 'light');
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true });
+  return () => observer.disconnect();
+}, []);
+```
+
+### Otimizações de Performance
+
+**1. Debounce no MutationObserver**
+- Delay de 100ms para evitar múltiplos re-renders
+- Reduz carga computacional em toggles rápidos
+
+**2. CSS Transitions**
+- Transições suaves de 300ms em cores de gráficos
+- `transition: all 0.3s ease-in-out` aplicado em ChartContainer
+
+**3. Key-based Re-rendering**
+- ChartStyle e ResponsiveContainer recebem `key={theme}`
+- Força re-render completo quando tema muda
+- Garante cores sempre sincronizadas
+
+### Testes E2E (Playwright)
+
+A plataforma possui **4 testes E2E** para validar o sistema de temas:
+
+```bash
+# Executar testes de tema system
+pnpm exec playwright test theme-system
+
+# Executar testes de dark mode em gráficos
+pnpm exec playwright test dark-mode-charts
+```
+
+**Testes Implementados:**
+
+1. **theme-system.spec.ts (4 testes)**
+   - `should follow OS preference` - Valida detecção automática do SO
+   - `should show resolved theme indicator` - Verifica badge "D"/"L"
+   - `should persist system theme selection` - Testa localStorage
+   - `should update immediately on OS change` - Valida reatividade
+
+2. **dark-mode-charts.spec.ts (3 testes)**
+   - `should update chart colors on theme change` - Valida recalculo de cores
+   - `should apply smooth transitions` - Verifica animações 300ms
+   - `should handle rapid theme toggles` - Testa debounce 100ms
+
+### Como Usar
+
+**1. Via Interface**
+- Clicar no botão de tema no header (ícone ☀️/🌙/🖥️)
+- Selecionar diretamente: Light, Dark ou System
+- Badge mostra "D" ou "L" quando em modo System
+
+**2. Via Código**
+```typescript
+import { useTheme } from '@/hooks/useTheme';
+
+function MyComponent() {
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  
+  return (
+    <div>
+      <p>Tema atual: {theme}</p>
+      <p>Tema efetivo: {resolvedTheme}</p>
+      <button onClick={() => setTheme('dark')}>Dark Mode</button>
+      <button onClick={() => setTheme('system')}>System Mode</button>
+    </div>
+  );
+}
+```
+
+**3. Via localStorage**
+```javascript
+// Tema é salvo automaticamente em localStorage
+localStorage.getItem('theme'); // 'light' | 'dark' | 'system'
+```
+
+### CSS Variables
+
+Cores são definidas via CSS variables em `client/src/index.css`:
+
+```css
+/* Light Mode */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 224 71% 4%;
+  --primary: 25 95% 53%;
+}
+
+/* Dark Mode */
+.dark {
+  --background: 224 71% 4%;
+  --foreground: 213 31% 91%;
+  --primary: 25 95% 53%;
+}
+```
+
+Componentes usam classes semânticas:
+```tsx
+<div className="bg-background text-foreground">
+  <button className="bg-primary text-primary-foreground">
+    Botão
+  </button>
+</div>
+```
+
+---
+
 ## 🧪 Testes
 
 ### Testes E2E (Playwright)

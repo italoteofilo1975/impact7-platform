@@ -714,3 +714,9 @@
 - [x] Adicionar dropdown de seleção de tema (Light, Dark, System)
 - [x] Criar teste E2E para tema system com emulateMedia
 - [x] Adicionar indicador visual de tema ativo no botão
+
+
+## Finalização do Sistema de Tema
+- [x] Substituir ThemeToggle por ThemeSelector em todos os componentes
+- [x] Adicionar animação de fade (200ms) no badge D/L
+- [x] Criar documentação de tema no README.md
