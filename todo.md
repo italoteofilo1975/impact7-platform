@@ -771,3 +771,45 @@
 - [ ] Resolver 135 erros TypeScript restantes (Date vs number) - Dívida técnica não-bloqueante
 - [x] Executar 75 novos testes criados (pnpm test) - 377 testes passando (94%)
 - [x] Salvar checkpoint v5.4.0
+
+
+## 54. Implementação de Endpoints Faltantes (v6.0.0)
+- [ ] Implementar auth.register (registro de novos usuários)
+- [ ] Implementar auth.requestPasswordReset (reset de senha)
+- [ ] Implementar leads.create (captura de leads)
+- [ ] Implementar leads.list (listagem com paginação)
+- [ ] Implementar leads.exportCSV (exportação para CSV)
+- [ ] Implementar blog.create (criação de posts)
+- [ ] Implementar blog.list (listagem de posts publicados)
+- [ ] Implementar cases.submit (submissão de case studies)
+- [ ] Implementar testimonials.create (criação de depoimentos)
+- [ ] Implementar testimonials.list (listagem de depoimentos aprovados)
+- [ ] Implementar gamification.awardBadge (atribuir badge a usuário)
+- [ ] Implementar gamification.getUserPoints (obter pontos do usuário)
+- [ ] Implementar gamification.getUserBadges (listar badges do usuário)
+- [ ] Implementar gamification.getLeaderboard (ranking de usuários)
+- [ ] Implementar gamification.trackActivity (rastrear atividade para pontos)
+- [ ] Implementar notifications.sendEmail (enviar notificação por email)
+- [ ] Implementar notifications.list (listar notificações do usuário)
+- [ ] Implementar notifications.markAsRead (marcar notificação como lida)
+- [ ] Implementar notifications.getUnreadCount (contar notificações não lidas)
+- [ ] Implementar newsletter.subscribe (inscrição em newsletter)
+
+## 55. Resolução de Dívida Técnica TypeScript (v6.0.0)
+- [ ] Refatorar conversões Date→number em server/routers.ts
+- [ ] Refatorar conversões Date→number em server/db.ts
+- [ ] Refatorar conversões Date→number em server/_core/
+- [ ] Adicionar coluna openId ao banco MySQL (ALTER TABLE)
+- [ ] Remover workarounds @ts-expect-error após correções
+- [ ] Validar que 136 erros TypeScript foram resolvidos
+- [ ] Executar testes completos (pnpm test)
+- [ ] Salvar checkpoint v6.0.0
+
+
+## 56. Correção de Erro "Unknown column 'organization'" (v6.0.0)
+- [x] Identificar fonte do erro (tabelas leads, whitepaperDownloads, caseStudies)
+- [x] Adicionar coluna organization à tabela leads via ALTER TABLE
+- [x] Adicionar coluna organization à tabela whitepaperDownloads via ALTER TABLE
+- [x] Adicionar coluna organization à tabela caseStudies via ALTER TABLE
+- [x] Reiniciar servidor e validar que erro foi resolvido
+- [x] Salvar checkpoint v6.0.0
