@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Extended E2E Tests - 25 Additional Critical Flows
  * Expands test coverage from 20 to 45 tests (50%+ coverage)
