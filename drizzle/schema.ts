@@ -1150,20 +1150,15 @@ export type InsertTestimonial = typeof testimonials.$inferInsert;
 export const partners = mysqlTable("partners", {
   id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }),
   description: text("description"),
-  logoUrl: varchar("logoUrl", { length: 500 }),
-  websiteUrl: varchar("websiteUrl", { length: 500 }),
-  sector: varchar("sector", { length: 100 }),
-  partnerType: text("partnerType").default("strategic").notNull(),
-  tier: text("tier").default("silver").notNull(),
-  isActive: int("isActive").default(1).notNull(),
-  isFeatured: int("isFeatured").default(0).notNull(),
-  displayOrder: int("displayOrder").default(0).notNull(),
-  contactName: varchar("contactName", { length: 255 }),
-  contactEmail: varchar("contactEmail", { length: 320 }),
-  partnerSince: int("partnerSince"),
+  logo: varchar("logo", { length: 1000 }),
+  website: varchar("website", { length: 1000 }),
+  partnerType: varchar("partnerType", { length: 100 }),
+  status: varchar("status", { length: 50 }),
   createdAt: int("createdAt").$type<number>().notNull(),
   updatedAt: int("updatedAt").$type<number>().notNull(),
+  isActive: int("isActive").default(1).notNull(),
 });
 
 export type Partner = typeof partners.$inferSelect;

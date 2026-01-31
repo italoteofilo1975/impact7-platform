@@ -3627,7 +3627,7 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) return [];
         const result = await executeRawQuery(`
-          SELECT metricKey, value, labelKey, descriptionKey, displayOrder 
+          SELECT metrickey as metricKey, value, metricName, metricValue, displayOrder 
           FROM socialProofMetrics 
           WHERE isActive = TRUE 
           ORDER BY displayOrder ASC
@@ -3655,10 +3655,10 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) return [];
         const result = await executeRawQuery(`
-          SELECT id, name, logoUrl, website, displayOrder 
+          SELECT id, name, logo, website 
           FROM partners 
           WHERE isActive = TRUE 
-          ORDER BY displayOrder ASC
+          ORDER BY name ASC
           LIMIT 12
         `);
         return (result as any)[0] || [];

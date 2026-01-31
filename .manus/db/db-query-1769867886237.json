@@ -1,0 +1,208 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user XKE5A2Cq4UPY6bR.5c42757569fc --database 5LJSracN9nNev8VCqJujeg --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "affiliateReferrals"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "affiliates"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "apiKeys"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "auditLogs"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "badges"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "blogPosts"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "calculations"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "caseStudies"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "contacts"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "contentTags"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "courseEnrollments"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "courseLessons"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "courses"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "ebookDownloads"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "ebooks"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "emailLogs"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "emailTemplates"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "errorLogs"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "eventRegistrations"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "events"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "feedbackSubmissions"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "fileUploads"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "footerLinks"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "forumCategories"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "forumReplies"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "forumTopics"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "jarvisMessages"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "jarvisSessions"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "knowledgeDocuments"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "leads"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "mediaLibrary"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "navigationMenus"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "newsletterSubscribers"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "notifications"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "partners"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "permissions"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "rolePermissions"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "roles"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "set7Agents"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "set7AuditLog"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "set7Gates"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "set7Integrations"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "set7Nfrs"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "set7RoiTracking"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "set7RuntimeConfig"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "set7Tasklog"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "set7TokenBudgets"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "siteMetrics"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "siteSettings"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "socialProofCertifications"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "socialProofMetrics"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "supportMessages"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "supportTickets"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "surveyResponses"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "surveys"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "tags"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "testimonials"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "userBadges"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "userPoints"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "userRoles"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "users"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "webhookDeliveries"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "webhooks"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "whitepaperDownloads"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg": "whitepapers"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_5LJSracN9nNev8VCqJujeg\n__drizzle_migrations\naffiliateReferrals\naffiliates\napiKeys\nauditLogs\nbadges\nblogPosts\ncalculations\ncaseStudies\ncontacts\ncontentTags\ncourseEnrollments\ncourseLessons\ncourses\nebookDownloads\nebooks\nemailLogs\nemailTemplates\nerrorLogs\neventRegistrations\nevents\nfeedbackSubmissions\nfileUploads\nfooterLinks\nforumCategories\nforumReplies\nforumTopics\njarvisMessages\njarvisSessions\nknowledgeDocuments\nleads\nmediaLibrary\nnavigationMenus\nnewsletterSubscribers\nnotifications\npartners\npermissions\nrolePermissions\nroles\nset7Agents\nset7AuditLog\nset7Gates\nset7Integrations\nset7Nfrs\nset7RoiTracking\nset7RuntimeConfig\nset7Tasklog\nset7TokenBudgets\nsiteMetrics\nsiteSettings\nsocialProofCertifications\nsocialProofMetrics\nsupportMessages\nsupportTickets\nsurveyResponses\nsurveys\ntags\ntestimonials\nuserBadges\nuserPoints\nuserRoles\nusers\nwebhookDeliveries\nwebhooks\nwhitepaperDownloads\nwhitepapers\n",
+  "stderr": "",
+  "execution_time_ms": 1903
+}

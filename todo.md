@@ -759,3 +759,14 @@
 - [ ] H.4: Melhorar observabilidade em produção (requer Datadog/New Relic)
 - [ ] H.7: Auditoria de segurança (requer ferramentas externas)
 - [ ] H.10: Otimizar performance (requer testes de carga primeiro)
+
+
+## 53. Sincronização Schema Drizzle ↔ MySQL (v5.4.0)
+- [x] Extrair schema real do MySQL (SHOW CREATE TABLE para todas as 68 tabelas)
+- [x] Identificar discordâncias entre schema.ts e banco real
+- [x] Atualizar drizzle/schema.ts para refletir estrutura real (partners, socialProofMetrics)
+- [x] Corrigir queries SQL raw para usar colunas corretas
+- [x] Validar que erros de banco foram resolvidos (logourl, labelkey)
+- [ ] Resolver 135 erros TypeScript restantes (Date vs number) - Dívida técnica não-bloqueante
+- [ ] Executar 75 novos testes criados (pnpm test)
+- [x] Salvar checkpoint v5.4.0

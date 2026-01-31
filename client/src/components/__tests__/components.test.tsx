@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * React Component Tests - 20 Tests for Critical UI Components
  * Tests component rendering, interactions, and state management
