@@ -1723,3 +1723,46 @@ export const userRoles = mysqlTable("userRoles", {
 
 export type UserRole = typeof userRoles.$inferSelect;
 export type InsertUserRole = typeof userRoles.$inferInsert;
+
+
+// Case Studies table
+export const caseStudies = mysqlTable("caseStudies", {
+  id: int("id").primaryKey().autoincrement(),
+  title: varchar("title", { length: 255 }).notNull(),
+  organization: varchar("organization", { length: 255 }),
+  sector: varchar("sector", { length: 100 }),
+  region: varchar("region", { length: 100 }),
+  location: varchar("location", { length: 255 }),
+  investment: int("investment"),
+  beneficiaries: int("beneficiaries"),
+  duration: int("duration"),
+  sroi: decimal("sroi", { precision: 10, scale: 2 }),
+  year: int("year"),
+  description: text("description"),
+  challenge: text("challenge"),
+  solution: text("solution"),
+  results: text("results"),
+  testimonialQuote: text("testimonialQuote"),
+  testimonialAuthor: varchar("testimonialAuthor", { length: 255 }),
+  testimonialRole: varchar("testimonialRole", { length: 255 }),
+  sdgs: text("sdgs"),
+  metrics: text("metrics"),
+  isFeatured: int("isFeatured").notNull().default(0),
+  isActive: int("isActive").notNull().default(1),
+  createdAt: int("createdAt").$type<number>().notNull(),
+  updatedAt: int("updatedAt").$type<number>().notNull(),
+  projectTitle: varchar("projectTitle", { length: 255 }),
+  organizationName: varchar("organizationName", { length: 255 }),
+  contactName: varchar("contactName", { length: 255 }),
+  contactEmail: varchar("contactEmail", { length: 320 }),
+  contactPhone: varchar("contactPhone", { length: 20 }),
+  status: varchar("status", { length: 50 }).notNull().default("pending"),
+  reviewNotes: text("reviewNotes"),
+  reviewedBy: int("reviewedBy"),
+  reviewedAt: int("reviewedAt"),
+});
+
+export type CaseStudy = typeof caseStudies.$inferSelect;
+export type InsertCaseStudy = typeof caseStudies.$inferInsert;
+
+

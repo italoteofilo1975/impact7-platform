@@ -1,0 +1,19 @@
+{
+  "query": "SHOW TABLES LIKE 'caseStudies'; SHOW TABLES LIKE 'testimonials';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user XKE5A2Cq4UPY6bR.5c42757569fc --database 5LJSracN9nNev8VCqJujeg --execute SHOW TABLES LIKE 'caseStudies'; SHOW TABLES LIKE 'testimonials';",
+  "rows": [
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg (caseStudies)": "caseStudies"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg (caseStudies)": "Tables_in_5LJSracN9nNev8VCqJujeg (testimonials)"
+    },
+    {
+      "Tables_in_5LJSracN9nNev8VCqJujeg (caseStudies)": "testimonials"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_5LJSracN9nNev8VCqJujeg (caseStudies)\ncaseStudies\nTables_in_5LJSracN9nNev8VCqJujeg (testimonials)\ntestimonials\n",
+  "stderr": "",
+  "execution_time_ms": 386
+}

@@ -806,10 +806,32 @@
 - [ ] Salvar checkpoint v6.0.0
 
 
-## 56. Correção de Erro "Unknown column 'organization'" (v6.0.0)
-- [x] Identificar fonte do erro (tabelas leads, whitepaperDownloads, caseStudies)
-- [x] Adicionar coluna organization à tabela leads via ALTER TABLE
-- [x] Adicionar coluna organization à tabela whitepaperDownloads via ALTER TABLE
-- [x] Adicionar coluna organization à tabela caseStudies via ALTER TABLE
-- [x] Reiniciar servidor e validar que erro foi resolvido
+## 56. Correção de Erros de Banco de Dados (v6.0.0-v6.1.0)
+- [x] Identificar fonte do erro "Unknown column 'organization'"
+- [x] Adicionar coluna organization às tabelas leads, whitepaperDownloads, caseStudies
+- [x] Identificar fonte do erro "Unknown column 'sector'"
+- [x] Adicionar coluna sector às tabelas caseStudies e testimonials
+- [x] Adicionar tabela caseStudies ao schema Drizzle (estava faltando)
+- [x] Remover duplicata de testimonials no schema Drizzle
+- [x] Validar que TODOS os erros de banco foram resolvidos (0 erros)
 - [x] Salvar checkpoint v6.0.0
+
+
+## 57. Resolução de 136 Erros TypeScript (v6.1.0)
+- [ ] Criar script automatizado para converter Date→number em inserts/updates
+- [ ] Aplicar correções em server/routers.ts (principais erros)
+- [ ] Aplicar correções em server/db.ts
+- [ ] Aplicar correções em server/_core/
+- [ ] Remover workarounds @ts-expect-error após correções
+- [ ] Validar com tsc --noEmit que erros foram resolvidos
+- [ ] Executar testes (pnpm test) para garantir funcionalidade
+
+## 58. Implementação de Endpoints Críticos (v6.1.0)
+- [ ] Implementar auth.register (registro de novos usuários com validação)
+- [ ] Implementar leads.create (captura de leads com source tracking)
+- [ ] Implementar leads.list (listagem paginada com filtros)
+- [ ] Implementar leads.exportCSV (exportação para análise)
+- [ ] Implementar newsletter.subscribe (inscrição em newsletter)
+- [ ] Adicionar testes unitários para cada endpoint
+- [ ] Validar endpoints com testes E2E
+- [ ] Salvar checkpoint v6.1.0
