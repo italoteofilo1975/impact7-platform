@@ -180,6 +180,34 @@ export const appRouter = router({
       return { success: true } as const;
     }),
     
+    // Registro público de novos usuários
+    register: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        password: z.string().min(6),
+        name: z.string().min(2),
+      }))
+      .mutation(async ({ input }) => {
+        const { localAuthService } = await import('./services/auth/local-auth-service');
+        
+        // Criar usuário com role 'user' (não admin)
+        const newUser = await localAuthService.createLocalUser({
+          email: input.email,
+          password: input.password,
+          name: input.name,
+          role: 'user',
+        });
+        
+        return {
+          success: true,
+          user: {
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email,
+          },
+        };
+      }),
+    
     // Login local com email/senha
     loginLocal: publicProcedure
       .input(z.object({
