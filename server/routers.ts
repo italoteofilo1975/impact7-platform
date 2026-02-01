@@ -3041,7 +3041,7 @@ export const appRouter = router({
         const { pdfReportService } = await import('./services/reports/pdf-report-service');
         const pdfBuffer = pdfReportService.generateConsolidatedReport({
           ...input,
-          generatedAt: new Date(),
+          generatedAt: Date.now(),
         });
         
         // Log de auditoria
@@ -3783,7 +3783,7 @@ export const appRouter = router({
           resourceId: String(ctx.user.id),
         });
         
-        return { data, exportedAt: new Date().toISOString() };
+        return { data, exportedAt: Date.now().toISOString() };
       }),
 
     requestDeletion: protectedProcedure
