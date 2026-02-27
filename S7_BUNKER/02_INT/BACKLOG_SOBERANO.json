@@ -1,0 +1,411 @@
+{
+  "meta": {
+    "sistema": "IMPACT7",
+    "versao": "1.0",
+    "data": "2026-02-27",
+    "perfil_alvo": "Full (14 fases — SaaS enterprise)",
+    "score_atual": "30/100",
+    "score_alvo": "85/100",
+    "total_chus": 18,
+    "gerado_por": "HA-SET7-Compliance-Auditor",
+    "proxima_revisao": "2026-03-06"
+  },
+  "chus": [
+    {
+      "task_id": "CONF-001",
+      "itu": "S7.IMPACT7.GOV.INT.D1",
+      "fase_set7": "SET7.03",
+      "title": "Criar $INT.md com 7 Dimensões formalizadas",
+      "priority": "CRITICAL",
+      "status": "PENDING",
+      "dimensao_afetada": "D1",
+      "impacto": "Sem $INT, sistema opera sem constituição. Agentes não sabem propósito, fronteiras nem métricas.",
+      "dod": "$INT.md existe em S7_BUNKER/02_INT/ com D1-D7 preenchidas. D3 tem 3 exemplos BOM e 3 RUIM. D4 tem min 5 NUNCA testáveis em 10s. D5 tem min 3 KPIs numéricos.",
+      "forbidden": [
+        "D1 vago sem problema específico + público definido",
+        "D4 sem proibições testáveis em 10s",
+        "D5 sem número (apenas 'funciona bem')",
+        "D7 sem token_budget definido"
+      ],
+      "depends_on": [],
+      "token_budget": 3000,
+      "esforco_horas": 2,
+      "requer_externo": false
+    },
+    {
+      "task_id": "CONF-002",
+      "itu": "S7.IMPACT7.GOV.BUNKER.INIT",
+      "fase_set7": "SET7.04",
+      "title": "Criar estrutura S7_BUNKER com 6 diretórios funcionais",
+      "priority": "CRITICAL",
+      "status": "DONE",
+      "dimensao_afetada": "D2",
+      "impacto": "Entropia máxima. 19 arquivos .md soltos na raiz sem taxonomia funcional.",
+      "dod": "Diretório S7_BUNKER/ existe com 01_REF/, 02_INT/, 03_WIP/, 04_OUT/, 05_DNA/POS/, 05_DNA/NEG/, 06_GOL/. README_ARCH.md criado. Arquivos órfãos migrados.",
+      "forbidden": [
+        "Arquivos .md de relatório na raiz do projeto",
+        "Scripts Python soltos na raiz"
+      ],
+      "depends_on": ["CONF-001"],
+      "token_budget": 2000,
+      "esforco_horas": 1,
+      "requer_externo": false,
+      "completed_at": "2026-02-27"
+    },
+    {
+      "task_id": "CONF-003",
+      "itu": "S7.IMPACT7.GOV.ARCH.MANIFEST",
+      "fase_set7": "SET7.04",
+      "title": "Criar ARCH_MANIFEST.md com Bounded Contexts e ITUs",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "dimensao_afetada": "D2",
+      "impacto": "Sem ARCH_MANIFEST, arquitetura existe apenas na cabeça do arquiteto.",
+      "dod": "ARCH_MANIFEST.md em S7_BUNKER/02_INT/ com: stack completo, 6+ Bounded Contexts, ITU para cada módulo, diagrama de dependências.",
+      "forbidden": [
+        "Bounded Contexts sem fronteiras claras",
+        "Módulos sem ITU"
+      ],
+      "depends_on": ["CONF-002"],
+      "token_budget": 4000,
+      "esforco_horas": 3,
+      "requer_externo": false
+    },
+    {
+      "task_id": "CONF-004",
+      "itu": "S7.IMPACT7.GOV.BACKLOG.SOBERANO",
+      "fase_set7": "SET7.04",
+      "title": "Criar BACKLOG_SOBERANO.json com CHUs para todas as features pendentes",
+      "priority": "HIGH",
+      "status": "DONE",
+      "dimensao_afetada": "D2",
+      "impacto": "Sem BACKLOG_SOBERANO, desenvolvimento é reativo e não governado.",
+      "dod": "BACKLOG_SOBERANO.json em S7_BUNKER/02_INT/ com min 20 CHUs. Cada CHU tem: task_id, itu, title, dod testável, forbidden, depends_on, token_budget, status, priority.",
+      "forbidden": [
+        "DoD não testável em 30s",
+        "Ciclos no grafo de dependências"
+      ],
+      "depends_on": ["CONF-003"],
+      "token_budget": 5000,
+      "esforco_horas": 2,
+      "requer_externo": false,
+      "completed_at": "2026-02-27"
+    },
+    {
+      "task_id": "CONF-005",
+      "itu": "S7.IMPACT7.QA.TASKLOG.INIT",
+      "fase_set7": "SET7.08",
+      "title": "Criar TASKLOG.jsonl append-only com hash SHA-256",
+      "priority": "HIGH",
+      "status": "PARTIAL",
+      "dimensao_afetada": "D5",
+      "impacto": "Sem TASKLOG, não há ledger da verdade. Rastreabilidade zero.",
+      "dod": "TASKLOG.jsonl existe em S7_BUNKER/02_INT/. Cada entry tem: timestamp ISO, task_id, action, agent, tokens_used, hash SHA-256, result. Script helper para append com hash automático.",
+      "forbidden": [
+        "Editar entries existentes (append-only)",
+        "Entry sem hash SHA-256",
+        "Entry sem timestamp ISO"
+      ],
+      "depends_on": ["CONF-002"],
+      "token_budget": 3000,
+      "esforco_horas": 2,
+      "requer_externo": false,
+      "note": "TASKLOG.jsonl criado mas vazio. Falta script helper e primeiras entradas."
+    },
+    {
+      "task_id": "CONF-006",
+      "itu": "S7.IMPACT7.QA.DNA_NEG.INIT",
+      "fase_set7": "SET7.08",
+      "title": "Criar $DNA_NEG.md com erros históricos documentados",
+      "priority": "HIGH",
+      "status": "DONE",
+      "dimensao_afetada": "D4",
+      "impacto": "Sem $DNA_NEG, erros se repetem. Sistema sem memória.",
+      "dod": "$DNA_NEG.md em S7_BUNKER/05_DNA/NEG/ com min 10 entries. Cada entry tem: ID, Descrição, Impacto, Regra Permanente testável, Aplicável a.",
+      "forbidden": [
+        "Regra não testável em 10s",
+        "Erros sem regra NUNCA/SEMPRE derivada"
+      ],
+      "depends_on": ["CONF-002"],
+      "token_budget": 3000,
+      "esforco_horas": 2,
+      "requer_externo": false,
+      "completed_at": "2026-02-27"
+    },
+    {
+      "task_id": "CONF-007",
+      "itu": "S7.IMPACT7.QA.COLISAO.PROCESS",
+      "fase_set7": "SET7.08",
+      "title": "Documentar e implementar processo de Colisão Coder≠Auditor",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "dimensao_afetada": "D3",
+      "impacto": "Sem Colisão, código aceito sem revisão adversarial. Qualidade não garantida.",
+      "dod": "COLISAO_PROCESS.md em S7_BUNKER/02_INT/ com: definição de Coder e Auditor, 4 lentes do Auditor, PDCA-R descrito, critérios de reprovação, max 3 iterações. Ao menos 1 colisão executada e registrada.",
+      "forbidden": [
+        "Coder e Auditor do mesmo modelo sem prompt adversarial",
+        "Colisão sem registro no TASKLOG"
+      ],
+      "depends_on": ["CONF-005", "CONF-006"],
+      "token_budget": 2000,
+      "esforco_horas": 3,
+      "requer_externo": false
+    },
+    {
+      "task_id": "CONF-008",
+      "itu": "S7.IMPACT7.QA.TEST.E2E",
+      "fase_set7": "SET7.08",
+      "title": "Expandir cobertura E2E de 9.9% para ≥50% (91 páginas → 45+ testadas)",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "dimensao_afetada": "D7",
+      "impacto": "9.9% de cobertura E2E para 91 páginas é insuficiente para produção.",
+      "dod": "Min 45 testes E2E Playwright cobrindo: auth completo, calculadora SROI, Jarvis IA, admin dashboard, leads, whitepaper, gamificação, notificações. TEST_REPORT.md gerado com % cobertura.",
+      "forbidden": [
+        "Testes sem assertion (apenas navegação)",
+        "Testes que dependem de dados externos não mockados"
+      ],
+      "depends_on": ["CONF-007"],
+      "token_budget": 8000,
+      "esforco_horas": 8,
+      "requer_externo": false
+    },
+    {
+      "task_id": "CONF-009",
+      "itu": "S7.IMPACT7.QA.TYPESCRIPT.DEBT",
+      "fase_set7": "SET7.08",
+      "title": "Resolver 138 erros TypeScript (dívida técnica)",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "dimensao_afetada": "D7",
+      "impacto": "138 erros TypeScript indicam desalinhamento schema↔banco. Risco de bugs em produção.",
+      "dod": "`npx tsc --noEmit` retorna 0 erros. Todos os campos de schema Drizzle alinhados com banco MySQL. Helpers Date→number aplicados. $DNA_NEG atualizado.",
+      "forbidden": [
+        "Usar @ts-ignore ou @ts-expect-error como solução permanente",
+        "Sincronizar schema sem backup do banco"
+      ],
+      "depends_on": ["CONF-006"],
+      "token_budget": 6000,
+      "esforco_horas": 4,
+      "requer_externo": false
+    },
+    {
+      "task_id": "CONF-010",
+      "itu": "S7.IMPACT7.SEC.CLASSIFICATION.C1C5",
+      "fase_set7": "SET7.07",
+      "title": "Criar SECURITY_MATRIX.md com classificação C1-C5 de todos os dados",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "dimensao_afetada": "D6",
+      "impacto": "Sem classificação C1-C5, não há política de acesso baseada em sensibilidade.",
+      "dod": "SECURITY_MATRIX.md em S7_BUNKER/02_INT/ com: todas as 70 tabelas classificadas em C1-C5, política de acesso por nível, kill switch documentado, procedimento de breach response.",
+      "forbidden": [
+        "Dados de usuário sem classificação mínima C2",
+        "Dados financeiros sem classificação C4+",
+        "Kill switch sem responsável nomeado"
+      ],
+      "depends_on": ["CONF-002"],
+      "token_budget": 4000,
+      "esforco_horas": 4,
+      "requer_externo": false
+    },
+    {
+      "task_id": "CONF-011",
+      "itu": "S7.IMPACT7.SEC.AUDIT.SAST",
+      "fase_set7": "SET7.07",
+      "title": "Executar SAST com Snyk e corrigir vulnerabilidades críticas",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "dimensao_afetada": "D6",
+      "impacto": "Sem SAST, vulnerabilidades de dependências podem comprometer produção.",
+      "dod": "Relatório Snyk gerado. Zero vulnerabilidades CRITICAL. Max 3 HIGH com mitigação documentada. $DNA_NEG atualizado.",
+      "forbidden": [
+        "Deploy com vulnerabilidade CRITICAL não resolvida"
+      ],
+      "depends_on": ["CONF-010"],
+      "token_budget": 3000,
+      "esforco_horas": 3,
+      "requer_externo": true,
+      "externo_requerido": "Conta Snyk (gratuita em snyk.io) + token de API"
+    },
+    {
+      "task_id": "CONF-012",
+      "itu": "S7.IMPACT7.FINOPS.ROI.BIOLOGICO",
+      "fase_set7": "SET7.09",
+      "title": "Documentar ROI Biológico com fórmula S = (T_h × V_h) − (C_t + T_a × V_h)",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "dimensao_afetada": "D1",
+      "impacto": "Sem ROI Biológico, não há justificativa econômica mensurável para o sistema.",
+      "dod": "ROI_BIOLOGICO.md em S7_BUNKER/02_INT/ com: fórmula aplicada ao IMPACT7, valores reais de T_h, V_h, C_t, T_a. Kill Criteria: Dói? Paga? Usa?",
+      "forbidden": [
+        "ROI sem números reais (apenas 'reduz tempo')",
+        "Kill Criteria sem resposta binária"
+      ],
+      "depends_on": ["CONF-001"],
+      "token_budget": 2000,
+      "esforco_horas": 2,
+      "requer_externo": false
+    },
+    {
+      "task_id": "CONF-013",
+      "itu": "S7.IMPACT7.FINOPS.TOKEN.BUDGET",
+      "fase_set7": "SET7.09",
+      "title": "Implementar circuit breakers de token budget no SET7-router",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "dimensao_afetada": "D5",
+      "impacto": "Sem circuit breakers de token, custos LLM podem escalar sem controle.",
+      "dod": "SET7-router.ts tem: token_budget por CHU respeitado, alerta em 80% do budget, hard stop em 100%, registro no TASKLOG. `canConsumeTokens()` chamado antes de cada operação LLM.",
+      "forbidden": [
+        "Operação LLM sem verificação de budget",
+        "Budget ultrapassado sem registro no TASKLOG"
+      ],
+      "depends_on": ["CONF-005"],
+      "token_budget": 3000,
+      "esforco_horas": 3,
+      "requer_externo": false
+    },
+    {
+      "task_id": "CONF-014",
+      "itu": "S7.IMPACT7.GOL.CONSAGRACAO.V1",
+      "fase_set7": "SET7.10",
+      "title": "Executar Consagração $GOL v1.0 com SHA-256 + git tag assinada",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "dimensao_afetada": "D8",
+      "impacto": "Sem $GOL, não há versão consagrada do sistema. Tudo é WIP.",
+      "dod": "$GOL_v1.0.md em S7_BUNKER/06_GOL/ com 7 critérios avaliados. Git tag v1.0.0 assinada com GPG. Hash SHA-256 registrado.",
+      "forbidden": [
+        "Tag sem assinatura GPG",
+        "Consagração com critérios falhando"
+      ],
+      "depends_on": ["CONF-007", "CONF-009", "CONF-011"],
+      "token_budget": 2000,
+      "esforco_horas": 2,
+      "requer_externo": true,
+      "externo_requerido": "GPG key configurada localmente"
+    },
+    {
+      "task_id": "CONF-015",
+      "itu": "S7.IMPACT7.CICD.PIPELINE.INIT",
+      "fase_set7": "SET7.11",
+      "title": "Criar CI/CD pipeline com GitHub Actions",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "dimensao_afetada": "D8",
+      "impacto": "Sem CI/CD, deploy é manual e propenso a erros. Sem gate de qualidade automático.",
+      "dod": ".github/workflows/ci.yml existe com: lint, tsc, vitest, playwright E2E, build. Deploy automático para staging em merge na main. Deploy para produção requer aprovação manual.",
+      "forbidden": [
+        "Deploy para produção sem aprovação manual",
+        "Secrets no código do pipeline"
+      ],
+      "depends_on": ["CONF-014"],
+      "token_budget": 4000,
+      "esforco_horas": 4,
+      "requer_externo": true,
+      "externo_requerido": "Repositório GitHub + GitHub Actions habilitado"
+    },
+    {
+      "task_id": "CONF-016",
+      "itu": "S7.IMPACT7.OBS.SENTRY.INIT",
+      "fase_set7": "SET7.12",
+      "title": "Configurar Sentry para error tracking em produção",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "dimensao_afetada": "D8",
+      "impacto": "Sem observabilidade, erros em produção são invisíveis até o usuário reclamar.",
+      "dod": "Sentry DSN configurado via env var. Erros de produção capturados. Alertas para: error rate >1%, p95 latency >2s, crash rate >0.1%.",
+      "forbidden": [
+        "DSN hardcoded no código",
+        "PII nos eventos Sentry sem mascaramento"
+      ],
+      "depends_on": ["CONF-015"],
+      "token_budget": 2000,
+      "esforco_horas": 3,
+      "requer_externo": true,
+      "externo_requerido": "Conta Sentry (gratuita em sentry.io) + DSN"
+    },
+    {
+      "task_id": "CONF-017",
+      "itu": "S7.IMPACT7.OBS.RUNBOOK.INCIDENT",
+      "fase_set7": "SET7.12",
+      "title": "Criar INCIDENT_RESPONSE.md e ALERT_RUNBOOK.md",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "dimensao_afetada": "D8",
+      "impacto": "Sem runbook, incidentes em produção causam pânico e tempo de resolução alto.",
+      "dod": "INCIDENT_RESPONSE.md em S7_BUNKER/02_INT/ com: severidades P0-P3, SLA por severidade, responsáveis, procedimentos de escalação. ALERT_RUNBOOK.md com playbook para cada alerta crítico.",
+      "forbidden": [
+        "Runbook sem responsável nomeado",
+        "SLA sem número (apenas 'rapidamente')"
+      ],
+      "depends_on": ["CONF-016"],
+      "token_budget": 3000,
+      "esforco_horas": 3,
+      "requer_externo": false
+    },
+    {
+      "task_id": "CONF-018",
+      "itu": "S7.IMPACT7.SUSTENTACAO.PATCH.PROCESS",
+      "fase_set7": "SET7.13",
+      "title": "Criar processo de PATCH_LOG e $GOL v[N+1]",
+      "priority": "LOW",
+      "status": "PENDING",
+      "dimensao_afetada": "D8",
+      "impacto": "Sem PATCH_LOG, histórico de mudanças é perdido. Manutenção sem rastreabilidade.",
+      "dod": "PATCH_LOG.md em S7_BUNKER/06_GOL/ com template: versão, data, CHUs resolvidos, $DNA_NEG atualizado, hash SHA-256, aprovação. Processo de bump de versão documentado.",
+      "forbidden": [
+        "Patch sem entrada no PATCH_LOG",
+        "Nova versão sem $GOL consagrado"
+      ],
+      "depends_on": ["CONF-014"],
+      "token_budget": 2000,
+      "esforco_horas": 2,
+      "requer_externo": false
+    }
+  ],
+  "grafo_dependencias": {
+    "CONF-001": [],
+    "CONF-002": ["CONF-001"],
+    "CONF-003": ["CONF-002"],
+    "CONF-004": ["CONF-003"],
+    "CONF-005": ["CONF-002"],
+    "CONF-006": ["CONF-002"],
+    "CONF-007": ["CONF-005", "CONF-006"],
+    "CONF-008": ["CONF-007"],
+    "CONF-009": ["CONF-006"],
+    "CONF-010": ["CONF-002"],
+    "CONF-011": ["CONF-010"],
+    "CONF-012": ["CONF-001"],
+    "CONF-013": ["CONF-005"],
+    "CONF-014": ["CONF-007", "CONF-009", "CONF-011"],
+    "CONF-015": ["CONF-014"],
+    "CONF-016": ["CONF-015"],
+    "CONF-017": ["CONF-016"],
+    "CONF-018": ["CONF-014"]
+  },
+  "trilhas": {
+    "express": {
+      "fases": ["SET7.03", "SET7.04", "SET7.07", "SET7.08", "SET7.10"],
+      "chus": ["CONF-001", "CONF-002", "CONF-006", "CONF-007", "CONF-014"],
+      "esforco_total_horas": 12,
+      "prazo_semanas": 2,
+      "score_esperado": "60/100"
+    },
+    "standard": {
+      "fases": ["SET7.03", "SET7.04", "SET7.07", "SET7.08", "SET7.09", "SET7.10", "SET7.11", "SET7.12"],
+      "chus": ["CONF-001", "CONF-002", "CONF-003", "CONF-006", "CONF-007", "CONF-009", "CONF-010", "CONF-014", "CONF-015", "CONF-016"],
+      "esforco_total_horas": 28,
+      "prazo_semanas": 5,
+      "score_esperado": "75/100"
+    },
+    "full": {
+      "fases": "todas (14 fases)",
+      "chus": "CONF-001 a CONF-018",
+      "esforco_total_horas": 57,
+      "prazo_semanas": 8,
+      "score_esperado": "85/100"
+    }
+  }
+}
