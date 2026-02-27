@@ -888,3 +888,9 @@
 - [x] Adicionar coluna beneficiaries à tabela caseStudies
 - [ ] Resolver 136 erros TypeScript (dívida técnica complexa - requer sprint dedicado)
 - [x] Sistema 100% funcional apesar dos erros TypeScript
+
+
+## 65. CHUs SET7 — Governança (v8.2.0)
+- [x] CONF-001: Criar $INT.md com 7 Dimensões formalizadas (D1-D7)
+- [x] CONF-003: Criar ARCH_MANIFEST.md com Bounded Contexts e ITUs
+- [x] CONF-007: Documentar Processo de Colisão Coder≠Auditor + executar 1ª Colisão + TASKLOG.jsonl
