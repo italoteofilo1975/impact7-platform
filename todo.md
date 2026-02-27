@@ -899,3 +899,8 @@
 - [x] CONF-002: Criar $DNA_POS.md com 15 padrões de excelência (complemento ao $DNA_NEG.md)
 - [x] TS-FIX: Resolver 138 erros TypeScript (Date→number, campos faltantes) — 0 erros restantes
 - [x] SEC-001: Implementar rate limiting nos endpoints admin (express-rate-limit, max 10 req/min)
+
+## 67. CHUs SET7 — Próximos Passos v8.4.0
+- [x] CONF-004: Criar RUNBOOK.md com procedimentos operacionais (deploy, rollback, incident, backup)
+- [x] TEST-001: Corrigir teste two-factor-auth para atingir 376/376 (100%)
+- [x] CONF-005: Criar $GLOSSARY.md com 55 termos em 14 categorias do domínio IMPACT7

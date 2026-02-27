@@ -70,7 +70,8 @@ describe('Two-Factor Authentication Service', () => {
         limit: vi.fn().mockResolvedValue([{
           id: 1,
           userId: 1,
-          isEnabled: true,
+          isEnabled: 1, // MySQL int (0/1), não boolean
+          isVerified: 1,
           backupCodes: JSON.stringify(['code1', 'code2', 'code3']),
           lastUsedAt: Date.now(),
         }]),
