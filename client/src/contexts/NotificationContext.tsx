@@ -68,7 +68,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     markAllAsRead,
     clearNotifications
   } = useSSE({
-    userId: user?.openId || 'anonymous',
+    userId: user?.email || String(user?.id || 'anon') || 'anonymous',
     role: (user?.role === 'admin' ? 'admin' : 'user') as 'admin' | 'user',
     enabled: !!user,
     onNotification: (notification) => {

@@ -40,7 +40,7 @@ interface BackupOptions {
  */
 function generateBackupFilename(): string {
   const now = Date.now();
-  const timestamp = now.toISOString().replace(/[:.]/g, '-');
+  const timestamp = new Date(now).toISOString().replace(/[:.]/g, '-');
   const randomSuffix = Math.random().toString(36).substring(2, 8);
   return `backups/impact7-backup-${timestamp}-${randomSuffix}.json`;
 }
@@ -78,7 +78,6 @@ async function exportCriticalData(options: BackupOptions = {}): Promise<{
   if (tablesToBackup.includes('users')) {
     const usersData = await db.select({
       id: users.id,
-      openId: users.openId,
       name: users.name,
       email: users.email,
       role: users.role,
@@ -175,7 +174,7 @@ export async function createBackup(options: BackupOptions = {}): Promise<BackupR
     // Create backup object with metadata
     const backupData = {
       version: '1.0',
-      createdAt: timestamp.toISOString(),
+      createdAt: new Date(timestamp).toISOString(),
       platform: 'IMPACT7',
       tables: Object.keys(data),
       recordCounts: counts,
@@ -232,8 +231,8 @@ export async function createIncrementalBackup(
     const backupData = {
       version: '1.0',
       type: 'incremental',
-      createdAt: timestamp.toISOString(),
-      sinceTimestamp: sinceTimestamp.toISOString(),
+      createdAt: new Date(timestamp).toISOString(),
+      sinceTimestamp: sinceTimestamp instanceof Date ? sinceTimestamp.toISOString() : new Date(sinceTimestamp).toISOString(),
       platform: 'IMPACT7',
       tables: Object.keys(data),
       recordCounts: counts,
@@ -241,7 +240,7 @@ export async function createIncrementalBackup(
     };
     
     const jsonContent = JSON.stringify(backupData, null, 2);
-    const fileKey = `backups/impact7-incremental-${timestamp.toISOString().replace(/[:.]/g, '-')}.json`;
+    const fileKey = `backups/impact7-incremental-${new Date(timestamp).toISOString().replace(/[:.]/g, '-')}.json`;
     
     const { url } = await storagePut(
       fileKey,

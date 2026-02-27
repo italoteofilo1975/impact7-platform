@@ -237,7 +237,7 @@ class TaskSchedulerService {
       await task.handler();
       
       log.status = 'success';
-      log.completedAt = new Date();
+      log.completedAt = Date.now();
       log.result = 'Task completed successfully';
 
       // Update task
@@ -247,7 +247,7 @@ class TaskSchedulerService {
       console.log(`[Scheduler] Task completed: ${task.name}`);
     } catch (error) {
       log.status = 'failed';
-      log.completedAt = new Date();
+      log.completedAt = Date.now();
       log.error = error instanceof Error ? error.message : 'Unknown error';
 
       console.error(`[Scheduler] Task failed: ${task.name}`, error);

@@ -263,7 +263,7 @@ export interface UpdateGateInput {
   status?: GateStatus;
   evidences?: Record<string, unknown>;
   mitigationPlan?: string;
-  mitigationDeadline?: Date;
+  mitigationDeadline?: number;
 }
 
 /**
@@ -287,10 +287,10 @@ export async function createGate(input: CreateGateInput) {
     checklistItems: JSON.stringify(checklistItems),
     requiredItems: JSON.stringify(checklistItems), // Todos são obrigatórios por padrão
     status: "pending",
-    humanApprovalRequired: input.humanApprovalRequired || input.mode === "regulated",
-  
-          createdAt: Date.now(),
-        }).$returningId();
+    humanApprovalRequired: (input.humanApprovalRequired || input.mode === "regulated") ? 1 : 0,
+    updatedAt: Date.now(),
+    createdAt: Date.now(),
+  }).$returningId();
 
   return { gateId, id: gate.id, checklistItems };
 }
@@ -391,7 +391,7 @@ export async function evaluateGate(gateId: string, evaluation: {
   evaluatorName: string;
   comments?: string;
   mitigationPlan?: string;
-  mitigationDeadline?: Date;
+  mitigationDeadline?: number;
 }): Promise<{
   success: boolean;
   status: GateStatus;

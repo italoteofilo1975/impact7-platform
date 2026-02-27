@@ -15,7 +15,7 @@ export interface AutoNotificationConfig {
 
 class AutoNotificationService {
   private config: AutoNotificationConfig = {
-    enabled: 1,
+    enabled: true,
     notifyOnNewLead: true,
     notifyOnNewDownload: true,
     notifyOnCaseSubmission: true,

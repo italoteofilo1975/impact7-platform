@@ -74,8 +74,7 @@ export default function Contato() {
         email: data.email,
         phone: data.phone || undefined,
         subject: data.subject || undefined,
-        message: data.message,
-        organization: data.organization || undefined,
+        message: data.message ?? '',
       });
     } catch (error) {
       // Error já tratado pelo contactMutation.onError

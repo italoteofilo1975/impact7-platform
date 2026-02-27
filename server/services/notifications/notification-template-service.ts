@@ -105,12 +105,12 @@ class NotificationTemplateService {
         titleTemplate: input.titleTemplate,
         messageTemplate: input.messageTemplate,
         availableVariables: input.availableVariables ? JSON.stringify(input.availableVariables) : null,
-        isActive: input.isActive ?? true,
-        isSystem: false,
+        isActive: (input.isActive ?? true) ? 1 : 0,
+        isSystem: 0,
         createdBy,
-      
-          createdAt: Date.now(),
-        });
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
 
       return { success: true, id: result[0].insertId };
     } catch (error) {
@@ -329,10 +329,10 @@ class NotificationTemplateService {
         await db.insert(notificationTemplates).values({
           ...template,
           availableVariables: JSON.stringify(template.availableVariables),
-          isSystem: true,
+          isSystem: 1,
           isActive: 1,
-        
           createdAt: Date.now(),
+          updatedAt: Date.now(),
         });
         console.log(`[NotificationTemplate] Seeded: ${template.code}`);
       }

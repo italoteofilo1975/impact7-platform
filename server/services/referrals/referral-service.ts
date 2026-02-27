@@ -26,9 +26,8 @@ export const referralService = {
         referrerId: userId,
         referrerCode: code,
         status: "pending",
-      
-          createdAt: Date.now(),
-        });
+        invitedAt: Date.now(),
+      });
       return code;
     }
     
@@ -91,9 +90,8 @@ export const referralService = {
       referrerRewardAmount: 100,
       referredRewardType: "discount",
       referredRewardAmount: 10,
-    
-          createdAt: Date.now(),
-        });
+      invitedAt: Date.now(),
+    });
     
     return true;
   },

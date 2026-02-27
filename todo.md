@@ -894,3 +894,8 @@
 - [x] CONF-001: Criar $INT.md com 7 Dimensões formalizadas (D1-D7)
 - [x] CONF-003: Criar ARCH_MANIFEST.md com Bounded Contexts e ITUs
 - [x] CONF-007: Documentar Processo de Colisão Coder≠Auditor + executar 1ª Colisão + TASKLOG.jsonl
+
+## 66. CHUs SET7 — Próximos Passos Recomendados (v8.3.0)
+- [x] CONF-002: Criar $DNA_POS.md com 15 padrões de excelência (complemento ao $DNA_NEG.md)
+- [x] TS-FIX: Resolver 138 erros TypeScript (Date→number, campos faltantes) — 0 erros restantes
+- [x] SEC-001: Implementar rate limiting nos endpoints admin (express-rate-limit, max 10 req/min)

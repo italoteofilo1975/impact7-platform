@@ -21,6 +21,7 @@ export async function handleLogin(req: Request, res: Response) {
     }
 
     const db = await getDb();
+    if (!db) throw new Error("Database not available");
 
     // Buscar usuário por email
     const [user] = await db
@@ -56,8 +57,9 @@ export async function handleLogin(req: Request, res: Response) {
     // Criar JWT
     const token = await createCustomJWT({
       userId: user.id,
-      email: user.email,
-      name: user.name,
+      openId: `local:${user.id}`,
+      email: user.email ?? '',
+      name: user.name ?? undefined,
       role: user.role,
     });
 

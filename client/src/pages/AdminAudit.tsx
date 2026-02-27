@@ -97,7 +97,7 @@ export default function AdminAudit() {
   const { refetch: exportCsv, isFetching: isExporting } = trpc.audit.exportCsv.useQuery({
     action: actionFilter !== 'all' ? actionFilter : undefined,
     resourceType: resourceFilter !== 'all' ? resourceFilter : undefined,
-  }, { enabled: 0 });
+  }, { enabled: false });
 
   const handleExport = async () => {
     try {
@@ -314,7 +314,7 @@ export default function AdminAudit() {
                             )}
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {formatDate(log.createdAt)}
+                              {formatDate(new Date(log.createdAt))}
                             </span>
                             {log.ipAddress && (
                               <span className="text-xs">{log.ipAddress}</span>

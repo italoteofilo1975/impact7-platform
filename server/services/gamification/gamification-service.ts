@@ -180,7 +180,7 @@ export async function initializeDefaultBadges(): Promise<void> {
   for (const badge of DEFAULT_BADGES) {
     const existing = await db.select().from(badges).where(eq(badges.slug, badge.slug));
     if (existing.length === 0) {
-      await db.insert(badges).values(badge);
+      await db.insert(badges).values({ ...badge, createdAt: Date.now() });
     }
   }
 }
@@ -193,9 +193,7 @@ export async function getUserPoints(userId: number): Promise<typeof userPoints.$
   const existing = await db.select().from(userPoints).where(eq(userPoints.userId, userId));
   
   if (existing.length === 0) {
-    await db.insert(userPoints).values({ userId, points: 0, level: 1 ,
-          createdAt: Date.now(),
-        });
+    await db.insert(userPoints).values({ userId, points: 0, level: 1, createdAt: Date.now(), updatedAt: Date.now() });
     const created = await db.select().from(userPoints).where(eq(userPoints.userId, userId));
     return created[0] || null;
   }
@@ -240,9 +238,8 @@ export async function addPoints(
     points,
     reason,
     metadata: metadata ? JSON.stringify(metadata) : null,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+  });
   
   // Verificar e conceder badges
   const newBadges = await checkAndAwardBadges(userId, newPoints, newLevel);
@@ -264,7 +261,7 @@ export async function updateStreak(userId: number): Promise<number> {
   let newStreak = userPointsRecord.streak;
   
   if (lastInteraction) {
-    const hoursSinceLastInteraction = (now.getTime() - lastInteraction.getTime()) / (1000 * 60 * 60);
+    const hoursSinceLastInteraction = (now - lastInteraction) / (1000 * 60 * 60);
     
     if (hoursSinceLastInteraction >= 24 && hoursSinceLastInteraction < 48) {
       // Novo dia, incrementar streak
@@ -336,15 +333,15 @@ export async function checkAndAwardBadges(
       await db.insert(userBadges).values({
         userId,
         badgeId: badge.id,
-      
-          createdAt: Date.now(),
-        });
+        earnedAt: Date.now(),
+      });
       
       // Dar pontos de recompensa
       await db.insert(pointTransactions).values({
         userId,
         points: badge.pointsReward,
         reason: `badge_earned:${badge.slug}`,
+        createdAt: Date.now(),
       });
       
       // Atualizar pontos totais

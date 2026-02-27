@@ -30,7 +30,7 @@ export async function createApiKey(
   const { key, prefix, hash } = generateApiKey();
   
   const expiresAt = expiresInDays 
-    ? new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000)
+    ? Date.now() + expiresInDays * 24 * 60 * 60 * 1000
     : null;
   
   const result = await db.insert(apiKeys).values({
@@ -42,9 +42,8 @@ export async function createApiKey(
     rateLimit,
     expiresAt,
     isActive: 1,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+  });
   
   const insertId = result[0]?.insertId;
   if (!insertId) return null;
@@ -104,7 +103,7 @@ export async function listUserApiKeys(userId: number): Promise<Array<{
   keyPrefix: string;
   permissions: string[];
   rateLimit: number;
-  lastUsedAt: Date | null;
+  lastUsedAt: number | null;
   expiresAt: number | null;
   isActive: boolean;
   createdAt: number;
@@ -124,7 +123,7 @@ export async function listUserApiKeys(userId: number): Promise<Array<{
     rateLimit: k.rateLimit,
     lastUsedAt: k.lastUsedAt,
     expiresAt: k.expiresAt,
-    isActive: k.isActive,
+    isActive: Boolean(k.isActive),
     createdAt: k.createdAt,
   }));
 }

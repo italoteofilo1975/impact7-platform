@@ -37,9 +37,8 @@ export const notificationPersistenceService = {
       message: input.message,
       link: input.link,
       metadata: input.metadata,
-    
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
     
     const [notification] = await db
       .select()
@@ -77,7 +76,7 @@ export const notificationPersistenceService = {
     }
     
     if (startDate) {
-      conditions.push(gte(notifications.createdAt, new Date(startDate)));
+      conditions.push(gte(notifications.createdAt, new Date(startDate).getTime()));
     }
 
     const [notificationList, countResult, unreadResult] = await Promise.all([

@@ -91,15 +91,15 @@ export async function createAgent(input: CreateAgentInput) {
     maxTokensPerRequest: input.maxTokensPerRequest || 4000,
     maxTokensPerDay: input.maxTokensPerDay || 100000,
     permissions: input.permissions ? JSON.stringify(input.permissions) : null,
-    canReadFiles: input.canReadFiles || false,
-    canWriteFiles: input.canWriteFiles || false,
-    canExecuteCode: input.canExecuteCode || false,
-    canAccessNetwork: input.canAccessNetwork || false,
-    canAccessDatabase: input.canAccessDatabase || false,
+    canReadFiles: input.canReadFiles ? 1 : 0,
+    canWriteFiles: input.canWriteFiles ? 1 : 0,
+    canExecuteCode: input.canExecuteCode ? 1 : 0,
+    canAccessNetwork: input.canAccessNetwork ? 1 : 0,
+    canAccessDatabase: input.canAccessDatabase ? 1 : 0,
     status: "active",
-  
-          createdAt: Date.now(),
-        }).$returningId();
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  }).$returningId();
 
   await logAuditEvent({
     eventType: "agent_started",

@@ -222,7 +222,7 @@ export const appRouter = router({
         
         // Gerar JWT e setar cookie usando o SDK existente
         const token = await sdk.signSession({
-          openId: user.openId,
+          openId: user.email || String(user.id),
           appId: 'impact7-local',
           name: user.name || 'Admin',
         });
@@ -321,9 +321,8 @@ export const appRouter = router({
           phone: input.phone || null,
           organization: input.organization || null,
           source: input.source || "contact_form",
-        
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
         
         return { success: true };
       }),
@@ -447,9 +446,8 @@ export const appRouter = router({
           phone: input.phone || null,
           subject: input.subject || null,
           message: input.message,
-        
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
         
         return { success: true };
       }),
@@ -520,9 +518,8 @@ export const appRouter = router({
           email: input.email,
           organization: input.organization || null,
           source: "whitepaper_download",
-        
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
         
         return { success: true, downloadUrl: "/downloads/whitepaper-impact7.pdf" };
       }),
@@ -556,9 +553,8 @@ export const appRouter = router({
           organization: input.organization || null,
           phone: input.phone || null,
           source: "ebook",
-        
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
         
         return { success: true, downloadUrl: "/downloads/ebook-impact7.pdf" };
       }),
@@ -627,9 +623,8 @@ export const appRouter = router({
           email: input.email,
           name: input.name || null,
           segment: input.segment || "general",
-        
-          createdAt: Date.now(),
-        }).onDuplicateKeyUpdate({
+      createdAt: Date.now(),
+    }).onDuplicateKeyUpdate({
           set: { name: input.name || null },
         });
         
@@ -1299,9 +1294,8 @@ export const appRouter = router({
         await db.insert(caseFavorites).values({
           userId: ctx.user.id,
           caseId: input.caseId,
-        
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
         return { success: true };
       }),
     
@@ -1542,9 +1536,8 @@ export const appRouter = router({
         await db.insert(caseTagRelations).values({
           caseId: input.caseId,
           tagId: input.tagId,
-        
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
         return { success: true };
       }),
     
@@ -3041,7 +3034,7 @@ export const appRouter = router({
         const { pdfReportService } = await import('./services/reports/pdf-report-service');
         const pdfBuffer = pdfReportService.generateConsolidatedReport({
           ...input,
-          generatedAt: Date.now(),
+          generatedAt: new Date(),
         });
         
         // Log de auditoria
@@ -3783,7 +3776,7 @@ export const appRouter = router({
           resourceId: String(ctx.user.id),
         });
         
-        return { data, exportedAt: Date.now().toISOString() };
+        return { data, exportedAt: new Date().toISOString() };
       }),
 
     requestDeletion: protectedProcedure

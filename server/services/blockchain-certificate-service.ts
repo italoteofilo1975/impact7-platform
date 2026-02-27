@@ -135,11 +135,12 @@ export async function issueCertificate(
     dataHash,
     blockNumber,
     verificationStatus: 'pending',
-  
-          createdAt: Date.now(),
-        });
+    issuedAt: Date.now(),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  });
 
-  const certId = Number(insertResult[0].insertId);
+  const certId = Number((insertResult as unknown as { insertId?: number | bigint }[])[0]?.insertId ?? 0);
 
   // Fetch and return the certificate
   const certs = await db
@@ -322,11 +323,12 @@ export async function mintToken(
     name: data.name,
     description: data.description,
     status: 'active',
-  
-          createdAt: Date.now(),
-        });
+    mintedAt: Date.now(),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  });
 
-  const newTokenId = Number(insertResult[0].insertId);
+  const newTokenId = Number((insertResult as unknown as { insertId?: number | bigint }[])[0]?.insertId ?? 0);
 
   // Record mint transaction
   await db.insert(tokenTransactions).values({
@@ -335,9 +337,8 @@ export async function mintToken(
     toUserId: userId,
     amount: data.amount ?? 1,
     transactionHash,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+  });
 
   // Fetch and return the token
   const tokens = await db
@@ -417,9 +418,8 @@ export async function transferToken(
     amount: token.amount,
     transactionHash,
     previousTransactionHash,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+  });
 
   // Fetch and return updated token
   const updatedTokens = await db

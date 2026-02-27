@@ -46,8 +46,8 @@ const recentIncidents: Incident[] = [
     id: 1,
     title: "Manutenção Programada - Atualização de Banco de Dados",
     status: "resolved",
-    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000),
+    createdAt: Date.now() - 7 * 24 * 60 * 60 * 1000,
+    updatedAt: Date.now() - 7 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000,
     description: "Manutenção programada para otimização do banco de dados. Duração estimada: 2 horas.",
   },
 ];
@@ -250,10 +250,10 @@ export default function Status() {
                     </p>
                     <div className="flex gap-4 text-xs text-muted-foreground">
                       <span>
-                        Criado: {incident.createdAt.toLocaleDateString("pt-BR")}
+                        Criado: {new Date(incident.createdAt).toLocaleDateString("pt-BR")}
                       </span>
                       <span>
-                        Atualizado: {incident.updatedAt.toLocaleDateString("pt-BR")}
+                        Atualizado: {new Date(incident.updatedAt).toLocaleDateString("pt-BR")}
                       </span>
                     </div>
                   </CardContent>

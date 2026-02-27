@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { ReactNode } from "react";
 import { trpc } from "../lib/trpc";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../_core/hooks/useAuth";
 
 /**
  * Hook para verificar permissões do usuário logado

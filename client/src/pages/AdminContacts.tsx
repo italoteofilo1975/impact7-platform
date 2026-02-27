@@ -39,7 +39,7 @@ export default function AdminContacts() {
 
   const { refetch: exportCsv, isFetching: isExporting } = trpc.contacts.exportCsv.useQuery(
     undefined,
-    { enabled: 0 }
+    { enabled: false }
   );
 
   const handleExport = async () => {
@@ -232,7 +232,7 @@ export default function AdminContacts() {
                           )}
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            {formatDate(contact.createdAt)}
+                            {formatDate(new Date(contact.createdAt))}
                           </span>
                         </div>
                         <p className="text-sm text-muted-foreground line-clamp-2 mt-2">

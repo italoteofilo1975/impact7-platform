@@ -63,7 +63,7 @@ const defaultFormData: TemplateFormData = {
   type: 'info',
   titleTemplate: '',
   messageTemplate: '',
-  isActive: 1,
+  isActive: true,
 };
 
 export default function AdminTemplates() {
@@ -159,7 +159,7 @@ export default function AdminTemplates() {
       type: template.type as NotificationType,
       titleTemplate: template.titleTemplate,
       messageTemplate: template.messageTemplate,
-      isActive: template.isActive,
+      isActive: Boolean(template.isActive),
     });
     setEditingId(template.id);
     setPreviewVariables({});
@@ -175,7 +175,7 @@ export default function AdminTemplates() {
         type: formData.type,
         titleTemplate: formData.titleTemplate,
         messageTemplate: formData.messageTemplate,
-        isActive: formData.isActive,
+        isActive: Boolean(formData.isActive),
       });
     } else {
       createMutation.mutate({
@@ -185,7 +185,7 @@ export default function AdminTemplates() {
         type: formData.type,
         titleTemplate: formData.titleTemplate,
         messageTemplate: formData.messageTemplate,
-        isActive: formData.isActive,
+        isActive: Boolean(formData.isActive),
       });
     }
   };

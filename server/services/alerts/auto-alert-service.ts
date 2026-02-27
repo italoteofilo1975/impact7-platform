@@ -51,7 +51,7 @@ export const autoAlertService = {
       .where(
         and(
           eq(caseSubmissions.status, 'pending'),
-          lt(caseSubmissions.createdAt, thresholdDate)
+          lt(caseSubmissions.createdAt, thresholdDate.getTime())
         )
       );
 

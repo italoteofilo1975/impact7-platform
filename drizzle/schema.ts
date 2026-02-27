@@ -1626,7 +1626,6 @@ export const set7Nfrs = mysqlTable("set7Nfrs", {
 export type Set7Nfr = typeof set7Nfrs.$inferSelect;
 export type InsertSet7Nfr = typeof set7Nfrs.$inferInsert;
 
-export type InsertSet7Nfr = typeof set7Nfrs.$inferInsert;
 
 /**
  * White Label Configuration table for multi-tenant branding.

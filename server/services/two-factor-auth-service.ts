@@ -335,7 +335,7 @@ export async function createVerificationSession(userId: number, ipAddress?: stri
   if (!db) throw new Error('Database not available');
 
   const sessionToken = randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + SESSION_EXPIRY_MS);
+  const expiresAt = Date.now() + SESSION_EXPIRY_MS;
 
   await db.insert(twoFactorSessions).values({
     userId,
@@ -344,7 +344,6 @@ export async function createVerificationSession(userId: number, ipAddress?: stri
     ipAddress,
     userAgent,
     createdAt: Date.now(),
-    updatedAt: Date.now(),
   });
 
   return sessionToken;

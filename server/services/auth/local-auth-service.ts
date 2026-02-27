@@ -52,31 +52,27 @@ export const localAuthService = {
     // Hash da senha
     const passwordHash = await this.hashPassword(data.password);
 
-    // Gerar openId unico para usuario local
-    const openId = `local_${nanoid(16)}`;
-
     // Inserir usuario
-    const result = await db.insert(users).values({
-      openId,
+    await db.insert(users).values({
       email: data.email,
       name: data.name,
       passwordHash,
       loginMethod: 'local',
       role: data.role || 'user',
-    
-          createdAt: Date.now(),
-        });
+      updatedAt: Date.now(),
+      createdAt: Date.now(),
+      lastSignedIn: Date.now(),
+    });
 
     // Buscar o usuario recem criado
     const newUser = await db
       .select()
       .from(users)
-      .where(eq(users.openId, openId))
+      .where(eq(users.email, data.email))
       .limit(1);
 
     return {
       id: newUser[0]?.id || 0,
-      openId,
       email: data.email,
       name: data.name,
       role: data.role || 'user',
@@ -124,7 +120,6 @@ export const localAuthService = {
 
     return {
       id: user.id,
-      openId: user.openId,
       email: user.email,
       name: user.name,
       role: user.role,

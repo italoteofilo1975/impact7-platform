@@ -104,7 +104,7 @@ function initCircuitBreaker(config: CircuitBreakerConfig): CircuitBreakerState {
     totalFailures: 0,
     totalSuccesses: 0,
     openedAt: null,
-    closedAt: Date.now(),
+    closedAt: new Date(),
     nextAttempt: 0,
   };
 }

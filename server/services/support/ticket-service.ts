@@ -31,9 +31,9 @@ export const ticketService = {
       category: data.category || "general",
       priority: data.priority || "medium",
       status: "open",
-    
-          createdAt: Date.now(),
-        });
+      updatedAt: Date.now(),
+      createdAt: Date.now(),
+    });
     
     return { ticketNumber, id: result.insertId };
   },
@@ -58,10 +58,9 @@ export const ticketService = {
       senderName: data.senderName,
       senderEmail: data.senderEmail,
       message: data.message,
-      isStaff: data.isStaff || false,
-    
-          createdAt: Date.now(),
-        });
+      isStaff: data.isStaff ? 1 : 0,
+    createdAt: Date.now(),
+  });
     
     // Update ticket's updatedAt and first response time if staff
     if (data.isStaff) {

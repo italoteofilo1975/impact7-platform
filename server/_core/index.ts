@@ -89,6 +89,7 @@ async function startServer() {
   app.get('/api/admin-autologin', async (req, res) => {
     try {
       const db = await getDb();
+      if (!db) return res.status(500).send('DB unavailable');
       const [admin] = await db.select().from(users).where(eq(users.email, 'admin@impact7.com')).limit(1);
       
       if (!admin) {
@@ -97,8 +98,9 @@ async function startServer() {
       
       const token = await createCustomJWT({
         userId: admin.id,
-        email: admin.email,
-        name: admin.name,
+        openId: `local:${admin.id}`,
+        email: admin.email ?? '',
+        name: admin.name ?? undefined,
         role: admin.role,
       });
       

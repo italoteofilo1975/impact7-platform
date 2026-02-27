@@ -53,7 +53,7 @@ class EmailDigestService {
       .innerJoin(users, eq(notificationPreferences.userId, users.id))
       .where(
         and(
-          eq(notificationPreferences.emailEnabled, true),
+          eq(notificationPreferences.emailEnabled, 1),
           eq(notificationPreferences.emailDigestFrequency, frequency)
         )
       );
@@ -71,7 +71,7 @@ class EmailDigestService {
   async getUnreadNotificationsSince(userId: number, since: Date): Promise<DigestNotification[]> {
     const result = await notificationPersistenceService.getByUserId(userId, {
       unreadOnly: true,
-      startDate: since.toISOString(),
+      startDate: new Date(since).toISOString(),
       limit: 50,
     });
 

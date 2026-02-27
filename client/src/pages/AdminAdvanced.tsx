@@ -457,7 +457,7 @@ function SchedulerDashboard() {
               <div>
                 <p className="text-sm text-muted-foreground">Última Execução</p>
                 <p className="text-lg font-bold">
-                  {status?.lastExecution ? formatDate(status.lastExecution.startedAt) : 'Nunca'}
+                  {status?.lastExecution ? formatDate(new Date(status.lastExecution.startedAt)) : 'Nunca'}
                 </p>
               </div>
               <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center">
@@ -586,7 +586,7 @@ function SchedulerDashboard() {
                     <Badge variant={log.status === 'success' ? 'default' : 'destructive'} className="text-xs">
                       {log.status}
                     </Badge>
-                    <p className="text-xs text-muted-foreground mt-1">{formatDate(log.startedAt)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{formatDate(new Date(log.startedAt))}</p>
                   </div>
                 </div>
               ))}

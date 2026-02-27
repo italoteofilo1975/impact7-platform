@@ -53,7 +53,7 @@ export async function saveMemory(
       .set({
         value: entry.value,
         importance: entry.importance ?? existing[0].importance,
-        lastAccessed: new Date(),
+        lastAccessed: Date.now(),
         accessCount: sql`${jarvisMemory.accessCount} + 1`,
       })
       .where(eq(jarvisMemory.id, existing[0].id));
@@ -68,9 +68,10 @@ export async function saveMemory(
     key: entry.key,
     value: entry.value,
     importance: entry.importance ?? 5,
-  
-          createdAt: Date.now(),
-        });
+    lastAccessed: Date.now(),
+    updatedAt: Date.now(),
+    createdAt: Date.now(),
+  });
 
   const newMemory = await db
     .select()
@@ -111,7 +112,7 @@ export async function getMemoriesByType(
     await db
       .update(jarvisMemory)
       .set({
-        lastAccessed: new Date(),
+        lastAccessed: Date.now(),
         accessCount: sql`${jarvisMemory.accessCount} + 1`,
       })
       .where(sql`${jarvisMemory.id} IN (${ids.join(',')})`);
@@ -148,7 +149,7 @@ export async function getMemoryByKey(
   await db
     .update(jarvisMemory)
     .set({
-      lastAccessed: new Date(),
+      lastAccessed: Date.now(),
       accessCount: sql`${jarvisMemory.accessCount} + 1`,
     })
     .where(eq(jarvisMemory.id, memories[0].id));

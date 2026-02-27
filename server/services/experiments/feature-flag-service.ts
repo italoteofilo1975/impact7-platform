@@ -56,7 +56,7 @@ export const featureFlagService = {
     }
     
     // If no specific targeting, check if globally enabled
-    return flag.isEnabled && !flag.targetUserIds && !flag.targetRoles && !flag.targetPlans;
+    return !!flag.isEnabled && !flag.targetUserIds && !flag.targetRoles && !flag.targetPlans;
   },
 
   /**
@@ -69,7 +69,7 @@ export const featureFlagService = {
     const flags = await db
       .select()
       .from(featureFlags)
-      .where(and(eq(featureFlags.key, flagKey), eq(featureFlags.isExperiment, true)))
+      .where(and(eq(featureFlags.key, flagKey), eq(featureFlags.isExperiment, 1)))
       .limit(1);
     
     if (flags.length === 0 || !flags[0].variants) return null;
@@ -129,14 +129,16 @@ export const featureFlagService = {
       key: data.key,
       name: data.name,
       description: data.description,
-      isEnabled: data.isEnabled ?? false,
+      isEnabled: data.isEnabled ? 1 : 0,
       rolloutPercentage: data.rolloutPercentage ?? 0,
       targetUserIds: data.targetUserIds ? JSON.stringify(data.targetUserIds) : null,
       targetRoles: data.targetRoles ? JSON.stringify(data.targetRoles) : null,
       targetPlans: data.targetPlans ? JSON.stringify(data.targetPlans) : null,
-      isExperiment: data.isExperiment ?? false,
+      isExperiment: data.isExperiment ? 1 : 0,
       variants: data.variants ? JSON.stringify(data.variants) : null,
-      expiresAt: data.expiresAt,
+      expiresAt: data.expiresAt ? (data.expiresAt instanceof Date ? data.expiresAt.getTime() : data.expiresAt) : null,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
     };
     
     if (existing.length > 0) {
@@ -146,8 +148,9 @@ export const featureFlagService = {
         .where(eq(featureFlags.key, data.key));
       return existing[0].id;
     } else {
-      const [result] = await db.insert(featureFlags).values(values);
-      return result.insertId;
+      const result = await db.insert(featureFlags).values(values);
+      const rawResult = result as unknown as { insertId?: number | bigint }[];
+      return typeof rawResult[0]?.insertId === 'bigint' ? Number(rawResult[0].insertId) : (rawResult[0]?.insertId ?? 0);
     }
   },
 

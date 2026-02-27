@@ -201,9 +201,7 @@ export async function assignRole(userId: number, roleCode: string): Promise<bool
       userId,
       roleId,
       assignedAt: Date.now(),
-    
-          createdAt: Date.now(),
-        }).onDuplicateKeyUpdate({ set: { assignedAt: Date.now() } });
+    }).onDuplicateKeyUpdate({ set: { assignedAt: Date.now() } });
 
     return true;
   } catch (error) {

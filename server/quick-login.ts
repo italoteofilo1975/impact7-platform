@@ -28,7 +28,7 @@ router.post('/api/quick-login', async (req, res) => {
     console.log('[Quick-Login] Admin found:', admin.email);
 
     // Fazer login usando sistema customizado
-    const loginResult = await customLogin(admin.email, 'admin123', res);
+    const loginResult = await customLogin(admin.email ?? 'admin@impact7.com', 'admin123', res);
     
     if (!loginResult.success) {
       return res.status(500).json({

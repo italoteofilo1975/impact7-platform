@@ -46,11 +46,10 @@ export async function trackJarvisInteraction(data: {
       skillUsed: data.skillUsed,
       responseTime: data.responseTime,
       tokensUsed: data.tokensUsed,
-      successful: data.successful ?? true,
+      successful: data.successful === false ? 0 : (typeof data.successful === "boolean" ? (data.successful ? 1 : 0) : (data.successful ?? 1)),
       errorMessage: data.errorMessage,
-    
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
   } catch (error) {
     console.error("[Analytics] Failed to track Jarvis interaction:", error);
   }
@@ -169,7 +168,7 @@ export async function trackLeadConversion(data: {
   if (!db) return;
 
   try {
-    await db.insert(leadConversions).values(data);
+    await db.insert(leadConversions).values({ ...data, convertedAt: Date.now() });
   } catch (error) {
     console.error("[Analytics] Failed to track lead conversion:", error);
   }
@@ -299,7 +298,7 @@ export async function trackPageView(data: {
   if (!db) return;
 
   try {
-    await db.insert(pageViews).values(data);
+    await db.insert(pageViews).values({ ...data, viewedAt: Date.now() });
   } catch (error) {
     console.error("[Analytics] Failed to track page view:", error);
   }

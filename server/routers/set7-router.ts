@@ -184,8 +184,8 @@ export const set7Router = router({
       .input(z.object({
         phase: z.string().optional(),
         agentId: z.string().optional(),
-        startDate: z.date().optional(),
-        endDate: z.date().optional(),
+        startDate: z.number().optional(),
+        endDate: z.number().optional(),
       }).optional())
       .query(async ({ input }) => {
         return getTasklogMetrics(input);
@@ -199,8 +199,8 @@ export const set7Router = router({
       .input(z.object({
         phase: z.string().optional(),
         agentId: z.string().optional(),
-        startDate: z.date().optional(),
-        endDate: z.date().optional(),
+        startDate: z.number().optional(),
+        endDate: z.number().optional(),
       }).optional())
       .query(async ({ input }) => {
         return exportTasklogToCsv(input);
@@ -234,8 +234,8 @@ export const set7Router = router({
         eventType: z.string().optional(),
         phase: z.string().optional(),
         severity: z.enum(["info", "warning", "error", "critical"]).optional(),
-        startDate: z.date().optional(),
-        endDate: z.date().optional(),
+        startDate: z.number().optional(),
+        endDate: z.number().optional(),
         limit: z.number().optional(),
         offset: z.number().optional(),
       }).optional())
@@ -593,7 +593,7 @@ export const set7Router = router({
         passed: z.boolean(),
         comments: z.string().optional(),
         mitigationPlan: z.string().optional(),
-        mitigationDeadline: z.date().optional(),
+        mitigationDeadline: z.number().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
         return evaluateGate(input.gateId, {

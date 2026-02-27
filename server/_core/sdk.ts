@@ -310,7 +310,9 @@ class SDKServer {
 
     await db.upsertUser({
       id: user.id,
+      openId: user.email || String(user.id),
       lastSignedIn: signedInAt,
+      updatedAt: signedInAt,
     });
 
     return user;

@@ -77,12 +77,12 @@ export async function createBudget(input: CreateBudgetInput) {
     warningThreshold: input.warningThreshold || 80,
     criticalThreshold: input.criticalThreshold || 95,
     periodType: input.periodType,
-    periodStart: input.periodStart,
-    periodEnd: input.periodEnd,
+    periodStart: input.periodStart ? (input.periodStart instanceof Date ? input.periodStart.getTime() : input.periodStart) : undefined,
+    periodEnd: input.periodEnd ? (input.periodEnd instanceof Date ? input.periodEnd.getTime() : input.periodEnd) : undefined,
     status: "active",
-  
-          createdAt: Date.now(),
-        }).$returningId();
+    updatedAt: Date.now(),
+    createdAt: Date.now(),
+  }).$returningId();
 
   return { budgetId, id: budget.id };
 }
@@ -182,7 +182,7 @@ export async function recordTokenUsage(input: TokenUsageInput): Promise<{
       usedTokens: newUsedTokens,
       usedUsd: newUsedUsd,
       status: newStatus,
-      circuitBreakerTriggered,
+      circuitBreakerTriggered: circuitBreakerTriggered ? 1 : 0,
       circuitBreakerAt: circuitBreakerTriggered ? Date.now() : undefined,
       circuitBreakerReason: circuitBreakerTriggered ? "Budget limit exceeded" : undefined,
     })
@@ -319,7 +319,7 @@ export async function resetCircuitBreaker(budgetId: string, reason: string) {
   
   await db.update(set7TokenBudgets)
     .set({
-      circuitBreakerTriggered: false,
+      circuitBreakerTriggered: 0,
       circuitBreakerAt: null,
       circuitBreakerReason: null,
       status: "active",
@@ -415,7 +415,7 @@ export async function increaseBudget(budgetId: string, additionalTokens: number,
       budgetTokens: newBudgetTokens,
       budgetUsd: newBudgetUsd,
       status: newStatus,
-      circuitBreakerTriggered: newStatus !== "exceeded" ? false : budget.circuitBreakerTriggered,
+      circuitBreakerTriggered: newStatus !== "exceeded" ? 0 : budget.circuitBreakerTriggered,
     })
     .where(eq(set7TokenBudgets.budgetId, budgetId));
 

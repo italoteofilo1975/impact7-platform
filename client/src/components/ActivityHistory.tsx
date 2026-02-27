@@ -122,7 +122,7 @@ export function ActivityHistory() {
                   <p className="text-sm text-muted-foreground">{activity.description}</p>
                 </div>
                 <span className="text-xs text-muted-foreground whitespace-nowrap">
-                  {formatTimeAgo(activity.timestamp)}
+                  {formatTimeAgo(new Date(activity.timestamp))}
                 </span>
               </div>
             ))}

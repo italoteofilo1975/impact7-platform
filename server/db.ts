@@ -48,7 +48,6 @@ async function createDefaultAdmin() {
   
   try {
     // Check if admin user already exists
-    // @ts-expect-error - openId field temporarily disabled
     const existingAdmin = await _db.select().from(users).where(eq(users.email, 'admin@impact7.com')).limit(1);
     
     if (existingAdmin.length === 0) {
@@ -56,7 +55,6 @@ async function createDefaultAdmin() {
       
       const passwordHash = await bcrypt.hash('admin123', 10);
       
-      // @ts-expect-error - Partial user creation
       await _db.insert(users).values({
         name: 'Admin',
         email: 'admin@impact7.com',
@@ -79,7 +77,6 @@ export async function getUserByOpenId(openId: string) {
   const db = await getDb();
   if (!db) return null;
   
-  // @ts-expect-error - openId field temporarily disabled
   const [user] = await db.select().from(users).where(eq(users.email, openId)).limit(1);
   return user || null;
 }
@@ -99,13 +96,11 @@ export async function upsertUser(userData: Partial<InsertUser> & { openId: strin
         loginMethod: userData.loginMethod,
         role: userData.role,
       })
-      // @ts-expect-error - openId field temporarily disabled
       .where(eq(users.email, userData.openId));
     
     return await getUserByOpenId(userData.openId);
   } else {
     // Insert new user
-    // @ts-expect-error - Partial user data
     await db.insert(users).values(userData as InsertUser);
     return await getUserByOpenId(userData.openId);
   }
@@ -148,8 +143,9 @@ export async function createLocalUser(userData: {
   
   // MySQL doesn't support .returning(), use insertId instead
   // insertId can be bigint or number, convert to number safely
-  const insertId = result[0]?.insertId ?? result.insertId;
-  return typeof insertId === 'bigint' ? Number(insertId) : insertId;
+  const rawResult = result as unknown as { insertId?: number | bigint }[];
+  const insertId = rawResult[0]?.insertId;
+  return typeof insertId === 'bigint' ? Number(insertId) : (insertId ?? 0);
 }
 
 export async function updateUserLastSignedIn(userId: number) {

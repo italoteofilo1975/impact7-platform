@@ -23,10 +23,10 @@ export const auditLogService = {
       const db = await getDb();
       if (!db) return;
 
-      await executeRawQuery(sql`
-        INSERT INTO auditLogs (userId, action, resource, resourceId, details, ipAddress, userAgent, status, errorMessage, createdAt)
-        VALUES (${entry.userId}, ${entry.action}, ${entry.resource}, ${entry.resourceId || null}, ${entry.details ? JSON.stringify(entry.details) : null}, ${entry.ipAddress || null}, ${entry.userAgent || null}, ${entry.status}, ${entry.errorMessage || null}, NOW())
-      `);
+      await executeRawQuery(
+        'INSERT INTO auditLogs (userId, action, resource, resourceId, details, ipAddress, userAgent, status, errorMessage, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())',
+        [entry.userId, entry.action, entry.resource, entry.resourceId || null, entry.details ? JSON.stringify(entry.details) : null, entry.ipAddress || null, entry.userAgent || null, entry.status, entry.errorMessage || null]
+      );
     } catch (error) {
       // Don't throw - audit logging should not break the main flow
       console.error('[AuditLog] Failed to log entry:', error);
@@ -158,36 +158,32 @@ export const auditLogService = {
       };
     }
 
-    const startDate = Date.now();
-    startDate.setDate(startDate.getDate() - days);
+    const startDate = Date.now() - days * 24 * 60 * 60 * 1000;
 
     // Total actions
-    const totalResult = await executeRawQuery(sql`
-      SELECT COUNT(*) as total, SUM(CASE WHEN status = 'success' THEN 1 ELSE 0 END) as success
-      FROM auditLogs WHERE createdAt >= ${startDate}
-    `);
+    const totalResult = await executeRawQuery(
+      'SELECT COUNT(*) as total, SUM(CASE WHEN status = \'success\' THEN 1 ELSE 0 END) as success FROM auditLogs WHERE createdAt >= ?',
+      [startDate]
+    );
     const totals = (totalResult as any)[0][0] || { total: 0, success: 0 };
 
     // Top actions
-    const actionsResult = await executeRawQuery(sql`
-      SELECT action, COUNT(*) as count
-      FROM auditLogs WHERE createdAt >= ${startDate}
-      GROUP BY action ORDER BY count DESC LIMIT 10
-    `);
+    const actionsResult = await executeRawQuery(
+      'SELECT action, COUNT(*) as count FROM auditLogs WHERE createdAt >= ? GROUP BY action ORDER BY count DESC LIMIT 10',
+      [startDate]
+    );
 
     // Top resources
-    const resourcesResult = await executeRawQuery(sql`
-      SELECT resource, COUNT(*) as count
-      FROM auditLogs WHERE createdAt >= ${startDate}
-      GROUP BY resource ORDER BY count DESC LIMIT 10
-    `);
+    const resourcesResult = await executeRawQuery(
+      'SELECT resource, COUNT(*) as count FROM auditLogs WHERE createdAt >= ? GROUP BY resource ORDER BY count DESC LIMIT 10',
+      [startDate]
+    );
 
     // Daily trend
-    const trendResult = await executeRawQuery(sql`
-      SELECT DATE(createdAt) as date, COUNT(*) as count
-      FROM auditLogs WHERE createdAt >= ${startDate}
-      GROUP BY DATE(createdAt) ORDER BY date ASC
-    `);
+    const trendResult = await executeRawQuery(
+      'SELECT DATE(createdAt) as date, COUNT(*) as count FROM auditLogs WHERE createdAt >= ? GROUP BY DATE(createdAt) ORDER BY date ASC',
+      [startDate]
+    );
 
     return {
       totalActions: Number(totals.total),

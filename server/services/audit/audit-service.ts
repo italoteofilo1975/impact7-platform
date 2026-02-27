@@ -46,9 +46,8 @@ class AuditService {
         metadata: entry.metadata ? JSON.stringify(entry.metadata) : null,
         ipAddress: entry.ipAddress,
         userAgent: entry.userAgent,
-      
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
     } catch (error) {
       console.error('[Audit] Failed to log action:', error);
     }
@@ -86,10 +85,10 @@ class AuditService {
       conditions.push(eq(auditLogs.resourceType, filters.resourceType));
     }
     if (filters?.startDate) {
-      conditions.push(gte(auditLogs.createdAt, filters.startDate));
+      conditions.push(gte(auditLogs.createdAt, filters.startDate.getTime()));
     }
     if (filters?.endDate) {
-      conditions.push(lte(auditLogs.createdAt, filters.endDate));
+      conditions.push(lte(auditLogs.createdAt, filters.endDate.getTime()));
     }
 
     // Get logs

@@ -36,11 +36,11 @@ export const conversionService = {
       campaign: data.campaign,
       referrer: data.referrer,
       metadata: data.metadata ? JSON.stringify(data.metadata) : null,
+      createdAt: Date.now(),
+    });
     
-          createdAt: Date.now(),
-        });
-    
-    return result.insertId;
+    const rawResult = result as unknown as { insertId?: number | bigint };
+    return typeof rawResult.insertId === 'bigint' ? Number(rawResult.insertId) : (rawResult.insertId ?? 0);
   },
 
   /**
@@ -135,8 +135,7 @@ export const conversionService = {
     const db = await getDb();
     if (!db) return [];
     
-    const startDate = Date.now();
-    startDate.setDate(startDate.getDate() - days);
+    const startDate = Date.now() - days * 24 * 60 * 60 * 1000;
     
     return db
       .select({
@@ -146,7 +145,7 @@ export const conversionService = {
         calculatorUses: sql<number>`SUM(CASE WHEN event_type = 'calculator_complete' THEN 1 ELSE 0 END)`,
       })
       .from(conversionEvents)
-      .where(gte(conversionEvents.createdAt, startDate.getTime()))
+      .where(gte(conversionEvents.createdAt, startDate))
       .groupBy(sql`DATE(created_at)`)
       .orderBy(sql`DATE(created_at)`);
   },

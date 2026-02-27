@@ -37,7 +37,7 @@ export default function AdminLeads() {
 
   const { refetch: exportCsv, isFetching: isExporting } = trpc.leads.exportCsv.useQuery(
     { source: statusFilter === 'all' ? undefined : statusFilter },
-    { enabled: 0 }
+    { enabled: false }
   );
 
   const handleExport = async () => {
@@ -77,7 +77,7 @@ export default function AdminLeads() {
     return matchesSearch && lead.source === statusFilter;
   });
 
-  const formatDate = (date: Date | string) => {
+  const formatDate = (date: Date | string | number) => {
     return new Date(date).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',

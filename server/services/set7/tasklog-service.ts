@@ -84,9 +84,10 @@ export async function createTask(input: CreateTaskInput) {
     gateId: input.gateId,
     status: "pending",
     startedAt: Date.now(),
-  
-          createdAt: Date.now(),
-        }).$returningId();
+
+    createdAt: Date.now(),
+
+    }).$returningId();
 
   // Registrar no audit log
   await logAuditEvent({
@@ -237,8 +238,8 @@ export async function listTasks(filters?: {
   agentId?: string;
   status?: TaskStatus;
   taxonomyBase?: TaxonomyBase;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: number;
+  endDate?: number;
   limit?: number;
   offset?: number;
 }) {
@@ -287,8 +288,8 @@ export async function listTasks(filters?: {
 export async function getTasklogMetrics(filters?: {
   phase?: string;
   agentId?: string;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: number;
+  endDate?: number;
 }) {
   const db = await getDb();
   if (!db) return {
@@ -406,8 +407,8 @@ export async function getMetricsByAgent() {
  */
 export async function exportTasklogToCsv(filters?: {
   phase?: string;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: number;
+  endDate?: number;
 }) {
   const tasks = await listTasks({ ...filters, limit: 10000 });
   
@@ -504,9 +505,8 @@ export async function logAuditEvent(input: AuditEventInput) {
     userId: input.userId,
     userName: input.userName,
     severity: input.severity || "info",
-  
-          createdAt: Date.now(),
-        });
+      createdAt: Date.now(),
+    });
 
   return { auditId };
 }
@@ -518,8 +518,8 @@ export async function listAuditEvents(filters?: {
   eventType?: typeof set7AuditLog.$inferInsert["eventType"];
   phase?: string;
   severity?: "info" | "warning" | "error" | "critical";
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: number;
+  endDate?: number;
   limit?: number;
   offset?: number;
 }) {

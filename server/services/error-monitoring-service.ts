@@ -33,7 +33,7 @@ const MAX_BUFFER_SIZE = 100;
 const FLUSH_INTERVAL = 60000; // 1 minute
 
 // Error occurrence tracking for rate limiting alerts
-const errorOccurrences: Map<string, { count: number; firstSeen: Date; lastSeen: Date }> = new Map();
+const errorOccurrences: Map<string, { count: number; firstSeen: number; lastSeen: number }> = new Map();
 
 /**
  * Generate a unique error fingerprint for deduplication
@@ -72,7 +72,7 @@ export async function captureError(
   context: ErrorContext = {},
   level: 'error' | 'warning' | 'critical' = 'error'
 ): Promise<ErrorReport> {
-  const timestamp = new Date();
+  const timestamp = Date.now();
   const fingerprint = generateFingerprint(error, context);
   
   const report: ErrorReport = {
@@ -89,12 +89,13 @@ export async function captureError(
   const existing = errorOccurrences.get(fingerprint);
   if (existing) {
     existing.count++;
-    existing.lastSeen = timestamp;
+    existing.lastSeen = typeof timestamp === 'number' ? timestamp : Date.now();
   } else {
+    const ts = typeof timestamp === 'number' ? timestamp : Date.now();
     errorOccurrences.set(fingerprint, {
       count: 1,
-      firstSeen: timestamp,
-      lastSeen: timestamp,
+      firstSeen: ts,
+      lastSeen: ts,
     });
   }
   
@@ -185,6 +186,7 @@ async function flushErrorBuffer(): Promise<void> {
         }),
         ipAddress: report.context.ip || null,
         userAgent: report.context.userAgent || null,
+        createdAt: Date.now(),
       });
     }
     
@@ -251,7 +253,7 @@ export function getErrorStats(): {
  * Clear old error occurrences (call periodically)
  */
 export function cleanupOldErrors(maxAgeMs: number = 24 * 60 * 60 * 1000): void {
-  const cutoff = new Date(Date.now() - maxAgeMs);
+  const cutoff = Date.now() - maxAgeMs;
   
   errorOccurrences.forEach((data, fingerprint) => {
     if (data.lastSeen < cutoff) {

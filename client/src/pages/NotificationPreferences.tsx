@@ -63,12 +63,12 @@ export default function NotificationPreferences() {
       const prefs: Record<string, boolean> = {};
       notificationTypes.forEach(type => {
         const key = `${type.key}Enabled` as keyof typeof savedPreferences;
-        prefs[type.key] = savedPreferences[key] !== false;
+        prefs[type.key] = savedPreferences[key] !== 0;
       });
       setPreferences(prefs);
-      setEmailEnabled(savedPreferences.emailEnabled !== false);
-      setEmailDigestFrequency(savedPreferences.emailDigestFrequency || 'instant');
-      setPushEnabled(savedPreferences.pushEnabled !== false);
+      setEmailEnabled(savedPreferences.emailEnabled !== 0);
+      setEmailDigestFrequency((savedPreferences.emailDigestFrequency || 'instant') as 'instant' | 'never' | 'daily' | 'weekly');
+      setPushEnabled(savedPreferences.pushEnabled !== 0);
     } else {
       // Valores padrão
       const defaultPrefs: Record<string, boolean> = {};

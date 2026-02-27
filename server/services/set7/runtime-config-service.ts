@@ -182,14 +182,14 @@ export async function createRuntimeConfig(input: CreateRuntimeConfigInput) {
       quality: input.customHooks?.hookQualityEnabled ?? defaults.hookQuality,
       security: input.customHooks?.hookSecurityEnabled ?? defaults.hookSecurity,
       gtl: input.customHooks?.hookGtlEnabled ?? defaults.hookGtl,
-    
-          createdAt: Date.now(),
-        }),
-    hookRoiEnabled: input.customHooks?.hookRoiEnabled ?? defaults.hookRoi,
-    hookTokensEnabled: input.customHooks?.hookTokensEnabled ?? defaults.hookTokens,
-    hookQualityEnabled: input.customHooks?.hookQualityEnabled ?? defaults.hookQuality,
-    hookSecurityEnabled: input.customHooks?.hookSecurityEnabled ?? defaults.hookSecurity,
-    hookGtlEnabled: input.customHooks?.hookGtlEnabled ?? defaults.hookGtl,
+    }),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    hookRoiEnabled: (input.customHooks?.hookRoiEnabled ?? defaults.hookRoi) ? 1 : 0,
+    hookTokensEnabled: (input.customHooks?.hookTokensEnabled ?? defaults.hookTokens) ? 1 : 0,
+    hookQualityEnabled: (input.customHooks?.hookQualityEnabled ?? defaults.hookQuality) ? 1 : 0,
+    hookSecurityEnabled: (input.customHooks?.hookSecurityEnabled ?? defaults.hookSecurity) ? 1 : 0,
+    hookGtlEnabled: (input.customHooks?.hookGtlEnabled ?? defaults.hookGtl) ? 1 : 0,
     hookFrequency: input.customHooks?.hookFrequency ?? defaults.hookFrequency,
     gtlType: input.gtlType || "saas",
     gtlPlans: input.gtlPlans ? JSON.stringify(input.gtlPlans) : null,
@@ -197,7 +197,7 @@ export async function createRuntimeConfig(input: CreateRuntimeConfigInput) {
     modelRouting: input.modelRouting || "default",
     gateProfile: JSON.stringify(gateProfile),
     humanApprovalPhases: JSON.stringify(input.humanApprovalPhases ?? defaults.humanApprovalPhases),
-    isActive: 1,
+    isActive: 1 as number,
   }).$returningId();
 
   await logAuditEvent({
@@ -380,7 +380,7 @@ export async function getGateProfile() {
   const config = await getActiveConfig();
   if (!config) return GATE_PROFILES.standard;
   
-  return config.gateProfile || GATE_PROFILES[config.mode];
+  return config.gateProfile || GATE_PROFILES[config.mode as RuntimeMode];
 }
 
 /**

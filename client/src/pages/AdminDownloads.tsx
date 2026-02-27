@@ -38,7 +38,7 @@ export default function AdminDownloads() {
 
   const { refetch: exportCsv, isFetching: isExporting } = trpc.downloads.exportCsv.useQuery(
     { type: activeTab === 'whitepaper' ? 'whitepaper' : activeTab === 'ebook' ? 'ebook' : 'all' },
-    { enabled: 0 }
+    { enabled: false }
   );
 
   const handleExport = async () => {
@@ -61,7 +61,7 @@ export default function AdminDownloads() {
     }
   };
 
-  const formatDate = (date: Date | string) => {
+  const formatDate = (date: Date | string | number) => {
     return new Date(date).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',

@@ -58,6 +58,14 @@ export const RATE_LIMIT_CONFIG = {
     max: 200, // 200 eventos por minuto
     message: 'Limite de eventos atingido.',
   },
+
+  // Endpoints admin (restritivo — previne abuso, força bruta e enumeração de dados)
+  // Achado L1-01 da Colisão SET7: endpoints admin sem rate limiting
+  admin: {
+    windowMs: 60 * 1000, // 1 minuto
+    max: 10, // 10 requisições por minuto por IP
+    message: 'Limite de requisições admin atingido. Aguarde 1 minuto antes de tentar novamente.',
+  },
 };
 
 /**
@@ -91,12 +99,25 @@ export const formsLimiter = createRateLimiter(RATE_LIMIT_CONFIG.forms);
 export const analyticsLimiter = createRateLimiter(RATE_LIMIT_CONFIG.analytics);
 
 /**
+ * Rate limiter para endpoints admin
+ * Aplica limite de 10 req/min por IP conforme achado L1-01 da Colisão SET7
+ */
+export const adminLimiter = createRateLimiter(RATE_LIMIT_CONFIG.admin);
+
+/**
  * Middleware que aplica rate limiting baseado no path da requisição
  */
 export function dynamicRateLimiter(req: Request, res: Response, next: NextFunction) {
   const path = req.path.toLowerCase();
   
   // Determinar qual limiter usar baseado no path
+
+  // Admin endpoints: mais restritivo (10 req/min) — achado L1-01 da Colisão SET7
+  // Detecta tanto /api/trpc/admin.* quanto /api/admin/*
+  if (path.includes('admin')) {
+    return adminLimiter(req, res, next);
+  }
+
   if (path.includes('/auth') || path.includes('/oauth')) {
     return authLimiter(req, res, next);
   }

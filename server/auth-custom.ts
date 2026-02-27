@@ -166,8 +166,8 @@ export async function customLogin(
     // Criar JWT
     const jwt = await createCustomJWT({
       userId: user.id,
-      openId: user.openId,
-      email: user.email,
+      openId: `local:${user.id}`,
+      email: user.email ?? '',
       role: user.role,
       name: user.name || undefined,
     });

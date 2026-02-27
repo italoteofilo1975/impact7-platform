@@ -99,9 +99,10 @@ export async function createRoiBaseline(input: CreateRoiInput) {
     roiRatio: "N/A",
     assumptions: input.assumptions ? JSON.stringify(input.assumptions) : null,
     documentHash,
-  
-          createdAt: Date.now(),
-        }).$returningId();
+    calculatedAt: Date.now(),
+    updatedAt: Date.now(),
+    createdAt: Date.now(),
+  }).$returningId();
 
   await logAuditEvent({
     eventType: "roi_calculated",
@@ -214,9 +215,10 @@ export async function createPartialRoi(baselineTrackingId: string) {
     roiPercentage,
     roiRatio,
     assumptions: baseline.assumptions,
-    documentHash: generateDocumentHash({ type: "partial", baselineId: baselineTrackingId, metrics ,
-          createdAt: Date.now(),
-        }),
+    documentHash: generateDocumentHash({ type: "partial", baselineId: baselineTrackingId, metrics }),
+    calculatedAt: Date.now(),
+    updatedAt: Date.now(),
+    createdAt: Date.now(),
   }).$returningId();
 
   return { trackingId, id: roi.id, roiPercentage, roiRatio, metrics };
@@ -292,9 +294,10 @@ export async function createFinalRoi(baselineTrackingId: string, actualValueUsd:
     assumptions: baseline.assumptions,
     deviations: JSON.stringify(deviations),
     documentHash: generateDocumentHash(documentData),
-  
-          createdAt: Date.now(),
-        }).$returningId();
+    calculatedAt: Date.now(),
+    updatedAt: Date.now(),
+    createdAt: Date.now(),
+  }).$returningId();
 
   await logAuditEvent({
     eventType: "roi_calculated",
@@ -434,7 +437,7 @@ export async function exportRoiReport(trackingId: string): Promise<string> {
 - **ID:** ${roi.trackingId}
 - **Tipo:** ${roi.roiType.toUpperCase()}
 - **Fase:** ${roi.phase || "Global"}
-- **Data:** ${roi.calculatedAt?.toISOString() || roi.createdAt?.toISOString()}
+- **Data:** ${roi.calculatedAt ? new Date(roi.calculatedAt).toISOString() : new Date(roi.createdAt).toISOString()}
 
 ## Valores Planejados
 | Métrica | Valor |

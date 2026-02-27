@@ -68,9 +68,9 @@ export async function createOAuthClient(
     redirectUris: JSON.stringify(redirectUris),
     scopes: JSON.stringify(scopes),
     isActive: 1,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  });
   
   return { clientId, clientSecret };
 }
@@ -100,7 +100,7 @@ export async function listUserOAuthClients(userId: number): Promise<Array<{
     clientId: c.clientId,
     redirectUris: c.redirectUris ? JSON.parse(c.redirectUris) : [],
     scopes: c.scopes ? JSON.parse(c.scopes) : [],
-    isActive: c.isActive,
+    isActive: Boolean(c.isActive),
     createdAt: c.createdAt,
   }));
 }
@@ -153,7 +153,7 @@ export async function generateAuthCode(
   if (!db) return null;
   
   const code = generateRandomString(64);
-  const expiresAt = new Date(Date.now() + AUTH_CODE_EXPIRY_MINUTES * 60 * 1000);
+  const expiresAt = Date.now() + AUTH_CODE_EXPIRY_MINUTES * 60 * 1000;
   
   await db.insert(oauthAuthCodes).values({
     clientId,
@@ -164,9 +164,8 @@ export async function generateAuthCode(
     codeChallenge: codeChallenge || null,
     codeChallengeMethod: codeChallengeMethod || null,
     expiresAt,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+  });
   
   return code;
 }
@@ -247,8 +246,8 @@ export async function exchangeCodeForTokens(
   // Gerar tokens
   const accessToken = generateRandomString(64);
   const refreshToken = generateRandomString(64);
-  const accessTokenExpiresAt = new Date(Date.now() + ACCESS_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000);
-  const refreshTokenExpiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+  const accessTokenExpiresAt = Date.now() + ACCESS_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000;
+  const refreshTokenExpiresAt = Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
   
   await db.insert(oauthTokens).values({
     clientId,
@@ -258,9 +257,8 @@ export async function exchangeCodeForTokens(
     scopes: authCode.scopes,
     accessTokenExpiresAt,
     refreshTokenExpiresAt,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+  });
   
   return {
     accessToken,
@@ -321,8 +319,8 @@ export async function refreshAccessToken(
   // Gerar novos tokens
   const newAccessToken = generateRandomString(64);
   const newRefreshToken = generateRandomString(64);
-  const accessTokenExpiresAt = new Date(Date.now() + ACCESS_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000);
-  const refreshTokenExpiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+  const accessTokenExpiresAt = Date.now() + ACCESS_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000;
+  const refreshTokenExpiresAt = Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
   
   await db.insert(oauthTokens).values({
     clientId,
@@ -332,9 +330,8 @@ export async function refreshAccessToken(
     scopes: oldToken.scopes,
     accessTokenExpiresAt,
     refreshTokenExpiresAt,
-  
-          createdAt: Date.now(),
-        });
+    createdAt: Date.now(),
+  });
   
   return {
     accessToken: newAccessToken,

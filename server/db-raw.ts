@@ -50,8 +50,9 @@ export async function executeRawTransaction(queries: string[]): Promise<void> {
     throw new Error("Database not available");
   }
   
+  let connection: Awaited<ReturnType<typeof pool.getConnection>> | null = null;
   try {
-    const connection = await pool.getConnection();
+    connection = await pool.getConnection();
     await connection.beginTransaction();
     
     for (const query of queries) {
@@ -61,8 +62,10 @@ export async function executeRawTransaction(queries: string[]): Promise<void> {
     await connection.commit();
     connection.release();
   } catch (error) {
-    await connection.rollback();
-    connection.release();
+    if (connection) {
+      await connection.rollback();
+      connection.release();
+    }
     console.error('[Database] Error executing transaction', error);
     throw error;
   }

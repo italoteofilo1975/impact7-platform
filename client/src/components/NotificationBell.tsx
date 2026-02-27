@@ -63,7 +63,7 @@ export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   
   const { notifications, unreadCount, isConnected, markAsRead, markAllAsRead } = useSSE({
-    userId: user?.openId || 'anonymous',
+    userId: user?.email || String(user?.id || 'anon') || 'anonymous',
     role: (user?.role === 'admin' ? 'admin' : 'user') as 'admin' | 'user',
     onNotification: (notification) => console.log('[Notification] New:', notification.title),
     enabled: !!user
