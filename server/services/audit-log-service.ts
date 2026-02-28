@@ -134,7 +134,7 @@ export const auditLogService = {
     }
 
     const result = await executeRawQuery(query);
-    return (result as any)[0] || [];
+    return result || [];
   },
 
   /**

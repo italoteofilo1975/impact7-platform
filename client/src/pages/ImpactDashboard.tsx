@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
 import { 
   ArrowLeft, TrendingUp, Users, DollarSign, Globe, 
   Target, Award, BarChart3, PieChart, MapPin,
@@ -12,48 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// Dados agregados dos cases (simulados com base nos cases existentes)
-const IMPACT_DATA = {
-  totalProjects: 6,
-  totalInvestment: 47500000, // R$ 47.5M
-  totalBeneficiaries: 1875000,
-  totalJobs: 12500,
-  avgSROI: 4.83,
-  totalSDGs: 12,
-  regions: {
-    "Sudeste": { projects: 2, investment: 15000000, beneficiaries: 650000 },
-    "Nordeste": { projects: 2, investment: 12500000, beneficiaries: 825000 },
-    "Sul": { projects: 1, investment: 10000000, beneficiaries: 250000 },
-    "Centro-Oeste": { projects: 1, investment: 10000000, beneficiaries: 150000 },
-  },
-  sectors: {
-    "Educação": { projects: 2, investment: 17500000, beneficiaries: 850000, icon: GraduationCap, color: "#3b82f6" },
-    "Saúde": { projects: 1, investment: 8000000, beneficiaries: 500000, icon: Heart, color: "#ef4444" },
-    "Meio Ambiente": { projects: 1, investment: 10000000, beneficiaries: 250000, icon: Leaf, color: "#22c55e" },
-    "Infraestrutura": { projects: 1, investment: 7000000, beneficiaries: 150000, icon: Building2, color: "#f59e0b" },
-    "Água e Saneamento": { projects: 1, investment: 5000000, beneficiaries: 125000, icon: Droplets, color: "#06b6d4" },
-  },
-  timeline: [
-    { year: 2020, projects: 1, investment: 5000000, beneficiaries: 125000 },
-    { year: 2021, projects: 2, investment: 12000000, beneficiaries: 350000 },
-    { year: 2022, projects: 3, investment: 20000000, beneficiaries: 700000 },
-    { year: 2023, projects: 4, investment: 32000000, beneficiaries: 1200000 },
-    { year: 2024, projects: 6, investment: 47500000, beneficiaries: 1875000 },
-  ],
-  sdgs: [
-    { number: 1, name: "Erradicação da Pobreza", count: 3 },
-    { number: 3, name: "Saúde e Bem-Estar", count: 4 },
-    { number: 4, name: "Educação de Qualidade", count: 5 },
-    { number: 6, name: "Água Potável e Saneamento", count: 2 },
-    { number: 7, name: "Energia Limpa e Acessível", count: 2 },
-    { number: 8, name: "Trabalho Decente", count: 4 },
-    { number: 10, name: "Redução das Desigualdades", count: 5 },
-    { number: 11, name: "Cidades Sustentáveis", count: 3 },
-    { number: 12, name: "Consumo Responsável", count: 2 },
-    { number: 13, name: "Ação Contra Mudança Climática", count: 3 },
-    { number: 15, name: "Vida Terrestre", count: 2 },
-    { number: 17, name: "Parcerias e Meios de Implementação", count: 6 },
-  ],
+// SDG names map
+const SDG_NAMES: Record<number, string> = {
+  1: "Erradicação da Pobreza", 2: "Fome Zero", 3: "Saúde e Bem-Estar",
+  4: "Educação de Qualidade", 5: "Igualdade de Gênero", 6: "Água Potável e Saneamento",
+  7: "Energia Limpa e Acessível", 8: "Trabalho Decente", 9: "Indústria e Inovação",
+  10: "Redução das Desigualdades", 11: "Cidades Sustentáveis", 12: "Consumo Responsável",
+  13: "Ação Contra Mudança Climática", 14: "Vida na Água", 15: "Vida Terrestre",
+  16: "Paz e Justiça", 17: "Parcerias e Meios de Implementação",
 };
 
 // Componente de contador animado
@@ -115,7 +82,25 @@ function formatCurrency(value: number): string {
 
 export default function ImpactDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
-  
+  const { data: stats, isLoading } = trpc.cases.getAggregateStats.useQuery();
+
+  // Fallback data while loading
+  const d = stats ?? {
+    totalProjects: 0, totalInvestment: 0, totalBeneficiaries: 0,
+    avgSROI: 0, totalSDGs: 0, regions: {}, sectors: {}, timeline: [], sdgs: [],
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Carregando dados de impacto...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -147,7 +132,7 @@ export default function ImpactDashboard() {
                   <div>
                     <p className="text-sm text-muted-foreground">Projetos</p>
                     <p className="text-3xl font-bold">
-                      <AnimatedCounter end={IMPACT_DATA.totalProjects} />
+                      <AnimatedCounter end={d.totalProjects} />
                     </p>
                   </div>
                 </div>
@@ -163,7 +148,7 @@ export default function ImpactDashboard() {
                   <div>
                     <p className="text-sm text-muted-foreground">Investimento Total</p>
                     <p className="text-3xl font-bold">
-                      <AnimatedCounter end={47.5} prefix="R$ " suffix="M" decimals={1} />
+                      <AnimatedCounter end={d.totalInvestment / 1_000_000} prefix="R$ " suffix="M" decimals={1} />
                     </p>
                   </div>
                 </div>
@@ -179,7 +164,7 @@ export default function ImpactDashboard() {
                   <div>
                     <p className="text-sm text-muted-foreground">Beneficiários</p>
                     <p className="text-3xl font-bold">
-                      <AnimatedCounter end={1.87} suffix="M" decimals={2} />
+                      <AnimatedCounter end={d.totalBeneficiaries / 1_000_000} suffix="M" decimals={2} />
                     </p>
                   </div>
                 </div>
@@ -195,7 +180,7 @@ export default function ImpactDashboard() {
                   <div>
                     <p className="text-sm text-muted-foreground">S-ROI Médio</p>
                     <p className="text-3xl font-bold">
-                      <AnimatedCounter end={4.83} suffix="x" decimals={2} />
+                      <AnimatedCounter end={d.avgSROI} suffix="x" decimals={2} />
                     </p>
                   </div>
                 </div>
@@ -236,7 +221,7 @@ export default function ImpactDashboard() {
                       <div className="flex justify-between mb-2">
                         <span className="text-sm font-medium">Empregos Gerados</span>
                         <span className="text-sm text-muted-foreground">
-                          {IMPACT_DATA.totalJobs.toLocaleString("pt-BR")}
+                          {(d.totalBeneficiaries * 0.007).toFixed(0)}
                         </span>
                       </div>
                       <Progress value={75} className="h-2" />
@@ -245,25 +230,25 @@ export default function ImpactDashboard() {
                       <div className="flex justify-between mb-2">
                         <span className="text-sm font-medium">ODS Impactados</span>
                         <span className="text-sm text-muted-foreground">
-                          {IMPACT_DATA.totalSDGs} de 17
+                          {d.totalSDGs} de 17
                         </span>
                       </div>
-                      <Progress value={(IMPACT_DATA.totalSDGs / 17) * 100} className="h-2" />
+                      <Progress value={(d.totalSDGs / 17) * 100} className="h-2" />
                     </div>
                     <div>
                       <div className="flex justify-between mb-2">
                         <span className="text-sm font-medium">Regiões Alcançadas</span>
                         <span className="text-sm text-muted-foreground">
-                          {Object.keys(IMPACT_DATA.regions).length} de 5
+                          {Object.keys(d.regions).length} de 5
                         </span>
                       </div>
-                      <Progress value={(Object.keys(IMPACT_DATA.regions).length / 5) * 100} className="h-2" />
+                      <Progress value={(Object.keys(d.regions).length / 5) * 100} className="h-2" />
                     </div>
                     <div>
                       <div className="flex justify-between mb-2">
                         <span className="text-sm font-medium">Setores Atendidos</span>
                         <span className="text-sm text-muted-foreground">
-                          {Object.keys(IMPACT_DATA.sectors).length}
+                          {Object.keys(d.sectors).length}
                         </span>
                       </div>
                       <Progress value={100} className="h-2" />
@@ -287,25 +272,25 @@ export default function ImpactDashboard() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 bg-muted rounded-lg text-center">
                       <p className="text-2xl font-bold text-primary">
-                        R$ {Math.round(IMPACT_DATA.totalInvestment / IMPACT_DATA.totalBeneficiaries).toLocaleString("pt-BR")}
+                        R$ {d.totalBeneficiaries > 0 ? Math.round(d.totalInvestment / d.totalBeneficiaries).toLocaleString("pt-BR") : '—'}
                       </p>
                       <p className="text-sm text-muted-foreground">Custo por Beneficiário</p>
                     </div>
                     <div className="p-4 bg-muted rounded-lg text-center">
                       <p className="text-2xl font-bold text-primary">
-                        R$ {Math.round(IMPACT_DATA.totalInvestment / IMPACT_DATA.totalJobs).toLocaleString("pt-BR")}
+                        R$ {d.totalBeneficiaries > 0 ? Math.round(d.totalInvestment / (d.totalBeneficiaries * 0.007)).toLocaleString("pt-BR") : '—'}
                       </p>
                       <p className="text-sm text-muted-foreground">Custo por Emprego</p>
                     </div>
                     <div className="p-4 bg-muted rounded-lg text-center">
                       <p className="text-2xl font-bold text-primary">
-                        {Math.round(IMPACT_DATA.totalBeneficiaries / IMPACT_DATA.totalProjects).toLocaleString("pt-BR")}
+                        {d.totalProjects > 0 ? Math.round(d.totalBeneficiaries / d.totalProjects).toLocaleString("pt-BR") : '—'}
                       </p>
                       <p className="text-sm text-muted-foreground">Beneficiários/Projeto</p>
                     </div>
                     <div className="p-4 bg-muted rounded-lg text-center">
                       <p className="text-2xl font-bold text-primary">
-                        {formatCurrency(IMPACT_DATA.totalInvestment / IMPACT_DATA.totalProjects)}
+                        {d.totalProjects > 0 ? formatCurrency(d.totalInvestment / d.totalProjects) : '—'}
                       </p>
                       <p className="text-sm text-muted-foreground">Investimento Médio</p>
                     </div>
@@ -318,17 +303,13 @@ export default function ImpactDashboard() {
           {/* Sectors Tab */}
           <TabsContent value="sectors">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Object.entries(IMPACT_DATA.sectors).map(([sector, data]) => {
-                const Icon = data.icon;
+              {Object.entries(d.sectors).map(([sector, data]) => {
                 return (
                   <Card key={sector} className="hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-4">
-                        <div 
-                          className="p-3 rounded-full"
-                          style={{ backgroundColor: data.color + "20" }}
-                        >
-                          <Icon className="w-6 h-6" style={{ color: data.color }} />
+                        <div className="p-3 rounded-full bg-primary/10">
+                          <BarChart3 className="w-6 h-6 text-primary" />
                         </div>
                         <div>
                           <h3 className="font-semibold">{sector}</h3>
@@ -349,7 +330,7 @@ export default function ImpactDashboard() {
                         <div className="flex justify-between">
                           <span className="text-sm text-muted-foreground">% do Total</span>
                           <span className="font-medium">
-                            {Math.round((data.investment / IMPACT_DATA.totalInvestment) * 100)}%
+                            {d.totalInvestment > 0 ? Math.round((data.investment / d.totalInvestment) * 100) : 0}%
                           </span>
                         </div>
                       </div>
@@ -372,7 +353,7 @@ export default function ImpactDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {Object.entries(IMPACT_DATA.regions).map(([region, data]) => (
+                    {Object.entries(d.regions).map(([region, data]) => (
                       <div key={region} className="space-y-2">
                         <div className="flex justify-between">
                           <span className="font-medium">{region}</span>
@@ -381,7 +362,7 @@ export default function ImpactDashboard() {
                           </span>
                         </div>
                         <Progress 
-                          value={(data.investment / IMPACT_DATA.totalInvestment) * 100} 
+                          value={d.totalInvestment > 0 ? (data.investment / d.totalInvestment) * 100 : 0} 
                           className="h-3"
                         />
                         <div className="flex justify-between text-sm text-muted-foreground">
@@ -403,7 +384,7 @@ export default function ImpactDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
-                    {Object.entries(IMPACT_DATA.regions).map(([region, data]) => (
+                    {Object.entries(d.regions).map(([region, data]) => (
                       <div key={region} className="p-4 bg-muted rounded-lg">
                         <h4 className="font-semibold mb-2">{region}</h4>
                         <div className="space-y-1 text-sm">
@@ -442,7 +423,7 @@ export default function ImpactDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {IMPACT_DATA.sdgs.map((sdg) => (
+                  {d.sdgs.map((sdg) => (
                     <div 
                       key={sdg.number}
                       className="flex items-center gap-3 p-3 bg-muted rounded-lg"
@@ -451,13 +432,14 @@ export default function ImpactDashboard() {
                         {sdg.number}
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-sm">{sdg.name}</p>
+                        <p className="font-medium text-sm">{SDG_NAMES[sdg.number] || `ODS ${sdg.number}`}</p>
                         <p className="text-xs text-muted-foreground">
                           {sdg.count} projeto{sdg.count > 1 ? "s" : ""}
                         </p>
                       </div>
                     </div>
                   ))}
+
                 </div>
               </CardContent>
             </Card>
@@ -477,9 +459,9 @@ export default function ImpactDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {IMPACT_DATA.timeline.map((year, index) => (
+                  {d.timeline.map((year, index) => (
                     <div key={year.year} className="relative">
-                      {index < IMPACT_DATA.timeline.length - 1 && (
+                      {index < d.timeline.length - 1 && (
                         <div className="absolute left-5 top-12 w-0.5 h-full bg-muted" />
                       )}
                       <div className="flex items-start gap-4">

@@ -25,73 +25,51 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import MainNavbar from "@/components/MainNavbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
-// Case data keys for translation
-const caseKeys = ["case1", "case2", "case3", "case4", "case5", "case6"];
+// Helper to normalize a DB case row to UI format
+function normalizeCaseForCompare(c: any) {
+  const sdgs: string[] = typeof c.sdgs === 'string'
+    ? (() => { try { return JSON.parse(c.sdgs); } catch { return []; } })()
+    : (c.sdgs || []);
+  const metricsRaw: Array<{label: string; value: string; change?: string}> = typeof c.metrics === 'string'
+    ? (() => { try { return JSON.parse(c.metrics); } catch { return []; } })()
+    : (c.metrics || []);
+  const sroiNum = parseFloat(String(c.sroi || '0'));
+  const sRoiValue = sroiNum > 100 ? sroiNum / 100 : sroiNum;
+  const sRoiFormatted = `${sRoiValue.toFixed(1)}x`;
+  const investmentNum = parseFloat(String(c.investment || '0'));
+  const investmentFormatted = investmentNum >= 1000000
+    ? `R$ ${(investmentNum / 1000000).toFixed(1)}M`
+    : investmentNum >= 1000
+    ? `R$ ${(investmentNum / 1000).toFixed(0)}K`
+    : `R$ ${investmentNum.toFixed(0)}`;
+  const beneficiariesNum = typeof c.beneficiaries === 'number'
+    ? c.beneficiaries
+    : parseInt(String(c.beneficiaries || '0').replace(/\D/g, ''));
+  const beneficiariesFormatted = beneficiariesNum.toLocaleString('pt-BR');
 
-// Static case data (values that don't need translation)
-const caseData = [
-  {
-    id: 1,
-    key: "case1",
-    region: "Sudeste",
-    investmentValue: 2500000,
-    beneficiariesValue: 15000,
-    sRoiValue: 12.4,
-    year: 2024,
-    sdgs: ["4", "8", "10"],
-  },
-  {
-    id: 2,
-    key: "case2",
-    region: "Nordeste",
-    investmentValue: 5000000,
-    beneficiariesValue: 8500,
-    sRoiValue: 9.7,
-    year: 2023,
-    sdgs: ["1", "8", "10"],
-  },
-  {
-    id: 3,
-    key: "case3",
-    region: "Sudeste",
-    investmentValue: 3800000,
-    beneficiariesValue: 45000,
-    sRoiValue: 15.2,
-    year: 2024,
-    sdgs: ["3", "10", "11"],
-  },
-  {
-    id: 4,
-    key: "case4",
-    region: "Sul",
-    investmentValue: 1800000,
-    beneficiariesValue: 3200,
-    sRoiValue: 8.3,
-    year: 2023,
-    sdgs: ["2", "8", "12"],
-  },
-  {
-    id: 5,
-    key: "case5",
-    region: "Nordeste",
-    investmentValue: 12000000,
-    beneficiariesValue: 2400,
-    sRoiValue: 11.8,
-    year: 2024,
-    sdgs: ["1", "10", "11"],
-  },
-  {
-    id: 6,
-    key: "case6",
-    region: "Sul",
-    investmentValue: 800000,
-    beneficiariesValue: 4800,
-    sRoiValue: 7.2,
-    year: 2024,
-    sdgs: ["4", "10", "3"],
-  },
-];
+  return {
+    id: c.id as number,
+    title: c.title as string,
+    organization: c.organization as string,
+    location: c.location || '',
+    region: c.region as string,
+    sector: c.sector as string,
+    investment: investmentFormatted,
+    investmentValue: investmentNum,
+    beneficiaries: beneficiariesFormatted,
+    beneficiariesValue: beneficiariesNum,
+    duration: c.duration || '',
+    sRoi: sRoiFormatted,
+    sRoiValue,
+    year: c.year as number,
+    sdgs,
+    metrics: metricsRaw.length > 0
+      ? metricsRaw.map(m => ({ label: m.label, value: m.value }))
+      : [{ label: 'S-ROI', value: sRoiFormatted }],
+  };
+}
 
 export default function CaseCompare() {
   const { t } = useTranslation();
@@ -103,92 +81,17 @@ export default function CaseCompare() {
   const [selectedIds, setSelectedIds] = useState<number[]>(initialIds.slice(0, 3));
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
-  // Format currency helper
-  const formatCurrency = (value: number) => {
-    if (value >= 1000000) {
-      return `R$ ${(value / 1000000).toFixed(1)}M`;
-    }
-    return `R$ ${(value / 1000).toFixed(0)}K`;
-  };
+  // Fetch real cases from database
+  const { data: rawCases, isLoading } = trpc.cases.list.useQuery({ limit: 50 });
 
-  // Format number helper
-  const formatNumber = (value: number) => {
-    return value.toLocaleString('pt-BR');
-  };
-
-  // Build cases with translations - using flat key structure from translation file
+  // Normalize all cases from DB
   const allCases = useMemo(() => {
-    return caseData.map(c => {
-      // Get translated values using flat key structure
-      const title = t(`cases.data.${c.key}.title`);
-      const organization = t(`cases.data.${c.key}.organization`);
-      const location = t(`cases.data.${c.key}.location`);
-      const duration = t(`cases.data.${c.key}.duration`);
-      
-      // Get sector from sectors translation
-      const sectorKey = c.key === 'case1' ? 'education' : 
-                        c.key === 'case2' ? 'microfinance' :
-                        c.key === 'case3' ? 'health' :
-                        c.key === 'case4' ? 'agriculture' :
-                        c.key === 'case5' ? 'housing' : 'education';
-      const sector = t(`cases.sectors.${sectorKey}`);
-      
-      // Format numeric values directly
-      const investment = formatCurrency(c.investmentValue);
-      const beneficiaries = formatNumber(c.beneficiariesValue);
-      const sRoi = `${c.sRoiValue}x`;
-      
-      // Get metrics based on case
-      const metricsMap: Record<string, Array<{label: string, value: string}>> = {
-        case1: [
-          { label: t('cases.data.case1.metrics.employability'), value: '+340%' },
-          { label: t('cases.data.case1.metrics.income'), value: '+180%' },
-          { label: t('cases.data.case1.metrics.completion'), value: '87%' },
-        ],
-        case2: [
-          { label: t('cases.data.case2.metrics.businesses'), value: '2,400' },
-          { label: t('cases.data.case2.metrics.default'), value: '3.2%' },
-          { label: t('cases.data.case2.metrics.income'), value: '+220%' },
-        ],
-        case3: [
-          { label: t('cases.data.case3.metrics.hospitalizations'), value: '4,200' },
-          { label: t('cases.data.case3.metrics.susCost'), value: 'R$ 12M' },
-          { label: t('cases.data.case3.metrics.vaccination'), value: '94%' },
-        ],
-        case4: [
-          { label: t('cases.data.case4.metrics.productivity'), value: '+156%' },
-          { label: t('cases.data.case4.metrics.income'), value: '+40%' },
-          { label: t('cases.data.case4.metrics.organic'), value: '340' },
-        ],
-        case5: [
-          { label: t('cases.data.case5.metrics.families'), value: '700' },
-          { label: t('cases.data.case5.metrics.regularization'), value: '100%' },
-          { label: t('cases.data.case5.metrics.appreciation'), value: '+280%' },
-        ],
-        case6: [
-          { label: t('cases.data.case6.metrics.digitally'), value: '4,800' },
-          { label: t('cases.data.case6.metrics.isolation'), value: '-62%' },
-          { label: t('cases.data.case6.metrics.services'), value: '+340%' },
-        ],
-      };
-      
-      return {
-        ...c,
-        title,
-        organization,
-        location,
-        sector,
-        investment,
-        beneficiaries,
-        duration,
-        sRoi,
-        metrics: metricsMap[c.key] || [],
-      };
-    });
-  }, [t]);
+    if (!rawCases || rawCases.length === 0) return [];
+    return rawCases.map(normalizeCaseForCompare);
+  }, [rawCases]);
 
   const selectedCases = useMemo(() => 
-    selectedIds.map(id => allCases.find(c => c.id === id)).filter(Boolean) as typeof allCases,
+    selectedIds.map(id => allCases.find(c => c.id === id)).filter(Boolean) as ReturnType<typeof normalizeCaseForCompare>[],
     [selectedIds, allCases]
   );
 
@@ -226,7 +129,7 @@ export default function CaseCompare() {
       avgSRoi: avgSRoi.toFixed(1),
       maxSRoi: maxSRoi.toFixed(1),
       minSRoi: minSRoi.toFixed(1),
-      costPerBeneficiary: (totalInvestment / totalBeneficiaries).toFixed(0),
+      costPerBeneficiary: totalBeneficiaries > 0 ? (totalInvestment / totalBeneficiaries).toFixed(0) : '0',
     };
   }, [selectedCases]);
 
@@ -245,6 +148,21 @@ export default function CaseCompare() {
         return null;
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <MainNavbar />
+        <main className="pt-24 pb-16 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-muted-foreground">Carregando cases...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -305,6 +223,11 @@ export default function CaseCompare() {
                         </CardContent>
                       </Card>
                     ))}
+                    {availableCases.length === 0 && (
+                      <p className="text-center text-muted-foreground py-4">
+                        Todos os cases já foram selecionados.
+                      </p>
+                    )}
                   </div>
                 </DialogContent>
               </Dialog>
@@ -348,7 +271,7 @@ export default function CaseCompare() {
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-primary">
-                          {aggregateMetrics.totalBeneficiaries.toLocaleString()}
+                          {aggregateMetrics.totalBeneficiaries.toLocaleString('pt-BR')}
                         </div>
                         <div className="text-xs text-muted-foreground">{t('cases.compare.summary.totalBeneficiaries')}</div>
                       </div>
@@ -372,7 +295,7 @@ export default function CaseCompare() {
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-primary">
-                          R$ {parseInt(aggregateMetrics.costPerBeneficiary).toLocaleString()}
+                          R$ {parseInt(aggregateMetrics.costPerBeneficiary).toLocaleString('pt-BR')}
                         </div>
                         <div className="text-xs text-muted-foreground">{t('cases.compare.summary.costPerBeneficiary')}</div>
                       </div>
@@ -442,39 +365,45 @@ export default function CaseCompare() {
                           </div>
                           <div className="p-3 bg-muted/50 rounded-lg text-center">
                             <Calendar className="w-4 h-4 mx-auto mb-1 text-primary" />
-                            <div className="text-xl font-bold">{caseStudy.duration}</div>
+                            <div className="text-xl font-bold">{caseStudy.duration || caseStudy.year}</div>
                             <div className="text-xs text-muted-foreground">{t('cases.compare.metrics.duration')}</div>
                           </div>
                         </div>
 
                         {/* Location */}
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <MapPin className="w-4 h-4" />
-                          {caseStudy.location}
-                        </div>
+                        {caseStudy.location && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <MapPin className="w-4 h-4" />
+                            {caseStudy.location}
+                          </div>
+                        )}
 
                         {/* Specific Metrics */}
-                        <div className="space-y-2">
-                          <h4 className="text-sm font-medium">{t('cases.compare.metrics.impactMetrics')}</h4>
-                          {caseStudy.metrics.map((metric, i) => (
-                            <div key={i} className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">{metric.label}</span>
-                              <span className="font-medium">{metric.value}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* ODS */}
-                        <div className="space-y-2">
-                          <h4 className="text-sm font-medium">{t('cases.compare.metrics.relatedSdgs')}</h4>
-                          <div className="flex flex-wrap gap-1">
-                            {caseStudy.sdgs.map(ods => (
-                              <Badge key={ods} variant="outline" className="text-xs">
-                                ODS {ods}
-                              </Badge>
+                        {caseStudy.metrics.length > 0 && (
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-medium">{t('cases.compare.metrics.impactMetrics')}</h4>
+                            {caseStudy.metrics.map((metric, i) => (
+                              <div key={i} className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">{metric.label}</span>
+                                <span className="font-medium">{metric.value}</span>
+                              </div>
                             ))}
                           </div>
-                        </div>
+                        )}
+
+                        {/* ODS */}
+                        {caseStudy.sdgs.length > 0 && (
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-medium">{t('cases.compare.metrics.relatedSdgs')}</h4>
+                            <div className="flex flex-wrap gap-1">
+                              {caseStudy.sdgs.map(ods => (
+                                <Badge key={ods} variant="outline" className="text-xs">
+                                  ODS {ods}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   );
@@ -548,7 +477,7 @@ export default function CaseCompare() {
                             <td className="py-3 px-4 text-muted-foreground">{t('cases.compare.metrics.duration')}</td>
                             {selectedCases.map(c => (
                               <td key={c.id} className="text-center py-3 px-4">
-                                {c.duration}
+                                {c.duration || String(c.year)}
                               </td>
                             ))}
                           </tr>
@@ -572,7 +501,9 @@ export default function CaseCompare() {
                             <td className="py-3 px-4 text-muted-foreground">{t('cases.compare.table.costPerBeneficiary')}</td>
                             {selectedCases.map(c => (
                               <td key={c.id} className="text-center py-3 px-4">
-                                R$ {Math.round(c.investmentValue / c.beneficiariesValue).toLocaleString()}
+                                {c.beneficiariesValue > 0
+                                  ? `R$ ${Math.round(c.investmentValue / c.beneficiariesValue).toLocaleString('pt-BR')}`
+                                  : '-'}
                               </td>
                             ))}
                           </tr>
@@ -580,7 +511,7 @@ export default function CaseCompare() {
                             <td className="py-3 px-4 text-muted-foreground">{t('cases.compare.table.sdgs')}</td>
                             {selectedCases.map(c => (
                               <td key={c.id} className="text-center py-3 px-4">
-                                {c.sdgs.join(', ')}
+                                {c.sdgs.join(', ') || '-'}
                               </td>
                             ))}
                           </tr>

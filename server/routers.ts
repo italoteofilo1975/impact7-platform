@@ -605,6 +605,34 @@ export const appRouter = router({
         const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
         return { csv, count: allDownloads.length };
       }),
+
+    // Public endpoint to list whitepapers catalog
+    getWhitepapers: publicProcedure.query(async () => {
+      const { executeRawQuery } = await import('./db-raw');
+      const rows = await executeRawQuery<{
+        id: number; title: string; slug: string; description: string;
+        fileUrl: string; coverImage: string; category: string; tags: string;
+        downloadCount: number; status: string;
+      }>("SELECT id, title, slug, description, fileUrl, coverImage, category, tags, downloadCount, status FROM whitepapers WHERE status = 'published' ORDER BY downloadCount DESC");
+      return rows.map(r => ({
+        ...r,
+        tags: typeof r.tags === 'string' ? (() => { try { return JSON.parse(r.tags); } catch { return []; } })() : (r.tags || []),
+      }));
+    }),
+
+    // Public endpoint to list ebooks catalog
+    getEbooks: publicProcedure.query(async () => {
+      const { executeRawQuery } = await import('./db-raw');
+      const rows = await executeRawQuery<{
+        id: number; title: string; slug: string; description: string;
+        fileUrl: string; coverImage: string; category: string; tags: string;
+        downloadCount: number; status: string;
+      }>("SELECT id, title, slug, description, fileUrl, coverImage, category, tags, downloadCount, status FROM ebooks WHERE status = 'published' ORDER BY downloadCount DESC");
+      return rows.map(r => ({
+        ...r,
+        tags: typeof r.tags === 'string' ? (() => { try { return JSON.parse(r.tags); } catch { return []; } })() : (r.tags || []),
+      }));
+    }),
   }),
 
   // Newsletter Router
@@ -1160,7 +1188,7 @@ export const appRouter = router({
         }
         query += ` ORDER BY isFeatured DESC, year DESC LIMIT ${input?.limit || 20}`;
         const result = await executeRawQuery(query);
-        return (result as any)[0] || [];
+        return result || [];
       }),
 
     // Obter um case específico
@@ -1172,7 +1200,7 @@ export const appRouter = router({
         const result = await executeRawQuery(`
           SELECT * FROM caseStudies WHERE id = ${input.id} AND isActive = TRUE
         `);
-        const rows = (result as any)[0];
+        const rows = result;
         return rows?.[0] || null;
       }),
 
@@ -1183,7 +1211,7 @@ export const appRouter = router({
       const result = await executeRawQuery(`
         SELECT DISTINCT sector FROM caseStudies WHERE isActive = TRUE ORDER BY sector
       `);
-      return ((result as any)[0] || []).map((r: any) => r.sector);
+      return (result || []).map((r: any) => r.sector);
     }),
 
     // Obter regiões disponíveis
@@ -1193,7 +1221,7 @@ export const appRouter = router({
       const result = await executeRawQuery(`
         SELECT DISTINCT region FROM caseStudies WHERE isActive = TRUE ORDER BY region
       `);
-      return ((result as any)[0] || []).map((r: any) => r.region);
+      return (result || []).map((r: any) => r.region);
     }),
 
     generatePDF: publicProcedure
@@ -1431,6 +1459,55 @@ export const appRouter = router({
         
         return { success: true };
       }),
+
+    // Aggregate stats for ImpactDashboard
+    getAggregateStats: publicProcedure.query(async () => {
+      const { executeRawQuery } = await import('./db-raw');
+      const allCases = await executeRawQuery<{
+        id: number; investment: string; beneficiaries: number; sroi: number;
+        region: string; sector: string; year: number; sdgs: string;
+      }>('SELECT id, investment, beneficiaries, sroi, region, sector, year, sdgs FROM caseStudies WHERE isActive = 1');
+      if (!allCases.length) return null;
+
+      const totalInvestment = allCases.reduce((sum, c) => sum + parseFloat(String(c.investment || 0)), 0);
+      const totalBeneficiaries = allCases.reduce((sum, c) => sum + (c.beneficiaries || 0), 0);
+      const avgSROI = allCases.reduce((sum, c) => sum + parseFloat(String(c.sroi || 0)), 0) / allCases.length / 100;
+
+      const regionMap: Record<string, { projects: number; investment: number; beneficiaries: number }> = {};
+      const sectorMap: Record<string, { projects: number; investment: number; beneficiaries: number }> = {};
+      const yearMap: Record<number, { projects: number; investment: number; beneficiaries: number }> = {};
+      const sdgMap: Record<string, number> = {};
+
+      for (const c of allCases) {
+        const r = c.region || 'Outros';
+        if (!regionMap[r]) regionMap[r] = { projects: 0, investment: 0, beneficiaries: 0 };
+        regionMap[r].projects++; regionMap[r].investment += parseFloat(String(c.investment || 0)); regionMap[r].beneficiaries += c.beneficiaries || 0;
+
+        const s = c.sector || 'Outros';
+        if (!sectorMap[s]) sectorMap[s] = { projects: 0, investment: 0, beneficiaries: 0 };
+        sectorMap[s].projects++; sectorMap[s].investment += parseFloat(String(c.investment || 0)); sectorMap[s].beneficiaries += c.beneficiaries || 0;
+
+        const y = c.year || new Date().getFullYear();
+        if (!yearMap[y]) yearMap[y] = { projects: 0, investment: 0, beneficiaries: 0 };
+        yearMap[y].projects++; yearMap[y].investment += parseFloat(String(c.investment || 0)); yearMap[y].beneficiaries += c.beneficiaries || 0;
+
+        let sdgs: string[] = [];
+        try { sdgs = typeof c.sdgs === 'string' ? JSON.parse(c.sdgs) : (c.sdgs || []); } catch {}
+        for (const sdg of sdgs) { sdgMap[sdg] = (sdgMap[sdg] || 0) + 1; }
+      }
+
+      return {
+        totalProjects: allCases.length,
+        totalInvestment,
+        totalBeneficiaries,
+        avgSROI: parseFloat(avgSROI.toFixed(2)),
+        totalSDGs: Object.keys(sdgMap).length,
+        regions: regionMap,
+        sectors: sectorMap,
+        timeline: Object.entries(yearMap).sort(([a], [b]) => Number(a) - Number(b)).map(([year, data]) => ({ year: Number(year), ...data })),
+        sdgs: Object.entries(sdgMap).map(([number, count]) => ({ number: Number(number), count })).sort((a, b) => a.number - b.number),
+      };
+    }),
   }),
   
   // Tags Router
@@ -3653,7 +3730,7 @@ export const appRouter = router({
           WHERE isActive = TRUE 
           ORDER BY displayOrder ASC
         `);
-        return (result as any)[0] || [];
+        return result || [];
       }),
 
     // Get certifications
@@ -3667,7 +3744,7 @@ export const appRouter = router({
           WHERE isActive = TRUE 
           ORDER BY displayOrder ASC
         `);
-        return (result as any)[0] || [];
+        return result || [];
       }),
 
     // Get partners from existing partners table
@@ -3682,7 +3759,7 @@ export const appRouter = router({
           ORDER BY name ASC
           LIMIT 12
         `);
-        return (result as any)[0] || [];
+        return result || [];
       }),
 
     // Get featured cases from caseStudies table
@@ -3697,7 +3774,7 @@ export const appRouter = router({
           ORDER BY sroi DESC
           LIMIT 3
         `);
-        return (result as any)[0] || [];
+        return result || [];
       }),
 
     // Get testimonials
@@ -3723,7 +3800,7 @@ export const appRouter = router({
         }
         query += ` ORDER BY displayOrder ASC, createdAt DESC LIMIT ${input?.limit || 10}`;
         const result = await executeRawQuery(query);
-        return (result as any)[0] || [];
+        return result || [];
       }),
 
     // Get testimonial sectors
@@ -3734,7 +3811,7 @@ export const appRouter = router({
         const result = await executeRawQuery(`
           SELECT DISTINCT sector FROM testimonials WHERE isActive = TRUE ORDER BY sector
         `);
-        return ((result as any)[0] || []).map((r: any) => r.sector);
+        return (result || []).map((r: any) => r.sector);
       }),
 
     // Admin: Update metric
