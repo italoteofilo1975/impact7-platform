@@ -11,6 +11,7 @@ import {
   healthCheck,
   trackRequest 
 } from "../services/system-metrics-service";
+import { getLatencyStats } from "../middleware/security-headers";
 
 export const systemMetricsRouter = router({
   // Get all system metrics (admin only)
@@ -76,6 +77,18 @@ export const systemMetricsRouter = router({
   getApplicationStats: adminProcedure.query(async () => {
     const metrics = await getSystemMetrics();
     return metrics.application;
+  }),
+
+  // Get real latency stats from request middleware (admin only)
+  getLatencyStats: adminProcedure.query(() => {
+    const stats = getLatencyStats();
+    return {
+      ...stats,
+      sloP95Target: 500,
+      sloP95Status: stats.p95 === 0 ? "healthy" : stats.p95 < 500 ? "healthy" : stats.p95 < 1000 ? "warning" : "critical",
+      sloP99Target: 1000,
+      sloP99Status: stats.p99 === 0 ? "healthy" : stats.p99 < 1000 ? "healthy" : stats.p99 < 2000 ? "warning" : "critical",
+    };
   }),
 
   // Get memory stats (admin only)

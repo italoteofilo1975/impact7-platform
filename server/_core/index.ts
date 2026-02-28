@@ -10,6 +10,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { dynamicRateLimiter, rateLimitHeaders } from "../middleware/rate-limiter";
+import { securityHeadersMiddleware, latencyMiddleware, requestIdMiddleware } from "../middleware/security-headers";
 import { startAlertMonitoring } from "../services/alerts/alert-service";
 import { websocketService } from "../services/websocket/websocket-service";
 import { sseNotificationService } from "../services/sse/sse-notification-service";
@@ -67,6 +68,12 @@ async function startServer() {
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Security headers (CSP, X-Frame-Options, HSTS, etc.)
+  app.use(securityHeadersMiddleware);
+  // Request ID for tracing
+  app.use(requestIdMiddleware);
+  // Latency tracking for SLO metrics
+  app.use(latencyMiddleware);
   // Rate limiting middleware
   app.use('/api', rateLimitHeaders);
   app.use('/api', dynamicRateLimiter);
