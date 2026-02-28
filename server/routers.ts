@@ -1,4 +1,8 @@
 import { COOKIE_NAME } from "@shared/const";
+import { blogRouter } from './routers/blog-router';
+import { eventsRouter } from './routers/events-router';
+import { forumRouter } from './routers/forum-router';
+import { coursesRouter } from './routers/courses-router';
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
@@ -11,7 +15,7 @@ import { chatWithJarvis, jarvisSkills, getSuggestedQuestions, JarvisMessage } fr
 import { searchKnowledge, listCategories, getDocumentsByCategory } from "./services/jarvis/knowledge-base";
 import { getAlertSummary, getActiveAlerts, getAlertHistory, acknowledgeAlert, resolveAlert, startAlertMonitoring } from "./services/alerts/alert-service";
 import { getAllCircuitBreakerStatus } from "./middleware/circuit-breaker";
-import { getAllCacheStats } from "./services/cache/cache-service";
+import { getAllCacheStats, socialProofCache, casesCache } from "./services/cache/cache-service";
 import { errorTracker, handleFrontendError } from "./services/error-tracking/error-service";
 import {
   getUserPreferences,
@@ -137,6 +141,10 @@ export const appRouter = router({
   systemMetrics: systemMetricsRouter,
   set7: set7Router,
   whiteLabel: whiteLabelRouter,
+  blog: blogRouter,
+  events: eventsRouter,
+  forum: forumRouter,
+  courses: coursesRouter,
   
   // Auto Notifications Router (Admin only)
   autoNotifications: router({
@@ -1461,12 +1469,20 @@ export const appRouter = router({
       }),
 
     // Aggregate stats for ImpactDashboard
-    getAggregateStats: publicProcedure.query(async () => {
+    getAggregateStats: publicProcedure
+      .input(z.object({ year: z.number().optional() }).optional())
+      .query(async ({ input }) => {
+      const filterYear = input?.year;
+      const cacheKey = filterYear ? `cases:aggregateStats:${filterYear}` : 'cases:aggregateStats';
+      const cached = casesCache.get(cacheKey);
+      if (cached) return cached;
       const { executeRawQuery } = await import('./db-raw');
       const allCases = await executeRawQuery<{
         id: number; investment: string; beneficiaries: number; sroi: number;
         region: string; sector: string; year: number; sdgs: string;
-      }>('SELECT id, investment, beneficiaries, sroi, region, sector, year, sdgs FROM caseStudies WHERE isActive = 1');
+      }>(filterYear
+        ? `SELECT id, investment, beneficiaries, sroi, region, sector, year, sdgs FROM caseStudies WHERE isActive = 1 AND year = ${filterYear}`
+        : 'SELECT id, investment, beneficiaries, sroi, region, sector, year, sdgs FROM caseStudies WHERE isActive = 1');
       if (!allCases.length) return null;
 
       const totalInvestment = allCases.reduce((sum, c) => sum + parseFloat(String(c.investment || 0)), 0);
@@ -1496,7 +1512,7 @@ export const appRouter = router({
         for (const sdg of sdgs) { sdgMap[sdg] = (sdgMap[sdg] || 0) + 1; }
       }
 
-      return {
+      const result = {
         totalProjects: allCases.length,
         totalInvestment,
         totalBeneficiaries,
@@ -1507,6 +1523,8 @@ export const appRouter = router({
         timeline: Object.entries(yearMap).sort(([a], [b]) => Number(a) - Number(b)).map(([year, data]) => ({ year: Number(year), ...data })),
         sdgs: Object.entries(sdgMap).map(([number, count]) => ({ number: Number(number), count })).sort((a, b) => a.number - b.number),
       };
+      casesCache.set(cacheKey, result);
+      return result;
     }),
   }),
   
@@ -3719,9 +3737,12 @@ export const appRouter = router({
 
   // Social Proof Router - Métricas e certificações dinâmicas
   socialProof: router({
-    // Get impact metrics
+      // Get impact metrics
     getMetrics: publicProcedure
       .query(async () => {
+        const cacheKey = 'sp:metrics';
+        const cached = socialProofCache.get(cacheKey);
+        if (cached) return cached;
         const db = await getDb();
         if (!db) return [];
         const result = await executeRawQuery(`
@@ -3730,12 +3751,16 @@ export const appRouter = router({
           WHERE isActive = TRUE 
           ORDER BY displayOrder ASC
         `);
-        return result || [];
+        const data = result || [];
+        socialProofCache.set(cacheKey, data);
+        return data;
       }),
-
     // Get certifications
     getCertifications: publicProcedure
       .query(async () => {
+        const cacheKey = 'sp:certifications';
+        const cached = socialProofCache.get(cacheKey);
+        if (cached) return cached;
         const db = await getDb();
         if (!db) return [];
         const result = await executeRawQuery(`
@@ -3744,12 +3769,16 @@ export const appRouter = router({
           WHERE isActive = TRUE 
           ORDER BY displayOrder ASC
         `);
-        return result || [];
+        const data = result || [];
+        socialProofCache.set(cacheKey, data);
+        return data;
       }),
-
     // Get partners from existing partners table
     getPartners: publicProcedure
       .query(async () => {
+        const cacheKey = 'sp:partners';
+        const cached = socialProofCache.get(cacheKey);
+        if (cached) return cached;
         const db = await getDb();
         if (!db) return [];
         const result = await executeRawQuery(`
@@ -3759,12 +3788,16 @@ export const appRouter = router({
           ORDER BY name ASC
           LIMIT 12
         `);
-        return result || [];
+        const data = result || [];
+        socialProofCache.set(cacheKey, data);
+        return data;
       }),
-
     // Get featured cases from caseStudies table
     getFeaturedCases: publicProcedure
       .query(async () => {
+        const cacheKey = 'sp:featuredCases';
+        const cached = socialProofCache.get(cacheKey);
+        if (cached) return cached;
         const db = await getDb();
         if (!db) return [];
         const result = await executeRawQuery(`
@@ -3774,9 +3807,10 @@ export const appRouter = router({
           ORDER BY sroi DESC
           LIMIT 3
         `);
-        return result || [];
+        const data = result || [];
+         socialProofCache.set(cacheKey, data);
+        return data;
       }),
-
     // Get testimonials
     getTestimonials: publicProcedure
       .input(z.object({

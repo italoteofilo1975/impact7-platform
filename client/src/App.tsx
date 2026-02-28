@@ -68,6 +68,8 @@ const EarlyAdopters = lazy(() => import("./pages/EarlyAdopters"));
 const Notificacoes = lazy(() => import("./pages/Notificacoes"));
 const NotificationPreferences = lazy(() => import("./pages/NotificationPreferences"));
 const ConformidadeSET7 = lazy(() => import("./pages/ConformidadeSET7"));
+const Cursos = lazy(() => import("./pages/Cursos"));
+const AdminBlog = lazy(() => import("./pages/AdminBlog"));
 const TermosDeUso = lazy(() => import("./pages/TermosDeUso"));
 const PoliticaPrivacidade = lazy(() => import("./pages/PoliticaPrivacidade"));
 const Login = lazy(() => import("./pages/Login"));
@@ -193,6 +195,7 @@ function Router() {
         <Route path="/integracoes" component={Integracoes} />
         <Route path="/webinars" component={Webinars} />
         <Route path="/comunidade" component={Comunidade} />
+        <Route path="/cursos" component={Cursos} />
         <Route path="/recursos" component={Recursos} />
         <Route path="/depoimentos" component={Depoimentos} />
         <Route path="/demo" component={Demo} />
@@ -222,6 +225,7 @@ function Router() {
         <Route path="/admin/reports">{() => <AdminRoute><AdminReports /></AdminRoute>}</Route>
         <Route path="/admin/business">{() => <AdminRoute><AdminBusinessMetrics /></AdminRoute>}</Route>
         <Route path="/admin/set7">{() => <AdminRoute><Set7Dashboard /></AdminRoute>}</Route>
+        <Route path="/admin/blog">{() => <AdminRoute><AdminBlog /></AdminRoute>}</Route>
         <Route path="/admin/users">{() => <AdminRoute><AdminUsers /></AdminRoute>}</Route>
         <Route path="/admin/:rest*">{() => <AdminRoute><Admin /></AdminRoute>}</Route>
         

@@ -80,12 +80,29 @@ function formatCurrency(value: number): string {
   return `R$ ${value.toLocaleString("pt-BR")}`;
 }
 
+interface AggregateStats {
+  totalProjects: number;
+  totalInvestment: number;
+  totalBeneficiaries: number;
+  avgSROI: number;
+  totalSDGs: number;
+  regions: Record<string, { projects: number; investment: number; beneficiaries: number }>;
+  sectors: Record<string, { projects: number; investment: number; beneficiaries: number }>;
+  timeline: Array<{ year: number; projects: number; investment: number; beneficiaries: number }>;
+  sdgs: Array<{ number: number; count: number }>;
+}
+
 export default function ImpactDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
-  const { data: stats, isLoading } = trpc.cases.getAggregateStats.useQuery();
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
+  const { data: statsRaw, isLoading } = trpc.cases.getAggregateStats.useQuery(
+    selectedYear ? { year: selectedYear } : undefined
+  );
+  const stats = statsRaw as AggregateStats | null | undefined;
+  const availableYears = stats?.timeline?.map(t => t.year) ?? [];
 
   // Fallback data while loading
-  const d = stats ?? {
+  const d: AggregateStats = stats ?? {
     totalProjects: 0, totalInvestment: 0, totalBeneficiaries: 0,
     avgSROI: 0, totalSDGs: 0, regions: {}, sectors: {}, timeline: [], sdgs: [],
   };
@@ -112,12 +129,29 @@ export default function ImpactDashboard() {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
-            <div>
+            <div className="flex-1">
               <Badge variant="outline" className="mb-2">Dashboard Público</Badge>
               <h1 className="text-4xl font-bold">Impacto em Números</h1>
               <p className="text-muted-foreground mt-2">
                 Métricas agregadas de todos os projetos IMPACT7
               </p>
+            </div>
+            {/* Year filter */}
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-muted-foreground" />
+              <select
+                value={selectedYear ?? ""}
+                onChange={e => setSelectedYear(e.target.value ? Number(e.target.value) : undefined)}
+                className="text-sm border border-border rounded-md px-3 py-1.5 bg-background text-foreground"
+              >
+                <option value="">Todos os anos</option>
+                {availableYears.map(y => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+              {selectedYear && (
+                <Button variant="ghost" size="sm" onClick={() => setSelectedYear(undefined)}>Limpar</Button>
+              )}
             </div>
           </div>
           

@@ -925,3 +925,58 @@
 - [x] TypeScript: 0 erros de compilação
 - [x] Testes: 402/402 passando (28 arquivos de teste)
 - [x] Servidor: Rodando sem erros na porta 3000
+
+
+## EXECUÇÃO COMPLETA DAS 18 MELHORIAS DA AUDITORIA
+
+### Sprint 1 — P0/P1: Segurança e Performance
+- [ ] Cache em queries públicas (socialProof, cases.getAggregateStats, calculator)
+- [ ] Rate limiting explícito no login (server/login.ts e server/auth-custom.ts)
+- [ ] Auditoria de ações admin (auditLogs integrado nas mutations críticas)
+
+### Sprint 2 — P1: Conteúdo Real
+- [ ] Blog CMS: endpoints tRPC (blog.list, blog.create, blog.update, blog.delete)
+- [ ] Blog CMS: AdminBlog.tsx com CRUD completo
+- [ ] Blog.tsx: refatorado para usar dados reais do banco
+- [ ] Webinars/Eventos: endpoints tRPC (events.list, events.create, events.register)
+- [ ] Webinars/Eventos: AdminWebinars.tsx com CRUD
+- [ ] Webinars.tsx: refatorado para usar dados reais do banco
+- [ ] ImpactDashboard: filtros temporais (30/90/365 dias)
+- [ ] Calculadora: aba de histórico comparativo com gráfico
+
+### Sprint 3 — P2: UX e SET7
+- [ ] Onboarding progressivo com persistência no banco
+- [ ] 2FA obrigatório para role admin
+- [ ] ROI Tracking SET7 automático nos eventos de conversão
+- [ ] Seed automático de dados SET7 (Gates, Agents, Config, NFRs)
+
+### Sprint 4 — P3: Comunidade e Escala
+- [ ] Fórum da Comunidade: categorias, tópicos, respostas
+- [ ] Cursos e trilhas: listagem, detalhes, inscrição
+- [ ] PWA offline para calculadora (Service Worker ativo)
+- [ ] Refatorar routers.ts em módulos separados
+- [ ] Índices no banco para queries de filtro
+
+
+## PROMPT MESTRE SET7 "ZERO MOCK" — EXECUÇÃO COMPLETA (28/02/2026)
+
+- [x] Schema Drizzle alinhado com banco real (blogPosts, events, forum, courses)
+- [x] Colunas incorretas removidas (isFeatured, readTime, authorId, authorName, startDate, endDate, isOnline, lessonsCount, instructorName, topicsCount)
+- [x] blog-router.ts: CRUD completo + cache + audit trail
+- [x] events-router.ts: CRUD completo + inscrição + cache + audit
+- [x] forum-router.ts: categorias, tópicos, respostas + CRUD completo
+- [x] courses-router.ts: cursos, aulas, inscrições + progresso
+- [x] Routers registrados no appRouter principal (routers.ts)
+- [x] Cache ativo em socialProof.getMetrics e cases.getAggregateStats
+- [x] Blog.tsx: página pública com dados reais do banco
+- [x] AdminBlog.tsx: CRUD completo para gerenciar posts
+- [x] Webinars.tsx: página pública com dados reais do banco
+- [x] Comunidade.tsx: fórum com tópicos, respostas e categorias reais
+- [x] Cursos.tsx: listagem e inscrição com dados reais do banco
+- [x] ImpactDashboard.tsx: filtros temporais por ano
+- [x] Recursos.tsx: whitepapers e ebooks do banco (endpoints getWhitepapers/getEbooks)
+- [x] CaseCompare.tsx: dados reais do banco via trpc.cases.list
+- [x] Seed SET7: 3 blog posts + 3 eventos + 4 categorias fórum + 3 cursos inseridos
+- [x] Smoke tests: 420/420 passando (blog.crud.test.ts + testes existentes)
+- [x] 0 erros TypeScript (compilação limpa)
+- [x] Servidor rodando sem erros em localhost:3000

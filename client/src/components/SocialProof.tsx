@@ -16,10 +16,14 @@ export function SocialProofSection() {
   const { t } = useTranslation();
 
   // Fetch data from database
-  const { data: metrics, isLoading: metricsLoading } = trpc.socialProof.getMetrics.useQuery();
-  const { data: certifications, isLoading: certsLoading } = trpc.socialProof.getCertifications.useQuery();
-  const { data: partners, isLoading: partnersLoading } = trpc.socialProof.getPartners.useQuery();
-  const { data: featuredCases, isLoading: casesLoading } = trpc.socialProof.getFeaturedCases.useQuery();
+  const { data: metricsRaw, isLoading: metricsLoading } = trpc.socialProof.getMetrics.useQuery();
+  const metrics = metricsRaw as any[] | undefined;
+  const { data: certificationsRaw, isLoading: certsLoading } = trpc.socialProof.getCertifications.useQuery();
+  const certifications = certificationsRaw as any[] | undefined;
+  const { data: partnersRaw, isLoading: partnersLoading } = trpc.socialProof.getPartners.useQuery();
+  const partners = partnersRaw as any[] | undefined;
+  const { data: featuredCasesRaw, isLoading: casesLoading } = trpc.socialProof.getFeaturedCases.useQuery();
+  const featuredCases = featuredCasesRaw as any[] | undefined;
 
   return (
     <section className="section-padding bg-muted/30">
@@ -199,11 +203,12 @@ export default SocialProofSection;
 // Componente compacto para usar em outras páginas
 export function SocialProofCompact() {
   const { t } = useTranslation();
-  const { data: metrics } = trpc.socialProof.getMetrics.useQuery();
+  const { data: metricsRawC } = trpc.socialProof.getMetrics.useQuery();
+  const metricsC = metricsRawC as any[] | undefined;
   
   // Extract specific metrics for compact view
-  const orgMetric = metrics?.find((m: any) => m.metricKey === 'organizations');
-  const benefMetric = metrics?.find((m: any) => m.metricKey === 'beneficiaries');
+  const orgMetric = metricsC?.find((m: any) => m.metricKey === 'organizations');
+  const benefMetric = metricsC?.find((m: any) => m.metricKey === 'beneficiaries');
   
   return (
     <div className="py-8 border-y border-border bg-muted/30">

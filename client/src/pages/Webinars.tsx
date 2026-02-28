@@ -1,381 +1,268 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Video,
-  Calendar,
-  Clock,
-  Users,
-  Play,
-  Bell,
-  ExternalLink,
-  CheckCircle,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Calendar, Clock, MapPin, Users, Video, AlertCircle, Search, CheckCircle2 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
+import { useAuth } from "@/_core/hooks/useAuth";
 
-interface Webinar {
+interface Event {
   id: number;
   title: string;
-  description: string;
-  date: string;
-  time: string;
-  duration: string;
-  speaker: string;
-  speakerRole: string;
-  attendees: number;
-  status: "upcoming" | "live" | "recorded";
-  topics: string[];
-  thumbnail?: string;
+  slug: string;
+  description?: string | null;
+  eventType?: string | null;
+  location?: string | null;
+  virtualLink?: string | null;
+  startsAt: number;
+  endsAt: number;
+  maxAttendees?: number | null;
+  registrationDeadline?: number | null;
+  featuredImage?: string | null;
+  status?: string | null;
 }
 
-const webinars: Webinar[] = [
-  {
-    id: 1,
-    title: "Introdução ao Método IMPACT7",
-    description:
-      "Aprenda os fundamentos do método e como aplicá-lo em seus projetos de impacto social.",
-    date: "2026-02-15",
-    time: "14:00",
-    duration: "1h30",
-    speaker: "Dr. João Silva",
-    speakerRole: "Fundador IMPACT7",
-    attendees: 245,
-    status: "upcoming",
-    topics: ["Fundamentos", "SROI", "Casos de Uso"],
-  },
-  {
-    id: 2,
-    title: "Calculando SROI na Prática",
-    description:
-      "Workshop prático sobre como calcular o Retorno Social sobre Investimento.",
-    date: "2026-02-22",
-    time: "10:00",
-    duration: "2h",
-    speaker: "Maria Santos",
-    speakerRole: "Head de Metodologia",
-    attendees: 189,
-    status: "upcoming",
-    topics: ["SROI", "Métricas", "Excel", "Ferramentas"],
-  },
-  {
-    id: 3,
-    title: "Tokens de Impacto: O Futuro da Mensuração",
-    description:
-      "Como a tokenização está revolucionando a forma de medir e recompensar impacto social.",
-    date: "2026-01-10",
-    time: "15:00",
-    duration: "1h",
-    speaker: "Pedro Costa",
-    speakerRole: "CTO IMPACT7",
-    attendees: 312,
-    status: "recorded",
-    topics: ["Blockchain", "Tokens", "Gamificação"],
-  },
-  {
-    id: 4,
-    title: "Cases de Sucesso: Educação",
-    description:
-      "Apresentação de casos reais de projetos educacionais que utilizaram o IMPACT7.",
-    date: "2026-01-05",
-    time: "14:00",
-    duration: "1h30",
-    speaker: "Ana Oliveira",
-    speakerRole: "Consultora Sênior",
-    attendees: 178,
-    status: "recorded",
-    topics: ["Educação", "Cases", "Resultados"],
-  },
-];
-
-const getStatusBadge = (status: string) => {
-  switch (status) {
-    case "live":
-      return <Badge className="bg-red-500 animate-pulse">AO VIVO</Badge>;
-    case "upcoming":
-      return <Badge className="bg-blue-500">Em Breve</Badge>;
-    case "recorded":
-      return <Badge variant="secondary">Gravado</Badge>;
-    default:
-      return <Badge variant="outline">-</Badge>;
-  }
-};
-
-const formatDate = (dateStr: string) => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
+function formatDateTime(ts: number): string {
+  return new Date(ts).toLocaleString("pt-BR", {
+    day: "2-digit", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
   });
-};
+}
+
+function EventSkeleton() {
+  return (
+    <Card>
+      <Skeleton className="h-48 w-full rounded-t-lg" />
+      <CardHeader><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2 mt-2" /></CardHeader>
+      <CardContent><Skeleton className="h-4 w-full mb-2" /><Skeleton className="h-4 w-5/6" /></CardContent>
+      <CardFooter><Skeleton className="h-9 w-32" /></CardFooter>
+    </Card>
+  );
+}
 
 export default function Webinars() {
-  const upcomingWebinars = webinars.filter((w) => w.status === "upcoming" || w.status === "live");
-  const recordedWebinars = webinars.filter((w) => w.status === "recorded");
+  const { user } = useAuth();
+  const [search, setSearch] = useState("");
+  const [selectedType, setSelectedType] = useState<string | undefined>();
+  const [registerEvent, setRegisterEvent] = useState<Event | null>(null);
+  const [form, setForm] = useState({ name: user?.name ?? "", email: user?.email ?? "", company: "" });
+  const [registered, setRegistered] = useState<number[]>([]);
+
+  const { data, isLoading, error } = trpc.events.list.useQuery({ limit: 20, upcoming: true });
+  const registerMutation = trpc.events.register.useMutation({
+    onSuccess: (_, vars) => {
+      setRegistered(prev => [...prev, vars.eventId]);
+      setRegisterEvent(null);
+      toast.success('Inscrição confirmada! Você receberá um e-mail de confirmação em breve.');
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const events: Event[] = (data?.events ?? []) as Event[];
+  const eventTypes = Array.from(new Set(events.map(e => e.eventType).filter(Boolean))) as string[];
+
+  const filtered = events.filter(e => {
+    const matchSearch = !search || e.title.toLowerCase().includes(search.toLowerCase());
+    const matchType = !selectedType || e.eventType === selectedType;
+    return matchSearch && matchType;
+  });
+
+  const handleRegister = () => {
+    if (!registerEvent) return;
+    if (!form.name.trim() || !form.email.trim()) {
+      toast.error('Preencha nome e e-mail');
+      return;
+    }
+    registerMutation.mutate({ eventId: registerEvent.id, name: form.name, email: form.email, company: form.company });
+  };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="py-16 px-4 bg-gradient-to-b from-primary/10 to-background">
-        <div className="container max-w-4xl text-center">
-          <div className="flex justify-center mb-6">
-            <div className="p-4 rounded-full bg-primary/10">
-              <Video className="h-12 w-12 text-primary" />
-            </div>
-          </div>
-          <Badge className="mb-4">Webinars & Eventos</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Aprenda com os Especialistas
+      <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <Badge variant="outline" className="mb-4 text-primary border-primary/30">
+            <Video className="w-3 h-3 mr-1" />
+            Webinars & Eventos
+          </Badge>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            Aprenda com <span className="text-primary">Especialistas</span>
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            Webinars gratuitos, workshops práticos e eventos exclusivos sobre
-            impacto social e o Método IMPACT7
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Webinars ao vivo, workshops práticos e eventos presenciais sobre impacto social e inovação.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button>
-              <Bell className="mr-2 h-4 w-4" />
-              Receber Notificações
-            </Button>
-            <Button variant="outline">
-              <Calendar className="mr-2 h-4 w-4" />
-              Ver Calendário
-            </Button>
+          <div className="relative max-w-lg mx-auto">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input placeholder="Buscar eventos..." value={search}
+              onChange={e => setSearch(e.target.value)} className="pl-10 h-12" />
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-8 px-4 border-y bg-muted/30">
-        <div className="container">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <p className="text-3xl font-bold text-primary">50+</p>
-              <p className="text-muted-foreground">Webinars Realizados</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold">5.000+</p>
-              <p className="text-muted-foreground">Participantes</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold">4.8</p>
-              <p className="text-muted-foreground">Avaliação Média</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold">100%</p>
-              <p className="text-muted-foreground">Gratuito</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Upcoming Webinars */}
-      {upcomingWebinars.length > 0 && (
-        <section className="py-16 px-4">
-          <div className="container">
-            <h2 className="text-3xl font-bold mb-8">Próximos Eventos</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {upcomingWebinars.map((webinar) => (
-                <Card key={webinar.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      {getStatusBadge(webinar.status)}
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Users className="h-4 w-4" />
-                        {webinar.attendees} inscritos
-                      </div>
-                    </div>
-                    <CardTitle className="mt-4">{webinar.title}</CardTitle>
-                    <CardDescription>{webinar.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex flex-wrap gap-4 text-sm">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          {formatDate(webinar.date)}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          {webinar.time} ({webinar.duration})
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-primary font-semibold">
-                            {webinar.speaker.charAt(0)}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="font-medium">{webinar.speaker}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {webinar.speakerRole}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {webinar.topics.map((topic, index) => (
-                          <Badge key={index} variant="outline">
-                            {topic}
-                          </Badge>
-                        ))}
-                      </div>
-                      <Button className="w-full">
-                        <Bell className="mr-2 h-4 w-4" />
-                        Inscrever-se Gratuitamente
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Recorded Webinars */}
-      <section className="py-16 px-4 bg-muted/30">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-8">Webinars Gravados</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recordedWebinars.map((webinar) => (
-              <Card key={webinar.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    {getStatusBadge(webinar.status)}
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Users className="h-4 w-4" />
-                      {webinar.attendees} visualizações
-                    </div>
-                  </div>
-                  <CardTitle className="mt-4 text-lg">{webinar.title}</CardTitle>
-                  <CardDescription className="line-clamp-2">
-                    {webinar.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary font-semibold text-sm">
-                          {webinar.speaker.charAt(0)}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{webinar.speaker}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {webinar.duration}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {webinar.topics.slice(0, 3).map((topic, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {topic}
-                        </Badge>
-                      ))}
-                    </div>
-                    <Button variant="outline" className="w-full">
-                      <Play className="mr-2 h-4 w-4" />
-                      Assistir Agora
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Filtros */}
+        {eventTypes.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-8">
+            <Button variant={!selectedType ? "default" : "outline"} size="sm"
+              onClick={() => setSelectedType(undefined)}>Todos</Button>
+            {eventTypes.map(t => (
+              <Button key={t} variant={selectedType === t ? "default" : "outline"} size="sm"
+                onClick={() => setSelectedType(t)}>
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </Button>
             ))}
           </div>
-          <div className="text-center mt-8">
-            <Button variant="outline" size="lg">
-              Ver Todos os Webinars
-              <ExternalLink className="ml-2 h-4 w-4" />
+        )}
+
+        {error && (
+          <div className="flex items-center gap-3 p-6 bg-destructive/10 rounded-lg text-destructive mb-8">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <p>Erro ao carregar eventos. Tente novamente em instantes.</p>
+          </div>
+        )}
+
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => <EventSkeleton key={i} />)}
+          </div>
+        )}
+
+        {!isLoading && !error && filtered.length === 0 && (
+          <div className="text-center py-20">
+            <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Nenhum evento encontrado</h3>
+            <p className="text-muted-foreground">Não há eventos agendados no momento. Volte em breve!</p>
+          </div>
+        )}
+
+        {!isLoading && filtered.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map(event => {
+              const isRegistered = registered.includes(event.id);
+              const isPast = event.endsAt < Date.now();
+              const isDeadlinePassed = event.registrationDeadline ? event.registrationDeadline < Date.now() : false;
+
+              return (
+                <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col">
+                  {event.featuredImage ? (
+                    <div className="h-48 overflow-hidden">
+                      <img src={event.featuredImage} alt={event.title}
+                        className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="h-48 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                      {event.eventType === "webinar" || event.virtualLink
+                        ? <Video className="w-12 h-12 text-primary/40" />
+                        : <Calendar className="w-12 h-12 text-primary/40" />}
+                    </div>
+                  )}
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      {event.eventType && (
+                        <Badge variant="secondary" className="text-xs capitalize">{event.eventType}</Badge>
+                      )}
+                      {event.virtualLink && (
+                        <Badge variant="outline" className="text-xs text-primary border-primary/30">Online</Badge>
+                      )}
+                      {isPast && <Badge variant="outline" className="text-xs text-muted-foreground">Encerrado</Badge>}
+                    </div>
+                    <h3 className="font-bold leading-tight line-clamp-2">{event.title}</h3>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    {event.description && (
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{event.description}</p>
+                    )}
+                    <div className="space-y-1 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-3 h-3 flex-shrink-0" />
+                        <span>{formatDateTime(event.startsAt)}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-3 h-3 flex-shrink-0" />
+                        <span>Até {formatDateTime(event.endsAt)}</span>
+                      </div>
+                      {event.location && (
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-3 h-3 flex-shrink-0" />
+                          <span className="line-clamp-1">{event.location}</span>
+                        </div>
+                      )}
+                      {event.maxAttendees && (
+                        <div className="flex items-center gap-2">
+                          <Users className="w-3 h-3 flex-shrink-0" />
+                          <span>Máx. {event.maxAttendees} participantes</span>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    {isRegistered ? (
+                      <Button className="w-full" variant="outline" disabled>
+                        <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
+                        Inscrito
+                      </Button>
+                    ) : isPast || isDeadlinePassed ? (
+                      <Button className="w-full" variant="outline" disabled>
+                        {isPast ? "Evento encerrado" : "Inscrições encerradas"}
+                      </Button>
+                    ) : (
+                      <Button className="w-full" onClick={() => {
+                        setForm({ name: user?.name ?? "", email: user?.email ?? "", company: "" });
+                        setRegisterEvent(event);
+                      }}>
+                        Inscrever-se
+                      </Button>
+                    )}
+                  </CardFooter>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Modal de inscrição */}
+      <Dialog open={!!registerEvent} onOpenChange={() => setRegisterEvent(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Inscrição no Evento</DialogTitle>
+            <DialogDescription>{registerEvent?.title}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label htmlFor="reg-name">Nome completo *</Label>
+              <Input id="reg-name" value={form.name}
+                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                placeholder="Seu nome" className="mt-1" />
+            </div>
+            <div>
+              <Label htmlFor="reg-email">E-mail *</Label>
+              <Input id="reg-email" type="email" value={form.email}
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                placeholder="seu@email.com" className="mt-1" />
+            </div>
+            <div>
+              <Label htmlFor="reg-company">Organização (opcional)</Label>
+              <Input id="reg-company" value={form.company}
+                onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
+                placeholder="Sua empresa ou organização" className="mt-1" />
+            </div>
+          </div>
+          <div className="flex gap-3 pt-2">
+            <Button variant="outline" className="flex-1" onClick={() => setRegisterEvent(null)}>Cancelar</Button>
+            <Button className="flex-1" onClick={handleRegister} disabled={registerMutation.isPending}>
+              {registerMutation.isPending ? "Inscrevendo..." : "Confirmar inscrição"}
             </Button>
           </div>
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="py-16 px-4">
-        <div className="container max-w-4xl">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Por Que Participar?
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-green-500 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold">100% Gratuito</h3>
-                  <p className="text-muted-foreground">
-                    Todos os webinars são gratuitos e abertos ao público
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-green-500 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold">Certificado de Participação</h3>
-                  <p className="text-muted-foreground">
-                    Receba certificado ao completar cada webinar
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-green-500 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold">Material Complementar</h3>
-                  <p className="text-muted-foreground">
-                    Slides, templates e recursos exclusivos
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-green-500 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold">Q&A ao Vivo</h3>
-                  <p className="text-muted-foreground">
-                    Tire suas dúvidas diretamente com os especialistas
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-green-500 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold">Networking</h3>
-                  <p className="text-muted-foreground">
-                    Conecte-se com outros profissionais do setor
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-green-500 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold">Acesso Vitalício</h3>
-                  <p className="text-muted-foreground">
-                    Assista às gravações quando quiser
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 px-4 bg-primary text-primary-foreground">
-        <div className="container max-w-4xl text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            Não Perca Nenhum Evento
-          </h2>
-          <p className="text-lg opacity-90 mb-8">
-            Inscreva-se para receber notificações sobre novos webinars e eventos
-            exclusivos
-          </p>
-          <Button size="lg" variant="secondary">
-            <Bell className="mr-2 h-4 w-4" />
-            Ativar Notificações
-          </Button>
-        </div>
-      </section>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

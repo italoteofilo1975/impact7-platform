@@ -1765,3 +1765,151 @@ export type CaseStudy = typeof caseStudies.$inferSelect;
 export type InsertCaseStudy = typeof caseStudies.$inferInsert;
 
 
+
+// Blog Posts table
+export const blogPosts = mysqlTable("blogPosts", {
+  id: int("id").primaryKey().autoincrement(),
+  title: varchar("title", { length: 500 }).notNull(),
+  slug: varchar("slug", { length: 500 }).notNull(),
+  excerpt: text("excerpt"),
+  content: text("content").notNull(),
+  featuredImage: varchar("featuredImage", { length: 1000 }),
+  author: varchar("author", { length: 255 }),
+  category: varchar("category", { length: 255 }),
+  tags: text("tags"),
+  status: varchar("status", { length: 50 }).default("draft"),
+  viewCount: int("viewCount").default(0),
+  publishedAt: int("publishedAt"),
+  createdAt: int("createdAt").notNull(),
+  updatedAt: int("updatedAt").notNull(),
+});
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertBlogPost = typeof blogPosts.$inferInsert;
+
+// ============================================================
+// EVENTS & WEBINARS
+// ============================================================
+export const events = mysqlTable("events", {
+  id: int("id").primaryKey().autoincrement(),
+  title: varchar("title", { length: 500 }).notNull(),
+  slug: varchar("slug", { length: 500 }).notNull(),
+  description: text("description"),
+  eventType: varchar("eventType", { length: 100 }),
+  location: varchar("location", { length: 500 }),
+  virtualLink: varchar("virtualLink", { length: 1000 }),
+  startsAt: int("startsAt").notNull(),
+  endsAt: int("endsAt").notNull(),
+  maxAttendees: int("maxAttendees"),
+  registrationDeadline: int("registrationDeadline"),
+  featuredImage: varchar("featuredImage", { length: 1000 }),
+  status: varchar("status", { length: 50 }).default("draft"),
+  createdAt: int("createdAt").notNull(),
+  updatedAt: int("updatedAt").notNull(),
+});
+export type Event = typeof events.$inferSelect;
+export type InsertEvent = typeof events.$inferInsert;
+
+export const eventRegistrations = mysqlTable("eventRegistrations", {
+  id: int("id").primaryKey().autoincrement(),
+  eventId: int("eventId").notNull(),
+  userId: int("userId"),
+  email: varchar("email", { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }),
+  company: varchar("company", { length: 255 }),
+  status: varchar("status", { length: 50 }).default("confirmed"),
+  registeredAt: int("registeredAt").notNull(),
+});
+export type EventRegistration = typeof eventRegistrations.$inferSelect;
+export type InsertEventRegistration = typeof eventRegistrations.$inferInsert;
+
+// ============================================================
+// FORUM
+// ============================================================
+export const forumCategories = mysqlTable("forumCategories", {
+  id: int("id").primaryKey().autoincrement(),
+  name: varchar("name", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull(),
+  description: text("description"),
+  displayOrder: int("displayOrder").default(0),
+  isActive: int("isActive").default(1),
+  createdAt: int("createdAt").notNull(),
+});
+export type ForumCategory = typeof forumCategories.$inferSelect;
+export type InsertForumCategory = typeof forumCategories.$inferInsert;
+
+export const forumTopics = mysqlTable("forumTopics", {
+  id: int("id").primaryKey().autoincrement(),
+  categoryId: int("categoryId").notNull(),
+  userId: int("userId").notNull(),
+  title: varchar("title", { length: 500 }).notNull(),
+  slug: varchar("slug", { length: 500 }).notNull(),
+  content: text("content").notNull(),
+  isPinned: int("isPinned").default(0),
+  isLocked: int("isLocked").default(0),
+  viewCount: int("viewCount").default(0),
+  replyCount: int("replyCount").default(0),
+  lastActivityAt: int("lastActivityAt"),
+  createdAt: int("createdAt").notNull(),
+  updatedAt: int("updatedAt").notNull(),
+});
+export type ForumTopic = typeof forumTopics.$inferSelect;
+export type InsertForumTopic = typeof forumTopics.$inferInsert;
+
+export const forumReplies = mysqlTable("forumReplies", {
+  id: int("id").primaryKey().autoincrement(),
+  topicId: int("topicId").notNull(),
+  userId: int("userId").notNull(),
+  content: text("content").notNull(),
+  isAccepted: int("isAccepted").default(0),
+  createdAt: int("createdAt").notNull(),
+  updatedAt: int("updatedAt").notNull(),
+});
+export type ForumReply = typeof forumReplies.$inferSelect;
+export type InsertForumReply = typeof forumReplies.$inferInsert;
+
+// ============================================================
+// COURSES & LEARNING
+// ============================================================
+export const courses = mysqlTable("courses", {
+  id: int("id").primaryKey().autoincrement(),
+  title: varchar("title", { length: 500 }).notNull(),
+  slug: varchar("slug", { length: 500 }).notNull(),
+  description: text("description"),
+  instructor: varchar("instructor", { length: 255 }),
+  duration: int("duration"),
+  level: varchar("level", { length: 50 }),
+  price: decimal("price", { precision: 10, scale: 2 }),
+  featuredImage: varchar("featuredImage", { length: 1000 }),
+  status: varchar("status", { length: 50 }).default("draft"),
+  publishedAt: int("publishedAt"),
+  createdAt: int("createdAt").notNull(),
+  updatedAt: int("updatedAt").notNull(),
+});
+export type Course = typeof courses.$inferSelect;
+export type InsertCourse = typeof courses.$inferInsert;
+
+export const courseLessons = mysqlTable("courseLessons", {
+  id: int("id").primaryKey().autoincrement(),
+  courseId: int("courseId").notNull(),
+  title: varchar("title", { length: 500 }).notNull(),
+  content: text("content"),
+  videoUrl: varchar("videoUrl", { length: 1000 }),
+  duration: int("duration"),
+  orderIndex: int("orderIndex").default(0),
+  isFree: int("isFree").default(0),
+  createdAt: int("createdAt").notNull(),
+  updatedAt: int("updatedAt").notNull(),
+});
+export type CourseLesson = typeof courseLessons.$inferSelect;
+export type InsertCourseLesson = typeof courseLessons.$inferInsert;
+
+export const courseEnrollments = mysqlTable("courseEnrollments", {
+  id: int("id").primaryKey().autoincrement(),
+  courseId: int("courseId").notNull(),
+  userId: int("userId").notNull(),
+  progress: int("progress").default(0),
+  completedAt: int("completedAt"),
+  enrolledAt: int("enrolledAt").notNull(),
+});
+export type CourseEnrollment = typeof courseEnrollments.$inferSelect;
+export type InsertCourseEnrollment = typeof courseEnrollments.$inferInsert;

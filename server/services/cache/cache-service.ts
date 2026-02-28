@@ -267,6 +267,46 @@ export const analyticsCache = new MemoryCache<unknown>({
   name: 'analytics',
 });
 
+/**
+ * Cache para Social Proof (métricas, certificações, parceiros, cases em destaque)
+ * TTL: 5 minutos, Max: 50 entries
+ */
+export const socialProofCache = new MemoryCache<unknown>({
+  ttl: 300,
+  maxSize: 50,
+  name: 'socialProof',
+});
+
+/**
+ * Cache para Cases (aggregate stats, listagem pública)
+ * TTL: 5 minutos, Max: 100 entries
+ */
+export const casesCache = new MemoryCache<unknown>({
+  ttl: 300,
+  maxSize: 100,
+  name: 'cases',
+});
+
+/**
+ * Cache para Blog (artigos públicos)
+ * TTL: 10 minutos, Max: 200 entries
+ */
+export const blogCache = new MemoryCache<unknown>({
+  ttl: 600,
+  maxSize: 200,
+  name: 'blog',
+});
+
+/**
+ * Cache para Eventos/Webinars
+ * TTL: 5 minutos, Max: 100 entries
+ */
+export const eventsCache = new MemoryCache<unknown>({
+  ttl: 300,
+  maxSize: 100,
+  name: 'events',
+});
+
 // ============================================
 // Helper Functions
 // ============================================
@@ -291,6 +331,10 @@ export function getAllCacheStats(): Record<string, CacheStats & { hitRate: numbe
     knowledge: knowledgeCache.getStats(),
     calculator: calculatorCache.getStats(),
     analytics: analyticsCache.getStats(),
+    socialProof: socialProofCache.getStats(),
+    cases: casesCache.getStats(),
+    blog: blogCache.getStats(),
+    events: eventsCache.getStats(),
   };
 }
 
@@ -302,6 +346,10 @@ export function clearAllCaches(): void {
   knowledgeCache.clear();
   calculatorCache.clear();
   analyticsCache.clear();
+  socialProofCache.clear();
+  casesCache.clear();
+  blogCache.clear();
+  eventsCache.clear();
 }
 
 export { MemoryCache };

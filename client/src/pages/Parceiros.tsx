@@ -35,13 +35,12 @@ interface Testimonial {
 
 export default function Parceiros() {
   // Fetch partners from database
-  const { data: partners = [], isLoading: loadingPartners } = trpc.socialProof.getPartners.useQuery();
+  const { data: partnersRaw, isLoading: loadingPartners } = trpc.socialProof.getPartners.useQuery();
+  const partners: Partner[] = (partnersRaw as Partner[] | undefined) ?? [];
 
   // Fetch featured testimonials from database
-  const { data: testimonials = [], isLoading: loadingTestimonials } = trpc.socialProof.getTestimonials.useQuery({
-    featured: true,
-    limit: 3,
-  });
+  const { data: testimonialsRaw, isLoading: loadingTestimonials } = trpc.socialProof.getTestimonials.useQuery({ featured: true, limit: 3 });
+  const testimonials: Testimonial[] = (testimonialsRaw as Testimonial[] | undefined) ?? [];
 
   // Calculate stats from real data
   const stats = useMemo(() => {
