@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -45,6 +46,7 @@ function CourseSkeleton() {
 
 export default function Cursos() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
   const [search, setSearch] = useState('');
   const [selectedLevel, setSelectedLevel] = useState<string | undefined>();
   const [enrolled, setEnrolled] = useState<number[]>([]);
@@ -343,6 +345,12 @@ export default function Cursos() {
                                 ? 'hover:bg-muted/50 cursor-pointer'
                                 : 'opacity-60 cursor-not-allowed'
                             }`}
+                            onClick={() => {
+                              if (accessible) {
+                                setSelectedCourseId(null);
+                                setLocation(`/cursos/${cd.id}/aulas/${lesson.id}`);
+                              }
+                            }}
                           >
                             <div
                               className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
@@ -385,6 +393,19 @@ export default function Cursos() {
                     {cd.price
                       ? `Comprar por R$ ${cd.price}`
                       : 'Inscrever-se gratuitamente'}
+                  </Button>
+                )}
+                {isEnrolledInDetail && lessons.length > 0 && (
+                  <Button
+                    className="w-full gradient-orange text-white border-0"
+                    onClick={() => {
+                      const firstLesson = lessons[0];
+                      setSelectedCourseId(null);
+                      setLocation(`/cursos/${cd.id}/aulas/${firstLesson.id}`);
+                    }}
+                  >
+                    <Play className="w-4 h-4 mr-2" />
+                    {(enrollment?.progress ?? 0) > 0 ? 'Continuar Curso' : 'Iniciar Curso'}
                   </Button>
                 )}
               </div>

@@ -47,7 +47,7 @@ const onboardingSteps: Step[] = [
     title: "Complete seu Perfil",
     description: "Adicione informações sobre você e sua organização para personalizar sua experiência.",
     icon: <Users className="h-6 w-6" />,
-    link: "/perfil",
+    link: "/profile",
     linkText: "Editar Perfil",
   },
   {

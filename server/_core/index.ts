@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cookieParser from "cookie-parser";
 import compression from "compression";
 import { createServer } from "http";
 import net from "net";
@@ -68,6 +69,8 @@ async function startServer() {
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Cookie parser — MUST be before tRPC context so req.cookies is populated
+  app.use(cookieParser());
   // Security headers (CSP, X-Frame-Options, HSTS, etc.)
   app.use(securityHeadersMiddleware);
   // Request ID for tracing

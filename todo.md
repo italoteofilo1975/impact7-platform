@@ -1110,3 +1110,55 @@
 - 0 erros TypeScript
 - Servidor rodando limpo
 - Pendências externas restantes: pagamento Stripe, OAuth providers externos
+
+## SPRINT TESTE FUNCIONAL — Bugs e Melhorias (09/03/2026)
+
+### BUGS CRÍTICOS (P0)
+- [ ] BUG-01: Login redireciona para /dashboard (404) — deve redirecionar para /profile
+- [ ] BUG-02: Tabela userPoints tem colunas diferentes do schema (totalInteractions, streak, lastInteractionAt ausentes)
+- [ ] BUG-03: Tabela badges tem colunas diferentes do schema (name, icon, color, requirement, requiredValue, pointsReward, rarity ausentes)
+- [ ] BUG-04: Página /profile mostra "Faça login" mesmo após login bem-sucedido (sessão não persistida corretamente)
+- [ ] BUG-05: adminProcedure undefined em runtime (erro nos logs do browser console)
+
+### BUGS IMPORTANTES (P1)
+- [ ] BUG-06: Login.tsx não tem link para "Esqueci minha senha" nem para "Criar conta"
+- [ ] BUG-07: Página /login não tem navbar — usuário sem escape route
+- [ ] BUG-08: Footer tem links mortos (Administração, Compare Plans, API Docs, Status, Changelog, Roadmap, Integrations, Webinars, Security, Community, Resources, Methodology, Glossary, Certifications, Privacy, Terms of Use)
+- [ ] BUG-09: Página /profile não tem navbar do site (sem escape route)
+
+### MELHORIAS DE UX (P2)
+- [ ] UX-01: Login deve mostrar botão "Entrar com Manus OAuth" além do local
+- [ ] UX-02: Após login, mostrar toast de boas-vindas com nome do usuário
+- [ ] UX-03: Navbar deve mostrar avatar/nome do usuário logado com dropdown (Perfil, Sair)
+- [ ] UX-04: Página /profile deve ter tabs: Dados Pessoais, Cursos, Badges, Privacidade
+- [ ] UX-05: Homepage deve ter CTA "Entrar" visível no navbar quando não logado
+- [ ] UX-06: Página /forum deve ter link de volta para /comunidade
+- [ ] UX-07: Breadcrumbs faltando em páginas internas (cursos, fórum, blog)
+
+### MELHORIAS FUNCIONAIS (P3)
+- [ ] FUNC-01: Seed de badges padrão do IMPACT7 (Pioneiro, Inovador, Mentor, etc.)
+- [ ] FUNC-02: Seed de userPoints para usuários existentes
+- [ ] FUNC-03: Página /profile deve mostrar badges conquistadas e pontos reais
+- [ ] FUNC-04: Navbar deve ter indicador de notificações não lidas
+- [ ] FUNC-05: Página /cursos deve ter link direto para a primeira aula ao clicar "Iniciar"
+
+### STATUS DAS CORREÇÕES (09/03/2026)
+- [x] BUG-01: Redirecionamento pós-login corrigido para /profile
+- [x] BUG-02: Tabela userPoints sincronizada com schema correto
+- [x] BUG-03: Tabela badges sincronizada com coluna slug e 8 badges seed
+- [x] BUG-04: cookie-parser adicionado ao Express — sessão agora persiste corretamente
+- [x] BUG-05: adminProcedure — erro era de log histórico, código atual correto
+- [x] BUG-06: Login.tsx reescrito com links para Cadastro e Esqueci Senha
+- [x] BUG-07: Redirecionamento pós-registro corrigido para /profile
+- [x] UX-01: Página 404 em português com botões Voltar, Início e Buscar
+- [x] UX-02: Navbar com links Cursos, Fórum e Carreiras
+- [x] UX-03: Cursos.tsx com navegação para página de aula individual
+- [x] FUNC-01: 8 badges seed do IMPACT7 inseridos
+- [x] FUNC-03: Profile.tsx já exibe badges e pontos reais (gamification.getStats)
+- [x] FUNC-05: Cursos.tsx com link direto para primeira aula
+
+### TESTES FINAIS
+- 420/420 testes Vitest passando
+- 0 erros TypeScript
+- Todos os endpoints críticos testados e funcionando
+- Usuários de teste criados: admin@test.impact7.com, usuario@test.impact7.com

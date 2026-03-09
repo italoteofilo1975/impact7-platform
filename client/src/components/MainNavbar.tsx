@@ -27,9 +27,10 @@ export function MainNavbar() {
     { href: "/ciencia", label: t('nav.science'), icon: Brain },
     { href: "/matematica", label: t('nav.math'), icon: Calculator },
     { href: "/tecnologia", label: t('nav.technology'), icon: Cpu },
-    { href: "/whitepaper", label: "Whitepaper", icon: FileText },
     { href: "/cases", label: t('nav.cases'), icon: Users },
-    { href: "/calculadora", label: t('calculator.title'), icon: Calculator },
+    { href: "/cursos", label: "Cursos", icon: BookOpen },
+    { href: "/forum", label: "Fórum", icon: Users },
+    { href: "/carreiras", label: "Carreiras", icon: FileText },
   ];
 
   return (
@@ -100,7 +101,7 @@ export function MainNavbar() {
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
                   <DropdownMenuSeparator />
-                  <Link href="/perfil">
+                  <Link href="/profile">
                     <DropdownMenuItem className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
                       Meu Perfil
@@ -117,7 +118,7 @@ export function MainNavbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     className="cursor-pointer text-destructive focus:text-destructive"
-                    onClick={() => window.location.href = '/api/oauth/logout'}
+                    onClick={async () => { await fetch('/api/auth/logout', { method: 'POST' }); window.location.href = '/'; }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sair
@@ -183,7 +184,7 @@ export function MainNavbar() {
                 {user && (
                   <>
                     <div className="pt-4 border-t border-border" />
-                    <Link href="/perfil">
+                    <Link href="/profile">
                       <Button variant="ghost" className="w-full justify-start" onClick={() => setIsOpen(false)}>
                         <User className="w-4 h-4 mr-2" />
                         Meu Perfil
@@ -202,7 +203,7 @@ export function MainNavbar() {
                       className="w-full justify-start text-destructive hover:text-destructive" 
                       onClick={() => {
                         setIsOpen(false);
-                        window.location.href = '/api/oauth/logout';
+                        fetch('/api/auth/logout', { method: 'POST' }).then(() => { window.location.href = '/'; });
                       }}
                     >
                       <LogOut className="w-4 h-4 mr-2" />

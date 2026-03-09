@@ -49,8 +49,8 @@ export default function Register() {
         return;
       }
 
-      // Redirect to home on success
-      window.location.href = "/";
+      // Redirect to profile on success (session cookie is set by the server)
+      window.location.href = "/profile";
     } catch (err) {
       setError("Erro de rede. Tente novamente.");
       setLoading(false);
