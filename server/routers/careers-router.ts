@@ -75,7 +75,7 @@ export const careersRouter = router({
         closingDate: z.number().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const db = await getDb();
       if (!db) throw new Error("DB unavailable");
       const now = Date.now();
@@ -95,7 +95,22 @@ export const careersRouter = router({
         createdAt: now,
         updatedAt: now,
       });
-      return { success: true, id: (result as any).insertId };
+      const newId = (result as any).insertId;
+      // Audit trail
+      try {
+        const { auditService } = await import('../services/audit/audit-service');
+        await auditService.log({
+          userId: ctx.user.id,
+          userName: ctx.user.name || undefined,
+          userEmail: ctx.user.email || undefined,
+          action: 'create',
+          resourceType: 'job_opening',
+          resourceId: String(newId),
+          resourceName: input.title,
+          newValue: { title: input.title, department: input.department, isActive: input.isActive },
+        });
+      } catch { /* audit não bloqueia */ }
+      return { success: true, id: newId };
     }),
 
   // Admin: atualizar vaga
@@ -117,10 +132,12 @@ export const careersRouter = router({
         closingDate: z.number().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const db = await getDb();
       if (!db) throw new Error("DB unavailable");
       const { id, isActive, isNew, ...rest } = input;
+      // Buscar estado anterior para audit
+      const [prev] = await db.select().from(jobOpenings).where(eq(jobOpenings.id, id));
       const updates: Record<string, unknown> = {
         ...rest,
         updatedAt: Date.now(),
@@ -132,16 +149,46 @@ export const careersRouter = router({
         .update(jobOpenings)
         .set(updates)
         .where(eq(jobOpenings.id, id));
+      // Audit trail
+      try {
+        const { auditService } = await import('../services/audit/audit-service');
+        await auditService.log({
+          userId: ctx.user.id,
+          userName: ctx.user.name || undefined,
+          userEmail: ctx.user.email || undefined,
+          action: 'update',
+          resourceType: 'job_opening',
+          resourceId: String(id),
+          resourceName: prev?.title || input.title,
+          previousValue: { isActive: prev?.isActive, title: prev?.title },
+          newValue: { ...updates },
+        });
+      } catch { /* audit não bloqueia */ }
       return { success: true };
     }),
 
   // Admin: excluir vaga
   delete: protectedProcedure
     .input(z.object({ id: z.number() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const db = await getDb();
       if (!db) throw new Error("DB unavailable");
+      const [prev] = await db.select().from(jobOpenings).where(eq(jobOpenings.id, input.id));
       await db.delete(jobOpenings).where(eq(jobOpenings.id, input.id));
+      // Audit trail
+      try {
+        const { auditService } = await import('../services/audit/audit-service');
+        await auditService.log({
+          userId: ctx.user.id,
+          userName: ctx.user.name || undefined,
+          userEmail: ctx.user.email || undefined,
+          action: 'delete',
+          resourceType: 'job_opening',
+          resourceId: String(input.id),
+          resourceName: prev?.title,
+          previousValue: { title: prev?.title, isActive: prev?.isActive },
+        });
+      } catch { /* audit não bloqueia */ }
       return { success: true };
     }),
 });

@@ -1026,3 +1026,87 @@
 - [x] O4-ROUTE: Rota /busca adicionada ao App.tsx
 - [x] TypeScript: 0 erros de compilação
 - [x] Servidor: Rodando sem erros em localhost:3000
+
+## ═══════════════════════════════════════════════════════════════════
+## BACKLOG DEFINITIVO SET7 — 100% INTERNO (09/03/2026)
+## ═══════════════════════════════════════════════════════════════════
+## STATUS ATUAL: 0 erros TS | 420 testes | Servidor OK
+## OBJETIVO: 100% funcional internamente, pendências externas ao final
+## ═══════════════════════════════════════════════════════════════════
+
+### [P0] CRÍTICO — Fundação do Sistema
+- [ ] P0-A: Email de recuperação de senha enviado ao USUÁRIO (via notifyOwner com link, não só ao owner)
+- [ ] P0-B: Audit trail em TODAS as mutations admin críticas (cases, leads, users, blog, events, courses, forum)
+- [ ] P0-C: Seed automático SET7 via endpoint dashboard.initialize (Gates, Agents, NFRs, Config)
+- [ ] P0-D: SET7 Tasklog: registrar entradas automáticas nas ações do sistema
+
+### [P1] ALTO — Funcionalidades Essenciais
+- [ ] P1-A: Fórum — UI de criação de tópico autenticado (Dialog com form na página /comunidade)
+- [ ] P1-B: Fórum — UI de resposta a tópico autenticado (inline reply form)
+- [ ] P1-C: Cursos — Página de aula individual (/cursos/:id/aulas/:lessonId) com conteúdo e progresso
+- [ ] P1-D: Cursos — Atualização de progresso ao completar aula (trpc.courses.updateProgress)
+- [ ] P1-E: Admin — Módulos Blog, Cursos, Fórum, Eventos e Usuários adicionados ao painel Admin.tsx
+- [ ] P1-F: Admin — Páginas AdminCourses.tsx e AdminForum.tsx com CRUD completo
+
+### [P2] MÉDIO — Alinhamento SET7
+- [ ] P2-A: SET7 Dashboard — inicialização automática ao primeiro acesso (seed se banco vazio)
+- [ ] P2-B: SET7 Tasklog — UI de visualização e criação de entradas na página /admin/set7
+- [ ] P2-C: SET7 ROI Tracking — UI de registro de ROI na página /admin/set7
+- [ ] P2-D: Conformidade SET7 — persistir checklist no banco por usuário (trpc.set7.conformidade.save)
+- [ ] P2-E: LGPD — UI de exclusão de conta e exportação de dados na página /perfil (tab Configurações)
+
+### [P3] MELHORIA — Qualidade e Completude
+- [ ] P3-A: Admin — Módulos SET7, API Metrics, Business Metrics e Relatórios no painel Admin.tsx
+- [ ] P3-B: Suporte — Página /suporte funcional com criação de tickets (já existe backend)
+- [ ] P3-C: Error logging — substituir console.error por errorMonitoringService nas mutations críticas
+- [ ] P3-D: Admin Templates — página AdminTemplates.tsx com CRUD de templates de email
+- [ ] P3-E: Busca — adicionar carreiras e eventos ao search-router.ts
+- [ ] P3-F: Calculadora — histórico de cálculos na página /calculadora (tab Histórico)
+- [ ] P3-G: Notificações — bell icon mostra contagem real de notificações não lidas
+
+### [EXTERNAS] Aguardar credenciais — NÃO executar
+- [ ] E1: Stripe (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, Price IDs)
+- [ ] E2: Google Analytics ID real (substituir GA_MEASUREMENT_ID)
+- [ ] E3: Número WhatsApp real
+- [ ] E4: Email transacional externo (Resend.com) para envio direto ao usuário
+- [ ] E5: Domínio customizado impact7.com.br
+
+## SPRINT SET7 COMPLETA — 09/03/2026
+
+### P0 — Fundações Críticas
+- [x] K1: Email de recuperação de senha enviado ao usuário (HTML template IMPACT7)
+- [x] K1: Email de boas-vindas no registro de novo usuário
+- [x] K6: Audit trail em careers (create/update/delete)
+- [x] K6: Audit trail em RBAC (assignRole/removeRole)
+- [x] SET7-INIT: Auto-inicialização do SET7 no primeiro acesso ao dashboard
+
+### P1 — Funcionalidades Core
+- [x] C2: Página de aula individual /cursos/:courseId/aulas/:lessonId
+- [x] C2: Endpoint getLesson + markLessonComplete no courses-router
+- [x] C2: Campo completedLessons no schema courseEnrollments
+- [x] C1: Página /forum com listagem, filtros, criação de tópicos e respostas
+- [x] C1: Forum acessível via rota /forum no App.tsx
+
+### P2 — Melhorias Importantes
+- [x] SET7-ROI: Formulário de criação de tasks no TasklogTab
+- [x] SET7-ROI: Formulário de criação de Baseline ROI no RoiTab
+- [x] O5: LGPD já implementado (exportData + requestDeletion no Profile.tsx)
+
+### P3 — Qualidade e Completude
+- [x] K2: Tabela cmsPages criada no banco com 5 páginas institucionais seed
+- [x] K2: cms-router.ts com endpoints públicos e admin
+- [x] K2: Página AdminPages.tsx com editor Markdown completo
+- [x] K2: Módulo "Páginas CMS" adicionado ao Admin.tsx
+- [x] O1-LOG: Tabela errorLogs criada no banco
+- [x] O1-LOG: Serviço errorLogger com list/stats/resolve
+- [x] O1-LOG: Endpoints errorLogs.list/stats/resolve no routers.ts
+- [x] O1-LOG: Página AdminErrorLogs.tsx com filtros e visualização de detalhes
+- [x] O1-LOG: Módulo "Error Logs" adicionado ao Admin.tsx
+- [x] O1-LOG: Middleware de erro global no Express (captura automática)
+- [x] O1-LOG: Captura de uncaughtException e unhandledRejection
+
+### STATUS FINAL
+- 420/420 testes passando
+- 0 erros TypeScript
+- Servidor rodando limpo
+- Pendências externas restantes: pagamento Stripe, OAuth providers externos

@@ -2,6 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { blogRouter } from './routers/blog-router';
 import { careersRouter } from './routers/careers-router';
 import { searchRouter } from './routers/search-router';
+import { cmsRouter } from './routers/cms-router';
 import { eventsRouter } from './routers/events-router';
 import { forumRouter } from './routers/forum-router';
 import { coursesRouter } from './routers/courses-router';
@@ -150,6 +151,7 @@ export const appRouter = router({
   courses: coursesRouter,
   careers: careersRouter,
   search: searchRouter,
+  cms: cmsRouter,
   
   // Auto Notifications Router (Admin only)
   autoNotifications: router({
@@ -4140,12 +4142,16 @@ export const appRouter = router({
         userId: z.number(),
         roleCode: z.string(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ ctx, input }) => {
         const { assignRole } = await import('./rbac');
         const success = await assignRole(input.userId, input.roleCode);
         if (!success) {
           throw new Error('Falha ao atribuir role');
         }
+        try {
+          const { auditService } = await import('./services/audit/audit-service');
+          await auditService.log({ userId: ctx.user.id, userName: ctx.user.name || undefined, userEmail: ctx.user.email || undefined, action: 'update', resourceType: 'user_role', resourceId: String(input.userId), newValue: { role: input.roleCode } });
+        } catch { /* audit não bloqueia */ }
         return { success: true };
       }),
 
@@ -4159,12 +4165,16 @@ export const appRouter = router({
         userId: z.number(),
         roleCode: z.string(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ ctx, input }) => {
         const { removeRole } = await import('./rbac');
         const success = await removeRole(input.userId, input.roleCode);
         if (!success) {
           throw new Error('Falha ao remover role');
         }
+        try {
+          const { auditService } = await import('./services/audit/audit-service');
+          await auditService.log({ userId: ctx.user.id, userName: ctx.user.name || undefined, userEmail: ctx.user.email || undefined, action: 'update', resourceType: 'user_role', resourceId: String(input.userId), previousValue: { role: input.roleCode }, newValue: { role: null } });
+        } catch { /* audit não bloqueia */ }
         return { success: true };
       }),
 
@@ -4186,6 +4196,35 @@ export const appRouter = router({
         
         const allPerms = await db.select().from(permissions);
         return allPerms;
+      }),
+  }),
+
+  // ERROR LOGS
+  errorLogs: router({
+    list: protectedProcedure
+      .input(z.object({
+        level: z.enum(['error', 'warn', 'info']).optional(),
+        resolved: z.boolean().optional(),
+        limit: z.number().min(1).max(200).default(50).optional(),
+        offset: z.number().min(0).default(0).optional(),
+      }).optional())
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const { errorLogger } = await import('./services/error-logger');
+        return errorLogger.list(input as any);
+      }),
+    stats: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+      const { errorLogger } = await import('./services/error-logger');
+      return errorLogger.stats();
+    }),
+    resolve: protectedProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const { errorLogger } = await import('./services/error-logger');
+        await errorLogger.resolve(input.id);
+        return { success: true };
       }),
   }),
 });

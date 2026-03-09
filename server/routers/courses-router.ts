@@ -345,6 +345,67 @@ export const coursesRouter = router({
       return { success: true, id: lesson.id };
     }),
 
+  // Obter aula individual por ID (com verificação de acesso)
+  getLesson: publicProcedure
+    .input(z.object({
+      lessonId: z.number().int().positive(),
+      courseId: z.number().int().positive(),
+    }))
+    .query(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) return null;
+      const [lesson] = await db.select().from(courseLessons)
+        .where(and(eq(courseLessons.id, input.lessonId), eq(courseLessons.courseId, input.courseId)));
+      if (!lesson) return null;
+      // Verificar acesso: aula gratuita ou usuário matriculado
+      let hasAccess = !!lesson.isFree;
+      if (!hasAccess && ctx.user) {
+        const [enrollment] = await db.select({ id: courseEnrollments.id })
+          .from(courseEnrollments)
+          .where(and(
+            eq(courseEnrollments.courseId, input.courseId),
+            eq(courseEnrollments.userId, ctx.user.id)
+          ));
+        hasAccess = !!enrollment;
+      }
+      return { ...lesson, hasAccess };
+    }),
+
+  // Marcar aula como concluída e atualizar progresso
+  markLessonComplete: protectedProcedure
+    .input(z.object({
+      lessonId: z.number().int().positive(),
+      courseId: z.number().int().positive(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new Error('Database not available');
+      const [enrollment] = await db.select()
+        .from(courseEnrollments)
+        .where(and(
+          eq(courseEnrollments.courseId, input.courseId),
+          eq(courseEnrollments.userId, ctx.user.id)
+        ));
+      if (!enrollment) throw new Error('Você não está matriculado neste curso');
+      const [totalRow] = await db.select({ count: sql<number>`COUNT(*)` })
+        .from(courseLessons).where(eq(courseLessons.courseId, input.courseId));
+      const total = Number(totalRow?.count ?? 1);
+      const completedLessons: number[] = JSON.parse((enrollment as any).completedLessons || '[]');
+      if (!completedLessons.includes(input.lessonId)) completedLessons.push(input.lessonId);
+      const newProgress = Math.min(100, Math.round((completedLessons.length / total) * 100));
+      const updateData: Record<string, unknown> = {
+        progress: newProgress,
+        completedLessons: JSON.stringify(completedLessons),
+      };
+      if (newProgress >= 100) updateData.completedAt = Date.now();
+      await db.update(courseEnrollments).set(updateData)
+        .where(and(
+          eq(courseEnrollments.courseId, input.courseId),
+          eq(courseEnrollments.userId, ctx.user.id)
+        ));
+      return { success: true, progress: newProgress, completedLessons };
+    }),
+
   deleteLesson: protectedProcedure
     .input(z.object({ id: z.number().int().positive() }))
     .mutation(async ({ ctx, input }) => {

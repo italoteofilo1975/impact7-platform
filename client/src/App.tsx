@@ -54,6 +54,7 @@ const Seguranca = lazy(() => import("./pages/Seguranca"));
 const Integracoes = lazy(() => import("./pages/Integracoes"));
 const Webinars = lazy(() => import("./pages/Webinars"));
 const Comunidade = lazy(() => import("./pages/Comunidade"));
+const Forum = lazy(() => import("./pages/Forum"));
 const Recursos = lazy(() => import("./pages/Recursos"));
 const Depoimentos = lazy(() => import("./pages/Depoimentos"));
 const Demo = lazy(() => import("./pages/Demo"));
@@ -70,6 +71,7 @@ const Notificacoes = lazy(() => import("./pages/Notificacoes"));
 const NotificationPreferences = lazy(() => import("./pages/NotificationPreferences"));
 const ConformidadeSET7 = lazy(() => import("./pages/ConformidadeSET7"));
 const Cursos = lazy(() => import("./pages/Cursos"));
+const CursoAula = lazy(() => import("./pages/CursoAula"));
 const AdminBlog = lazy(() => import("./pages/AdminBlog"));
 const TermosDeUso = lazy(() => import("./pages/TermosDeUso"));
 const PoliticaPrivacidade = lazy(() => import("./pages/PoliticaPrivacidade"));
@@ -116,6 +118,8 @@ const AdminSettings = lazy(() => import("./pages/AdminSettings"));
 const AdminContacts = lazy(() => import("./pages/AdminContacts"));
 const AdminAudit = lazy(() => import("./pages/AdminAudit"));
 const AdminCareers = lazy(() => import("./pages/AdminCareers"));
+const AdminPages = lazy(() => import("./pages/AdminPages"));
+const AdminErrorLogs = lazy(() => import("./pages/AdminErrorLogs"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
 const AdminBusinessMetrics = lazy(() => import("./pages/AdminBusinessMetrics"));
 const AdminAlerts = lazy(() => import("./pages/AdminAlerts"));
@@ -200,7 +204,9 @@ function Router() {
         <Route path="/integracoes" component={Integracoes} />
         <Route path="/webinars" component={Webinars} />
         <Route path="/comunidade" component={Comunidade} />
+        <Route path="/forum" component={Forum} />
         <Route path="/cursos" component={Cursos} />
+        <Route path="/cursos/:courseId/aulas/:lessonId" component={CursoAula} />
         <Route path="/recursos" component={Recursos} />
         <Route path="/depoimentos" component={Depoimentos} />
         <Route path="/demo" component={Demo} />
@@ -224,6 +230,8 @@ function Router() {
         <Route path="/admin/tags">{() => <AdminRoute><AdminTags /></AdminRoute>}</Route>
         <Route path="/admin/leads">{() => <AdminRoute><AdminLeads /></AdminRoute>}</Route>
         <Route path="/admin/downloads">{() => <AdminRoute><AdminDownloads /></AdminRoute>}</Route>
+        <Route path="/admin/paginas">{() => <AdminRoute><AdminPages /></AdminRoute>}</Route>
+        <Route path="/admin/error-logs">{() => <AdminRoute><AdminErrorLogs /></AdminRoute>}</Route>
         <Route path="/admin/settings">{() => <AdminRoute><AdminSettings /></AdminRoute>}</Route>
         <Route path="/admin/contacts">{() => <AdminRoute><AdminContacts /></AdminRoute>}</Route>
         <Route path="/admin/audit">{() => <AdminRoute><AdminAudit /></AdminRoute>}</Route>

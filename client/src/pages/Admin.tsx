@@ -1,7 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Link } from "wouter";
 import NavigationButtons from "@/components/NavigationButtons";
-import { Shield, Users, FileText, BarChart3, Settings, LogOut, Home, ChevronRight, Lock, AlertTriangle, RefreshCw, Activity, Briefcase, Bell, Tag, Coins, Zap, FileCode, MessageSquare, ClipboardList, Gauge, AlertCircle, Brain, BriefcaseBusiness } from "lucide-react";
+import { Shield, Users, FileText, BarChart3, Settings, LogOut, Home, ChevronRight, Lock, AlertTriangle, RefreshCw, Activity, Briefcase, Bell, Tag, Coins, Zap, FileCode, MessageSquare, ClipboardList, Gauge, AlertCircle, Brain, BriefcaseBusiness, Globe, Bug } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
@@ -133,6 +133,22 @@ const adminModules = [
     description: "Gerenciar vagas abertas e candidaturas",
     count: null,
     link: "/admin/carreiras",
+    isLink: true,
+  },
+  {
+    icon: Globe,
+    title: "Páginas CMS",
+    description: "Gerenciar páginas institucionais e conteúdo do site",
+    count: null,
+    link: "/admin/paginas",
+    isLink: true,
+  },
+  {
+    icon: Bug,
+    title: "Error Logs",
+    description: "Monitorar erros e avisos do sistema em tempo real",
+    count: null,
+    link: "/admin/error-logs",
     isLink: true,
   },
   {

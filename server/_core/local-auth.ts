@@ -18,6 +18,7 @@ import * as db from '../db';
 import { getSessionCookieOptions } from './cookies';
 import { ENV } from './env';
 import { notifyOwner } from './notification';
+import { sendPasswordResetEmail, sendWelcomeEmail } from '../services/email/user-email-service';
 
 const COOKIE_NAME = 'session';
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
@@ -169,11 +170,14 @@ export function registerLocalAuthRoutes(app: Express) {
         role: 'user',
       });
 
-      const sessionToken = createSessionToken(userId, email, name || null, 'user');
+       const sessionToken = createSessionToken(userId, email, name || null, 'user');
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
-
       res.json({ success: true, userId });
+      // Enviar email de boas-vindas (async, não bloqueia resposta)
+      sendWelcomeEmail(email, name || null).catch(err =>
+        console.warn('[LocalAuth] Welcome email failed:', err)
+      );
     } catch (error) {
       console.error('[LocalAuth] Registration failed', error);
       res.status(500).json({ error: 'Registration failed' });
@@ -256,14 +260,11 @@ export function registerLocalAuthRoutes(app: Express) {
       const baseUrl = process.env.VITE_APP_URL || 'https://impact7plat-5ljsracn.manus.space';
       const resetUrl = `${baseUrl}/redefinir-senha?token=${resetToken}`;
 
-      // Notify owner via Manus notification (fallback until Resend.com is configured)
+      // Enviar email ao usuário com o link de reset
       try {
-        await notifyOwner({
-          title: `🔑 Solicitação de recuperação de senha`,
-          content: `O usuário ${user.email} (ID: ${user.id}) solicitou recuperação de senha.\n\nLink de reset (válido por 1 hora):\n${resetUrl}\n\nSe você não reconhece esta solicitação, ignore esta mensagem.`,
-        });
-      } catch (notifyError) {
-        console.warn('[LocalAuth] Failed to notify owner about password reset:', notifyError);
+        await sendPasswordResetEmail(user.email!, user.name, resetUrl);
+      } catch (emailError) {
+        console.warn('[LocalAuth] Failed to send password reset email:', emailError);
       }
 
       console.log(`[LocalAuth] Password reset requested for ${email}. Reset URL: ${resetUrl}`);

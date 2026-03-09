@@ -140,6 +140,24 @@ async function startServer() {
       createContext,
     })
   );
+  // Global error handler middleware — logs all unhandled errors to errorLogs table
+  app.use(async (err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    try {
+      const { errorLogger } = await import('../services/error-logger');
+      await errorLogger.log({
+        level: 'error',
+        message: err.message || 'Unknown error',
+        stack: err.stack,
+        path: req.path,
+        method: req.method,
+        statusCode: err.status || err.statusCode || 500,
+        context: { url: req.url },
+      });
+    } catch { /* silently fail */ }
+    const status = err.status || err.statusCode || 500;
+    res.status(status).json({ error: err.message || 'Internal Server Error' });
+  });
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
@@ -208,14 +226,22 @@ async function startServer() {
   process.on('SIGINT', () => gracefulShutdown('SIGINT'));
   
   // Handle uncaught exceptions
-  process.on('uncaughtException', (error) => {
+  process.on('uncaughtException', async (error) => {
     console.error('[FATAL] Uncaught Exception:', error);
+    try {
+      const { errorLogger } = await import('../services/error-logger');
+      await errorLogger.log({ level: 'error', message: `[FATAL] ${error.message}`, stack: error.stack });
+    } catch { /* silently fail */ }
     gracefulShutdown('uncaughtException');
   });
   
   // Handle unhandled promise rejections
-  process.on('unhandledRejection', (reason, promise) => {
+  process.on('unhandledRejection', async (reason: any, promise) => {
     console.error('[FATAL] Unhandled Rejection at:', promise, 'reason:', reason);
+    try {
+      const { errorLogger } = await import('../services/error-logger');
+      await errorLogger.log({ level: 'error', message: `[FATAL] Unhandled Rejection: ${reason?.message || String(reason)}`, stack: reason?.stack });
+    } catch { /* silently fail */ }
     // Don't exit on unhandled rejection in development
     if (process.env.NODE_ENV === 'production') {
       gracefulShutdown('unhandledRejection');

@@ -10,7 +10,7 @@
  * - ROI Tracking (Rastreamento de ROI)
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,6 +37,12 @@ import {
   Zap,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { Plus } from "lucide-react";
 
 // Componente de Card de Métrica
 function MetricCard({ 
@@ -102,6 +108,19 @@ function MetricCard({
 function TasklogTab() {
   const { data: metrics, isLoading: metricsLoading } = trpc.set7.tasklog.metrics.useQuery();
   const { data: tasks, isLoading: tasksLoading } = trpc.set7.tasklog.list.useQuery({ limit: 10 });
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ taskName: '', phase: 'SET7-01', agentId: 'agent-001', agentName: '', agentType: 'vertical' as const, taskType: 'execution' as const, description: '' });
+  const utils = trpc.useUtils();
+  const createTask = trpc.set7.tasklog.create.useMutation({
+    onSuccess: () => {
+      setShowForm(false);
+      setForm({ taskName: '', phase: 'SET7-01', agentId: 'agent-001', agentName: '', agentType: 'vertical', taskType: 'execution', description: '' });
+      utils.set7.tasklog.list.invalidate();
+      utils.set7.tasklog.metrics.invalidate();
+      toast.success('Task criada com sucesso!');
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   return (
     <div className="space-y-6">
@@ -134,9 +153,14 @@ function TasklogTab() {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Tasks Recentes</CardTitle>
-          <CardDescription>Últimas 10 tasks executadas no sistema</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Tasks Recentes</CardTitle>
+            <CardDescription>Últimas 10 tasks executadas no sistema</CardDescription>
+          </div>
+          <Button size="sm" onClick={() => setShowForm(true)} className="gap-1">
+            <Plus className="h-4 w-4" />Nova Task
+          </Button>
         </CardHeader>
         <CardContent>
           {tasksLoading ? (
@@ -184,10 +208,77 @@ function TasklogTab() {
           )}
         </CardContent>
       </Card>
+       <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Nova Task SET7</DialogTitle></DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Nome da Task</label>
+              <Input placeholder="ex: Implementar autenticação" value={form.taskName} onChange={e => setForm(p => ({...p, taskName: e.target.value}))} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Fase</label>
+                <Select value={form.phase} onValueChange={v => setForm(p => ({...p, phase: v}))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {['SET7-00','SET7-01','SET7-02','SET7-03','SET7-04','SET7-05','SET7-06','SET7-07'].map(ph => (
+                      <SelectItem key={ph} value={ph}>{ph}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Tipo de Task</label>
+                <Select value={form.taskType} onValueChange={v => setForm(p => ({...p, taskType: v as any}))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {['planning','execution','validation','documentation','review'].map(t => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Agent ID</label>
+                <Input placeholder="agent-001" value={form.agentId} onChange={e => setForm(p => ({...p, agentId: e.target.value}))} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Nome do Agente</label>
+                <Input placeholder="Agente Principal" value={form.agentName} onChange={e => setForm(p => ({...p, agentName: e.target.value}))} />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Tipo de Agente</label>
+              <Select value={form.agentType} onValueChange={v => setForm(p => ({...p, agentType: v as any}))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {['vertical','horizontal','orchestrator','human'].map(t => (
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Descrição (opcional)</label>
+              <Textarea placeholder="Descreva o objetivo da task..." value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))} rows={2} className="resize-none" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowForm(false)}>Cancelar</Button>
+            <Button onClick={() => {
+              if (!form.taskName.trim()) return toast.error('Nome obrigatório');
+              if (!form.agentId.trim()) return toast.error('Agent ID obrigatório');
+              createTask.mutate({ taskName: form.taskName, phase: form.phase, agentId: form.agentId, agentName: form.agentName || form.agentId, agentType: form.agentType, taskType: form.taskType, description: form.description || undefined });
+            }} disabled={createTask.isPending}>Criar Task</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-
 // Tab: Integrações
 function IntegrationsTab() {
   const { data: stats, isLoading: statsLoading } = trpc.set7.integrations.stats.useQuery();
@@ -611,6 +702,19 @@ function GatesTab() {
 function RoiTab() {
   const { data: summary, isLoading: summaryLoading } = trpc.set7.roi.stats.useQuery();
   const { data: rois, isLoading: roisLoading } = trpc.set7.roi.list.useQuery({});
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ phase: 'SET7-01', plannedCostUsd: '', plannedTokens: '', plannedHours: '', plannedValueUsd: '' });
+  const utils = trpc.useUtils();
+  const createBaseline = trpc.set7.roi.createBaseline.useMutation({
+    onSuccess: () => {
+      setShowForm(false);
+      setForm({ phase: 'SET7-01', plannedCostUsd: '', plannedTokens: '', plannedHours: '', plannedValueUsd: '' });
+      utils.set7.roi.list.invalidate();
+      utils.set7.roi.stats.invalidate();
+      toast.success('Baseline de ROI criado!');
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   return (
     <div className="space-y-6">
@@ -642,9 +746,14 @@ function RoiTab() {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Histórico de ROI</CardTitle>
-          <CardDescription>Registros de ROI por fase (Baseline, Partial, Real, Final)</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Histórico de ROI</CardTitle>
+            <CardDescription>Registros de ROI por fase (Baseline, Partial, Real, Final)</CardDescription>
+          </div>
+          <Button size="sm" onClick={() => setShowForm(true)} className="gap-1">
+            <Plus className="h-4 w-4" />Novo Baseline
+          </Button>
         </CardHeader>
         <CardContent>
           {roisLoading ? (
@@ -692,11 +801,61 @@ function RoiTab() {
           )}
         </CardContent>
       </Card>
+      <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Criar Baseline de ROI</DialogTitle></DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Fase</label>
+              <Select value={form.phase} onValueChange={v => setForm(p => ({...p, phase: v}))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {['SET7-00','SET7-01','SET7-02','SET7-03','SET7-04','SET7-05','SET7-06','SET7-07'].map(ph => (
+                    <SelectItem key={ph} value={ph}>{ph}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Custo Planejado (USD)</label>
+                <Input type="number" placeholder="0.00" value={form.plannedCostUsd} onChange={e => setForm(p => ({...p, plannedCostUsd: e.target.value}))} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Valor Planejado (USD)</label>
+                <Input type="number" placeholder="0.00" value={form.plannedValueUsd} onChange={e => setForm(p => ({...p, plannedValueUsd: e.target.value}))} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Tokens Planejados</label>
+                <Input type="number" placeholder="100000" value={form.plannedTokens} onChange={e => setForm(p => ({...p, plannedTokens: e.target.value}))} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Horas Planejadas</label>
+                <Input type="number" placeholder="40" value={form.plannedHours} onChange={e => setForm(p => ({...p, plannedHours: e.target.value}))} />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowForm(false)}>Cancelar</Button>
+            <Button onClick={() => {
+              if (!form.plannedCostUsd || !form.plannedValueUsd) return toast.error('Preencha os valores obrigatórios');
+              createBaseline.mutate({
+                phase: form.phase,
+                plannedCostUsd: parseFloat(form.plannedCostUsd),
+                plannedValueUsd: parseFloat(form.plannedValueUsd),
+                plannedTokens: parseInt(form.plannedTokens || '0'),
+                plannedHours: parseFloat(form.plannedHours || '0'),
+              });
+            }} disabled={createBaseline.isPending}>Criar Baseline</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-
-// Tab: Configuração
+// Tab: Configuraçãoo
 function ConfigTab() {
   const { data: config, isLoading: configLoading } = trpc.set7.config.getActive.useQuery();
   const initConfig = trpc.set7.config.initializeDefault.useMutation();
@@ -856,6 +1015,24 @@ function ConfigTab() {
 export default function Set7Dashboard() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("tasklog");
+  const utils = trpc.useUtils();
+
+  // Auto-inicializar SET7 se banco estiver vazio
+  const { data: agentsData, isLoading: agentsLoading } = trpc.set7.agents.list.useQuery();
+  const initAll = trpc.set7.dashboard.initialize.useMutation({
+    onSuccess: () => {
+      utils.set7.agents.list.invalidate();
+      utils.set7.gates.list.invalidate();
+      utils.set7.config.getActive.invalidate();
+      utils.set7.tasklog.metrics.invalidate();
+    },
+  });
+
+  useEffect(() => {
+    if (!agentsLoading && agentsData !== undefined && agentsData.length === 0 && !initAll.isPending && !initAll.isSuccess) {
+      initAll.mutate({ mode: "standard" });
+    }
+  }, [agentsLoading, agentsData]);
 
   return (
     <div className="space-y-6">

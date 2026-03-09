@@ -1910,6 +1910,7 @@ export const courseEnrollments = mysqlTable("courseEnrollments", {
   progress: int("progress").default(0),
   completedAt: int("completedAt"),
   enrolledAt: int("enrolledAt").notNull(),
+  completedLessons: text("completedLessons").default('[]'),
 });
 export type CourseEnrollment = typeof courseEnrollments.$inferSelect;
 export type InsertCourseEnrollment = typeof courseEnrollments.$inferInsert;
@@ -1936,3 +1937,41 @@ export const jobOpenings = mysqlTable("jobOpenings", {
 });
 export type JobOpening = typeof jobOpenings.$inferSelect;
 export type InsertJobOpening = typeof jobOpenings.$inferInsert;
+
+// ============================================================
+// CMS PAGES (Páginas Institucionais)
+// ============================================================
+export const cmsPages = mysqlTable("cmsPages", {
+  id: int("id").primaryKey().autoincrement(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  title: varchar("title", { length: 500 }).notNull(),
+  content: text("content"),
+  metaDescription: varchar("metaDescription", { length: 500 }),
+  isPublished: int("isPublished").default(1),
+  updatedBy: int("updatedBy"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+});
+export type CmsPage = typeof cmsPages.$inferSelect;
+export type InsertCmsPage = typeof cmsPages.$inferInsert;
+
+// ============================================================
+// ERROR LOGS (Structured Error Logging)
+// ============================================================
+export const errorLogs = mysqlTable("errorLogs", {
+  id: int("id").primaryKey().autoincrement(),
+  level: varchar("level", { length: 20 }).notNull().default('error'), // error, warn, info
+  message: text("message").notNull(),
+  stack: text("stack"),
+  context: json("context").$type<Record<string, unknown>>(),
+  userId: int("userId"),
+  userEmail: varchar("userEmail", { length: 255 }),
+  path: varchar("path", { length: 500 }),
+  method: varchar("method", { length: 10 }),
+  statusCode: int("statusCode"),
+  resolved: int("resolved").default(0),
+  resolvedAt: bigint("resolvedAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+});
+export type ErrorLog = typeof errorLogs.$inferSelect;
+export type InsertErrorLog = typeof errorLogs.$inferInsert;
