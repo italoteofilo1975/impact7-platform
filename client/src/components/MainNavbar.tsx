@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import { Menu, X, Calculator, FileText, Users, Phone, BookOpen, Cpu, Brain, Shield, LogOut, User } from "lucide-react";
+import { Menu, X, Calculator, FileText, Users, Phone, BookOpen, Cpu, Brain, Shield, LogOut, User, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -63,6 +63,11 @@ export function MainNavbar() {
 
           {/* CTA Button + Language Selector + Theme Toggle + User Menu */}
           <div className="hidden lg:flex items-center gap-2">
+            <Link href="/busca">
+              <Button variant="ghost" size="icon" title="Busca global">
+                <Search className="w-4 h-4" />
+              </Button>
+            </Link>
             {user && <NotificationBell />}
             <ThemeSelector />
             <LanguageSelector variant="default" />
@@ -157,6 +162,12 @@ export function MainNavbar() {
                 </Link>
               ))}
               <div className="pt-4 border-t border-border flex flex-col gap-2">
+                <Link href="/busca">
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => setIsOpen(false)}>
+                    <Search className="w-4 h-4 mr-2" />
+                    Buscar
+                  </Button>
+                </Link>
                 <Link href="/contato">
                   <Button variant="outline" className="w-full" onClick={() => setIsOpen(false)}>
                     <Phone className="w-4 h-4 mr-2" />

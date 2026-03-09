@@ -1,4 +1,4 @@
-import { mysqlTable, int, varchar, text, decimal, timestamp } from "drizzle-orm/mysql-core";
+import { mysqlTable, int, varchar, text, decimal, timestamp, json, bigint } from "drizzle-orm/mysql-core";
 import { sql } from "drizzle-orm";
 
 /**
@@ -1913,3 +1913,26 @@ export const courseEnrollments = mysqlTable("courseEnrollments", {
 });
 export type CourseEnrollment = typeof courseEnrollments.$inferSelect;
 export type InsertCourseEnrollment = typeof courseEnrollments.$inferInsert;
+
+// ============================================================
+// CAREERS / JOB OPENINGS
+// ============================================================
+export const jobOpenings = mysqlTable("jobOpenings", {
+  id: int("id").primaryKey().autoincrement(),
+  title: varchar("title", { length: 500 }).notNull(),
+  department: varchar("department", { length: 255 }),
+  location: varchar("location", { length: 255 }),
+  type: varchar("type", { length: 100 }),
+  salaryRange: varchar("salaryRange", { length: 255 }),
+  description: text("description"),
+  requirements: json("requirements").$type<string[]>(),
+  benefits: json("benefits").$type<string[]>(),
+  isActive: int("isActive").default(1),
+  isNew: int("isNew").default(0),
+  applyUrl: varchar("applyUrl", { length: 1000 }),
+  closingDate: bigint("closingDate", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+});
+export type JobOpening = typeof jobOpenings.$inferSelect;
+export type InsertJobOpening = typeof jobOpenings.$inferInsert;

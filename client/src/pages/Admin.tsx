@@ -1,7 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Link } from "wouter";
 import NavigationButtons from "@/components/NavigationButtons";
-import { Shield, Users, FileText, BarChart3, Settings, LogOut, Home, ChevronRight, Lock, AlertTriangle, RefreshCw, Activity, Briefcase, Bell, Tag, Coins, Zap, FileCode, MessageSquare, ClipboardList, Gauge, AlertCircle, Brain } from "lucide-react";
+import { Shield, Users, FileText, BarChart3, Settings, LogOut, Home, ChevronRight, Lock, AlertTriangle, RefreshCw, Activity, Briefcase, Bell, Tag, Coins, Zap, FileCode, MessageSquare, ClipboardList, Gauge, AlertCircle, Brain, BriefcaseBusiness } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
@@ -128,6 +128,14 @@ const adminModules = [
     isLink: true,
   },
   {
+    icon: BriefcaseBusiness,
+    title: "Carreiras",
+    description: "Gerenciar vagas abertas e candidaturas",
+    count: null,
+    link: "/admin/carreiras",
+    isLink: true,
+  },
+  {
     icon: Settings,
     title: "Configurações",
     description: "Configurar integrações e parâmetros do sistema",
@@ -190,6 +198,12 @@ export default function Admin() {
   const { data: activityMetrics } = trpc.leads.activityMetrics.useQuery(
     undefined,
     { enabled: isAuthenticated }
+  );
+  
+  // Fetch recent audit logs for activity feed
+  const { data: auditData } = trpc.audit.getLogs.useQuery(
+    { limit: 8 },
+    { enabled: isAuthenticated && user?.role === 'admin' }
   );
   
   // Calculate stats
@@ -459,26 +473,53 @@ export default function Admin() {
         </div>
 
         {/* Recent Activity */}
-        <h2 className="text-xl font-semibold mt-8 mb-4">Atividade Recente</h2>
+        <div className="flex items-center justify-between mt-8 mb-4">
+          <h2 className="text-xl font-semibold">Atividade Recente</h2>
+          <Link href="/admin/audit">
+            <Button variant="ghost" size="sm" className="text-primary gap-1">
+              Ver tudo <ChevronRight className="w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
         <Card>
           <CardContent className="p-6">
-            <div className="space-y-4">
-              {[
-                { action: "Novo lead capturado", detail: "maria@empresa.com", time: "Há 5 min" },
-                { action: "Download de whitepaper", detail: "joao@ong.org.br", time: "Há 15 min" },
-                { action: "Cálculo de impacto realizado", detail: "S-ROI: 8.5x", time: "Há 32 min" },
-                { action: "Mensagem de contato", detail: "Consultoria em impacto social", time: "Há 1 hora" },
-                { action: "Novo lead capturado", detail: "carlos@fundacao.org", time: "Há 2 horas" },
-              ].map((activity, index) => (
-                <div key={index} className="flex items-center justify-between py-2 border-b last:border-0">
-                  <div>
-                    <div className="font-medium text-sm">{activity.action}</div>
-                    <div className="text-sm text-muted-foreground">{activity.detail}</div>
+            {(!auditData || auditData.logs.length === 0) ? (
+              <div className="space-y-4">
+                {leads?.slice(0, 5).map((lead, index) => (
+                  <div key={index} className="flex items-center justify-between py-2 border-b last:border-0">
+                    <div>
+                      <div className="font-medium text-sm">Novo lead capturado</div>
+                      <div className="text-sm text-muted-foreground">{lead.email}</div>
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(lead.createdAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
+                    </span>
                   </div>
-                  <span className="text-xs text-muted-foreground">{activity.time}</span>
-                </div>
-              ))}
-            </div>
+                ))}
+                {(!leads || leads.length === 0) && (
+                  <p className="text-sm text-muted-foreground text-center py-4">Nenhuma atividade recente</p>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {auditData.logs.map((log: any, index: number) => (
+                  <div key={index} className="flex items-center justify-between py-2 border-b last:border-0">
+                    <div>
+                      <div className="font-medium text-sm capitalize">
+                        {log.action} — {log.resourceType || 'sistema'}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {log.userEmail || log.userId || 'Sistema'}
+                        {log.details ? ` — ${typeof log.details === 'string' ? log.details.slice(0, 60) : JSON.stringify(log.details).slice(0, 60)}` : ''}
+                      </div>
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(log.createdAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 

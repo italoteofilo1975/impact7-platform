@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
+import { AlertCircle, Loader2, CheckCircle2, Copy, ExternalLink } from "lucide-react";
 import NavigationButtons from "@/components/NavigationButtons";
+import { toast } from "sonner";
 
 export default function ForgotPassword() {
   const [, setLocation] = useLocation();
@@ -14,6 +15,7 @@ export default function ForgotPassword() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resetUrl, setResetUrl] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,10 +39,21 @@ export default function ForgotPassword() {
       }
 
       setSuccess(true);
+      // In dev mode, the API returns the reset URL directly
+      if (data.resetUrl) {
+        setResetUrl(data.resetUrl);
+      }
       setLoading(false);
-    } catch (err) {
+    } catch {
       setError("Erro de rede. Tente novamente.");
       setLoading(false);
+    }
+  };
+
+  const copyLink = () => {
+    if (resetUrl) {
+      navigator.clipboard.writeText(resetUrl);
+      toast.success("Link copiado para a área de transferência!");
     }
   };
 
@@ -63,13 +76,40 @@ export default function ForgotPassword() {
                 <Alert className="bg-green-50 border-green-200">
                   <CheckCircle2 className="h-4 w-4 text-green-600" />
                   <AlertDescription className="text-green-800">
-                    Se o email existe em nosso sistema, você receberá instruções para redefinir sua senha.
+                    Solicitação processada. O administrador foi notificado com o link de recuperação.
                   </AlertDescription>
                 </Alert>
-                <Button
-                  onClick={() => setLocation("/login")}
-                  className="w-full"
-                >
+
+                {resetUrl && (
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground font-medium">
+                      Link de redefinição (válido por 1 hora):
+                    </p>
+                    <div className="flex gap-2">
+                      <Input
+                        readOnly
+                        value={resetUrl}
+                        className="text-xs font-mono bg-muted"
+                      />
+                      <Button variant="outline" size="icon" onClick={copyLink} title="Copiar link">
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => window.open(resetUrl, "_self")}
+                        title="Abrir link"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <p className="text-xs text-amber-600">
+                      Quando o serviço de email estiver configurado, este link será enviado automaticamente para {email}.
+                    </p>
+                  </div>
+                )}
+
+                <Button onClick={() => setLocation("/login")} className="w-full">
                   Voltar para o Login
                 </Button>
               </div>
@@ -83,7 +123,7 @@ export default function ForgotPassword() {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email cadastrado</Label>
                   <Input
                     id="email"
                     type="email"
@@ -99,10 +139,10 @@ export default function ForgotPassword() {
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Enviando...
+                      Processando...
                     </>
                   ) : (
-                    "Enviar Instruções"
+                    "Solicitar Recuperação"
                   )}
                 </Button>
 

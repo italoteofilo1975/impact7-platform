@@ -51,6 +51,7 @@ const subjects = [
 
 export default function Contato() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formLoadTs] = useState(() => Date.now());
   
   // Integração com react-hook-form + Zod
   const form = useContactForm();
@@ -75,6 +76,8 @@ export default function Contato() {
         phone: data.phone || undefined,
         subject: data.subject || undefined,
         message: data.message ?? '',
+        _hp: '',
+        _ts: formLoadTs,
       });
     } catch (error) {
       // Error já tratado pelo contactMutation.onError

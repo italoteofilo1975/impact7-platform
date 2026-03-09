@@ -980,3 +980,49 @@
 - [x] Smoke tests: 420/420 passando (blog.crud.test.ts + testes existentes)
 - [x] 0 erros TypeScript (compilação limpa)
 - [x] Servidor rodando sem erros em localhost:3000
+
+
+## BACKLOG SET7 — PENDÊNCIAS INTERNAS (09/03/2026)
+
+### CRÍTICO
+- [ ] K1: Email de recuperação de senha funcional (envio real via BUILT_IN_FORGE_API)
+- [ ] K3: Página /perfil com edição de dados, troca de senha e histórico de cálculos
+- [ ] K8: reCAPTCHA v3 nos formulários de contato, lead e registro
+
+### ALTO
+- [ ] K6: Audit trail completo em todas as mutations admin críticas
+- [ ] SET7-INIT: Seed automático de Gates, Agents, NFRs e ROI Tracking do SET7
+
+### MÉDIO
+- [ ] C2: Aulas nos 3 cursos existentes + UI de progresso de aulas
+- [ ] C1: Tópicos iniciais no fórum + UI de criação de tópico autenticado
+- [ ] C4: Templates de email transacional no banco
+- [ ] O5: Endpoint de exclusão de conta LGPD + UI na página de perfil
+- [ ] K4: Página de Carreiras com vagas reais ou estado vazio elegante
+
+### MELHORIA
+- [ ] O1: Error logging robusto no servidor (substituir console.error por serviço estruturado)
+- [ ] O3: UI pública de abertura de tickets de suporte
+- [ ] K2: Migrar páginas institucionais estáticas para CMS admin
+- [ ] SET7-ROI: ROI Tracking, Tasklog e Token Budgets funcionais no dashboard SET7
+
+### EXTERNAS (aguardar credenciais)
+- [ ] E1: Stripe (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, Price IDs)
+- [ ] E2: Google Analytics ID real
+- [ ] E3: Número WhatsApp real
+- [ ] E4: Email transacional externo (Resend.com)
+- [ ] E5: Domínio customizado impact7.com.br
+
+## SPRINT SET7 — EXECUÇÃO BACKLOG INTERNO (09/03/2026)
+- [x] K4: Página /carreiras com dados reais do banco (jobOpenings), filtros, busca, estado vazio elegante
+- [x] K4-ADMIN: AdminCareers.tsx com CRUD completo (criar, editar, ativar/desativar, excluir vagas)
+- [x] K4-ROUTE: Rota /admin/carreiras adicionada ao App.tsx
+- [x] K4-MODULE: Módulo "Carreiras" adicionado ao painel Admin.tsx
+- [x] O1: Admin Dashboard — atividade recente substituída por dados reais do audit log
+- [x] O1-AUDIT: trpc.audit.getLogs integrado na seção "Atividade Recente" do Admin.tsx
+- [x] O4: Busca global implementada — search-router.ts (cases, blog, cursos, fórum)
+- [x] O4-PAGE: Página /busca com debounce, filtros por tipo, agrupamento e estados de loading/vazio
+- [x] O4-NAV: Botão de busca adicionado ao MainNavbar.tsx (desktop e mobile)
+- [x] O4-ROUTE: Rota /busca adicionada ao App.tsx
+- [x] TypeScript: 0 erros de compilação
+- [x] Servidor: Rodando sem erros em localhost:3000

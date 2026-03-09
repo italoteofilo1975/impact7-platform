@@ -46,6 +46,7 @@ const Sobre = lazy(() => import("./pages/Sobre"));
 const Blog = lazy(() => import("./pages/Blog"));
 const Parceiros = lazy(() => import("./pages/Parceiros"));
 const Carreiras = lazy(() => import("./pages/Carreiras"));
+const Busca = lazy(() => import("./pages/Busca"));
 const Status = lazy(() => import("./pages/Status"));
 const Changelog = lazy(() => import("./pages/Changelog"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
@@ -76,6 +77,7 @@ const Login = lazy(() => import("./pages/Login"));
 const LoginLocal = lazy(() => import("./pages/LoginLocal"));
 const Register = lazy(() => import("./pages/Register"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const MeusCertificados = lazy(() => import("./pages/MeusCertificados"));
 
 // API & Developer pages - lazy loaded
@@ -113,6 +115,7 @@ const AdminDownloads = lazy(() => import("./pages/AdminDownloads"));
 const AdminSettings = lazy(() => import("./pages/AdminSettings"));
 const AdminContacts = lazy(() => import("./pages/AdminContacts"));
 const AdminAudit = lazy(() => import("./pages/AdminAudit"));
+const AdminCareers = lazy(() => import("./pages/AdminCareers"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
 const AdminBusinessMetrics = lazy(() => import("./pages/AdminBusinessMetrics"));
 const AdminAlerts = lazy(() => import("./pages/AdminAlerts"));
@@ -176,6 +179,7 @@ function Router() {
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/forgot-password" component={ForgotPassword} />
+        <Route path="/redefinir-senha" component={ResetPassword} />
         <Route path="/login-admin" component={LoginLocal} />
         <Route path="/precos" component={Precos} />
         <Route path="/checkout/success" component={CheckoutSuccess} />
@@ -188,6 +192,7 @@ function Router() {
         <Route path="/blog" component={Blog} />
         <Route path="/parceiros" component={Parceiros} />
         <Route path="/carreiras" component={Carreiras} />
+        <Route path="/busca" component={Busca} />
         <Route path="/status" component={Status} />
         <Route path="/changelog" component={Changelog} />
         <Route path="/roadmap" component={Roadmap} />
@@ -222,6 +227,7 @@ function Router() {
         <Route path="/admin/settings">{() => <AdminRoute><AdminSettings /></AdminRoute>}</Route>
         <Route path="/admin/contacts">{() => <AdminRoute><AdminContacts /></AdminRoute>}</Route>
         <Route path="/admin/audit">{() => <AdminRoute><AdminAudit /></AdminRoute>}</Route>
+        <Route path="/admin/carreiras">{() => <AdminRoute><AdminCareers /></AdminRoute>}</Route>
         <Route path="/admin/reports">{() => <AdminRoute><AdminReports /></AdminRoute>}</Route>
         <Route path="/admin/business">{() => <AdminRoute><AdminBusinessMetrics /></AdminRoute>}</Route>
         <Route path="/admin/set7">{() => <AdminRoute><Set7Dashboard /></AdminRoute>}</Route>

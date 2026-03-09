@@ -75,6 +75,36 @@ export const coursesRouter = router({
       return { ...course, lessons, enrollmentCount: Number(enrollCount?.count ?? 0) };
     }),
 
+  getById: publicProcedure
+    .input(z.object({ id: z.number().int().positive() }))
+    .query(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) return null;
+
+      const [course] = await db.select().from(courses)
+        .where(eq(courses.id, input.id));
+      if (!course) return null;
+
+      const lessons = await db.select().from(courseLessons)
+        .where(eq(courseLessons.courseId, course.id))
+        .orderBy(asc(courseLessons.orderIndex));
+
+      const [enrollCount] = await db.select({ count: sql<number>`COUNT(*)` })
+        .from(courseEnrollments).where(eq(courseEnrollments.courseId, course.id));
+
+      let enrollment = null;
+      if (ctx.user) {
+        const [enr] = await db.select().from(courseEnrollments)
+          .where(and(
+            eq(courseEnrollments.courseId, course.id),
+            eq(courseEnrollments.userId, ctx.user.id)
+          ));
+        enrollment = enr ?? null;
+      }
+
+      return { ...course, lessons, enrollmentCount: Number(enrollCount?.count ?? 0), enrollment };
+    }),
+
   // ─── Matrícula ───────────────────────────────────────────────────────────────
   enroll: protectedProcedure
     .input(z.object({ courseId: z.number().int().positive() }))

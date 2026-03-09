@@ -3,13 +3,19 @@ import { Link } from "wouter";
 import { 
   ArrowLeft, Trophy, Star, Flame, Target, Award, 
   ChevronRight, TrendingUp, Calendar, Zap, Crown,
-  Medal, Gift
+  Medal, Gift, User, Lock, Save, Eye, EyeOff, Building2, Phone, FileText, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -45,6 +51,44 @@ export default function Profile() {
   // GDPR mutations
   const exportDataMutation = trpc.gdpr.exportData.useMutation();
   const deletionMutation = trpc.gdpr.requestDeletion.useMutation();
+
+  // Profile editing state
+  const [profileForm, setProfileForm] = useState({ name: "", bio: "", phone: "", organization: "" });
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
+  const [showPasswords, setShowPasswords] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+
+  const { data: profileData, refetch: refetchProfile } = trpc.auth.getProfile.useQuery(
+    undefined,
+    { enabled: isAuthenticated }
+  );
+
+  // Sync profile form when data loads
+  const [profileFormInitialized, setProfileFormInitialized] = useState(false);
+  if (profileData && !profileFormInitialized) {
+    const pd = profileData as any;
+    setProfileForm({ name: pd.name || "", bio: pd.bio || "", phone: pd.phone || "", organization: pd.organization || "" });
+    setProfileFormInitialized(true);
+  }
+
+  const updateProfileMutation = trpc.auth.updateProfile.useMutation({
+    onSuccess: () => { toast.success("Perfil atualizado!"); refetchProfile(); },
+    onError: (err: any) => toast.error(err.message || "Erro ao atualizar perfil"),
+  });
+
+  const changePasswordMutation = trpc.auth.changePassword.useMutation({
+    onSuccess: () => { toast.success("Senha alterada com sucesso!"); setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" }); setPasswordError(""); },
+    onError: (err: any) => toast.error(err.message || "Senha atual incorreta"),
+  });
+
+  const handleProfileSave = () => updateProfileMutation.mutate({ name: profileForm.name, bio: profileForm.bio, phone: profileForm.phone, organization: profileForm.organization });
+
+  const handlePasswordChange = () => {
+    setPasswordError("");
+    if (passwordForm.newPassword.length < 8) { setPasswordError("A nova senha deve ter pelo menos 8 caracteres."); return; }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) { setPasswordError("As senhas não coincidem."); return; }
+    changePasswordMutation.mutate({ currentPassword: passwordForm.currentPassword, newPassword: passwordForm.newPassword });
+  };
   
   if (!isAuthenticated) {
     return (
@@ -151,11 +195,12 @@ export default function Profile() {
         
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex-wrap h-auto">
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="badges">Badges ({stats?.badges?.length || 0}/{allBadges?.length || 0})</TabsTrigger>
             <TabsTrigger value="leaderboard">Ranking</TabsTrigger>
             <TabsTrigger value="history">Histórico</TabsTrigger>
+            <TabsTrigger value="meus-dados" className="gap-1"><User className="h-3.5 w-3.5" />Meus Dados</TabsTrigger>
             <TabsTrigger value="settings">Configurações</TabsTrigger>
           </TabsList>
           
@@ -402,6 +447,72 @@ export default function Profile() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Meus Dados Tab */}
+          <TabsContent value="meus-dados">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Editar Perfil */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><User className="w-5 h-5" />Dados Pessoais</CardTitle>
+                  <CardDescription>Atualize suas informações de perfil</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="profile-name">Nome completo</Label>
+                    <Input id="profile-name" value={profileForm.name} onChange={e => setProfileForm(f => ({...f, name: e.target.value}))} placeholder="Seu nome" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="profile-org" className="flex items-center gap-1"><Building2 className="w-3.5 h-3.5" />Organização</Label>
+                    <Input id="profile-org" value={profileForm.organization} onChange={e => setProfileForm(f => ({...f, organization: e.target.value}))} placeholder="Nome da organização" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="profile-phone" className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" />Telefone</Label>
+                    <Input id="profile-phone" value={profileForm.phone} onChange={e => setProfileForm(f => ({...f, phone: e.target.value}))} placeholder="+55 11 99999-9999" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="profile-bio" className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" />Bio</Label>
+                    <Textarea id="profile-bio" value={profileForm.bio} onChange={e => setProfileForm(f => ({...f, bio: e.target.value}))} placeholder="Fale um pouco sobre você..." rows={3} />
+                  </div>
+                  <Button onClick={handleProfileSave} disabled={updateProfileMutation.isPending} className="w-full">
+                    {updateProfileMutation.isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Salvando...</> : <><Save className="w-4 h-4 mr-2" />Salvar Dados</>}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Alterar Senha */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Lock className="w-5 h-5" />Alterar Senha</CardTitle>
+                  <CardDescription>Mantenha sua conta segura com uma senha forte</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {passwordError && (
+                    <Alert variant="destructive"><AlertDescription>{passwordError}</AlertDescription></Alert>
+                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="current-pass">Senha atual</Label>
+                    <div className="relative">
+                      <Input id="current-pass" type={showPasswords ? "text" : "password"} value={passwordForm.currentPassword} onChange={e => setPasswordForm(f => ({...f, currentPassword: e.target.value}))} placeholder="Senha atual" />
+                      <Button variant="ghost" size="sm" className="absolute right-1 top-1 h-7 w-7 p-0" onClick={() => setShowPasswords(v => !v)}>{showPasswords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</Button>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new-pass">Nova senha</Label>
+                    <Input id="new-pass" type={showPasswords ? "text" : "password"} value={passwordForm.newPassword} onChange={e => setPasswordForm(f => ({...f, newPassword: e.target.value}))} placeholder="Mínimo 8 caracteres" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm-pass">Confirmar nova senha</Label>
+                    <Input id="confirm-pass" type={showPasswords ? "text" : "password"} value={passwordForm.confirmPassword} onChange={e => setPasswordForm(f => ({...f, confirmPassword: e.target.value}))} placeholder="Repita a nova senha" />
+                  </div>
+                  <Separator />
+                  <Button onClick={handlePasswordChange} disabled={changePasswordMutation.isPending || !passwordForm.currentPassword || !passwordForm.newPassword} className="w-full">
+                    {changePasswordMutation.isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Alterando...</> : <><Lock className="w-4 h-4 mr-2" />Alterar Senha</>}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Settings Tab */}

@@ -1,15 +1,18 @@
 import { COOKIE_NAME } from "@shared/const";
 import { blogRouter } from './routers/blog-router';
+import { careersRouter } from './routers/careers-router';
+import { searchRouter } from './routers/search-router';
 import { eventsRouter } from './routers/events-router';
 import { forumRouter } from './routers/forum-router';
 import { coursesRouter } from './routers/courses-router';
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getDb } from "./db";
 import { executeRawQuery } from "./db-raw";
-import { leads, contacts, whitepaperDownloads, ebookDownloads, newsletterSubscribers, calculations, caseFavorites, caseSubmissions, caseTags, caseTagRelations, notificationPreferences, systemSettings, impactTokens } from "../drizzle/schema";
+import { leads, contacts, whitepaperDownloads, ebookDownloads, newsletterSubscribers, calculations, caseFavorites, caseSubmissions, caseTags, caseTagRelations, notificationPreferences, systemSettings, impactTokens, users } from "../drizzle/schema";
 import { roles, permissions } from "../drizzle/schema";
 import { chatWithJarvis, jarvisSkills, getSuggestedQuestions, JarvisMessage } from "./services/jarvis/jarvis-service";
 import { searchKnowledge, listCategories, getDocumentsByCategory } from "./services/jarvis/knowledge-base";
@@ -26,7 +29,7 @@ import {
   sendTestNotification,
   getNotificationStats,
 } from "./services/notifications/push-notification-service";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { generateCasePDFContent, CaseStudy } from "./services/pdf/case-pdf-service";
 import { generateCalculatorPDF, generateCalculatorPDFBuffer, CalculatorResult } from "./services/pdf/calculator-pdf-service";
 import { generateCertificateQRCode } from "./services/qrcode/qrcode-service";
@@ -145,6 +148,8 @@ export const appRouter = router({
   events: eventsRouter,
   forum: forumRouter,
   courses: coursesRouter,
+  careers: careersRouter,
+  search: searchRouter,
   
   // Auto Notifications Router (Admin only)
   autoNotifications: router({
@@ -307,30 +312,79 @@ export const appRouter = router({
           input.newPassword
         );
       }),
+
+    updateProfile: protectedProcedure
+      .input(z.object({
+        name: z.string().min(1).max(100).optional(),
+        bio: z.string().max(500).optional(),
+        phone: z.string().max(30).optional(),
+        organization: z.string().max(255).optional(),
+        avatarUrl: z.string().url().optional().nullable(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        const updates: Record<string, unknown> = { updatedAt: Date.now() };
+        if (input.name !== undefined) updates.name = input.name;
+        if (input.bio !== undefined) updates.bio = input.bio;
+        if (input.phone !== undefined) updates.phone = input.phone;
+        if (input.organization !== undefined) updates.organization = input.organization;
+        if (input.avatarUrl !== undefined) updates.avatarUrl = input.avatarUrl;
+        await db.update(users).set(updates).where(eq(users.id, ctx.user.id));
+        const [updated] = await db.select({
+          id: users.id, name: users.name, email: users.email, role: users.role,
+          bio: sql<string>`bio`, phone: sql<string>`phone`,
+          organization: sql<string>`organization`, avatarUrl: sql<string>`avatar_url`,
+        }).from(users).where(eq(users.id, ctx.user.id)).limit(1);
+        return { success: true, user: updated };
+      }),
+
+    getProfile: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+      const [profile] = await db.select({
+        id: users.id, name: users.name, email: users.email, role: users.role,
+        bio: sql<string>`bio`, phone: sql<string>`phone`,
+        organization: sql<string>`organization`, avatarUrl: sql<string>`avatar_url`,
+        createdAt: users.createdAt, lastSignedIn: users.lastSignedIn,
+        planType: users.planType, subscriptionStatus: users.subscriptionStatus,
+      }).from(users).where(eq(users.id, ctx.user.id)).limit(1);
+      return profile || null;
+    }),
   }),
 
   // Leads Router
   leads: router({
     create: publicProcedure
       .input(z.object({
-        name: z.string().min(2),
-        email: z.string().email(),
-        phone: z.string().optional(),
-        organization: z.string().optional(),
+        name: z.string().min(2).max(100),
+        email: z.string().email().max(200),
+        phone: z.string().max(30).optional(),
+        organization: z.string().max(200).optional(),
         source: z.enum(["contact_form", "whitepaper_download", "ebook", "scheduling", "calculator"]).optional(),
+        _hp: z.string().optional(), // honeypot field - deve estar vazio
+        _ts: z.number().optional(), // timestamp do carregamento do form
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
+        // Anti-bot: honeypot field deve estar vazio
+        if (input._hp && input._hp.length > 0) {
+          return { success: true }; // Silently reject bots
+        }
+        // Anti-bot: form preenchido muito rápido (< 2s) é suspeito
+        if (input._ts && Date.now() - input._ts < 2000) {
+          return { success: true }; // Silently reject
+        }
         const db = await getDb();
         if (!db) throw new Error("Database not available");
         
         await db.insert(leads).values({
-          name: input.name,
-          email: input.email,
-          phone: input.phone || null,
-          organization: input.organization || null,
+          name: input.name.trim(),
+          email: input.email.toLowerCase().trim(),
+          phone: input.phone?.trim() || null,
+          organization: input.organization?.trim() || null,
           source: input.source || "contact_form",
-      createdAt: Date.now(),
-    });
+          createdAt: Date.now(),
+        });
         
         return { success: true };
       }),
@@ -438,24 +492,29 @@ export const appRouter = router({
   contacts: router({
     create: publicProcedure
       .input(z.object({
-        name: z.string().min(2),
-        email: z.string().email(),
-        phone: z.string().optional(),
-        subject: z.string().optional(),
-        message: z.string().min(10),
+        name: z.string().min(2).max(100),
+        email: z.string().email().max(200),
+        phone: z.string().max(30).optional(),
+        subject: z.string().max(200).optional(),
+        message: z.string().min(10).max(5000),
+        _hp: z.string().optional(), // honeypot
+        _ts: z.number().optional(), // form load timestamp
       }))
       .mutation(async ({ input }) => {
+        // Anti-bot: honeypot e timing
+        if (input._hp && input._hp.length > 0) return { success: true };
+        if (input._ts && Date.now() - input._ts < 2000) return { success: true };
         const db = await getDb();
         if (!db) throw new Error("Database not available");
         
         await db.insert(contacts).values({
-          name: input.name,
-          email: input.email,
-          phone: input.phone || null,
-          subject: input.subject || null,
-          message: input.message,
-      createdAt: Date.now(),
-    });
+          name: input.name.trim(),
+          email: input.email.toLowerCase().trim(),
+          phone: input.phone?.trim() || null,
+          subject: input.subject?.trim() || null,
+          message: input.message.trim(),
+          createdAt: Date.now(),
+        });
         
         return { success: true };
       }),
@@ -1566,6 +1625,9 @@ export const appRouter = router({
           updatedAt: Date.now(),
         }).$returningId();
         
+        const { auditService: auditSvc1 } = await import('./services/audit/audit-service');
+        await auditSvc1.log({ userId: ctx.user.id, userName: ctx.user.name || undefined, userEmail: ctx.user.email || undefined, action: 'create', resourceType: 'case_tag', resourceId: String(result[0].id), resourceName: input.name, newValue: { name: input.name, color: input.color } });
+        
         return { success: true, id: result[0].id };
       }),
     
@@ -1596,6 +1658,8 @@ export const appRouter = router({
         if (input.description !== undefined) updates.description = input.description;
         
         await db.update(caseTags).set(updates).where(eq(caseTags.id, input.id));
+        const { auditService: auditSvc2 } = await import('./services/audit/audit-service');
+        await auditSvc2.log({ userId: ctx.user.id, userName: ctx.user.name || undefined, userEmail: ctx.user.email || undefined, action: 'update', resourceType: 'case_tag', resourceId: String(input.id), newValue: updates });
         return { success: true };
       }),
     
@@ -1612,6 +1676,8 @@ export const appRouter = router({
         // Remover relações primeiro
         await db.delete(caseTagRelations).where(eq(caseTagRelations.tagId, input.id));
         await db.delete(caseTags).where(eq(caseTags.id, input.id));
+        const { auditService: auditSvc3 } = await import('./services/audit/audit-service');
+        await auditSvc3.log({ userId: ctx.user.id, userName: ctx.user.name || undefined, userEmail: ctx.user.email || undefined, action: 'delete', resourceType: 'case_tag', resourceId: String(input.id) });
         return { success: true };
       }),
     
@@ -2976,9 +3042,10 @@ export const appRouter = router({
           }
         }
         
+         const { auditService: auditSvcBulk } = await import('./services/audit/audit-service');
+        await auditSvcBulk.log({ userId: ctx.user.id, userName: ctx.user.name || undefined, userEmail: ctx.user.email || undefined, action: 'config_change', resourceType: 'system_setting', resourceId: 'bulk', resourceName: 'Bulk settings update', newValue: { keys: input.settings.map(s => s.key) } });
         return { success: true, count: input.settings.length };
       }),
-
     delete: protectedProcedure
       .input(z.object({ key: z.string() }))
       .mutation(async ({ ctx, input }) => {
@@ -2989,6 +3056,8 @@ export const appRouter = router({
         if (!db) throw new Error('Database not available');
         
         await db.delete(systemSettings).where(eq(systemSettings.key, input.key));
+        const { auditService: auditSvcDel } = await import('./services/audit/audit-service');
+        await auditSvcDel.log({ userId: ctx.user.id, userName: ctx.user.name || undefined, userEmail: ctx.user.email || undefined, action: 'delete', resourceType: 'system_setting', resourceId: input.key, resourceName: input.key });
         return { success: true };
       }),
   }),
