@@ -7,20 +7,20 @@
 |---|------|---------|-----------------------|------------------|--------|
 | DC-001 | 2026-07-16 | **Linha-mestra do ecossistema = `impact7-platform`** (Projeto-impact7 = doador de features) | — | `MAPA_MESTRE_CONSOLIDACAO.md` §2 | ✅ Adotada (default, sem veto) |
 | DC-002 | 2026-07-16 | **Os 7 C's oficiais** = **Consciência · Competência · Conexão · Colaboração · Criatividade · Compromisso · Continuidade** (versão unificada; `C⁷` = "as 7 Capacidades/C's do Contexto") | **D3** | `set7-constants.ts` (`SEVEN_CAPABILITIES` + `SEVEN_CS_CONTEXTUAL_MAP`); `METODO_..._CANONICO.md` §3.4 | ✅ **Aprovada pelo fundador** |
+| DC-003 | 2026-07-16 | **E = Engajamento** dos stakeholders (não "Energia/Investimento") na equação `I=(E×C⁷)/R` | **D2** | `set7-methodology.ts` (`calculateImpact`) | ✅ **Aprovada** |
+| DC-004 | 2026-07-16 | **Benchmark S-ROI oficial**: excelente ≥5× · bom 3–5× · médio 1–3× · abaixo <1× | **D4** | `set7-methodology.ts` (`SROI_CALCULATOR.benchmarks`) | ✅ **Aprovada** |
+| DC-005 | 2026-07-16 | **Fases oficiais = SET7.START + SET7.01–07** (7 fases + START); **não existem "14 fases"** | **D5, D6** | `set7-methodology.ts` (`SET7_PHASES`) | ✅ **Aprovada** |
+| DC-006 | 2026-07-16 | **Sétupla primária ao cliente = os 7 Pilares "I"**; Fases/Camadas/Gates/Módulos/7R/7V = frameworks internos de apoio | **D7, D8** | `METODO_..._CANONICO.md` §7 | ✅ **Aprovada** |
+| DC-007 | 2026-07-16 | **Versão do método = 2.0**; **WCAG-alvo = 2.2 AA** | **D9, D10** | `set7-integration.ts` (version 1.0→2.0; WCAG 2.1→2.2 AA) | ✅ **Aprovada** |
 
 ---
 
 ## Decisões ainda PENDENTES de canonização
 
-Extraídas das 10 divergências do `METODO_IMPACTA_SETE_CANONICO.md` (Seção 7). Aguardando aprovação do fundador:
+Das 10 divergências do `METODO_IMPACTA_SETE_CANONICO.md` (Seção 7), **9 já foram canonizadas** (D2–D10, via DC-002 a DC-007). Resta **uma**, que depende de insumo do fundador:
 
-| Div. | Pergunta a decidir | Recomendação |
-|------|--------------------|--------------|
-| **D2** | O que significa **"E"** na equação `I=(E×C⁷)/R`: Engajamento ou Energia/Investimento? | **Engajamento** (alinha ao código em produção) |
-| **D4** | Benchmark de **S-ROI** "excelente": ≥5× (código) ou ≥7× (marketing)? | Definir faixa oficial única |
-| **D5/D6** | Numeração das fases: **SET7.START–07** (produção) ou SET1–SET7 (doc de referência)? Existem "14 fases"? | Adotar SET7.START–07; não há 14 fases |
-| **D7/D8** | Qual a **"sétupla" primária** voltada ao cliente entre as 5 concorrentes? | **Os 7 Pilares "I"** (demais viram frameworks internos) |
-| **D9** | Versão do método (1.0/2.0) e **nível WCAG** oficial (2.1 AA / 2.2 AA / AAA)? | Fixar versão e mirar **WCAG 2.2 AA** |
-| **D1** | Corpo textual completo dos **7 Pilares "I"** (hoje só consolidação; texto pleno está no livro) | Fundador fornecer o texto-fonte |
+| Div. | Pergunta a decidir | Bloqueio |
+|------|--------------------|----------|
+| **D1** | Corpo textual completo dos **7 Pilares "I"** (Imersão…Independência) — hoje só há consolidação fiel; o texto pleno está no livro/curso | ⏳ Aguardando o **fundador enviar o texto-fonte** para incorporação literal |
 
-> Quando cada uma for decidida, acrescentar uma linha na tabela de cima (DC-00n) e marcar a divergência como RESOLVIDA no documento canônico.
+> Quando D1 for suprida, acrescentar DC-008 na tabela de cima e marcar D1 como RESOLVIDA no documento canônico. **Com D1, a canonização do método chega a 100%.**

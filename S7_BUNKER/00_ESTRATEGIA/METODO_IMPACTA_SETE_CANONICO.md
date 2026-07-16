@@ -292,6 +292,7 @@ Os nomes/ordem dos 7 pilares estão confirmados (`verificacao_imagem.md`), mas a
 ### D2 — O que significa "E" na equação?
 Três leituras conflitantes: **Energia = investimento total** (`Matematica.tsx`) vs. **Engajamento dos stakeholders** (`set7-methodology.ts`, e é isso que o código calcula) vs. **Investimento/Esforço** (`set7-integration.ts`). Se "E" for investimento financeiro, ele colide conceitualmente com o denominador do S-ROI.
 **Decisão necessária:** fixar E = Engajamento (recomendado, alinha ao código) ou E = Energia/Investimento.
+**✅ RESOLVIDO (2026-07-16, DC-003):** **E = Engajamento** (nível de envolvimento/participação dos stakeholders). Alinhado ao código (`calculateImpact`).
 
 ### D3 — O que é `C⁷`: "Capacidades" ou "Dimensões do Contexto"? E quais são os 7 C's?
 Divergência dupla e a **mais crítica** do método:
@@ -303,14 +304,17 @@ Divergência dupla e a **mais crítica** do método:
 ### D4 — Benchmarks de S-ROI não coincidem
 Código (`SROI_CALCULATOR.benchmarks`): excelente ≥5×, bom 3–5×, médio 1–3×, abaixo <1×. Página (`Matematica.tsx`): mínimo recomendado **7×**, médio 3–4×, top 10% **12×+**. Os patamares são incompatíveis.
 **Decisão necessária:** fixar uma única tabela de benchmarks e sincronizar código e conteúdo.
+**✅ RESOLVIDO (2026-07-16, DC-004):** tabela oficial = a do código: **excelente ≥5× · bom 3–5× · médio 1–3× · abaixo <1×**. O conteúdo de marketing (7×/12×) deve ser realinhado a esta tabela.
 
 ### D5 — Duas numerações/nomenclaturas de fases SET7
 Produção: **SET7.START + SET7.01–SET7.07** com nomes de engenharia/governança (`set7-methodology.ts`, `MATRIZ_ADERENCIA_SET7.md`). Referência do Projeto: **SET1–SET7** com nomes diferentes e **limites de fase distintos** (`docs/METODO_SET7_REFERENCIA.md`) — ex.: Experiência/Acessibilidade é fase própria (SET5) lá, mas está fundida em SET7.05 no código.
 **Decisão necessária:** eleger a nomenclatura canônica (recomenda-se a de produção, SET7.START–SET7.07) e aposentar/mapear a outra.
+**✅ RESOLVIDO (2026-07-16, DC-005):** nomenclatura oficial = **SET7.START + SET7.01–SET7.07** (produção). A numeração SET1–SET7 do `METODO_SET7_REFERENCIA.md` fica como mapeamento histórico.
 
 ### D6 — "14 fases estendidas" não documentadas
 O briefing menciona "7 fases SET7.01 a SET7.07, ou as 14 fases estendidas", mas **nenhuma fonte lida descreve 14 fases**. Só existem 7 (+ START).
 **Decisão necessária:** ou produzir a especificação das 14 fases estendidas, ou remover a referência a elas.
+**✅ RESOLVIDO (2026-07-16, DC-005):** **não existem 14 fases** — o método tem **7 fases (+ START)**. Referência às "14 fases" removida/descartada.
 
 ### D7 — "SET7" tem pelo menos três definições concorrentes do que são "as 7"
 1. **7 Fases** (SET7.START–07) — `set7-methodology.ts`.
@@ -318,6 +322,7 @@ O briefing menciona "7 fases SET7.01 a SET7.07, ou as 14 fases estendidas", mas 
 3. **7 Quality Gates (G1–G7)** — "segurança, engenharia, testes, confiabilidade, observabilidade, integridade de dados e performance" (`$GLOSSARY.md`, verbete "Gate SET7").
 Essas três sétuplas **não são o mesmo eixo** e não têm mapeamento 1:1 explícito.
 **Decisão necessária:** definir se Fases, Camadas e Gates são três dimensões ortogonais oficiais (e documentar a relação) ou consolidar.
+**✅ RESOLVIDO (2026-07-16, DC-006):** a sétupla **primária voltada ao cliente = os 7 Pilares "I"**. Fases (SET7.START–07), Camadas e Gates G1–G7 são **dimensões internas de apoio** da engenharia SET7 — oficiais, porém não são a narrativa de produto.
 
 ### D8 — Múltiplas "sétuplas" concorrentes de nível de método
 Além das camadas acima, as fontes trazem ainda:
@@ -327,14 +332,17 @@ Além das camadas acima, as fontes trazem ainda:
 - **Frameworks 7R** (Redundância, Recuperação, Resiliência, Responsividade, Rastreabilidade, Regulação, Retroalimentação) e **7V** (Velocidade, Volume, Variedade, Veracidade, Valor, Visibilidade, Viabilidade) (`set7-constants.ts`).
 São **cinco listas de sete** para o "mesmo" método, sem hierarquia declarada entre elas.
 **Decisão necessária:** definir qual é a sétupla *primária* voltada ao cliente (recomenda-se os 7 Pilares "I") e rebaixar as demais a frameworks de apoio internos, documentando as relações.
+**✅ RESOLVIDO (2026-07-16, DC-006):** **7 Pilares "I" = sétupla primária** (identidade de produto). 7 Módulos, 7 componentes do "IMPACT7 Method", 7R e 7V = **frameworks de apoio internos**, subordinados aos Pilares.
 
 ### D9 — Versão da metodologia inconsistente
 `set7-methodology.ts` declara `@version 2.0`; `set7-integration.ts` declara `@version 1.0` no cabeçalho mas usa `version: '2.0'` no middleware; `$GLOSSARY.md` é `1.0.0`; `MATRIZ_ADERENCIA_SET7.md` é "2.0".
 **Decisão necessária:** definir versionamento único do método (este documento propõe iniciar em **1.0.0** como canônico consolidador).
+**✅ RESOLVIDO (2026-07-16, DC-007):** versão oficial do método = **2.0** (alinha ao `set7-methodology.ts` e à Matriz de Aderência). `set7-integration.ts` corrigido de 1.0 → 2.0.
 
 ### D10 — Nível de acessibilidade (WCAG) divergente
 `WCAG 2.2 AA` (`set7-methodology.ts`, `METODO_SET7_REFERENCIA.md`) vs. `WCAG 2.1 AA` (`set7-integration.ts`, `generateSET7Prompt`) vs. módulo "Acessibilidade WCAG AAA" (`$GLOSSARY.md`).
 **Decisão necessária:** fixar o alvo oficial de conformidade WCAG.
+**✅ RESOLVIDO (2026-07-16, DC-007):** alvo oficial = **WCAG 2.2 AA**. `set7-integration.ts` corrigido de 2.1 AA → 2.2 AA. (A menção a "AAA" no glossário fica como meta aspiracional, não como conformidade exigida.)
 
 ---
 
