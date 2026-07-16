@@ -9,6 +9,8 @@ import { coursesRouter } from './routers/courses-router';
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { impactRouter } from "./routers/impact";
+import { registryRouter } from "./routers/registry";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getDb } from "./db";
@@ -141,6 +143,8 @@ import { whiteLabelRouter } from "./routers/white-label-router";
 import { autoNotificationService } from "./services/notifications/auto-notification-service";
 
 export const appRouter = router({
+  impact: impactRouter,
+  registry: registryRouter,
   system: systemRouter,
   systemMetrics: systemMetricsRouter,
   set7: set7Router,

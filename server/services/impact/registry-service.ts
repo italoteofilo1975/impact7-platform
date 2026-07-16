@@ -1,0 +1,72 @@
+// server/services/impact/registry-service.ts
+// Impact7 · Sprint 8 · o motor de mensuracao. Consolida o placar do ecossistema com deduplicacao
+// global, calcula o S-ROI auditavel com memoria de calculo, e grava a trilha de auditoria.
+import { getDb } from "../../db";
+const db = getDb();
+import { engagementEvents } from "../../../drizzle/schema.impact7";
+import { initiativeParams, auditLog } from "../../../drizzle/schema.impact8";
+import { eq } from "drizzle-orm";
+import { layerOfNum } from "../../../shared/ive-mapping";
+
+// Placar do ecossistema. Contagem de UNICOS entre TODAS as iniciativas, metodo do maximo global:
+// cada identidade conta uma unica vez, pelo seu maior nivel em qualquer iniciativa. Isso e a defesa
+// contra dupla contagem que sustenta o alvo dos 14 milhoes.
+export async function ecosystemPlacar() {
+  const rows = await db.select().from(engagementEvents);
+  const maxByIdentity = new Map<string, number>();
+  for (const r of rows) {
+    maxByIdentity.set(r.identityKey, Math.max(maxByIdentity.get(r.identityKey) ?? 0, r.level));
+  }
+  let alcanceUnico = 0, impacto = 0, transformacao = 0, esteira = 0;
+  for (const lvl of maxByIdentity.values()) {
+    alcanceUnico++;
+    const layer = layerOfNum(lvl);
+    if (layer === "impacto") impacto++;
+    else if (layer === "transformacao") transformacao++;
+    else if (layer === "esteira") esteira++;
+  }
+  return { alcanceUnico, gatilhosUnicos: impacto + transformacao + esteira, impacto, transformacao, esteira };
+}
+
+// S-ROI auditavel de uma iniciativa, com memoria de calculo transparente e faixa de sensibilidade,
+// e registro na trilha de auditoria. O now e injetado, nunca Date.now() dentro da regra.
+export async function initiativeSroi(initiativeId: number, actor: string, now: number) {
+  const [p] = await db.select().from(initiativeParams).where(eq(initiativeParams.initiativeId, initiativeId));
+  if (!p) throw new Error("Iniciativa sem parametros economicos");
+
+  const evs = await db.select().from(engagementEvents).where(eq(engagementEvents.initiativeId, initiativeId));
+  const maxByIdentity = new Map<string, number>();
+  for (const r of evs) maxByIdentity.set(r.identityKey, Math.max(maxByIdentity.get(r.identityKey) ?? 0, r.level));
+
+  let gatilhos = 0, transformacoes = 0;
+  for (const lvl of maxByIdentity.values()) {
+    const layer = layerOfNum(lvl);
+    if (layer === "impacto" || layer === "esteira") gatilhos++;
+    else if (layer === "transformacao") { gatilhos++; transformacoes++; }
+  }
+
+  const atribuicao = p.atribuicaoBps / 10000;
+  const valorGatilho = p.valorGatilhoCents / 100;
+  const valorTransformacao = p.valorTransformacaoCents / 100;
+  const custo = p.custoImtsCents / 100;
+
+  const valorSocialBruto = gatilhos * valorGatilho + transformacoes * valorTransformacao;
+  const valorSocial = valorSocialBruto * atribuicao;
+  const sroi = custo > 0 ? valorSocial / custo : 0;
+
+  // Sensibilidade sobre a premissa mais fragil, o valor por transformacao, em mais ou menos 30%.
+  const sroiLow = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 0.7) * atribuicao) / custo : 0;
+  const sroiHigh = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 1.3) * atribuicao) / custo : 0;
+
+  const memoria = {
+    gatilhos, transformacoes, valorGatilho, valorTransformacao, atribuicao, custo,
+    valorSocialBruto, valorSocial, sroi, sensibilidade: { sroiLow, sroiHigh },
+  };
+
+  await db.insert(auditLog).values({
+    actor, action: "compute_sroi", entity: "initiative", entityId: initiativeId,
+    inputJson: JSON.stringify({ initiativeId }), resultJson: JSON.stringify(memoria), createdAt: now,
+  });
+
+  return memoria;
+}
