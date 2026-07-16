@@ -62,7 +62,7 @@ export async function saveMemory(
   }
 
   // Create new memory
-  const result = await db.insert(jarvisMemory).values({
+  const [inserted] = await db.insert(jarvisMemory).values({
     userId,
     memoryType: entry.type,
     key: entry.key,
@@ -71,12 +71,12 @@ export async function saveMemory(
     lastAccessed: Date.now(),
     updatedAt: Date.now(),
     createdAt: Date.now(),
-  });
+  }).returning({ id: jarvisMemory.id });
 
   const newMemory = await db
     .select()
     .from(jarvisMemory)
-    .where(eq(jarvisMemory.id, Number(result[0].insertId)))
+    .where(eq(jarvisMemory.id, inserted?.id ?? 0))
     .limit(1);
 
   return newMemory[0];

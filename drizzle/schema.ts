@@ -1,11 +1,11 @@
-import { mysqlTable, int, varchar, text, decimal, timestamp, json, bigint } from "drizzle-orm/mysql-core";
+import { pgTable, integer, bigint, serial, varchar, text, numeric, jsonb, unique } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 /**
  * Core user table backing auth flow.
  */
-export const users = mysqlTable("users", {
-  id: int("id").primaryKey().autoincrement(),
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
   name: text("name"),
   email: varchar("email", { length: 320 }).unique(), // Unique for local auth
   passwordHash: varchar("passwordHash", { length: 255 }),
@@ -15,9 +15,9 @@ export const users = mysqlTable("users", {
   stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
   subscriptionStatus: text("subscriptionStatus").default("none"), // active, canceled, past_due, trialing, none
   planType: text("planType").default("free"), // free, starter, professional, enterprise
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
-  lastSignedIn: int("lastSignedIn").notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  lastSignedIn: bigint("lastSignedIn", { mode: "number" }).notNull(),
 });
 
 export type User = typeof users.$inferSelect;
@@ -26,19 +26,19 @@ export type InsertUser = typeof users.$inferInsert;
 /**
  * Leads table for contact form submissions and whitepaper downloads.
  */
-export const leads = mysqlTable("leads", {
-  id: int("id").primaryKey().autoincrement(),
+export const leads = pgTable("leads", {
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 320 }).notNull(),
   organization: varchar("organization", { length: 255 }),
   phone: varchar("phone", { length: 20 }),
   message: text("message"),
   source: text("source").default("contact_form").notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  welcomeEmailSent: int("welcomeEmailSent").default(0).notNull(),
-  nurturingStep: int("nurturingStep").default(0).notNull(),
-  lastEmailSentAt: int("lastEmailSentAt"),
-  unsubscribed: int("unsubscribed").default(0).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  welcomeEmailSent: integer("welcomeEmailSent").default(0).notNull(),
+  nurturingStep: integer("nurturingStep").default(0).notNull(),
+  lastEmailSentAt: bigint("lastEmailSentAt", { mode: "number" }),
+  unsubscribed: integer("unsubscribed").default(0).notNull(),
 });
 
 export type Lead = typeof leads.$inferSelect;
@@ -47,16 +47,16 @@ export type InsertLead = typeof leads.$inferInsert;
 /**
  * Newsletter subscriptions.
  */
-export const newsletterSubscribers = mysqlTable("newsletterSubscribers", {
-  id: int("id").primaryKey().autoincrement(),
+export const newsletterSubscribers = pgTable("newsletterSubscribers", {
+  id: serial("id").primaryKey(),
   email: varchar("email", { length: 320 }).notNull().unique(),
   name: varchar("name", { length: 255 }),
   segment: text("segment").default("general").notNull(),
   interests: text("interests"),
-  isActive: int("isActive").default(1).notNull(),
-  confirmedAt: int("confirmedAt"),
-  unsubscribedAt: int("unsubscribedAt"),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  isActive: integer("isActive").default(1).notNull(),
+  confirmedAt: bigint("confirmedAt", { mode: "number" }),
+  unsubscribedAt: bigint("unsubscribedAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
@@ -65,20 +65,20 @@ export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInse
 /**
  * User calculations history for impact calculator.
  */
-export const calculations = mysqlTable("calculations", {
-  id: int("id").primaryKey().autoincrement(),
+export const calculations = pgTable("calculations", {
+  id: serial("id").primaryKey(),
   sessionId: varchar("sessionId", { length: 64 }),
-  userId: int("userId"),
+  userId: integer("userId"),
   projectName: varchar("projectName", { length: 255 }),
-  investment: int("investment").notNull(),
-  contextScore: int("contextScore").notNull(),
-  resistanceScore: int("resistanceScore").notNull(),
-  beneficiaries: int("beneficiaries").notNull(),
-  duration: int("duration").notNull(),
-  impactScore: int("impactScore").notNull(),
-  sRoi: int("sRoi").notNull(),
+  investment: integer("investment").notNull(),
+  contextScore: integer("contextScore").notNull(),
+  resistanceScore: integer("resistanceScore").notNull(),
+  beneficiaries: integer("beneficiaries").notNull(),
+  duration: integer("duration").notNull(),
+  impactScore: integer("impactScore").notNull(),
+  sRoi: integer("sRoi").notNull(),
   sector: varchar("sector", { length: 100 }),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type Calculation = typeof calculations.$inferSelect;
@@ -87,16 +87,16 @@ export type InsertCalculation = typeof calculations.$inferInsert;
 /**
  * Ebook downloads tracking.
  */
-export const ebookDownloads = mysqlTable("ebookDownloads", {
-  id: int("id").primaryKey().autoincrement(),
+export const ebookDownloads = pgTable("ebookDownloads", {
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
   organization: varchar("organization", { length: 255 }),
   role: varchar("role", { length: 100 }),
   phone: varchar("phone", { length: 20 }),
   source: varchar("source", { length: 100 }).default("website"),
-  downloadedAt: int("downloadedAt").notNull(),
-  emailSent: int("emailSent").default(0).notNull(),
+  downloadedAt: bigint("downloadedAt", { mode: "number" }).notNull(),
+  emailSent: integer("emailSent").default(0).notNull(),
 });
 
 export type EbookDownload = typeof ebookDownloads.$inferSelect;
@@ -105,12 +105,12 @@ export type InsertEbookDownload = typeof ebookDownloads.$inferInsert;
 /**
  * Whitepaper downloads tracking.
  */
-export const whitepaperDownloads = mysqlTable("whitepaperDownloads", {
-  id: int("id").primaryKey().autoincrement(),
+export const whitepaperDownloads = pgTable("whitepaperDownloads", {
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
   organization: varchar("organization", { length: 255 }),
-  downloadedAt: int("downloadedAt").notNull(),
+  downloadedAt: bigint("downloadedAt", { mode: "number" }).notNull(),
 });
 
 export type WhitepaperDownload = typeof whitepaperDownloads.$inferSelect;
@@ -119,15 +119,15 @@ export type InsertWhitepaperDownload = typeof whitepaperDownloads.$inferInsert;
 /**
  * Contact form submissions.
  */
-export const contacts = mysqlTable("contacts", {
-  id: int("id").primaryKey().autoincrement(),
+export const contacts = pgTable("contacts", {
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
   phone: varchar("phone", { length: 20 }),
   subject: varchar("subject", { length: 255 }),
   message: text("message").notNull(),
   status: text("status").default("new").notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type Contact = typeof contacts.$inferSelect;
@@ -136,13 +136,13 @@ export type InsertContact = typeof contacts.$inferInsert;
 /**
  * Jarvis chat sessions.
  */
-export const jarvisSessions = mysqlTable("jarvisSessions", {
-  id: int("id").primaryKey().autoincrement(),
+export const jarvisSessions = pgTable("jarvisSessions", {
+  id: serial("id").primaryKey(),
   sessionId: varchar("sessionId", { length: 64 }).notNull().unique(),
-  userId: int("userId"),
+  userId: integer("userId"),
   context: text("context"),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type JarvisSession = typeof jarvisSessions.$inferSelect;
@@ -151,13 +151,13 @@ export type InsertJarvisSession = typeof jarvisSessions.$inferInsert;
 /**
  * Jarvis chat messages.
  */
-export const jarvisMessages = mysqlTable("jarvisMessages", {
-  id: int("id").primaryKey().autoincrement(),
+export const jarvisMessages = pgTable("jarvisMessages", {
+  id: serial("id").primaryKey(),
   sessionId: varchar("sessionId", { length: 64 }).notNull(),
   role: text("role").notNull(),
   content: text("content").notNull(),
   metadata: text("metadata"),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type JarvisMessage = typeof jarvisMessages.$inferSelect;
@@ -166,16 +166,16 @@ export type InsertJarvisMessage = typeof jarvisMessages.$inferInsert;
 /**
  * Knowledge base documents for RAG.
  */
-export const knowledgeDocuments = mysqlTable("knowledgeDocuments", {
-  id: int("id").primaryKey().autoincrement(),
+export const knowledgeDocuments = pgTable("knowledgeDocuments", {
+  id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   content: text("content").notNull(),
   category: varchar("category", { length: 100 }).notNull(),
   tags: text("tags"),
   embedding: text("embedding"),
-  isActive: int("isActive").default(1).notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  isActive: integer("isActive").default(1).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type KnowledgeDocument = typeof knowledgeDocuments.$inferSelect;
@@ -184,11 +184,11 @@ export type InsertKnowledgeDocument = typeof knowledgeDocuments.$inferInsert;
 /**
  * Site analytics and metrics.
  */
-export const siteMetrics = mysqlTable("siteMetrics", {
-  id: int("id").primaryKey().autoincrement(),
+export const siteMetrics = pgTable("siteMetrics", {
+  id: serial("id").primaryKey(),
   metricType: varchar("metricType", { length: 50 }).notNull(),
-  metricValue: int("metricValue").notNull(),
-  metricDate: int("metricDate").notNull(),
+  metricValue: integer("metricValue").notNull(),
+  metricDate: integer("metricDate").notNull(),
   metadata: text("metadata"),
 });
 
@@ -199,19 +199,19 @@ export type InsertSiteMetric = typeof siteMetrics.$inferInsert;
 /**
  * Jarvis interaction analytics.
  */
-export const jarvisAnalytics = mysqlTable("jarvisAnalytics", {
-  id: int("id").primaryKey().autoincrement(),
+export const jarvisAnalytics = pgTable("jarvisAnalytics", {
+  id: serial("id").primaryKey(),
   sessionId: varchar("sessionId", { length: 64 }).notNull(),
-  userId: int("userId"),
+  userId: integer("userId"),
   interactionType: text("interactionType").notNull(),
   query: text("query"),
   skillUsed: varchar("skillUsed", { length: 50 }),
-  responseTime: int("responseTime"), // in milliseconds
-  tokensUsed: int("tokensUsed"),
-  successful: int("successful").default(1).notNull(),
+  responseTime: integer("responseTime"), // in milliseconds
+  tokensUsed: integer("tokensUsed"),
+  successful: integer("successful").default(1).notNull(),
   errorMessage: text("errorMessage"),
   userFeedback: text("userFeedback"),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type JarvisAnalytic = typeof jarvisAnalytics.$inferSelect;
@@ -220,9 +220,9 @@ export type InsertJarvisAnalytic = typeof jarvisAnalytics.$inferInsert;
 /**
  * Lead conversion tracking.
  */
-export const leadConversions = mysqlTable("leadConversions", {
-  id: int("id").primaryKey().autoincrement(),
-  leadId: int("leadId").notNull(),
+export const leadConversions = pgTable("leadConversions", {
+  id: serial("id").primaryKey(),
+  leadId: integer("leadId").notNull(),
   conversionType: text("conversionType").notNull(),
   sourcePage: varchar("sourcePage", { length: 255 }),
   sourceForm: varchar("sourceForm", { length: 100 }),
@@ -233,7 +233,7 @@ export const leadConversions = mysqlTable("leadConversions", {
   deviceType: text("deviceType"),
   browser: varchar("browser", { length: 50 }),
   country: varchar("country", { length: 100 }),
-  convertedAt: int("convertedAt").notNull(),
+  convertedAt: bigint("convertedAt", { mode: "number" }).notNull(),
 });
 
 export type LeadConversion = typeof leadConversions.$inferSelect;
@@ -242,10 +242,10 @@ export type InsertLeadConversion = typeof leadConversions.$inferInsert;
 /**
  * Page view analytics.
  */
-export const pageViews = mysqlTable("pageViews", {
-  id: int("id").primaryKey().autoincrement(),
+export const pageViews = pgTable("pageViews", {
+  id: serial("id").primaryKey(),
   sessionId: varchar("sessionId", { length: 64 }).notNull(),
-  userId: int("userId"),
+  userId: integer("userId"),
   pagePath: varchar("pagePath", { length: 255 }).notNull(),
   pageTitle: varchar("pageTitle", { length: 255 }),
   referrer: varchar("referrer", { length: 500 }),
@@ -255,9 +255,9 @@ export const pageViews = mysqlTable("pageViews", {
   deviceType: text("deviceType"),
   browser: varchar("browser", { length: 50 }),
   country: varchar("country", { length: 100 }),
-  timeOnPage: int("timeOnPage"), // in seconds
-  scrollDepth: int("scrollDepth"), // percentage 0-100
-  viewedAt: int("viewedAt").notNull(),
+  timeOnPage: integer("timeOnPage"), // in seconds
+  scrollDepth: integer("scrollDepth"), // percentage 0-100
+  viewedAt: bigint("viewedAt", { mode: "number" }).notNull(),
 });
 
 export type PageView = typeof pageViews.$inferSelect;
@@ -266,20 +266,20 @@ export type InsertPageView = typeof pageViews.$inferInsert;
 /**
  * Daily aggregated metrics.
  */
-export const dailyMetrics = mysqlTable("dailyMetrics", {
-  id: int("id").primaryKey().autoincrement(),
-  metricDate: int("metricDate").notNull(),
-  totalPageViews: int("totalPageViews").default(0).notNull(),
-  uniqueVisitors: int("uniqueVisitors").default(0).notNull(),
-  totalLeads: int("totalLeads").default(0).notNull(),
-  totalConversions: int("totalConversions").default(0).notNull(),
-  jarvisInteractions: int("jarvisInteractions").default(0).notNull(),
-  calculatorUses: int("calculatorUses").default(0).notNull(),
-  ebookDownloads: int("ebookDownloads").default(0).notNull(),
-  whitepaperDownloads: int("whitepaperDownloads").default(0).notNull(),
-  avgTimeOnSite: int("avgTimeOnSite").default(0), // in seconds
-  bounceRate: int("bounceRate").default(0), // percentage 0-100
-  createdAt: int("createdAt").$type<number>().notNull(),
+export const dailyMetrics = pgTable("dailyMetrics", {
+  id: serial("id").primaryKey(),
+  metricDate: integer("metricDate").notNull(),
+  totalPageViews: integer("totalPageViews").default(0).notNull(),
+  uniqueVisitors: integer("uniqueVisitors").default(0).notNull(),
+  totalLeads: integer("totalLeads").default(0).notNull(),
+  totalConversions: integer("totalConversions").default(0).notNull(),
+  jarvisInteractions: integer("jarvisInteractions").default(0).notNull(),
+  calculatorUses: integer("calculatorUses").default(0).notNull(),
+  ebookDownloads: integer("ebookDownloads").default(0).notNull(),
+  whitepaperDownloads: integer("whitepaperDownloads").default(0).notNull(),
+  avgTimeOnSite: integer("avgTimeOnSite").default(0), // in seconds
+  bounceRate: integer("bounceRate").default(0), // percentage 0-100
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type DailyMetric = typeof dailyMetrics.$inferSelect;
@@ -289,11 +289,11 @@ export type InsertDailyMetric = typeof dailyMetrics.$inferInsert;
 /**
  * Case favorites - users can save cases for later.
  */
-export const caseFavorites = mysqlTable("caseFavorites", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
-  caseId: int("caseId").notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
+export const caseFavorites = pgTable("caseFavorites", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  caseId: integer("caseId").notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type CaseFavorite = typeof caseFavorites.$inferSelect;
@@ -302,8 +302,8 @@ export type InsertCaseFavorite = typeof caseFavorites.$inferInsert;
 /**
  * Case submissions - organizations can submit their own cases.
  */
-export const caseSubmissions = mysqlTable("caseSubmissions", {
-  id: int("id").primaryKey().autoincrement(),
+export const caseSubmissions = pgTable("caseSubmissions", {
+  id: serial("id").primaryKey(),
   organizationName: varchar("organizationName", { length: 255 }).notNull(),
   contactName: varchar("contactName", { length: 255 }).notNull(),
   contactEmail: varchar("contactEmail", { length: 320 }).notNull(),
@@ -322,10 +322,10 @@ export const caseSubmissions = mysqlTable("caseSubmissions", {
   documentUrl: varchar("documentUrl", { length: 500 }),
   status: text("status").default("pending").notNull(),
   reviewNotes: text("reviewNotes"),
-  reviewedAt: int("reviewedAt"),
-  reviewedBy: int("reviewedBy"),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  reviewedAt: bigint("reviewedAt", { mode: "number" }),
+  reviewedBy: integer("reviewedBy"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type CaseSubmission = typeof caseSubmissions.$inferSelect;
@@ -335,15 +335,15 @@ export type InsertCaseSubmission = typeof caseSubmissions.$inferInsert;
 /**
  * Tags for cases - customizable labels for organization
  */
-export const caseTags = mysqlTable("caseTags", {
-  id: int("id").primaryKey().autoincrement(),
+export const caseTags = pgTable("caseTags", {
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),
   color: varchar("color", { length: 7 }).default("#f97316").notNull(), // hex color
   description: text("description"),
-  createdBy: int("createdBy").notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdBy: integer("createdBy").notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type CaseTag = typeof caseTags.$inferSelect;
@@ -352,11 +352,11 @@ export type InsertCaseTag = typeof caseTags.$inferInsert;
 /**
  * Junction table for case-tag relationships
  */
-export const caseTagRelations = mysqlTable("caseTagRelations", {
-  id: int("id").primaryKey().autoincrement(),
-  caseId: int("caseId").notNull(),
-  tagId: int("tagId").notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
+export const caseTagRelations = pgTable("caseTagRelations", {
+  id: serial("id").primaryKey(),
+  caseId: integer("caseId").notNull(),
+  tagId: integer("tagId").notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type CaseTagRelation = typeof caseTagRelations.$inferSelect;
@@ -366,16 +366,16 @@ export type InsertCaseTagRelation = typeof caseTagRelations.$inferInsert;
 /**
  * User points for gamification
  */
-export const userPoints = mysqlTable("userPoints", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
-  points: int("points").default(0).notNull(),
-  level: int("level").default(1).notNull(),
-  totalInteractions: int("totalInteractions").default(0).notNull(),
-  streak: int("streak").default(0).notNull(), // consecutive days
-  lastInteractionAt: int("lastInteractionAt"),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+export const userPoints = pgTable("userPoints", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  points: integer("points").default(0).notNull(),
+  level: integer("level").default(1).notNull(),
+  totalInteractions: integer("totalInteractions").default(0).notNull(),
+  streak: integer("streak").default(0).notNull(), // consecutive days
+  lastInteractionAt: bigint("lastInteractionAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type UserPoints = typeof userPoints.$inferSelect;
@@ -384,18 +384,18 @@ export type InsertUserPoints = typeof userPoints.$inferInsert;
 /**
  * Badge definitions
  */
-export const badges = mysqlTable("badges", {
-  id: int("id").primaryKey().autoincrement(),
+export const badges = pgTable("badges", {
+  id: serial("id").primaryKey(),
   slug: varchar("slug", { length: 50 }).notNull().unique(),
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
   icon: varchar("icon", { length: 50 }).notNull(), // emoji or icon name
   color: varchar("color", { length: 7 }).default("#f97316").notNull(),
   requirement: varchar("requirement", { length: 50 }).notNull(), // e.g., "interactions_10", "streak_7"
-  requiredValue: int("requiredValue").notNull(),
-  pointsReward: int("pointsReward").default(100).notNull(),
+  requiredValue: integer("requiredValue").notNull(),
+  pointsReward: integer("pointsReward").default(100).notNull(),
   rarity: text("rarity").default("common").notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type Badge = typeof badges.$inferSelect;
@@ -404,11 +404,11 @@ export type InsertBadge = typeof badges.$inferInsert;
 /**
  * User earned badges
  */
-export const userBadges = mysqlTable("userBadges", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
-  badgeId: int("badgeId").notNull(),
-  earnedAt: int("earnedAt").notNull(),
+export const userBadges = pgTable("userBadges", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  badgeId: integer("badgeId").notNull(),
+  earnedAt: bigint("earnedAt", { mode: "number" }).notNull(),
 });
 
 export type UserBadge = typeof userBadges.$inferSelect;
@@ -417,13 +417,13 @@ export type InsertUserBadge = typeof userBadges.$inferInsert;
 /**
  * Point transactions log
  */
-export const pointTransactions = mysqlTable("pointTransactions", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
-  points: int("points").notNull(), // positive or negative
+export const pointTransactions = pgTable("pointTransactions", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  points: integer("points").notNull(), // positive or negative
   reason: varchar("reason", { length: 100 }).notNull(),
   metadata: text("metadata"), // JSON with extra info
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type PointTransaction = typeof pointTransactions.$inferSelect;
@@ -432,18 +432,18 @@ export type InsertPointTransaction = typeof pointTransactions.$inferInsert;
 /**
  * API keys for public API access
  */
-export const apiKeys = mysqlTable("apiKeys", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
+export const apiKeys = pgTable("apiKeys", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
   name: varchar("name", { length: 100 }).notNull(),
   keyHash: varchar("keyHash", { length: 64 }).notNull(), // SHA-256 hash
   keyPrefix: varchar("keyPrefix", { length: 8 }).notNull(), // First 8 chars for identification
   permissions: text("permissions"), // JSON array of allowed endpoints
-  rateLimit: int("rateLimit").default(1000).notNull(), // requests per hour
-  lastUsedAt: int("lastUsedAt"),
-  expiresAt: int("expiresAt").$type<number>(),
-  isActive: int("isActive").default(1).notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  rateLimit: integer("rateLimit").default(1000).notNull(), // requests per hour
+  lastUsedAt: bigint("lastUsedAt", { mode: "number" }),
+  expiresAt: bigint("expiresAt", { mode: "number" }),
+  isActive: integer("isActive").default(1).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type ApiKey = typeof apiKeys.$inferSelect;
@@ -453,16 +453,16 @@ export type InsertApiKey = typeof apiKeys.$inferInsert;
 /**
  * Webhooks for external integrations
  */
-export const webhooks = mysqlTable("webhooks", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
+export const webhooks = pgTable("webhooks", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
   name: varchar("name", { length: 100 }).notNull(),
   url: varchar("url", { length: 500 }).notNull(),
   secret: varchar("secret", { length: 64 }).notNull(), // For signature verification
   events: text("events").notNull(), // JSON array of subscribed events
-  isActive: int("isActive").default(1).notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  isActive: integer("isActive").default(1).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Webhook = typeof webhooks.$inferSelect;
@@ -471,17 +471,17 @@ export type InsertWebhook = typeof webhooks.$inferInsert;
 /**
  * Webhook delivery logs
  */
-export const webhookDeliveries = mysqlTable("webhookDeliveries", {
-  id: int("id").primaryKey().autoincrement(),
-  webhookId: int("webhookId").notNull(),
+export const webhookDeliveries = pgTable("webhookDeliveries", {
+  id: serial("id").primaryKey(),
+  webhookId: integer("webhookId").notNull(),
   event: varchar("event", { length: 50 }).notNull(),
   payload: text("payload").notNull(), // JSON payload sent
-  responseStatus: int("responseStatus"),
+  responseStatus: integer("responseStatus"),
   responseBody: text("responseBody"),
-  attempts: int("attempts").default(1).notNull(),
-  nextRetryAt: int("nextRetryAt"),
-  deliveredAt: int("deliveredAt").$type<number>(),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  attempts: integer("attempts").default(1).notNull(),
+  nextRetryAt: bigint("nextRetryAt", { mode: "number" }),
+  deliveredAt: bigint("deliveredAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type WebhookDelivery = typeof webhookDeliveries.$inferSelect;
@@ -490,18 +490,18 @@ export type InsertWebhookDelivery = typeof webhookDeliveries.$inferInsert;
 /**
  * OAuth2 clients for API authentication
  */
-export const oauthClients = mysqlTable("oauthClients", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(), // Owner of the OAuth app
+export const oauthClients = pgTable("oauthClients", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(), // Owner of the OAuth app
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
   clientId: varchar("clientId", { length: 64 }).notNull().unique(),
   clientSecretHash: varchar("clientSecretHash", { length: 64 }).notNull(),
   redirectUris: text("redirectUris").notNull(), // JSON array
   scopes: text("scopes").notNull(), // JSON array of allowed scopes
-  isActive: int("isActive").default(1).notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  isActive: integer("isActive").default(1).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type OAuthClient = typeof oauthClients.$inferSelect;
@@ -510,17 +510,17 @@ export type InsertOAuthClient = typeof oauthClients.$inferInsert;
 /**
  * OAuth2 authorization codes
  */
-export const oauthAuthCodes = mysqlTable("oauthAuthCodes", {
-  id: int("id").primaryKey().autoincrement(),
+export const oauthAuthCodes = pgTable("oauthAuthCodes", {
+  id: serial("id").primaryKey(),
   clientId: varchar("clientId", { length: 64 }).notNull(),
-  userId: int("userId").notNull(),
+  userId: integer("userId").notNull(),
   code: varchar("code", { length: 64 }).notNull().unique(),
   redirectUri: varchar("redirectUri", { length: 500 }).notNull(),
   scopes: text("scopes").notNull(), // JSON array
   codeChallenge: varchar("codeChallenge", { length: 128 }), // PKCE
   codeChallengeMethod: varchar("codeChallengeMethod", { length: 10 }), // plain or S256
-  expiresAt: int("expiresAt").$type<number>().notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type OAuthAuthCode = typeof oauthAuthCodes.$inferSelect;
@@ -529,16 +529,16 @@ export type InsertOAuthAuthCode = typeof oauthAuthCodes.$inferInsert;
 /**
  * OAuth2 access tokens
  */
-export const oauthTokens = mysqlTable("oauthTokens", {
-  id: int("id").primaryKey().autoincrement(),
+export const oauthTokens = pgTable("oauthTokens", {
+  id: serial("id").primaryKey(),
   clientId: varchar("clientId", { length: 64 }).notNull(),
-  userId: int("userId").notNull(),
+  userId: integer("userId").notNull(),
   accessToken: varchar("accessToken", { length: 64 }).notNull().unique(),
   refreshToken: varchar("refreshToken", { length: 64 }).unique(),
   scopes: text("scopes").notNull(), // JSON array
-  accessTokenExpiresAt: int("accessTokenExpiresAt").notNull(),
-  refreshTokenExpiresAt: int("refreshTokenExpiresAt"),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  accessTokenExpiresAt: bigint("accessTokenExpiresAt", { mode: "number" }).notNull(),
+  refreshTokenExpiresAt: bigint("refreshTokenExpiresAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type OAuthToken = typeof oauthTokens.$inferSelect;
@@ -548,19 +548,19 @@ export type InsertOAuthToken = typeof oauthTokens.$inferInsert;
 /**
  * Jarvis long-term memory for persistent context per user.
  */
-export const jarvisMemory = mysqlTable("jarvisMemory", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
+export const jarvisMemory = pgTable("jarvisMemory", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
   memoryType: text("memoryType").notNull(),
   key: varchar("key", { length: 255 }).notNull(),
   value: text("value").notNull(),
-  importance: int("importance").default(5).notNull(), // 1-10 scale
-  lastAccessed: int("lastAccessed").notNull(),
-  accessCount: int("accessCount").default(1).notNull(),
-  expiresAt: int("expiresAt").$type<number>(),
-  isActive: int("isActive").default(1).notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  importance: integer("importance").default(5).notNull(), // 1-10 scale
+  lastAccessed: integer("lastAccessed").notNull(),
+  accessCount: integer("accessCount").default(1).notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }),
+  isActive: integer("isActive").default(1).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type JarvisMemory = typeof jarvisMemory.$inferSelect;
@@ -569,9 +569,9 @@ export type InsertJarvisMemory = typeof jarvisMemory.$inferInsert;
 /**
  * Jarvis generated reports for users.
  */
-export const jarvisReports = mysqlTable("jarvisReports", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
+export const jarvisReports = pgTable("jarvisReports", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   reportType: text("reportType").notNull(),
   content: text("content").notNull(), // JSON or Markdown content
@@ -580,8 +580,8 @@ export const jarvisReports = mysqlTable("jarvisReports", {
   pdfUrl: varchar("pdfUrl", { length: 500 }),
   wordUrl: varchar("wordUrl", { length: 500 }),
   status: text("status").default("generating").notNull(),
-  generatedAt: int("generatedAt"),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  generatedAt: bigint("generatedAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type JarvisReport = typeof jarvisReports.$inferSelect;
@@ -590,19 +590,19 @@ export type InsertJarvisReport = typeof jarvisReports.$inferInsert;
 /**
  * Impact certificates with blockchain-style verification.
  */
-export const impactCertificates = mysqlTable("impactCertificates", {
-  id: int("id").primaryKey().autoincrement(),
+export const impactCertificates = pgTable("impactCertificates", {
+  id: serial("id").primaryKey(),
   certificateId: varchar("certificateId", { length: 64 }).notNull().unique(), // Unique public ID
-  userId: int("userId"),
+  userId: integer("userId"),
   organizationName: varchar("organizationName", { length: 255 }).notNull(),
   projectName: varchar("projectName", { length: 255 }).notNull(),
   projectDescription: text("projectDescription"),
   
   // Impact metrics
-  totalInvestment: int("totalInvestment").notNull(),
-  beneficiaries: int("beneficiaries").notNull(),
-  sRoi: int("sRoi").notNull(), // Stored as percentage * 100
-  impactScore: int("impactScore").notNull(),
+  totalInvestment: integer("totalInvestment").notNull(),
+  beneficiaries: integer("beneficiaries").notNull(),
+  sRoi: integer("sRoi").notNull(), // Stored as percentage * 100
+  impactScore: integer("impactScore").notNull(),
   sector: varchar("sector", { length: 100 }).notNull(),
   sdgs: text("sdgs"), // JSON array of SDG numbers
   
@@ -610,21 +610,21 @@ export const impactCertificates = mysqlTable("impactCertificates", {
   previousHash: varchar("previousHash", { length: 64 }), // Hash of previous certificate (chain)
   dataHash: varchar("dataHash", { length: 64 }).notNull(), // SHA-256 hash of certificate data
   merkleRoot: varchar("merkleRoot", { length: 64 }), // Merkle root for batch verification
-  blockNumber: int("blockNumber"), // Simulated block number
+  blockNumber: integer("blockNumber"), // Simulated block number
   
   // Verification
   verificationStatus: text("verificationStatus").default("pending").notNull(),
-  verifiedBy: int("verifiedBy"),
-  verifiedAt: int("verifiedAt"),
+  verifiedBy: integer("verifiedBy"),
+  verifiedAt: bigint("verifiedAt", { mode: "number" }),
   
   // Metadata
-  issuedAt: int("issuedAt").notNull(),
-  validUntil: int("validUntil").$type<number>(),
+  issuedAt: bigint("issuedAt", { mode: "number" }).notNull(),
+  validUntil: bigint("validUntil", { mode: "number" }),
   qrCodeUrl: varchar("qrCodeUrl", { length: 500 }),
   pdfUrl: varchar("pdfUrl", { length: 500 }),
   
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type ImpactCertificate = typeof impactCertificates.$inferSelect;
@@ -633,17 +633,17 @@ export type InsertImpactCertificate = typeof impactCertificates.$inferInsert;
 /**
  * Social Impact Tokens (SIT) - Tokenized impact credits.
  */
-export const impactTokens = mysqlTable("impactTokens", {
-  id: int("id").primaryKey().autoincrement(),
+export const impactTokens = pgTable("impactTokens", {
+  id: serial("id").primaryKey(),
   tokenId: varchar("tokenId", { length: 64 }).notNull().unique(),
-  userId: int("userId"),
-  organizationId: int("organizationId"),
-  certificateId: int("certificateId"), // Link to certificate
+  userId: integer("userId"),
+  organizationId: integer("organizationId"),
+  certificateId: integer("certificateId"), // Link to certificate
   
   // Token details
   tokenType: text("tokenType").notNull(),
-  amount: int("amount").default(1).notNull(),
-  value: int("value").default(0).notNull(), // Value in cents
+  amount: integer("amount").default(1).notNull(),
+  value: integer("value").default(0).notNull(), // Value in cents
   
   // Metadata
   name: varchar("name", { length: 255 }).notNull(),
@@ -652,16 +652,16 @@ export const impactTokens = mysqlTable("impactTokens", {
   metadata: text("metadata"), // JSON with additional data
   
   // Transfer history
-  previousOwner: int("previousOwner"),
-  transferCount: int("transferCount").default(0).notNull(),
+  previousOwner: integer("previousOwner"),
+  transferCount: integer("transferCount").default(0).notNull(),
   
   // Status
   status: text("status").default("active").notNull(),
-  mintedAt: int("mintedAt").notNull(),
-  expiresAt: int("expiresAt").$type<number>(),
+  mintedAt: bigint("mintedAt", { mode: "number" }).notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }),
   
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type ImpactToken = typeof impactTokens.$inferSelect;
@@ -670,17 +670,17 @@ export type InsertImpactToken = typeof impactTokens.$inferInsert;
 /**
  * Token transactions for audit trail.
  */
-export const tokenTransactions = mysqlTable("tokenTransactions", {
-  id: int("id").primaryKey().autoincrement(),
-  tokenId: int("tokenId").notNull(),
+export const tokenTransactions = pgTable("tokenTransactions", {
+  id: serial("id").primaryKey(),
+  tokenId: integer("tokenId").notNull(),
   transactionType: text("transactionType").notNull(),
-  fromUserId: int("fromUserId"),
-  toUserId: int("toUserId"),
-  amount: int("amount").default(1).notNull(),
+  fromUserId: integer("fromUserId"),
+  toUserId: integer("toUserId"),
+  amount: integer("amount").default(1).notNull(),
   transactionHash: varchar("transactionHash", { length: 64 }).notNull(), // SHA-256 hash
   previousTransactionHash: varchar("previousTransactionHash", { length: 64 }),
   metadata: text("metadata"), // JSON
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type TokenTransaction = typeof tokenTransactions.$inferSelect;
@@ -689,17 +689,17 @@ export type InsertTokenTransaction = typeof tokenTransactions.$inferInsert;
 /**
  * User language preferences.
  */
-export const userPreferences = mysqlTable("userPreferences", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull().unique(),
+export const userPreferences = pgTable("userPreferences", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull().unique(),
   language: varchar("language", { length: 10 }).default("pt").notNull(),
   theme: text("theme").default("system").notNull(),
   timezone: varchar("timezone", { length: 50 }).default("America/Sao_Paulo").notNull(),
-  emailNotifications: int("emailNotifications").default(1).notNull(),
-  pushNotifications: int("pushNotifications").default(1).notNull(),
-  weeklyDigest: int("weeklyDigest").default(1).notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  emailNotifications: integer("emailNotifications").default(1).notNull(),
+  pushNotifications: integer("pushNotifications").default(1).notNull(),
+  weeklyDigest: integer("weeklyDigest").default(1).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type UserPreference = typeof userPreferences.$inferSelect;
@@ -709,18 +709,18 @@ export type InsertUserPreference = typeof userPreferences.$inferInsert;
 /**
  * User notifications table for persistent notification storage.
  */
-export const notifications = mysqlTable("notifications", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
   type: text("type").default("info").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
   link: varchar("link", { length: 500 }),
-  isRead: int("isRead").default(0).notNull(),
+  isRead: integer("isRead").default(0).notNull(),
   metadata: text("metadata").$type<Record<string, unknown>>(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  readAt: int("readAt"),
-  emailSentAt: int("emailSentAt"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  readAt: bigint("readAt", { mode: "number" }),
+  emailSentAt: bigint("emailSentAt", { mode: "number" }),
 });
 
 export type Notification = typeof notifications.$inferSelect;
@@ -729,28 +729,28 @@ export type InsertNotification = typeof notifications.$inferInsert;
 /**
  * User notification preferences - allows users to customize which notifications they receive
  */
-export const notificationPreferences = mysqlTable("notificationPreferences", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
+export const notificationPreferences = pgTable("notificationPreferences", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
   // Notification type preferences (true = enabled, false = disabled)
-  infoEnabled: int("infoEnabled").default(1).notNull(),
-  successEnabled: int("successEnabled").default(1).notNull(),
-  warningEnabled: int("warningEnabled").default(1).notNull(),
-  errorEnabled: int("errorEnabled").default(1).notNull(),
-  casePendingEnabled: int("casePendingEnabled").default(1).notNull(),
-  caseApprovedEnabled: int("caseApprovedEnabled").default(1).notNull(),
-  caseRejectedEnabled: int("caseRejectedEnabled").default(1).notNull(),
-  certificateIssuedEnabled: int("certificateIssuedEnabled").default(1).notNull(),
-  tokenEarnedEnabled: int("tokenEarnedEnabled").default(1).notNull(),
-  systemEnabled: int("systemEnabled").default(1).notNull(),
+  infoEnabled: integer("infoEnabled").default(1).notNull(),
+  successEnabled: integer("successEnabled").default(1).notNull(),
+  warningEnabled: integer("warningEnabled").default(1).notNull(),
+  errorEnabled: integer("errorEnabled").default(1).notNull(),
+  casePendingEnabled: integer("casePendingEnabled").default(1).notNull(),
+  caseApprovedEnabled: integer("caseApprovedEnabled").default(1).notNull(),
+  caseRejectedEnabled: integer("caseRejectedEnabled").default(1).notNull(),
+  certificateIssuedEnabled: integer("certificateIssuedEnabled").default(1).notNull(),
+  tokenEarnedEnabled: integer("tokenEarnedEnabled").default(1).notNull(),
+  systemEnabled: integer("systemEnabled").default(1).notNull(),
   // Email preferences
-  emailEnabled: int("emailEnabled").default(1).notNull(),
+  emailEnabled: integer("emailEnabled").default(1).notNull(),
   emailDigestFrequency: text("emailDigestFrequency").default("instant").notNull(),
   // Push preferences
-  pushEnabled: int("pushEnabled").default(1).notNull(),
+  pushEnabled: integer("pushEnabled").default(1).notNull(),
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type NotificationPreference = typeof notificationPreferences.$inferSelect;
@@ -760,8 +760,8 @@ export type InsertNotificationPreference = typeof notificationPreferences.$infer
 /**
  * Notification templates - customizable templates for automated notifications
  */
-export const notificationTemplates = mysqlTable("notificationTemplates", {
-  id: int("id").primaryKey().autoincrement(),
+export const notificationTemplates = pgTable("notificationTemplates", {
+  id: serial("id").primaryKey(),
   // Template identification
   code: varchar("code", { length: 100 }).notNull().unique(), // e.g., "case_approved", "certificate_issued"
   name: varchar("name", { length: 255 }).notNull(),
@@ -774,12 +774,12 @@ export const notificationTemplates = mysqlTable("notificationTemplates", {
   // Available variables (JSON array of variable names)
   availableVariables: text("availableVariables"), // e.g., '["caseName", "approvalDate", "reviewerName"]'
   // Status
-  isActive: int("isActive").default(1).notNull(),
-  isSystem: int("isSystem").default(0).notNull(), // System templates cannot be deleted
+  isActive: integer("isActive").default(1).notNull(),
+  isSystem: integer("isSystem").default(0).notNull(), // System templates cannot be deleted
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
-  createdBy: int("createdBy"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  createdBy: integer("createdBy"),
 });
 
 export type NotificationTemplate = typeof notificationTemplates.$inferSelect;
@@ -789,8 +789,8 @@ export type InsertNotificationTemplate = typeof notificationTemplates.$inferInse
 /**
  * System settings - persistent configuration for the platform
  */
-export const systemSettings = mysqlTable("systemSettings", {
-  id: int("id").primaryKey().autoincrement(),
+export const systemSettings = pgTable("systemSettings", {
+  id: serial("id").primaryKey(),
   // Setting identification
   key: varchar("key", { length: 100 }).notNull().unique(),
   value: text("value"),
@@ -800,8 +800,8 @@ export const systemSettings = mysqlTable("systemSettings", {
   // Type hint for parsing
   valueType: text("valueType").default("string").notNull(),
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type SystemSetting = typeof systemSettings.$inferSelect;
@@ -811,10 +811,10 @@ export type InsertSystemSetting = typeof systemSettings.$inferInsert;
 /**
  * Audit logs - track administrative actions for compliance and traceability
  */
-export const auditLogs = mysqlTable("auditLogs", {
-  id: int("id").primaryKey().autoincrement(),
+export const auditLogs = pgTable("auditLogs", {
+  id: serial("id").primaryKey(),
   // Who performed the action
-  userId: int("userId"),
+  userId: integer("userId"),
   userName: varchar("userName", { length: 255 }),
   userEmail: varchar("userEmail", { length: 255 }),
   // What action was performed
@@ -831,7 +831,7 @@ export const auditLogs = mysqlTable("auditLogs", {
   ipAddress: varchar("ipAddress", { length: 45 }),
   userAgent: varchar("userAgent", { length: 500 }),
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type AuditLog = typeof auditLogs.$inferSelect;
@@ -841,28 +841,28 @@ export type InsertAuditLog = typeof auditLogs.$inferInsert;
 /**
  * Referrals - track user referrals and rewards
  */
-export const referrals = mysqlTable("referrals", {
-  id: int("id").primaryKey().autoincrement(),
+export const referrals = pgTable("referrals", {
+  id: serial("id").primaryKey(),
   // Referrer (who invited)
-  referrerId: int("referrerId").notNull(),
+  referrerId: integer("referrerId").notNull(),
   referrerCode: varchar("referrerCode", { length: 20 }).notNull(),
   // Referred (who was invited)
-  referredId: int("referredId"),
+  referredId: integer("referredId"),
   referredEmail: varchar("referredEmail", { length: 320 }),
   // Status
   status: text("status").default("pending").notNull(),
   // Rewards
   referrerRewardType: text("referrerRewardType").default("none"),
-  referrerRewardAmount: int("referrerRewardAmount").default(0),
-  referrerRewardApplied: int("referrerRewardApplied").default(0),
+  referrerRewardAmount: integer("referrerRewardAmount").default(0),
+  referrerRewardApplied: integer("referrerRewardApplied").default(0),
   referredRewardType: text("referredRewardType").default("none"),
-  referredRewardAmount: int("referredRewardAmount").default(0),
-  referredRewardApplied: int("referredRewardApplied").default(0),
+  referredRewardAmount: integer("referredRewardAmount").default(0),
+  referredRewardApplied: integer("referredRewardApplied").default(0),
   // Timestamps
-  invitedAt: int("invitedAt").notNull(),
-  signedUpAt: int("signedUpAt"),
-  convertedAt: int("convertedAt"),
-  rewardedAt: int("rewardedAt"),
+  invitedAt: bigint("invitedAt", { mode: "number" }).notNull(),
+  signedUpAt: bigint("signedUpAt", { mode: "number" }),
+  convertedAt: bigint("convertedAt", { mode: "number" }),
+  rewardedAt: bigint("rewardedAt", { mode: "number" }),
 });
 
 export type Referral = typeof referrals.$inferSelect;
@@ -871,12 +871,12 @@ export type InsertReferral = typeof referrals.$inferInsert;
 /**
  * Support tickets - customer support system
  */
-export const supportTickets = mysqlTable("supportTickets", {
-  id: int("id").primaryKey().autoincrement(),
+export const supportTickets = pgTable("supportTickets", {
+  id: serial("id").primaryKey(),
   // Ticket identification
   ticketNumber: varchar("ticketNumber", { length: 20 }).notNull().unique(),
   // User info
-  userId: int("userId"),
+  userId: integer("userId"),
   userName: varchar("userName", { length: 255 }),
   userEmail: varchar("userEmail", { length: 320 }).notNull(),
   // Ticket details
@@ -886,18 +886,18 @@ export const supportTickets = mysqlTable("supportTickets", {
   priority: text("priority").default("medium").notNull(),
   status: text("status").default("open").notNull(),
   // Assignment
-  assignedToId: int("assignedToId"),
+  assignedToId: integer("assignedToId"),
   assignedToName: varchar("assignedToName", { length: 255 }),
   // Resolution
   resolution: text("resolution"),
-  resolvedAt: int("resolvedAt"),
+  resolvedAt: bigint("resolvedAt", { mode: "number" }),
   // Metadata
   attachments: text("attachments"), // JSON array of file URLs
   tags: text("tags"), // JSON array of tags
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
-  firstResponseAt: int("firstResponseAt"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  firstResponseAt: bigint("firstResponseAt", { mode: "number" }),
 });
 
 export type SupportTicket = typeof supportTickets.$inferSelect;
@@ -906,19 +906,19 @@ export type InsertSupportTicket = typeof supportTickets.$inferInsert;
 /**
  * Support ticket messages - conversation thread
  */
-export const ticketMessages = mysqlTable("ticketMessages", {
-  id: int("id").primaryKey().autoincrement(),
-  ticketId: int("ticketId").notNull(),
+export const ticketMessages = pgTable("ticketMessages", {
+  id: serial("id").primaryKey(),
+  ticketId: integer("ticketId").notNull(),
   // Sender info
-  senderId: int("senderId"),
+  senderId: integer("senderId"),
   senderName: varchar("senderName", { length: 255 }).notNull(),
   senderEmail: varchar("senderEmail", { length: 320 }),
-  isStaff: int("isStaff").default(0).notNull(),
+  isStaff: integer("isStaff").default(0).notNull(),
   // Message content
   message: text("message").notNull(),
   attachments: text("attachments"), // JSON array of file URLs
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type TicketMessage = typeof ticketMessages.$inferSelect;
@@ -927,26 +927,26 @@ export type InsertTicketMessage = typeof ticketMessages.$inferInsert;
 /**
  * Feature flags - A/B testing and feature rollout
  */
-export const featureFlags = mysqlTable("featureFlags", {
-  id: int("id").primaryKey().autoincrement(),
+export const featureFlags = pgTable("featureFlags", {
+  id: serial("id").primaryKey(),
   // Flag identification
   key: varchar("key", { length: 100 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   // Flag configuration
-  isEnabled: int("isEnabled").default(0).notNull(),
-  rolloutPercentage: int("rolloutPercentage").default(0), // 0-100
+  isEnabled: integer("isEnabled").default(0).notNull(),
+  rolloutPercentage: integer("rolloutPercentage").default(0), // 0-100
   // Targeting
   targetUserIds: text("targetUserIds"), // JSON array of user IDs
   targetRoles: text("targetRoles"), // JSON array of roles
   targetPlans: text("targetPlans"), // JSON array of plan types
   // A/B testing
-  isExperiment: int("isExperiment").default(0).notNull(),
+  isExperiment: integer("isExperiment").default(0).notNull(),
   variants: text("variants"), // JSON array of variant configs
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
-  expiresAt: int("expiresAt").$type<number>(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }),
 });
 
 export type FeatureFlag = typeof featureFlags.$inferSelect;
@@ -955,10 +955,10 @@ export type InsertFeatureFlag = typeof featureFlags.$inferInsert;
 /**
  * Conversion events - track user actions for analytics
  */
-export const conversionEvents = mysqlTable("conversionEvents", {
-  id: int("id").primaryKey().autoincrement(),
+export const conversionEvents = pgTable("conversionEvents", {
+  id: serial("id").primaryKey(),
   // User info
-  userId: int("userId"),
+  userId: integer("userId"),
   sessionId: varchar("sessionId", { length: 100 }),
   // Event details
   eventType: text("eventType").notNull(),
@@ -971,7 +971,7 @@ export const conversionEvents = mysqlTable("conversionEvents", {
   // Metadata
   metadata: text("metadata"), // JSON additional data
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type ConversionEvent = typeof conversionEvents.$inferSelect;
@@ -980,8 +980,8 @@ export type InsertConversionEvent = typeof conversionEvents.$inferInsert;
 /**
  * Email campaigns - marketing automation
  */
-export const emailCampaigns = mysqlTable("emailCampaigns", {
-  id: int("id").primaryKey().autoincrement(),
+export const emailCampaigns = pgTable("emailCampaigns", {
+  id: serial("id").primaryKey(),
   // Campaign identification
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
@@ -996,17 +996,17 @@ export const emailCampaigns = mysqlTable("emailCampaigns", {
   targetSegment: text("targetSegment").default("all").notNull(),
   // Schedule
   status: text("status").default("draft").notNull(),
-  scheduledAt: int("scheduledAt"),
-  sentAt: int("sentAt").$type<number>(),
+  scheduledAt: bigint("scheduledAt", { mode: "number" }),
+  sentAt: bigint("sentAt", { mode: "number" }),
   // Stats
-  totalRecipients: int("totalRecipients").default(0),
-  totalSent: int("totalSent").default(0),
-  totalOpened: int("totalOpened").default(0),
-  totalClicked: int("totalClicked").default(0),
-  totalUnsubscribed: int("totalUnsubscribed").default(0),
+  totalRecipients: integer("totalRecipients").default(0),
+  totalSent: integer("totalSent").default(0),
+  totalOpened: integer("totalOpened").default(0),
+  totalClicked: integer("totalClicked").default(0),
+  totalUnsubscribed: integer("totalUnsubscribed").default(0),
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type EmailCampaign = typeof emailCampaigns.$inferSelect;
@@ -1016,27 +1016,27 @@ export type InsertEmailCampaign = typeof emailCampaigns.$inferInsert;
 /**
  * Two-Factor Authentication (2FA) configuration per user.
  */
-export const twoFactorAuth = mysqlTable("twoFactorAuth", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull().unique(),
+export const twoFactorAuth = pgTable("twoFactorAuth", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull().unique(),
   // TOTP secret (encrypted)
   secret: varchar("secret", { length: 255 }).notNull(),
   // Status
-  isEnabled: int("isEnabled").default(0).notNull(),
-  isVerified: int("isVerified").default(0).notNull(),
+  isEnabled: integer("isEnabled").default(0).notNull(),
+  isVerified: integer("isVerified").default(0).notNull(),
   // Backup codes (JSON array of hashed codes)
   backupCodes: text("backupCodes"),
-  backupCodesUsed: int("backupCodesUsed").default(0).notNull(),
+  backupCodesUsed: integer("backupCodesUsed").default(0).notNull(),
   // Recovery
   recoveryEmail: varchar("recoveryEmail", { length: 320 }),
   recoveryPhone: varchar("recoveryPhone", { length: 20 }),
   // Audit
-  lastUsedAt: int("lastUsedAt"),
-  failedAttempts: int("failedAttempts").default(0).notNull(),
-  lockedUntil: int("lockedUntil"),
+  lastUsedAt: bigint("lastUsedAt", { mode: "number" }),
+  failedAttempts: integer("failedAttempts").default(0).notNull(),
+  lockedUntil: integer("lockedUntil"),
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type TwoFactorAuth = typeof twoFactorAuth.$inferSelect;
@@ -1045,20 +1045,20 @@ export type InsertTwoFactorAuth = typeof twoFactorAuth.$inferInsert;
 /**
  * 2FA verification sessions - temporary tokens for login flow.
  */
-export const twoFactorSessions = mysqlTable("twoFactorSessions", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
+export const twoFactorSessions = pgTable("twoFactorSessions", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
   sessionToken: varchar("sessionToken", { length: 64 }).notNull().unique(),
   // Status
-  isVerified: int("isVerified").default(0).notNull(),
-  verifiedAt: int("verifiedAt"),
+  isVerified: integer("isVerified").default(0).notNull(),
+  verifiedAt: bigint("verifiedAt", { mode: "number" }),
   // Expiration
-  expiresAt: int("expiresAt").$type<number>().notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
   // Audit
   ipAddress: varchar("ipAddress", { length: 45 }),
   userAgent: varchar("userAgent", { length: 500 }),
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type TwoFactorSession = typeof twoFactorSessions.$inferSelect;
@@ -1067,9 +1067,9 @@ export type InsertTwoFactorSession = typeof twoFactorSessions.$inferInsert;
 /**
  * User access tokens - API tokens for programmatic access.
  */
-export const userAccessTokens = mysqlTable("userAccessTokens", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
+export const userAccessTokens = pgTable("userAccessTokens", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
   // Token identification
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
@@ -1079,18 +1079,18 @@ export const userAccessTokens = mysqlTable("userAccessTokens", {
   // Permissions
   scopes: text("scopes"), // JSON array of allowed scopes
   // Rate limiting
-  rateLimit: int("rateLimit").default(1000).notNull(), // requests per hour
-  rateLimitRemaining: int("rateLimitRemaining").default(1000).notNull(),
-  rateLimitResetAt: int("rateLimitResetAt"),
+  rateLimit: integer("rateLimit").default(1000).notNull(), // requests per hour
+  rateLimitRemaining: integer("rateLimitRemaining").default(1000).notNull(),
+  rateLimitResetAt: bigint("rateLimitResetAt", { mode: "number" }),
   // Usage tracking
-  lastUsedAt: int("lastUsedAt"),
-  usageCount: int("usageCount").default(0).notNull(),
+  lastUsedAt: bigint("lastUsedAt", { mode: "number" }),
+  usageCount: integer("usageCount").default(0).notNull(),
   // Status
-  isActive: int("isActive").default(1).notNull(),
-  expiresAt: int("expiresAt").$type<number>(),
+  isActive: integer("isActive").default(1).notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }),
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type UserAccessToken = typeof userAccessTokens.$inferSelect;
@@ -1099,20 +1099,20 @@ export type InsertUserAccessToken = typeof userAccessTokens.$inferInsert;
 /**
  * Token usage logs - audit trail for API token usage.
  */
-export const tokenUsageLogs = mysqlTable("tokenUsageLogs", {
-  id: int("id").primaryKey().autoincrement(),
-  tokenId: int("tokenId").notNull(),
-  userId: int("userId").notNull(),
+export const tokenUsageLogs = pgTable("tokenUsageLogs", {
+  id: serial("id").primaryKey(),
+  tokenId: integer("tokenId").notNull(),
+  userId: integer("userId").notNull(),
   // Request details
   endpoint: varchar("endpoint", { length: 255 }).notNull(),
   method: varchar("method", { length: 10 }).notNull(),
-  statusCode: int("statusCode"),
-  responseTime: int("responseTime"), // in milliseconds
+  statusCode: integer("statusCode"),
+  responseTime: integer("responseTime"), // in milliseconds
   // Request context
   ipAddress: varchar("ipAddress", { length: 45 }),
   userAgent: varchar("userAgent", { length: 500 }),
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type TokenUsageLog = typeof tokenUsageLogs.$inferSelect;
@@ -1122,23 +1122,23 @@ export type InsertTokenUsageLog = typeof tokenUsageLogs.$inferInsert;
 /**
  * Testimonials/Depoimentos - Depoimentos de clientes e parceiros
  */
-export const testimonials = mysqlTable("testimonials", {
-  id: int("id").primaryKey().autoincrement(),
+export const testimonials = pgTable("testimonials", {
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   role: varchar("role", { length: 255 }).notNull(),
   company: varchar("company", { length: 255 }).notNull(),
   sector: varchar("sector", { length: 100 }).notNull(),
   content: text("content").notNull(),
-  rating: int("rating").default(5).notNull(),
+  rating: integer("rating").default(5).notNull(),
   imageUrl: varchar("imageUrl", { length: 500 }),
   videoUrl: varchar("videoUrl", { length: 500 }),
   metrics: text("metrics"), // JSON array of {label, value}
-  isActive: int("isActive").default(1).notNull(),
-  isFeatured: int("isFeatured").default(0).notNull(),
-  displayOrder: int("displayOrder").default(0).notNull(),
+  isActive: integer("isActive").default(1).notNull(),
+  isFeatured: integer("isFeatured").default(0).notNull(),
+  displayOrder: integer("displayOrder").default(0).notNull(),
   language: varchar("language", { length: 5 }).default("pt").notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Testimonial = typeof testimonials.$inferSelect;
@@ -1147,8 +1147,8 @@ export type InsertTestimonial = typeof testimonials.$inferInsert;
 /**
  * Partners - Parceiros e organizações associadas
  */
-export const partners = mysqlTable("partners", {
-  id: int("id").primaryKey().autoincrement(),
+export const partners = pgTable("partners", {
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   slug: varchar("slug", { length: 255 }),
   description: text("description"),
@@ -1156,9 +1156,9 @@ export const partners = mysqlTable("partners", {
   website: varchar("website", { length: 1000 }),
   partnerType: varchar("partnerType", { length: 100 }),
   status: varchar("status", { length: 50 }),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
-  isActive: int("isActive").default(1).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  isActive: integer("isActive").default(1).notNull(),
 });
 
 export type Partner = typeof partners.$inferSelect;
@@ -1167,17 +1167,17 @@ export type InsertPartner = typeof partners.$inferInsert;
 /**
  * Social Proof Metrics - Métricas de prova social para landing page
  */
-export const socialProofMetrics = mysqlTable("socialProofMetrics", {
-  id: int("id").primaryKey().autoincrement(),
+export const socialProofMetrics = pgTable("socialProofMetrics", {
+  id: serial("id").primaryKey(),
   key: varchar("key", { length: 50 }).notNull().unique(), // e.g., "organizations", "beneficiaries", "sroi_avg"
   value: varchar("value", { length: 50 }).notNull(), // e.g., "500+", "2M+", "12x"
   label: varchar("label", { length: 255 }).notNull(),
   labelEn: varchar("labelEn", { length: 255 }),
   labelEs: varchar("labelEs", { length: 255 }),
   icon: varchar("icon", { length: 50 }), // Icon name from lucide-react
-  displayOrder: int("displayOrder").default(0).notNull(),
-  isActive: int("isActive").default(1).notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  displayOrder: integer("displayOrder").default(0).notNull(),
+  isActive: integer("isActive").default(1).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type SocialProofMetric = typeof socialProofMetrics.$inferSelect;
@@ -1186,19 +1186,19 @@ export type InsertSocialProofMetric = typeof socialProofMetrics.$inferInsert;
 /**
  * Platform Stats - Estatísticas reais da plataforma
  */
-export const platformStats = mysqlTable("platformStats", {
-  id: int("id").primaryKey().autoincrement(),
-  date: int("date").$type<number>().notNull(),
-  totalUsers: int("totalUsers").default(0).notNull(),
-  activeUsers: int("activeUsers").default(0).notNull(),
-  totalCalculations: int("totalCalculations").default(0).notNull(),
-  totalCases: int("totalCases").default(0).notNull(),
-  totalCertificates: int("totalCertificates").default(0).notNull(),
-  totalTokensIssued: int("totalTokensIssued").default(0).notNull(),
-  avgSroi: int("avgSroi").default(0), // Stored as integer (e.g., 450 = 4.5x)
-  totalImpactValue: int("totalImpactValue").default(0), // In cents (use int for simplicity)
-  totalBeneficiaries: int("totalBeneficiaries").default(0),
-  createdAt: int("createdAt").$type<number>().notNull(),
+export const platformStats = pgTable("platformStats", {
+  id: serial("id").primaryKey(),
+  date: bigint("date", { mode: "number" }).notNull(),
+  totalUsers: integer("totalUsers").default(0).notNull(),
+  activeUsers: integer("activeUsers").default(0).notNull(),
+  totalCalculations: integer("totalCalculations").default(0).notNull(),
+  totalCases: integer("totalCases").default(0).notNull(),
+  totalCertificates: integer("totalCertificates").default(0).notNull(),
+  totalTokensIssued: integer("totalTokensIssued").default(0).notNull(),
+  avgSroi: integer("avgSroi").default(0), // Stored as integer (e.g., 450 = 4.5x)
+  totalImpactValue: integer("totalImpactValue").default(0), // In cents (use int for simplicity)
+  totalBeneficiaries: integer("totalBeneficiaries").default(0),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type PlatformStat = typeof platformStats.$inferSelect;
@@ -1213,8 +1213,8 @@ export type InsertPlatformStat = typeof platformStats.$inferInsert;
  * SET7 TASKLOG - Ledger de microatividades auditável
  * Registra cada task, agente, tokens consumidos e tempo para ROI auditável
  */
-export const set7Tasklog = mysqlTable("set7Tasklog", {
-  id: int("id").primaryKey().autoincrement(),
+export const set7Tasklog = pgTable("set7Tasklog", {
+  id: serial("id").primaryKey(),
   taskId: varchar("taskId", { length: 64 }).notNull().unique(), // UUID único da task
   
   // Identificação da task
@@ -1234,14 +1234,14 @@ export const set7Tasklog = mysqlTable("set7Tasklog", {
   taxonomyTags: text("taxonomyTags"), // JSON array de tags
   
   // Métricas de execução
-  tokensInput: int("tokensInput").default(0).notNull(),
-  tokensOutput: int("tokensOutput").default(0).notNull(),
-  tokensTotal: int("tokensTotal").default(0).notNull(),
+  tokensInput: integer("tokensInput").default(0).notNull(),
+  tokensOutput: integer("tokensOutput").default(0).notNull(),
+  tokensTotal: integer("tokensTotal").default(0).notNull(),
   modelUsed: varchar("modelUsed", { length: 50 }),
-  executionTimeMs: int("executionTimeMs").default(0).notNull(),
+  executionTimeMs: integer("executionTimeMs").default(0).notNull(),
   
   // Custo
-  costUsd: int("costUsd").default(0).notNull(), // Em centavos de dólar
+  costUsd: integer("costUsd").default(0).notNull(), // Em centavos de dólar
   
   // Status e resultado
   status: text("status").default("pending").notNull(),
@@ -1256,9 +1256,9 @@ export const set7Tasklog = mysqlTable("set7Tasklog", {
   gateStatus: text("gateStatus"),
   
   // Timestamps
-  startedAt: int("startedAt"),
-  completedAt: int("completedAt").$type<number>(),
-  createdAt: int("createdAt").$type<number>().notNull(),
+  startedAt: bigint("startedAt", { mode: "number" }),
+  completedAt: bigint("completedAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type Set7Tasklog = typeof set7Tasklog.$inferSelect;
@@ -1267,8 +1267,8 @@ export type InsertSet7Tasklog = typeof set7Tasklog.$inferInsert;
 /**
  * SET7 Agentes - Registro de agentes do sistema
  */
-export const set7Agents = mysqlTable("set7Agents", {
-  id: int("id").primaryKey().autoincrement(),
+export const set7Agents = pgTable("set7Agents", {
+  id: serial("id").primaryKey(),
   agentId: varchar("agentId", { length: 64 }).notNull().unique(),
   
   // Identificação
@@ -1283,34 +1283,34 @@ export const set7Agents = mysqlTable("set7Agents", {
   // Modelo e capabilities
   defaultModel: varchar("defaultModel", { length: 50 }).default("gpt-4o").notNull(),
   allowedModels: text("allowedModels"), // JSON array
-  maxTokensPerRequest: int("maxTokensPerRequest").default(4000).notNull(),
-  maxTokensPerDay: int("maxTokensPerDay").default(100000).notNull(),
+  maxTokensPerRequest: integer("maxTokensPerRequest").default(4000).notNull(),
+  maxTokensPerDay: integer("maxTokensPerDay").default(100000).notNull(),
   
   // Permissões
   permissions: text("permissions"), // JSON array de permissões
-  canReadFiles: int("canReadFiles").default(0).notNull(),
-  canWriteFiles: int("canWriteFiles").default(0).notNull(),
-  canExecuteCode: int("canExecuteCode").default(0).notNull(),
-  canAccessNetwork: int("canAccessNetwork").default(0).notNull(),
-  canAccessDatabase: int("canAccessDatabase").default(0).notNull(),
+  canReadFiles: integer("canReadFiles").default(0).notNull(),
+  canWriteFiles: integer("canWriteFiles").default(0).notNull(),
+  canExecuteCode: integer("canExecuteCode").default(0).notNull(),
+  canAccessNetwork: integer("canAccessNetwork").default(0).notNull(),
+  canAccessDatabase: integer("canAccessDatabase").default(0).notNull(),
   
   // Status
   status: text("status").default("active").notNull(),
-  killSwitchTriggered: int("killSwitchTriggered").default(0).notNull(),
+  killSwitchTriggered: integer("killSwitchTriggered").default(0).notNull(),
   killSwitchReason: text("killSwitchReason"),
-  killSwitchAt: int("killSwitchAt"),
+  killSwitchAt: bigint("killSwitchAt", { mode: "number" }),
   
   // Métricas
-  totalTasksExecuted: int("totalTasksExecuted").default(0).notNull(),
-  totalTokensUsed: int("totalTokensUsed").default(0).notNull(),
-  totalCostUsd: int("totalCostUsd").default(0).notNull(),
-  avgExecutionTimeMs: int("avgExecutionTimeMs").default(0).notNull(),
-  successRate: int("successRate").default(100).notNull(), // Percentual
+  totalTasksExecuted: integer("totalTasksExecuted").default(0).notNull(),
+  totalTokensUsed: integer("totalTokensUsed").default(0).notNull(),
+  totalCostUsd: integer("totalCostUsd").default(0).notNull(),
+  avgExecutionTimeMs: integer("avgExecutionTimeMs").default(0).notNull(),
+  successRate: integer("successRate").default(100).notNull(), // Percentual
   
   // Timestamps
-  lastActiveAt: int("lastActiveAt"),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  lastActiveAt: bigint("lastActiveAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Set7Agent = typeof set7Agents.$inferSelect;
@@ -1319,8 +1319,8 @@ export type InsertSet7Agent = typeof set7Agents.$inferInsert;
 /**
  * SET7 Integration Identity - Hash/QR Code para integrações verificáveis
  */
-export const set7Integrations = mysqlTable("set7Integrations", {
-  id: int("id").primaryKey().autoincrement(),
+export const set7Integrations = pgTable("set7Integrations", {
+  id: serial("id").primaryKey(),
   integrationId: varchar("integrationId", { length: 64 }).notNull().unique(),
   
   // Identificação
@@ -1344,8 +1344,8 @@ export const set7Integrations = mysqlTable("set7Integrations", {
   
   // Verificação
   verificationStatus: text("verificationStatus").default("pending").notNull(),
-  lastVerifiedAt: int("lastVerifiedAt"),
-  verificationCount: int("verificationCount").default(0).notNull(),
+  lastVerifiedAt: bigint("lastVerifiedAt", { mode: "number" }),
+  verificationCount: integer("verificationCount").default(0).notNull(),
   
   // Configuração
   config: text("config"), // JSON com configurações
@@ -1356,14 +1356,14 @@ export const set7Integrations = mysqlTable("set7Integrations", {
   status: text("status").default("active").notNull(),
   
   // Métricas
-  totalCalls: int("totalCalls").default(0).notNull(),
-  successfulCalls: int("successfulCalls").default(0).notNull(),
-  failedCalls: int("failedCalls").default(0).notNull(),
-  avgResponseTimeMs: int("avgResponseTimeMs").default(0).notNull(),
+  totalCalls: integer("totalCalls").default(0).notNull(),
+  successfulCalls: integer("successfulCalls").default(0).notNull(),
+  failedCalls: integer("failedCalls").default(0).notNull(),
+  avgResponseTimeMs: integer("avgResponseTimeMs").default(0).notNull(),
   
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Set7Integration = typeof set7Integrations.$inferSelect;
@@ -1372,8 +1372,8 @@ export type InsertSet7Integration = typeof set7Integrations.$inferInsert;
 /**
  * SET7 Token Budgets - Orçamento de tokens por fase/projeto/fluxo
  */
-export const set7TokenBudgets = mysqlTable("set7TokenBudgets", {
-  id: int("id").primaryKey().autoincrement(),
+export const set7TokenBudgets = pgTable("set7TokenBudgets", {
+  id: serial("id").primaryKey(),
   budgetId: varchar("budgetId", { length: 64 }).notNull().unique(),
   
   // Escopo do budget
@@ -1382,31 +1382,31 @@ export const set7TokenBudgets = mysqlTable("set7TokenBudgets", {
   scopeName: varchar("scopeName", { length: 255 }).notNull(),
   
   // Limites
-  budgetTokens: int("budgetTokens").notNull(), // Limite de tokens
-  budgetUsd: int("budgetUsd").notNull(), // Limite em centavos de dólar
-  warningThreshold: int("warningThreshold").default(80).notNull(), // Percentual para alerta
-  criticalThreshold: int("criticalThreshold").default(95).notNull(), // Percentual para bloqueio
+  budgetTokens: integer("budgetTokens").notNull(), // Limite de tokens
+  budgetUsd: integer("budgetUsd").notNull(), // Limite em centavos de dólar
+  warningThreshold: integer("warningThreshold").default(80).notNull(), // Percentual para alerta
+  criticalThreshold: integer("criticalThreshold").default(95).notNull(), // Percentual para bloqueio
   
   // Consumo atual
-  usedTokens: int("usedTokens").default(0).notNull(),
-  usedUsd: int("usedUsd").default(0).notNull(),
+  usedTokens: integer("usedTokens").default(0).notNull(),
+  usedUsd: integer("usedUsd").default(0).notNull(),
   
   // Período
   periodType: text("periodType").default("monthly").notNull(),
-  periodStart: int("periodStart"),
-  periodEnd: int("periodEnd"),
+  periodStart: integer("periodStart"),
+  periodEnd: integer("periodEnd"),
   
   // Status
   status: text("status").default("active").notNull(),
   
   // Circuit breaker
-  circuitBreakerTriggered: int("circuitBreakerTriggered").default(0).notNull(),
-  circuitBreakerAt: int("circuitBreakerAt"),
+  circuitBreakerTriggered: integer("circuitBreakerTriggered").default(0).notNull(),
+  circuitBreakerAt: bigint("circuitBreakerAt", { mode: "number" }),
   circuitBreakerReason: text("circuitBreakerReason"),
   
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Set7TokenBudget = typeof set7TokenBudgets.$inferSelect;
@@ -1415,8 +1415,8 @@ export type InsertSet7TokenBudget = typeof set7TokenBudgets.$inferInsert;
 /**
  * SET7 Gates - Condições de avanço entre fases
  */
-export const set7Gates = mysqlTable("set7Gates", {
-  id: int("id").primaryKey().autoincrement(),
+export const set7Gates = pgTable("set7Gates", {
+  id: serial("id").primaryKey(),
   gateId: varchar("gateId", { length: 64 }).notNull().unique(),
   
   // Identificação
@@ -1439,17 +1439,17 @@ export const set7Gates = mysqlTable("set7Gates", {
   
   // Mitigação (se status = mitigation)
   mitigationPlan: text("mitigationPlan"),
-  mitigationDeadline: int("mitigationDeadline"),
-  mitigationApprovedBy: int("mitigationApprovedBy"),
+  mitigationDeadline: integer("mitigationDeadline"),
+  mitigationApprovedBy: integer("mitigationApprovedBy"),
   
   // Aprovação
-  approvedBy: int("approvedBy"),
-  approvedAt: int("approvedAt").$type<number>(),
-  humanApprovalRequired: int("humanApprovalRequired").default(0).notNull(),
+  approvedBy: integer("approvedBy"),
+  approvedAt: bigint("approvedAt", { mode: "number" }),
+  humanApprovalRequired: integer("humanApprovalRequired").default(0).notNull(),
   
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Set7Gate = typeof set7Gates.$inferSelect;
@@ -1458,8 +1458,8 @@ export type InsertSet7Gate = typeof set7Gates.$inferInsert;
 /**
  * SET7 ROI Tracking - Rastreamento de ROI por fase
  */
-export const set7RoiTracking = mysqlTable("set7RoiTracking", {
-  id: int("id").primaryKey().autoincrement(),
+export const set7RoiTracking = pgTable("set7RoiTracking", {
+  id: serial("id").primaryKey(),
   trackingId: varchar("trackingId", { length: 64 }).notNull().unique(),
   
   // Tipo de ROI
@@ -1467,19 +1467,19 @@ export const set7RoiTracking = mysqlTable("set7RoiTracking", {
   phase: varchar("phase", { length: 20 }), // Fase associada (para partial)
   
   // Métricas de custo
-  plannedCostUsd: int("plannedCostUsd").default(0).notNull(),
-  actualCostUsd: int("actualCostUsd").default(0).notNull(),
-  plannedTokens: int("plannedTokens").default(0).notNull(),
-  actualTokens: int("actualTokens").default(0).notNull(),
-  plannedHours: int("plannedHours").default(0).notNull(),
-  actualHours: int("actualHours").default(0).notNull(),
+  plannedCostUsd: integer("plannedCostUsd").default(0).notNull(),
+  actualCostUsd: integer("actualCostUsd").default(0).notNull(),
+  plannedTokens: integer("plannedTokens").default(0).notNull(),
+  actualTokens: integer("actualTokens").default(0).notNull(),
+  plannedHours: integer("plannedHours").default(0).notNull(),
+  actualHours: integer("actualHours").default(0).notNull(),
   
   // Métricas de valor
-  plannedValueUsd: int("plannedValueUsd").default(0).notNull(),
-  actualValueUsd: int("actualValueUsd").default(0).notNull(),
+  plannedValueUsd: integer("plannedValueUsd").default(0).notNull(),
+  actualValueUsd: integer("actualValueUsd").default(0).notNull(),
   
   // ROI calculado
-  roiPercentage: int("roiPercentage").default(0).notNull(), // Percentual * 100
+  roiPercentage: integer("roiPercentage").default(0).notNull(), // Percentual * 100
   roiRatio: varchar("roiRatio", { length: 20 }), // e.g., "3.5:1"
   
   // Premissas
@@ -1494,9 +1494,9 @@ export const set7RoiTracking = mysqlTable("set7RoiTracking", {
   documentHash: varchar("documentHash", { length: 64 }), // SHA-256 do documento
   
   // Timestamps
-  calculatedAt: int("calculatedAt").notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  calculatedAt: bigint("calculatedAt", { mode: "number" }).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Set7RoiTracking = typeof set7RoiTracking.$inferSelect;
@@ -1505,8 +1505,8 @@ export type InsertSet7RoiTracking = typeof set7RoiTracking.$inferInsert;
 /**
  * SET7 Runtime Config - Configuração do runtime S7L
  */
-export const set7RuntimeConfig = mysqlTable("set7RuntimeConfig", {
-  id: int("id").primaryKey().autoincrement(),
+export const set7RuntimeConfig = pgTable("set7RuntimeConfig", {
+  id: serial("id").primaryKey(),
   configId: varchar("configId", { length: 64 }).notNull().unique(),
   
   // Modo de execução
@@ -1514,11 +1514,11 @@ export const set7RuntimeConfig = mysqlTable("set7RuntimeConfig", {
   
   // Hooks ativos
   hooksEnabled: text("hooksEnabled"), // JSON array de hooks ativos
-  hookRoiEnabled: int("hookRoiEnabled").default(1).notNull(),
-  hookTokensEnabled: int("hookTokensEnabled").default(1).notNull(),
-  hookQualityEnabled: int("hookQualityEnabled").default(1).notNull(),
-  hookSecurityEnabled: int("hookSecurityEnabled").default(1).notNull(),
-  hookGtlEnabled: int("hookGtlEnabled").default(1).notNull(),
+  hookRoiEnabled: integer("hookRoiEnabled").default(1).notNull(),
+  hookTokensEnabled: integer("hookTokensEnabled").default(1).notNull(),
+  hookQualityEnabled: integer("hookQualityEnabled").default(1).notNull(),
+  hookSecurityEnabled: integer("hookSecurityEnabled").default(1).notNull(),
+  hookGtlEnabled: integer("hookGtlEnabled").default(1).notNull(),
   
   // Frequência dos hooks
   hookFrequency: text("hookFrequency").default("per_phase").notNull(),
@@ -1528,7 +1528,7 @@ export const set7RuntimeConfig = mysqlTable("set7RuntimeConfig", {
   gtlPlans: text("gtlPlans"), // JSON com planos disponíveis
   
   // Configurações de tokens
-  defaultTokenBudget: int("defaultTokenBudget").default(100000).notNull(),
+  defaultTokenBudget: integer("defaultTokenBudget").default(100000).notNull(),
   modelRouting: text("modelRouting"), // JSON com regras de roteamento
   
   // Configurações de gates
@@ -1536,11 +1536,11 @@ export const set7RuntimeConfig = mysqlTable("set7RuntimeConfig", {
   humanApprovalPhases: text("humanApprovalPhases"), // JSON array de fases que requerem aprovação humana
   
   // Status
-  isActive: int("isActive").default(1).notNull(),
+  isActive: integer("isActive").default(1).notNull(),
   
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Set7RuntimeConfig = typeof set7RuntimeConfig.$inferSelect;
@@ -1549,8 +1549,8 @@ export type InsertSet7RuntimeConfig = typeof set7RuntimeConfig.$inferInsert;
 /**
  * SET7 Audit Log - Log de auditoria para compliance
  */
-export const set7AuditLog = mysqlTable("set7AuditLog", {
-  id: int("id").primaryKey().autoincrement(),
+export const set7AuditLog = pgTable("set7AuditLog", {
+  id: serial("id").primaryKey(),
   auditId: varchar("auditId", { length: 64 }).notNull().unique(),
   
   // Tipo de evento
@@ -1568,14 +1568,14 @@ export const set7AuditLog = mysqlTable("set7AuditLog", {
   details: text("details"), // JSON com detalhes adicionais
   
   // Usuário (se ação humana)
-  userId: int("userId"),
+  userId: integer("userId"),
   userName: varchar("userName", { length: 255 }),
   
   // Severidade
   severity: text("severity").default("info").notNull(),
   
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 
 export type Set7AuditLog = typeof set7AuditLog.$inferSelect;
@@ -1585,8 +1585,8 @@ export type InsertSet7AuditLog = typeof set7AuditLog.$inferInsert;
  * SET7 NFRs - Matriz de Qualidades (Non-Functional Requirements)
  * 15 dimensões de qualidade conforme SET7.01
  */
-export const set7Nfrs = mysqlTable("set7Nfrs", {
-  id: int("id").primaryKey().autoincrement(),
+export const set7Nfrs = pgTable("set7Nfrs", {
+  id: serial("id").primaryKey(),
   nfrId: varchar("nfrId", { length: 64 }).notNull().unique(),
   
   // Identificação
@@ -1615,12 +1615,12 @@ export const set7Nfrs = mysqlTable("set7Nfrs", {
   evidences: text("evidences"), // JSON array de evidências
   
   // Responsável
-  ownerId: int("ownerId"),
+  ownerId: integer("ownerId"),
   ownerName: varchar("ownerName", { length: 255 }),
   
   // Timestamps
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Set7Nfr = typeof set7Nfrs.$inferSelect;
@@ -1630,8 +1630,8 @@ export type InsertSet7Nfr = typeof set7Nfrs.$inferInsert;
 /**
  * White Label Configuration table for multi-tenant branding.
  */
-export const whiteLabelConfig = mysqlTable("white_label_config", {
-  id: int("id").primaryKey().autoincrement(),
+export const whiteLabelConfig = pgTable("white_label_config", {
+  id: serial("id").primaryKey(),
   organizationId: varchar("organizationId", { length: 255 }).notNull().unique(),
   
   // Branding
@@ -1660,8 +1660,8 @@ export const whiteLabelConfig = mysqlTable("white_label_config", {
   twitterUrl: varchar("twitterUrl", { length: 500 }),
   
   // Metadata
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type WhiteLabelConfig = typeof whiteLabelConfig.$inferSelect;
@@ -1672,71 +1672,85 @@ export type InsertWhiteLabelConfig = typeof whiteLabelConfig.$inferInsert;
  */
 
 // Roles table
-export const roles = mysqlTable("roles", {
-  id: int("id").primaryKey().autoincrement(),
+export const roles = pgTable("roles", {
+  id: serial("id").primaryKey(),
   code: varchar("code", { length: 50 }).notNull().unique(),
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
-  level: int("level").notNull().default(0),
-  isActive: int("isActive").notNull().default(1),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  level: integer("level").notNull().default(0),
+  isActive: integer("isActive").notNull().default(1),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Role = typeof roles.$inferSelect;
 export type InsertRole = typeof roles.$inferInsert;
 
 // Permissions table
-export const permissions = mysqlTable("permissions", {
-  id: int("id").primaryKey().autoincrement(),
+export const permissions = pgTable("permissions", {
+  id: serial("id").primaryKey(),
   code: varchar("code", { length: 100 }).notNull().unique(),
   name: varchar("name", { length: 150 }).notNull(),
   description: text("description"),
   category: varchar("category", { length: 50 }).notNull(),
-  isActive: int("isActive").notNull().default(1),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  isActive: integer("isActive").notNull().default(1),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
 export type Permission = typeof permissions.$inferSelect;
 export type InsertPermission = typeof permissions.$inferInsert;
 
 // RolePermissions junction table
-export const rolePermissions = mysqlTable("rolePermissions", {
-  id: int("id").primaryKey().autoincrement(),
-  roleId: int("roleId").notNull(),
-  permissionId: int("permissionId").notNull(),
-  assignedAt: int("assignedAt").notNull(),
+export const rolePermissions = pgTable("rolePermissions", {
+  id: serial("id").primaryKey(),
+  roleId: integer("roleId").notNull(),
+  permissionId: integer("permissionId").notNull(),
+  assignedAt: bigint("assignedAt", { mode: "number" }).notNull(),
+}, (t) => ({
+  rolePermUq: unique("rolePermissions_role_perm_uq").on(t.roleId, t.permissionId),
+}));
+
+// Tokens de reset de senha, usados pelo fluxo local em server/_core/local-auth.ts.
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  token: varchar("token", { length: 255 }).notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  usedAt: bigint("usedAt", { mode: "number" }),
 });
 
 export type RolePermission = typeof rolePermissions.$inferSelect;
 export type InsertRolePermission = typeof rolePermissions.$inferInsert;
 
 // UserRoles junction table
-export const userRoles = mysqlTable("userRoles", {
-  id: int("id").primaryKey().autoincrement(),
-  userId: int("userId").notNull(),
-  roleId: int("roleId").notNull(),
-  assignedAt: int("assignedAt").notNull(),
-});
+export const userRoles = pgTable("userRoles", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  roleId: integer("roleId").notNull(),
+  assignedAt: bigint("assignedAt", { mode: "number" }).notNull(),
+}, (t) => ({
+  userRoleUq: unique("userRoles_user_role_uq").on(t.userId, t.roleId),
+}));
 
 export type UserRole = typeof userRoles.$inferSelect;
 export type InsertUserRole = typeof userRoles.$inferInsert;
 
 
 // Case Studies table
-export const caseStudies = mysqlTable("caseStudies", {
-  id: int("id").primaryKey().autoincrement(),
+export const caseStudies = pgTable("caseStudies", {
+  id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   organization: varchar("organization", { length: 255 }),
   sector: varchar("sector", { length: 100 }),
   region: varchar("region", { length: 100 }),
   location: varchar("location", { length: 255 }),
-  investment: int("investment"),
-  beneficiaries: int("beneficiaries"),
-  duration: int("duration"),
-  sroi: decimal("sroi", { precision: 10, scale: 2 }),
-  year: int("year"),
+  investment: integer("investment"),
+  beneficiaries: integer("beneficiaries"),
+  duration: integer("duration"),
+  sroi: numeric("sroi", { precision: 10, scale: 2 }),
+  year: integer("year"),
   description: text("description"),
   challenge: text("challenge"),
   solution: text("solution"),
@@ -1746,10 +1760,10 @@ export const caseStudies = mysqlTable("caseStudies", {
   testimonialRole: varchar("testimonialRole", { length: 255 }),
   sdgs: text("sdgs"),
   metrics: text("metrics"),
-  isFeatured: int("isFeatured").notNull().default(0),
-  isActive: int("isActive").notNull().default(1),
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  isFeatured: integer("isFeatured").notNull().default(0),
+  isActive: integer("isActive").notNull().default(1),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
   projectTitle: varchar("projectTitle", { length: 255 }),
   organizationName: varchar("organizationName", { length: 255 }),
   contactName: varchar("contactName", { length: 255 }),
@@ -1757,8 +1771,8 @@ export const caseStudies = mysqlTable("caseStudies", {
   contactPhone: varchar("contactPhone", { length: 20 }),
   status: varchar("status", { length: 50 }).notNull().default("pending"),
   reviewNotes: text("reviewNotes"),
-  reviewedBy: int("reviewedBy"),
-  reviewedAt: int("reviewedAt"),
+  reviewedBy: integer("reviewedBy"),
+  reviewedAt: bigint("reviewedAt", { mode: "number" }),
 });
 
 export type CaseStudy = typeof caseStudies.$inferSelect;
@@ -1767,8 +1781,8 @@ export type InsertCaseStudy = typeof caseStudies.$inferInsert;
 
 
 // Blog Posts table
-export const blogPosts = mysqlTable("blogPosts", {
-  id: int("id").primaryKey().autoincrement(),
+export const blogPosts = pgTable("blogPosts", {
+  id: serial("id").primaryKey(),
   title: varchar("title", { length: 500 }).notNull(),
   slug: varchar("slug", { length: 500 }).notNull(),
   excerpt: text("excerpt"),
@@ -1778,10 +1792,10 @@ export const blogPosts = mysqlTable("blogPosts", {
   category: varchar("category", { length: 255 }),
   tags: text("tags"),
   status: varchar("status", { length: 50 }).default("draft"),
-  viewCount: int("viewCount").default(0),
-  publishedAt: int("publishedAt"),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  viewCount: integer("viewCount").default(0),
+  publishedAt: bigint("publishedAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type InsertBlogPost = typeof blogPosts.$inferInsert;
@@ -1789,35 +1803,35 @@ export type InsertBlogPost = typeof blogPosts.$inferInsert;
 // ============================================================
 // EVENTS & WEBINARS
 // ============================================================
-export const events = mysqlTable("events", {
-  id: int("id").primaryKey().autoincrement(),
+export const events = pgTable("events", {
+  id: serial("id").primaryKey(),
   title: varchar("title", { length: 500 }).notNull(),
   slug: varchar("slug", { length: 500 }).notNull(),
   description: text("description"),
   eventType: varchar("eventType", { length: 100 }),
   location: varchar("location", { length: 500 }),
   virtualLink: varchar("virtualLink", { length: 1000 }),
-  startsAt: int("startsAt").notNull(),
-  endsAt: int("endsAt").notNull(),
-  maxAttendees: int("maxAttendees"),
-  registrationDeadline: int("registrationDeadline"),
+  startsAt: bigint("startsAt", { mode: "number" }).notNull(),
+  endsAt: bigint("endsAt", { mode: "number" }).notNull(),
+  maxAttendees: integer("maxAttendees"),
+  registrationDeadline: integer("registrationDeadline"),
   featuredImage: varchar("featuredImage", { length: 1000 }),
   status: varchar("status", { length: 50 }).default("draft"),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 export type Event = typeof events.$inferSelect;
 export type InsertEvent = typeof events.$inferInsert;
 
-export const eventRegistrations = mysqlTable("eventRegistrations", {
-  id: int("id").primaryKey().autoincrement(),
-  eventId: int("eventId").notNull(),
-  userId: int("userId"),
+export const eventRegistrations = pgTable("eventRegistrations", {
+  id: serial("id").primaryKey(),
+  eventId: integer("eventId").notNull(),
+  userId: integer("userId"),
   email: varchar("email", { length: 255 }).notNull(),
   name: varchar("name", { length: 255 }),
   company: varchar("company", { length: 255 }),
   status: varchar("status", { length: 50 }).default("confirmed"),
-  registeredAt: int("registeredAt").notNull(),
+  registeredAt: bigint("registeredAt", { mode: "number" }).notNull(),
 });
 export type EventRegistration = typeof eventRegistrations.$inferSelect;
 export type InsertEventRegistration = typeof eventRegistrations.$inferInsert;
@@ -1825,44 +1839,44 @@ export type InsertEventRegistration = typeof eventRegistrations.$inferInsert;
 // ============================================================
 // FORUM
 // ============================================================
-export const forumCategories = mysqlTable("forumCategories", {
-  id: int("id").primaryKey().autoincrement(),
+export const forumCategories = pgTable("forumCategories", {
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   slug: varchar("slug", { length: 255 }).notNull(),
   description: text("description"),
-  displayOrder: int("displayOrder").default(0),
-  isActive: int("isActive").default(1),
-  createdAt: int("createdAt").notNull(),
+  displayOrder: integer("displayOrder").default(0),
+  isActive: integer("isActive").default(1),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 export type ForumCategory = typeof forumCategories.$inferSelect;
 export type InsertForumCategory = typeof forumCategories.$inferInsert;
 
-export const forumTopics = mysqlTable("forumTopics", {
-  id: int("id").primaryKey().autoincrement(),
-  categoryId: int("categoryId").notNull(),
-  userId: int("userId").notNull(),
+export const forumTopics = pgTable("forumTopics", {
+  id: serial("id").primaryKey(),
+  categoryId: integer("categoryId").notNull(),
+  userId: integer("userId").notNull(),
   title: varchar("title", { length: 500 }).notNull(),
   slug: varchar("slug", { length: 500 }).notNull(),
   content: text("content").notNull(),
-  isPinned: int("isPinned").default(0),
-  isLocked: int("isLocked").default(0),
-  viewCount: int("viewCount").default(0),
-  replyCount: int("replyCount").default(0),
-  lastActivityAt: int("lastActivityAt"),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  isPinned: integer("isPinned").default(0),
+  isLocked: integer("isLocked").default(0),
+  viewCount: integer("viewCount").default(0),
+  replyCount: integer("replyCount").default(0),
+  lastActivityAt: bigint("lastActivityAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 export type ForumTopic = typeof forumTopics.$inferSelect;
 export type InsertForumTopic = typeof forumTopics.$inferInsert;
 
-export const forumReplies = mysqlTable("forumReplies", {
-  id: int("id").primaryKey().autoincrement(),
-  topicId: int("topicId").notNull(),
-  userId: int("userId").notNull(),
+export const forumReplies = pgTable("forumReplies", {
+  id: serial("id").primaryKey(),
+  topicId: integer("topicId").notNull(),
+  userId: integer("userId").notNull(),
   content: text("content").notNull(),
-  isAccepted: int("isAccepted").default(0),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  isAccepted: integer("isAccepted").default(0),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 export type ForumReply = typeof forumReplies.$inferSelect;
 export type InsertForumReply = typeof forumReplies.$inferInsert;
@@ -1870,46 +1884,46 @@ export type InsertForumReply = typeof forumReplies.$inferInsert;
 // ============================================================
 // COURSES & LEARNING
 // ============================================================
-export const courses = mysqlTable("courses", {
-  id: int("id").primaryKey().autoincrement(),
+export const courses = pgTable("courses", {
+  id: serial("id").primaryKey(),
   title: varchar("title", { length: 500 }).notNull(),
   slug: varchar("slug", { length: 500 }).notNull(),
   description: text("description"),
   instructor: varchar("instructor", { length: 255 }),
-  duration: int("duration"),
+  duration: integer("duration"),
   level: varchar("level", { length: 50 }),
-  price: decimal("price", { precision: 10, scale: 2 }),
+  price: numeric("price", { precision: 10, scale: 2 }),
   featuredImage: varchar("featuredImage", { length: 1000 }),
   status: varchar("status", { length: 50 }).default("draft"),
-  publishedAt: int("publishedAt"),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  publishedAt: bigint("publishedAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 export type Course = typeof courses.$inferSelect;
 export type InsertCourse = typeof courses.$inferInsert;
 
-export const courseLessons = mysqlTable("courseLessons", {
-  id: int("id").primaryKey().autoincrement(),
-  courseId: int("courseId").notNull(),
+export const courseLessons = pgTable("courseLessons", {
+  id: serial("id").primaryKey(),
+  courseId: integer("courseId").notNull(),
   title: varchar("title", { length: 500 }).notNull(),
   content: text("content"),
   videoUrl: varchar("videoUrl", { length: 1000 }),
-  duration: int("duration"),
-  orderIndex: int("orderIndex").default(0),
-  isFree: int("isFree").default(0),
-  createdAt: int("createdAt").notNull(),
-  updatedAt: int("updatedAt").notNull(),
+  duration: integer("duration"),
+  orderIndex: integer("orderIndex").default(0),
+  isFree: integer("isFree").default(0),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 export type CourseLesson = typeof courseLessons.$inferSelect;
 export type InsertCourseLesson = typeof courseLessons.$inferInsert;
 
-export const courseEnrollments = mysqlTable("courseEnrollments", {
-  id: int("id").primaryKey().autoincrement(),
-  courseId: int("courseId").notNull(),
-  userId: int("userId").notNull(),
-  progress: int("progress").default(0),
-  completedAt: int("completedAt"),
-  enrolledAt: int("enrolledAt").notNull(),
+export const courseEnrollments = pgTable("courseEnrollments", {
+  id: serial("id").primaryKey(),
+  courseId: integer("courseId").notNull(),
+  userId: integer("userId").notNull(),
+  progress: integer("progress").default(0),
+  completedAt: bigint("completedAt", { mode: "number" }),
+  enrolledAt: bigint("enrolledAt", { mode: "number" }).notNull(),
   completedLessons: text("completedLessons").default('[]'),
 });
 export type CourseEnrollment = typeof courseEnrollments.$inferSelect;
@@ -1918,18 +1932,18 @@ export type InsertCourseEnrollment = typeof courseEnrollments.$inferInsert;
 // ============================================================
 // CAREERS / JOB OPENINGS
 // ============================================================
-export const jobOpenings = mysqlTable("jobOpenings", {
-  id: int("id").primaryKey().autoincrement(),
+export const jobOpenings = pgTable("jobOpenings", {
+  id: serial("id").primaryKey(),
   title: varchar("title", { length: 500 }).notNull(),
   department: varchar("department", { length: 255 }),
   location: varchar("location", { length: 255 }),
   type: varchar("type", { length: 100 }),
   salaryRange: varchar("salaryRange", { length: 255 }),
   description: text("description"),
-  requirements: json("requirements").$type<string[]>(),
-  benefits: json("benefits").$type<string[]>(),
-  isActive: int("isActive").default(1),
-  isNew: int("isNew").default(0),
+  requirements: jsonb("requirements").$type<string[]>(),
+  benefits: jsonb("benefits").$type<string[]>(),
+  isActive: integer("isActive").default(1),
+  isNew: integer("isNew").default(0),
   applyUrl: varchar("applyUrl", { length: 1000 }),
   closingDate: bigint("closingDate", { mode: "number" }),
   createdAt: bigint("createdAt", { mode: "number" }).notNull(),
@@ -1941,14 +1955,14 @@ export type InsertJobOpening = typeof jobOpenings.$inferInsert;
 // ============================================================
 // CMS PAGES (Páginas Institucionais)
 // ============================================================
-export const cmsPages = mysqlTable("cmsPages", {
-  id: int("id").primaryKey().autoincrement(),
+export const cmsPages = pgTable("cmsPages", {
+  id: serial("id").primaryKey(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   title: varchar("title", { length: 500 }).notNull(),
   content: text("content"),
   metaDescription: varchar("metaDescription", { length: 500 }),
-  isPublished: int("isPublished").default(1),
-  updatedBy: int("updatedBy"),
+  isPublished: integer("isPublished").default(1),
+  updatedBy: integer("updatedBy"),
   createdAt: bigint("createdAt", { mode: "number" }).notNull(),
   updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
@@ -1958,18 +1972,18 @@ export type InsertCmsPage = typeof cmsPages.$inferInsert;
 // ============================================================
 // ERROR LOGS (Structured Error Logging)
 // ============================================================
-export const errorLogs = mysqlTable("errorLogs", {
-  id: int("id").primaryKey().autoincrement(),
+export const errorLogs = pgTable("errorLogs", {
+  id: serial("id").primaryKey(),
   level: varchar("level", { length: 20 }).notNull().default('error'), // error, warn, info
   message: text("message").notNull(),
   stack: text("stack"),
-  context: json("context").$type<Record<string, unknown>>(),
-  userId: int("userId"),
+  context: jsonb("context").$type<Record<string, unknown>>(),
+  userId: integer("userId"),
   userEmail: varchar("userEmail", { length: 255 }),
   path: varchar("path", { length: 500 }),
   method: varchar("method", { length: 10 }),
-  statusCode: int("statusCode"),
-  resolved: int("resolved").default(0),
+  statusCode: integer("statusCode"),
+  resolved: integer("resolved").default(0),
   resolvedAt: bigint("resolvedAt", { mode: "number" }),
   createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });

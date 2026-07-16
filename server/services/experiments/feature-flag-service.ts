@@ -148,9 +148,8 @@ export const featureFlagService = {
         .where(eq(featureFlags.key, data.key));
       return existing[0].id;
     } else {
-      const result = await db.insert(featureFlags).values(values);
-      const rawResult = result as unknown as { insertId?: number | bigint }[];
-      return typeof rawResult[0]?.insertId === 'bigint' ? Number(rawResult[0].insertId) : (rawResult[0]?.insertId ?? 0);
+      const [row] = await db.insert(featureFlags).values(values).returning({ id: featureFlags.id });
+      return row?.id ?? 0;
     }
   },
 

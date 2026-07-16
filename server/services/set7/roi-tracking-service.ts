@@ -102,7 +102,7 @@ export async function createRoiBaseline(input: CreateRoiInput) {
     calculatedAt: Date.now(),
     updatedAt: Date.now(),
     createdAt: Date.now(),
-  }).$returningId();
+  }).returning({ id: set7RoiTracking.id });
 
   await logAuditEvent({
     eventType: "roi_calculated",
@@ -219,7 +219,7 @@ export async function createPartialRoi(baselineTrackingId: string) {
     calculatedAt: Date.now(),
     updatedAt: Date.now(),
     createdAt: Date.now(),
-  }).$returningId();
+  }).returning({ id: set7RoiTracking.id });
 
   return { trackingId, id: roi.id, roiPercentage, roiRatio, metrics };
 }
@@ -297,7 +297,7 @@ export async function createFinalRoi(baselineTrackingId: string, actualValueUsd:
     calculatedAt: Date.now(),
     updatedAt: Date.now(),
     createdAt: Date.now(),
-  }).$returningId();
+  }).returning({ id: set7RoiTracking.id });
 
   await logAuditEvent({
     eventType: "roi_calculated",

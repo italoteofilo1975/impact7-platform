@@ -21,7 +21,7 @@ export const ticketService = {
     
     const ticketNumber = `TKT-${nanoid(8).toUpperCase()}`;
     
-    const [result] = await db.insert(supportTickets).values({
+    const [row] = await db.insert(supportTickets).values({
       ticketNumber,
       userId: data.userId,
       userName: data.userName,
@@ -33,9 +33,9 @@ export const ticketService = {
       status: "open",
       updatedAt: Date.now(),
       createdAt: Date.now(),
-    });
-    
-    return { ticketNumber, id: result.insertId };
+    }).returning({ id: supportTickets.id });
+
+    return { ticketNumber, id: row?.id ?? 0 };
   },
 
   /**

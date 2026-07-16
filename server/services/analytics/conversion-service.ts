@@ -26,7 +26,7 @@ export const conversionService = {
     const db = await getDb();
     if (!db) return null;
     
-    const [result] = await db.insert(conversionEvents).values({
+    const [row] = await db.insert(conversionEvents).values({
       userId: data.userId,
       sessionId: data.sessionId,
       eventType: data.eventType,
@@ -37,10 +37,9 @@ export const conversionService = {
       referrer: data.referrer,
       metadata: data.metadata ? JSON.stringify(data.metadata) : null,
       createdAt: Date.now(),
-    });
-    
-    const rawResult = result as unknown as { insertId?: number | bigint };
-    return typeof rawResult.insertId === 'bigint' ? Number(rawResult.insertId) : (rawResult.insertId ?? 0);
+    }).returning({ id: conversionEvents.id });
+
+    return row?.id ?? 0;
   },
 
   /**

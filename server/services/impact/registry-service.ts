@@ -2,7 +2,6 @@
 // Impact7 · Sprint 8 · o motor de mensuracao. Consolida o placar do ecossistema com deduplicacao
 // global, calcula o S-ROI auditavel com memoria de calculo, e grava a trilha de auditoria.
 import { getDb } from "../../db";
-const db = getDb();
 import { engagementEvents } from "../../../drizzle/schema.impact7";
 import { initiativeParams, auditLog } from "../../../drizzle/schema.impact8";
 import { eq } from "drizzle-orm";
@@ -12,13 +11,15 @@ import { layerOfNum } from "../../../shared/ive-mapping";
 // cada identidade conta uma unica vez, pelo seu maior nivel em qualquer iniciativa. Isso e a defesa
 // contra dupla contagem que sustenta o alvo dos 14 milhoes.
 export async function ecosystemPlacar() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
   const rows = await db.select().from(engagementEvents);
   const maxByIdentity = new Map<string, number>();
   for (const r of rows) {
     maxByIdentity.set(r.identityKey, Math.max(maxByIdentity.get(r.identityKey) ?? 0, r.level));
   }
   let alcanceUnico = 0, impacto = 0, transformacao = 0, esteira = 0;
-  for (const lvl of maxByIdentity.values()) {
+  for (const lvl of Array.from(maxByIdentity.values())) {
     alcanceUnico++;
     const layer = layerOfNum(lvl);
     if (layer === "impacto") impacto++;
@@ -31,6 +32,8 @@ export async function ecosystemPlacar() {
 // S-ROI auditavel de uma iniciativa, com memoria de calculo transparente e faixa de sensibilidade,
 // e registro na trilha de auditoria. O now e injetado, nunca Date.now() dentro da regra.
 export async function initiativeSroi(initiativeId: number, actor: string, now: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
   const [p] = await db.select().from(initiativeParams).where(eq(initiativeParams.initiativeId, initiativeId));
   if (!p) throw new Error("Iniciativa sem parametros economicos");
 
@@ -39,7 +42,7 @@ export async function initiativeSroi(initiativeId: number, actor: string, now: n
   for (const r of evs) maxByIdentity.set(r.identityKey, Math.max(maxByIdentity.get(r.identityKey) ?? 0, r.level));
 
   let gatilhos = 0, transformacoes = 0;
-  for (const lvl of maxByIdentity.values()) {
+  for (const lvl of Array.from(maxByIdentity.values())) {
     const layer = layerOfNum(lvl);
     if (layer === "impacto" || layer === "esteira") gatilhos++;
     else if (layer === "transformacao") { gatilhos++; transformacoes++; }

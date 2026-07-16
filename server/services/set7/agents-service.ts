@@ -99,7 +99,7 @@ export async function createAgent(input: CreateAgentInput) {
     status: "active",
     createdAt: Date.now(),
     updatedAt: Date.now(),
-  }).$returningId();
+  }).returning({ id: set7Agents.id });
 
   await logAuditEvent({
     eventType: "agent_started",

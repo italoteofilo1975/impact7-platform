@@ -166,7 +166,7 @@ export const forumRouter = router({
         lastActivityAt: now,
         createdAt: now,
         updatedAt: now,
-      }).$returningId();
+      }).returning({ id: forumTopics.id });
 
       return { success: true, id: topic.id, slug };
     }),
@@ -196,7 +196,7 @@ export const forumRouter = router({
         isAccepted: 0,
         createdAt: now,
         updatedAt: now,
-      }).$returningId();
+      }).returning({ id: forumReplies.id });
 
       // Atualizar contagem e última atividade
       await db.update(forumTopics).set({
@@ -275,7 +275,7 @@ export const forumRouter = router({
         displayOrder: input.displayOrder,
         isActive: 1,
         createdAt: Date.now(),
-      }).$returningId();
+      }).returning({ id: forumCategories.id });
 
       return { success: true, id: cat.id };
     }),

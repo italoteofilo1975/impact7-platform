@@ -79,59 +79,35 @@ export function verifySessionToken(token: string): JWTPayload | null {
  * Store a password reset token in the database
  */
 async function storeResetToken(userId: number, token: string): Promise<void> {
-  const mysql = await import('mysql2/promise');
-  const conn = await mysql.createConnection(process.env.DATABASE_URL!);
-  try {
-    // Invalidate any existing tokens for this user
-    await conn.execute(
-      'UPDATE password_reset_tokens SET usedAt = ? WHERE userId = ? AND usedAt IS NULL',
-      [Date.now(), userId]
-    );
-    // Insert new token
-    await conn.execute(
-      'INSERT INTO password_reset_tokens (userId, token, expiresAt, createdAt) VALUES (?, ?, ?, ?)',
-      [userId, token, Date.now() + RESET_TOKEN_TTL_MS, Date.now()]
-    );
-  } finally {
-    await conn.end();
-  }
+  const sql = await db.getPool();
+  if (!sql) throw new Error('Database not available');
+  // Invalidate any existing tokens for this user
+  await sql`UPDATE password_reset_tokens SET "usedAt" = ${Date.now()} WHERE "userId" = ${userId} AND "usedAt" IS NULL`;
+  // Insert new token
+  await sql`INSERT INTO password_reset_tokens ("userId", token, "expiresAt", "createdAt") VALUES (${userId}, ${token}, ${Date.now() + RESET_TOKEN_TTL_MS}, ${Date.now()})`;
 }
 
 /**
  * Validate a reset token and return the userId if valid
  */
 async function validateResetToken(token: string): Promise<number | null> {
-  const mysql = await import('mysql2/promise');
-  const conn = await mysql.createConnection(process.env.DATABASE_URL!);
-  try {
-    const [rows] = await conn.execute(
-      'SELECT userId, expiresAt, usedAt FROM password_reset_tokens WHERE token = ? LIMIT 1',
-      [token]
-    ) as any[];
-    if (!rows || rows.length === 0) return null;
-    const row = rows[0];
-    if (row.usedAt) return null; // Already used
-    if (Date.now() > row.expiresAt) return null; // Expired
-    return row.userId;
-  } finally {
-    await conn.end();
-  }
+  const sql = await db.getPool();
+  if (!sql) throw new Error('Database not available');
+  const rows = await sql`SELECT "userId", "expiresAt", "usedAt" FROM password_reset_tokens WHERE token = ${token} LIMIT 1` as any[];
+  if (!rows || rows.length === 0) return null;
+  const row = rows[0];
+  if (row.usedAt) return null; // Already used
+  if (Date.now() > row.expiresAt) return null; // Expired
+  return row.userId;
 }
 
 /**
  * Mark a reset token as used
  */
 async function markTokenUsed(token: string): Promise<void> {
-  const mysql = await import('mysql2/promise');
-  const conn = await mysql.createConnection(process.env.DATABASE_URL!);
-  try {
-    await conn.execute(
-      'UPDATE password_reset_tokens SET usedAt = ? WHERE token = ?',
-      [Date.now(), token]
-    );
-  } finally {
-    await conn.end();
-  }
+  const sql = await db.getPool();
+  if (!sql) throw new Error('Database not available');
+  await sql`UPDATE password_reset_tokens SET "usedAt" = ${Date.now()} WHERE token = ${token}`;
 }
 
 /**

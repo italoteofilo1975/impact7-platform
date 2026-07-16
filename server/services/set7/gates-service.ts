@@ -290,7 +290,7 @@ export async function createGate(input: CreateGateInput) {
     humanApprovalRequired: (input.humanApprovalRequired || input.mode === "regulated") ? 1 : 0,
     updatedAt: Date.now(),
     createdAt: Date.now(),
-  }).$returningId();
+  }).returning({ id: set7Gates.id });
 
   return { gateId, id: gate.id, checklistItems };
 }

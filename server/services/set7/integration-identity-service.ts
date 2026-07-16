@@ -122,7 +122,7 @@ export async function createIntegration(input: CreateIntegrationInput) {
     status: "active",
     updatedAt: Date.now(),
     createdAt: Date.now(),
-  }).$returningId();
+  }).returning({ id: set7Integrations.id });
 
   // Registrar no audit log
   await logAuditEvent({

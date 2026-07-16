@@ -126,7 +126,7 @@ export const coursesRouter = router({
         userId: ctx.user.id,
         progress: 0,
         enrolledAt: Date.now(),
-      }).$returningId();
+      }).returning({ id: courseEnrollments.id });
 
       return { success: true, enrollmentId: enrollment.id };
     }),
@@ -233,7 +233,7 @@ export const coursesRouter = router({
         publishedAt: input.status === 'published' ? now : null,
         createdAt: now,
         updatedAt: now,
-      }).$returningId();
+      }).returning({ id: courses.id });
 
       await auditService.log({
         userId: ctx.user.id,
@@ -340,7 +340,7 @@ export const coursesRouter = router({
         isFree: input.isFree ? 1 : 0,
         createdAt: now,
         updatedAt: now,
-      }).$returningId();
+      }).returning({ id: courseLessons.id });
 
       return { success: true, id: lesson.id };
     }),

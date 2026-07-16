@@ -61,7 +61,7 @@ export const cmsRouter = router({
         updatedBy: ctx.user.id,
         createdAt: now,
         updatedAt: now,
-      }).$returningId();
+      }).returning({ id: cmsPages.id });
       return { success: true, id: result.id };
     }),
 

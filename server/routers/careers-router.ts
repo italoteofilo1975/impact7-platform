@@ -79,7 +79,7 @@ export const careersRouter = router({
       const db = await getDb();
       if (!db) throw new Error("DB unavailable");
       const now = Date.now();
-      const [result] = await db.insert(jobOpenings).values({
+      const [row] = await db.insert(jobOpenings).values({
         title: input.title,
         department: input.department,
         location: input.location,
@@ -94,8 +94,8 @@ export const careersRouter = router({
         closingDate: input.closingDate,
         createdAt: now,
         updatedAt: now,
-      });
-      const newId = (result as any).insertId;
+      }).returning({ id: jobOpenings.id });
+      const newId = row?.id ?? 0;
       // Audit trail
       try {
         const { auditService } = await import('../services/audit/audit-service');

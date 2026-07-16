@@ -3,7 +3,6 @@
 // escalonamento de modelo e medicao de custo, ligada a instrumentacao de engajamento.
 // As dependencias de LLM e RAG sao injetadas, para manter a regra testavel e o custo baixo e trocavel.
 import { getDb } from "../../db";
-const db = getDb();
 import { agentUsage } from "../../../drizzle/schema.agents";
 import { and, eq } from "drizzle-orm";
 import { recordEngagement } from "../impact/engagement-service";
@@ -18,6 +17,8 @@ export function dayBucket(now: number): number {
 
 // Verifica a janela diaria. Retorna se pode interagir e quanto resta.
 export async function checkWindow(identityKey: string, now: number, capSeconds = JANELA_SOCIAL_SEGUNDOS_DIA) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
   const bucket = dayBucket(now);
   const [row] = await db.select().from(agentUsage)
     .where(and(eq(agentUsage.identityKey, identityKey), eq(agentUsage.dayBucket, bucket)));
@@ -42,6 +43,8 @@ export async function runAgentTurn(params: {
   rag: (q: string) => Promise<string>;                                                     // com cache verticalizado
   llm: (tier: ModelTier, prompt: string) => Promise<{ text: string; tokensIn: number; tokensOut: number; seconds: number }>;
 }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
   const win = await checkWindow(params.identityKey, params.now);
   if (!win.allowed) return { blocked: true as const, reason: "janela diaria esgotada" };
 
@@ -58,6 +61,8 @@ export async function runAgentTurn(params: {
 }
 
 async function meterUsage(identityKey: string, now: number, seconds: number, tokensIn: number, tokensOut: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
   const bucket = dayBucket(now);
   const [row] = await db.select().from(agentUsage)
     .where(and(eq(agentUsage.identityKey, identityKey), eq(agentUsage.dayBucket, bucket)));

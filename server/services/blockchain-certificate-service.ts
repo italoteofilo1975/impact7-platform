@@ -119,7 +119,7 @@ export async function issueCertificate(
   const dataHash = generateHash(dataString);
 
   // Insert certificate
-  const insertResult = await db.insert(impactCertificates).values({
+  const [insertedCert] = await db.insert(impactCertificates).values({
     certificateId,
     userId,
     organizationName: data.organizationName,
@@ -138,9 +138,9 @@ export async function issueCertificate(
     issuedAt: Date.now(),
     createdAt: Date.now(),
     updatedAt: Date.now(),
-  });
+  }).returning({ id: impactCertificates.id });
 
-  const certId = Number((insertResult as unknown as { insertId?: number | bigint }[])[0]?.insertId ?? 0);
+  const certId = insertedCert?.id ?? 0;
 
   // Fetch and return the certificate
   const certs = await db
@@ -312,7 +312,7 @@ export async function mintToken(
   const transactionHash = generateHash(transactionData);
 
   // Insert token
-  const insertResult = await db.insert(impactTokens).values({
+  const [insertedToken] = await db.insert(impactTokens).values({
     tokenId,
     userId,
     organizationId,
@@ -326,9 +326,9 @@ export async function mintToken(
     mintedAt: Date.now(),
     createdAt: Date.now(),
     updatedAt: Date.now(),
-  });
+  }).returning({ id: impactTokens.id });
 
-  const newTokenId = Number((insertResult as unknown as { insertId?: number | bigint }[])[0]?.insertId ?? 0);
+  const newTokenId = insertedToken?.id ?? 0;
 
   // Record mint transaction
   await db.insert(tokenTransactions).values({

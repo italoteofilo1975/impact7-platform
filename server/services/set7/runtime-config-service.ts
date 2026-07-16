@@ -198,7 +198,7 @@ export async function createRuntimeConfig(input: CreateRuntimeConfigInput) {
     gateProfile: JSON.stringify(gateProfile),
     humanApprovalPhases: JSON.stringify(input.humanApprovalPhases ?? defaults.humanApprovalPhases),
     isActive: 1 as number,
-  }).$returningId();
+  }).returning({ id: set7RuntimeConfig.id });
 
   await logAuditEvent({
     eventType: "config_changed",

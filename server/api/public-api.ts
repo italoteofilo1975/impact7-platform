@@ -379,7 +379,7 @@ router.post('/leads', async (req: Request, res: Response) => {
       message: input.message,
     
           createdAt: Date.now(),
-        }).$returningId();
+        }).returning({ id: leads.id });
     
     const lead = result[0];
     

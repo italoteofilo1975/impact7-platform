@@ -46,7 +46,7 @@ export async function createWebhook(
   
   const secret = generateWebhookSecret();
   
-  const result = await db.insert(webhooks).values({
+  const [row] = await db.insert(webhooks).values({
     userId,
     name,
     url,
@@ -55,11 +55,11 @@ export async function createWebhook(
     isActive: 1,
     createdAt: Date.now(),
     updatedAt: Date.now(),
-  });
-  
-  const insertId = result[0]?.insertId;
+  }).returning({ id: webhooks.id });
+
+  const insertId = row?.id ?? 0;
   if (!insertId) return null;
-  
+
   return { id: insertId, secret };
 }
 
@@ -188,15 +188,15 @@ async function deliverWebhook(
   const signature = signPayload(payloadString, webhook.secret);
   
   // Criar registro de entrega
-  const deliveryResult = await db.insert(webhookDeliveries).values({
+  const [deliveryRow] = await db.insert(webhookDeliveries).values({
     webhookId: webhook.id,
     event,
     payload: payloadString,
     attempts: 1,
     createdAt: Date.now(),
-  });
-  
-  const deliveryId = deliveryResult[0]?.insertId;
+  }).returning({ id: webhookDeliveries.id });
+
+  const deliveryId = deliveryRow?.id ?? 0;
   if (!deliveryId) return;
   
   try {

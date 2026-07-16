@@ -30,7 +30,7 @@ export const notificationPersistenceService = {
   async create(input: CreateNotificationInput): Promise<Notification | null> {
     const db = await getDb();
     if (!db) return null;
-    const result = await db.insert(notifications).values({
+    const [inserted] = await db.insert(notifications).values({
       userId: input.userId,
       type: input.type,
       title: input.title,
@@ -38,13 +38,13 @@ export const notificationPersistenceService = {
       link: input.link,
       metadata: input.metadata,
       createdAt: Date.now(),
-    });
-    
+    }).returning({ id: notifications.id });
+
     const [notification] = await db
       .select()
       .from(notifications)
-      .where(eq(notifications.id, Number(result[0].insertId)));
-    
+      .where(eq(notifications.id, inserted?.id ?? 0));
+
     return notification;
   },
 
@@ -113,9 +113,10 @@ export const notificationPersistenceService = {
     const result = await db
       .update(notifications)
       .set({ isRead: 1, readAt: Date.now() })
-      .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)));
-    
-    return result[0].affectedRows > 0;
+      .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)))
+      .returning({ id: notifications.id });
+
+    return result.length > 0;
   },
 
   /**
@@ -127,9 +128,10 @@ export const notificationPersistenceService = {
     const result = await db
       .update(notifications)
       .set({ isRead: 1, readAt: Date.now() })
-      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, 0)));
-    
-    return result[0].affectedRows;
+      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, 0)))
+      .returning({ id: notifications.id });
+
+    return result.length;
   },
 
   /**
@@ -140,9 +142,10 @@ export const notificationPersistenceService = {
     if (!db) return false;
     const result = await db
       .delete(notifications)
-      .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)));
-    
-    return result[0].affectedRows > 0;
+      .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)))
+      .returning({ id: notifications.id });
+
+    return result.length > 0;
   },
 
   /**
@@ -162,9 +165,10 @@ export const notificationPersistenceService = {
           eq(notifications.isRead, 1),
           sql`${notifications.createdAt} < ${cutoffDate}`
         )
-      );
-    
-    return result[0].affectedRows;
+      )
+      .returning({ id: notifications.id });
+
+    return result.length;
   },
 
   /**

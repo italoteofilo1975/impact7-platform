@@ -725,7 +725,8 @@ export const appRouter = router({
           name: input.name || null,
           segment: input.segment || "general",
       createdAt: Date.now(),
-    }).onDuplicateKeyUpdate({
+    }).onConflictDoUpdate({
+          target: newsletterSubscribers.email,
           set: { name: input.name || null },
         });
         
@@ -1446,7 +1447,7 @@ export const appRouter = router({
           status: 'pending',
           createdAt: Date.now(),
           updatedAt: Date.now(),
-        }).$returningId();
+        }).returning({ id: caseSubmissions.id });
         
         // Enviar notificação ao owner sobre nova submissão
         await notifyNewCaseSubmission({
@@ -1629,7 +1630,7 @@ export const appRouter = router({
           createdBy: ctx.user.id,
           createdAt: Date.now(),
           updatedAt: Date.now(),
-        }).$returningId();
+        }).returning({ id: caseTags.id });
         
         const { auditService: auditSvc1 } = await import('./services/audit/audit-service');
         await auditSvc1.log({ userId: ctx.user.id, userName: ctx.user.name || undefined, userEmail: ctx.user.email || undefined, action: 'create', resourceType: 'case_tag', resourceId: String(result[0].id), resourceName: input.name, newValue: { name: input.name, color: input.color } });
@@ -4014,7 +4015,7 @@ export const appRouter = router({
         ];
         
         for (const roleData of rolesData) {
-          await db.insert(roles).values(roleData).onDuplicateKeyUpdate({ set: { updatedAt: now } });
+          await db.insert(roles).values(roleData).onConflictDoUpdate({ target: roles.code, set: { updatedAt: now } });
         }
         
         // 2. Criar permissions
@@ -4035,7 +4036,7 @@ export const appRouter = router({
         ];
         
         for (const permData of permsData) {
-          await db.insert(permissions).values(permData).onDuplicateKeyUpdate({ set: { updatedAt: now } });
+          await db.insert(permissions).values(permData).onConflictDoUpdate({ target: permissions.code, set: { updatedAt: now } });
         }
         
         // 3. Buscar IDs criados
@@ -4055,7 +4056,7 @@ export const appRouter = router({
               roleId: adminRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            }).onConflictDoUpdate({ target: [rolePermissions.roleId, rolePermissions.permissionId], set: { assignedAt: now } });
           }
         }
         
@@ -4067,7 +4068,7 @@ export const appRouter = router({
               roleId: managerRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            }).onConflictDoUpdate({ target: [rolePermissions.roleId, rolePermissions.permissionId], set: { assignedAt: now } });
           }
         }
         
@@ -4079,7 +4080,7 @@ export const appRouter = router({
               roleId: userRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            }).onConflictDoUpdate({ target: [rolePermissions.roleId, rolePermissions.permissionId], set: { assignedAt: now } });
           }
         }
         
@@ -4091,7 +4092,7 @@ export const appRouter = router({
               roleId: guestRole.id,
               permissionId: perm.id,
               assignedAt: now,
-            }).onDuplicateKeyUpdate({ set: { assignedAt: now } });
+            }).onConflictDoUpdate({ target: [rolePermissions.roleId, rolePermissions.permissionId], set: { assignedAt: now } });
           }
         }
         

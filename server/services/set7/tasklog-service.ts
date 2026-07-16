@@ -87,7 +87,7 @@ export async function createTask(input: CreateTaskInput) {
 
     createdAt: Date.now(),
 
-    }).$returningId();
+    }).returning({ id: set7Tasklog.id });
 
   // Registrar no audit log
   await logAuditEvent({

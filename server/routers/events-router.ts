@@ -144,7 +144,7 @@ export const eventsRouter = router({
         company: input.company ?? null,
         status: 'confirmed',
         registeredAt: now,
-      }).$returningId();
+      }).returning({ id: eventRegistrations.id });
 
       eventsCache.invalidatePattern(`events:reg:${input.eventId}`);
 
@@ -195,7 +195,7 @@ export const eventsRouter = router({
         featuredImage: input.featuredImage || null,
         createdAt: now,
         updatedAt: now,
-      }).$returningId();
+      }).returning({ id: events.id });
 
       eventsCache.invalidatePattern('events:*');
 

@@ -146,7 +146,7 @@ export const blogRouter = router({
         publishedAt: input.status === 'published' ? now : null,
         createdAt: now,
         updatedAt: now,
-      }).$returningId();
+      }).returning({ id: blogPosts.id });
 
       blogCache.invalidatePattern('blog:*');
 

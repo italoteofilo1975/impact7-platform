@@ -2,7 +2,6 @@
 // Impact7 · Sprint 10 · resolucao e escopo de inquilino. Toda leitura e escrita de dado de
 // iniciativa e de engajamento passa a ser escopada por tenantId, o que isola cada alianca.
 import { getDb } from "../../db";
-const db = getDb();
 import { tenants } from "../../../drizzle/schema.tenants";
 import { eq, and, SQL } from "drizzle-orm";
 
@@ -13,6 +12,8 @@ export interface TenantContext {
 
 // Resolve o tenant a partir de uma chave vinda do request, por exemplo subdominio, header ou token.
 export async function resolveTenant(key: { tenantId?: number }): Promise<TenantContext> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
   if (!key.tenantId) throw new Error("Requisicao sem tenant");
   const [t] = await db.select().from(tenants).where(eq(tenants.id, key.tenantId));
   if (!t) throw new Error("Tenant nao encontrado");

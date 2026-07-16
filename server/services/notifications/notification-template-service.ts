@@ -97,7 +97,7 @@ class NotificationTemplateService {
         return { success: false, error: 'Template code already exists' };
       }
 
-      const result = await db.insert(notificationTemplates).values({
+      const [row] = await db.insert(notificationTemplates).values({
         code: input.code,
         name: input.name,
         description: input.description,
@@ -110,9 +110,9 @@ class NotificationTemplateService {
         createdBy,
         createdAt: Date.now(),
         updatedAt: Date.now(),
-      });
+      }).returning({ id: notificationTemplates.id });
 
-      return { success: true, id: result[0].insertId };
+      return { success: true, id: row?.id ?? 0 };
     } catch (error) {
       console.error('[NotificationTemplate] Create error:', error);
       return { success: false, error: 'Failed to create template' };

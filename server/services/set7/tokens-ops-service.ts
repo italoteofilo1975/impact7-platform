@@ -82,7 +82,7 @@ export async function createBudget(input: CreateBudgetInput) {
     status: "active",
     updatedAt: Date.now(),
     createdAt: Date.now(),
-  }).$returningId();
+  }).returning({ id: set7TokenBudgets.id });
 
   return { budgetId, id: budget.id };
 }

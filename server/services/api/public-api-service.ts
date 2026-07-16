@@ -33,7 +33,7 @@ export async function createApiKey(
     ? Date.now() + expiresInDays * 24 * 60 * 60 * 1000
     : null;
   
-  const result = await db.insert(apiKeys).values({
+  const [row] = await db.insert(apiKeys).values({
     userId,
     name,
     keyHash: hash,
@@ -43,11 +43,11 @@ export async function createApiKey(
     expiresAt,
     isActive: 1,
     createdAt: Date.now(),
-  });
-  
-  const insertId = result[0]?.insertId;
+  }).returning({ id: apiKeys.id });
+
+  const insertId = row?.id;
   if (!insertId) return null;
-  
+
   return { key, id: insertId };
 }
 

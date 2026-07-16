@@ -42,17 +42,19 @@ export async function generateReport(options: ReportGenerationOptions): Promise<
   const { userId, title, reportType, metrics, customPrompt, includeRecommendations = true, language = 'pt' } = options;
 
   // Create report entry with generating status
-  const insertResult = await db.insert(jarvisReports).values({
-    userId,
-    title,
-    reportType,
-    content: '',
-    status: 'generating',
-  
-          createdAt: Date.now(),
-        });
+  const [row] = await db
+    .insert(jarvisReports)
+    .values({
+      userId,
+      title,
+      reportType,
+      content: '',
+      status: 'generating',
+      createdAt: Date.now(),
+    })
+    .returning({ id: jarvisReports.id });
 
-  const reportId = Number(insertResult[0].insertId);
+  const reportId = row?.id ?? 0;
 
   try {
     // Build prompt based on report type
