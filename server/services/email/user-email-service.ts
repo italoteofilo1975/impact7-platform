@@ -148,7 +148,7 @@ export async function sendWelcomeEmail(
         Explore a calculadora de S-ROI, os cases de impacto, os cursos e a comunidade.
       </p>
       <div style="text-align: center; margin: 28px 0;">
-        <a href="https://impact7plat-5ljsracn.manus.space" style="background: linear-gradient(135deg, #f97316, #ea580c); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; display: inline-block;">
+        <a href="https://app.impact7.local" style="background: linear-gradient(135deg, #f97316, #ea580c); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; display: inline-block;">
           Acessar a plataforma
         </a>
       </div>
@@ -159,6 +159,6 @@ export async function sendWelcomeEmail(
   </div>
 </body>
 </html>`,
-    text: `Bem-vindo à IMPACT7, ${displayName}! Sua conta foi criada com sucesso. Acesse: https://impact7plat-5ljsracn.manus.space`,
+    text: `Bem-vindo à IMPACT7, ${displayName}! Sua conta foi criada com sucesso. Acesse: https://app.impact7.local`,
   });
 }

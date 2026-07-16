@@ -160,7 +160,7 @@ class EmailDigestService {
       </table>
       
       <div style="text-align: center; margin-top: 24px;">
-        <a href="https://impact7.manus.space/notificacoes" style="display: inline-block; padding: 12px 24px; background: #f97316; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+        <a href="https://app.impact7.local/notificacoes" style="display: inline-block; padding: 12px 24px; background: #f97316; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
           Ver Todas as Notificações
         </a>
       </div>
@@ -171,7 +171,7 @@ class EmailDigestService {
       <p style="color: #999; font-size: 12px; margin: 0;">
         Você está recebendo este email porque optou pelo resumo ${digest.frequency === 'daily' ? 'diário' : 'semanal'}.
         <br>
-        <a href="https://impact7.manus.space/notificacoes/preferencias" style="color: #f97316;">Alterar preferências</a>
+        <a href="https://app.impact7.local/notificacoes/preferencias" style="color: #f97316;">Alterar preferências</a>
       </p>
     </div>
   </div>
@@ -200,8 +200,8 @@ Você tem ${digest.notifications.length} notificação(ões) não lida(s):
 ${notificationList}
 
 ---
-Ver todas as notificações: https://impact7.manus.space/notificacoes
-Alterar preferências: https://impact7.manus.space/notificacoes/preferencias
+Ver todas as notificações: https://app.impact7.local/notificacoes
+Alterar preferências: https://app.impact7.local/notificacoes/preferencias
     `.trim();
   }
 

@@ -35,7 +35,7 @@ interface EmailTemplate {
 
 // Templates de email por tipo de notificação
 function getEmailTemplate(notification: EmailNotification): EmailTemplate {
-  const baseUrl = process.env.VITE_APP_URL || 'https://impact7.manus.space';
+  const baseUrl = process.env.VITE_APP_URL || 'http://localhost:3000';
   const linkButton = notification.link 
     ? `<a href="${baseUrl}${notification.link}" style="display: inline-block; padding: 12px 24px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px; margin-top: 16px;">Ver Detalhes</a>`
     : '';

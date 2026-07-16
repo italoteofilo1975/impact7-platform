@@ -81,8 +81,9 @@ const CSP_DIRECTIVES = {
     "'self'",
     "wss:",               // WebSocket seguro
     "ws:",                // WebSocket (dev)
-    "https://api.manus.im",
-    "https://manus.im",
+    "https://*.supabase.co",
+    "https://*.vercel.app",
+    "https://api.anthropic.com",
     "https://maps.googleapis.com",
   ],
   "frame-ancestors": ["'none'"],  // Prevenir clickjacking

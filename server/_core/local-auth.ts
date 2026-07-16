@@ -233,7 +233,7 @@ export function registerLocalAuthRoutes(app: Express) {
       await storeResetToken(user.id, resetToken);
 
       // Build the reset URL
-      const baseUrl = process.env.VITE_APP_URL || 'https://impact7plat-5ljsracn.manus.space';
+      const baseUrl = process.env.VITE_APP_URL || 'http://localhost:3000';
       const resetUrl = `${baseUrl}/redefinir-senha?token=${resetToken}`;
 
       // Enviar email ao usuário com o link de reset

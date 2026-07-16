@@ -210,15 +210,28 @@ const normalizeToolChoice = (
 };
 
 const resolveApiUrl = () =>
-  ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
-    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
-    : "https://forge.manus.im/v1/chat/completions";
+  `${ENV.llmApiUrl.replace(/\/$/, "")}/chat/completions`;
 
-const assertApiKey = () => {
-  if (!ENV.forgeApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
-  }
-};
+// Modo mock, quando nao ha chave de LLM configurada. O app roda, os agentes respondem
+// um placeholder rotulado, e basta colar a chave (LLM_API_KEY ou ANTHROPIC_API_KEY) para
+// virar resposta de verdade. Preserva o formato InvokeResult para nao mexer no chamador.
+const mockResult = (): InvokeResult => ({
+  id: "mock-no-llm-key",
+  created: 0,
+  model: "mock",
+  choices: [
+    {
+      index: 0,
+      message: {
+        role: "assistant",
+        content:
+          "[Impact7 modo mock] Nenhuma chave de LLM configurada. Defina LLM_API_KEY ou ANTHROPIC_API_KEY para respostas reais.",
+      },
+      finish_reason: "stop",
+    },
+  ],
+  usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+});
 
 const normalizeResponseFormat = ({
   responseFormat,
@@ -266,7 +279,9 @@ const normalizeResponseFormat = ({
 };
 
 export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
-  assertApiKey();
+  if (!ENV.llmApiKey) {
+    return mockResult();
+  }
 
   const {
     messages,
@@ -280,7 +295,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   } = params;
 
   const payload: Record<string, unknown> = {
-    model: "gemini-2.5-flash",
+    model: ENV.llmModel,
     messages: messages.map(normalizeMessage),
   };
 
@@ -316,7 +331,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${ENV.forgeApiKey}`,
+      authorization: `Bearer ${ENV.llmApiKey}`,
     },
     body: JSON.stringify(payload),
   });
