@@ -12,5 +12,5 @@ export const registryRouter = router({
   // Cada chamada grava na trilha de auditoria.
   initiativeSroi: publicProcedure
     .input(z.object({ initiativeId: z.number().int(), actor: z.string().default("system") }))
-    .query(async ({ input }) => initiativeSroi(input.initiativeId, input.actor, Date.now())),
+    .mutation(async ({ input }) => initiativeSroi(input.initiativeId, input.actor, Date.now())),
 });

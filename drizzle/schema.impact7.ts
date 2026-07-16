@@ -1,29 +1,31 @@
 // drizzle/schema.impact7.ts
 // Impact7 · Sprint 7 · instrumentacao de engajamento e iniciativas.
-// Segue as convencoes do repositorio: timestamps em int (Unix ms), booleanos em int 0/1.
-import { mysqlTable, int, varchar, text } from "drizzle-orm/mysql-core";
+// Correcao do review adversarial: timestamps guardam Unix em milissegundos (Date.now()),
+// que estoura INT MySQL de 32 bits (max ~2.147e9). Aqui os campos de tempo usam bigint.
+// Nota: as tabelas legadas do repo tem o mesmo problema latente com int.
+import { mysqlTable, int, bigint, varchar, text, index } from "drizzle-orm/mysql-core";
 
-// A Iniciativa e a unidade que metrifica qualquer frente (a Ficha, no banco).
 export const initiatives = mysqlTable("initiatives", {
   id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }).notNull(),
   sector: varchar("sector", { length: 128 }),
-  odsTags: text("odsTags"),                                              // csv dos ODS enderecados
-  stageIve: varchar("stageIve", { length: 32 }).default("origem").notNull(),        // IveStage
-  custeioMode: varchar("custeioMode", { length: 32 }).default("comercial").notNull(), // comercial | doacao | patrocinio
-  instrumented: int("instrumented").default(1).notNull(),               // 1 medido, 0 estimado
-  createdAt: int("createdAt").$type<number>().notNull(),
-  updatedAt: int("updatedAt").$type<number>().notNull(),
+  odsTags: text("odsTags"),
+  stageIve: varchar("stageIve", { length: 32 }).default("origem").notNull(),
+  custeioMode: varchar("custeioMode", { length: 32 }).default("comercial").notNull(),
+  instrumented: int("instrumented").default(1).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
 });
 
-// Cada evento de engajamento de uma pessoa, atrelado a sua identidade.
-// identityKey e o hash estavel do telefone ou do id do usuario, base para contagem de unicos e deduplicacao.
 export const engagementEvents = mysqlTable("engagementEvents", {
   id: int("id").primaryKey().autoincrement(),
   identityKey: varchar("identityKey", { length: 128 }).notNull(),
   initiativeId: int("initiativeId").notNull(),
   signal: varchar("signal", { length: 64 }).notNull(),
-  level: int("level").notNull(),                                        // 1..7, ordem IMPACTA
+  level: int("level").notNull(),
   instrumented: int("instrumented").default(1).notNull(),
-  createdAt: int("createdAt").$type<number>().notNull(),
-});
+  createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+}, (t) => ({
+  byInitiative: index("ee_initiative_idx").on(t.initiativeId),
+  byIdentityInitiative: index("ee_identity_initiative_idx").on(t.identityKey, t.initiativeId),
+}));

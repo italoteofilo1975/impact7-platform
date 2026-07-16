@@ -29,7 +29,9 @@ export type ImpactaLevel = keyof typeof IMPACTA_ORDER;
 // O limiar de impacto fica na entrada do nivel Preparar. Abaixo e exposicao.
 export const IMPACT_THRESHOLD_LEVEL = IMPACTA_ORDER.preparar; // 3
 
-// As tres camadas.
+// Exposicao e o alcance abaixo do limiar, nao conta como impacto.
+// Acima do limiar ficam as tres camadas de impacto: impacto (gatilho),
+// transformacao (subconjunto medido) e esteira (projecao exponencial).
 export type ImpactLayer = "exposicao" | "impacto" | "transformacao" | "esteira";
 
 export function layerOfNum(n: number): ImpactLayer {
