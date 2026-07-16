@@ -193,6 +193,8 @@ Recomenda-se **separar claramente dois conceitos hoje confundidos**, adotando um
 
    Esta unificação **preserva integralmente a Versão A** (código em produção) e reancora os rótulos exclusivos da Versão B como *aspectos* dos C's convergentes (Cultural/Comunitário → Consciência/Colaboração). **Requer decisão explícita do fundador** — é uma escolha editorial, não uma dedução mecânica.
 
+   > ✅ **CANONIZADO em 2026-07-16 pelo fundador (Italo).** Os 7 C's oficiais são: **Consciência · Competência · Conexão · Colaboração · Criatividade · Compromisso · Continuidade**. Gravado no código em `shared/set7-constants.ts` (`SEVEN_CAPABILITIES` + `SEVEN_CS_CONTEXTUAL_MAP`). Divergência **D3 resolvida**.
+
 ---
 
 ## 4. Camada 3 — O Método SET7 (Engenharia)
@@ -296,6 +298,7 @@ Divergência dupla e a **mais crítica** do método:
 - **Semântica:** `C` = *Capacidades multiplicadoras* (`set7-methodology.ts`/`set7-constants.ts`, e o código) **vs.** `C` = *Contexto / dimensões de alinhamento* (`Matematica.tsx`) **vs.** `C` = *Contexto 0–1 de preservação contextual* (`set7-integration.ts`).
 - **Lista de rótulos:** Consciência/Competência/Conexão/Colaboração/Criatividade/Compromisso/Continuidade **vs.** Cultural/Comunitário/Capacitário/Conectivo/Cognitivo/Colaborativo/Continuativo.
 **Decisão necessária:** adotar a versão unificada proposta na Seção 3.4 (ou outra). Sem isso, marketing e produto usam listas diferentes.
+**✅ RESOLVIDO (2026-07-16):** adotada a versão unificada da Seção 3.4 — 7 C's oficiais = Consciência · Competência · Conexão · Colaboração · Criatividade · Compromisso · Continuidade. `C⁷` = "as 7 Capacidades/C's do Contexto". Canonizado no código (`set7-constants.ts`).
 
 ### D4 — Benchmarks de S-ROI não coincidem
 Código (`SROI_CALCULATOR.benchmarks`): excelente ≥5×, bom 3–5×, médio 1–3×, abaixo <1×. Página (`Matematica.tsx`): mínimo recomendado **7×**, médio 3–4×, top 10% **12×+**. Os patamares são incompatíveis.

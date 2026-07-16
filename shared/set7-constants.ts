@@ -8,7 +8,18 @@
  */
 
 // ============================================================================
-// AS 7 CAPACIDADES (C⁷)
+// AS 7 CAPACIDADES (C⁷) — OS 7 C's CANÔNICOS DO MÉTODO IMPACTA SETE
+// ============================================================================
+//
+// CANONIZADO pelo fundador em 2026-07-16 (decisão D3 do documento
+// S7_BUNKER/00_ESTRATEGIA/METODO_IMPACTA_SETE_CANONICO.md).
+//
+// Estes 7 rótulos são a versão UNIFICADA oficial: funcionam simultaneamente
+// como "Capacidades multiplicadoras" (fator C⁷ da equação I=(E×C⁷)/R) e como
+// "Dimensões do Contexto". As antigas "Dimensões do Contexto" do material de
+// marketing (Cultural/Comunitário/Capacitário/Conectivo/Cognitivo/
+// Colaborativo/Continuativo) foram reancoradas como aspectos destes 7 C's —
+// ver SEVEN_CS_CONTEXTUAL_MAP abaixo. NÃO renomear sem nova decisão do fundador.
 // ============================================================================
 
 export const SEVEN_CAPABILITIES = [
@@ -118,6 +129,26 @@ export const SEVEN_CAPABILITIES = [
     color: '#ef4444',
   },
 ] as const;
+
+// ============================================================================
+// MAPA DE RECONCILIAÇÃO — Dimensões do Contexto (marketing) → 7 C's canônicos
+// ============================================================================
+//
+// Documenta a decisão D3 canonizada: como as antigas "Dimensões do Contexto"
+// (usadas na página de marketing Matematica.tsx) se mapeiam nos 7 C's oficiais.
+// Fonte da verdade = SEVEN_CAPABILITIES acima. Este mapa serve apenas para
+// alinhar discurso de marketing e produto sem duplicar listas divergentes.
+
+export const SEVEN_CS_CONTEXTUAL_MAP = {
+  consciencia: ['Cognitivo', 'Cultural'],
+  competencia: ['Capacitário'],
+  conexao: ['Conectivo'],
+  colaboracao: ['Colaborativo', 'Comunitário'],
+  criatividade: [],
+  compromisso: [],
+  continuidade: ['Continuativo'],
+} as const;
+
 
 // ============================================================================
 // OS 7 MÓDULOS DO MÉTODO
