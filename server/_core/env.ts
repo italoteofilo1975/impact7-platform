@@ -17,7 +17,7 @@ export const ENV = {
     process.env.ANTHROPIC_API_KEY ??
     process.env.BUILT_IN_FORGE_API_KEY ??
     "",
-  llmModel: process.env.LLM_MODEL ?? "claude-3-5-sonnet-latest",
+  llmModel: process.env.LLM_MODEL ?? "claude-sonnet-4-5-20250929",
 
   // Compat retro, ainda lido por integracoes antigas da Manus (dataApi, imagem).
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
