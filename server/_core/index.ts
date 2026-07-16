@@ -91,6 +91,24 @@ async function startServer() {
     sseNotificationService.addClient(userId, role, res);
   });
 
+  // Health check endpoint (load balancers / Railway / uptime monitors)
+  // Liveness: responde 200 se o processo está no ar; reporta o estado do DB.
+  app.get('/api/health', async (_req, res) => {
+    let db = 'unknown';
+    try {
+      const conn = await getDb();
+      db = conn ? 'up' : 'down';
+    } catch {
+      db = 'down';
+    }
+    res.status(200).json({
+      status: 'ok',
+      service: 'impact7-platform',
+      db,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
   // Login/Logout endpoints
   app.post('/api/login', handleLogin);
   app.post('/api/logout', handleLogout);
