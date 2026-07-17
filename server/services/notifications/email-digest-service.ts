@@ -225,7 +225,7 @@ Alterar preferências: https://app.impact7.local/notificacoes/preferencias
   }
 
   /**
-   * Send digest emails using Manus notification service
+   * Send digest emails using the configured email adapter
    */
   async sendDigestEmails(frequency: 'daily' | 'weekly'): Promise<{
     sent: number;

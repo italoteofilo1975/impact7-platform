@@ -1,5 +1,5 @@
 /**
- * Sistema de Autenticação Customizado (Sem Manus)
+ * Sistema de Autenticação Customizado, local por e-mail e senha
  * Implementação própria de JWT e gerenciamento de sessões
  */
 

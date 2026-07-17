@@ -54,15 +54,6 @@ export default function Login() {
     }
   };
 
-  const handleOAuthLogin = () => {
-    const oauthPortal = import.meta.env.VITE_OAUTH_PORTAL_URL;
-    const appId = import.meta.env.VITE_APP_ID;
-    if (oauthPortal && appId) {
-      const callbackUrl = encodeURIComponent(window.location.origin + "/api/oauth/callback");
-      window.location.href = `${oauthPortal}/oauth/authorize?client_id=${appId}&redirect_uri=${callbackUrl}&response_type=code`;
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
       {/* Header com link de volta */}
@@ -165,21 +156,7 @@ export default function Login() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-white/10" />
               </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="px-3 bg-transparent text-white/40">ou continue com</span>
-              </div>
             </div>
-
-            {/* OAuth Manus */}
-            <button
-              onClick={handleOAuthLogin}
-              className="w-full py-3 px-4 bg-white/5 hover:bg-white/10 border border-white/20 text-white/80 hover:text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-              </svg>
-              Entrar com Manus
-            </button>
 
             {/* Link para registro */}
             <p className="text-center text-sm text-white/40 mt-6">

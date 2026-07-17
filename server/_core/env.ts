@@ -19,7 +19,7 @@ export const ENV = {
     "",
   llmModel: process.env.LLM_MODEL ?? "claude-sonnet-4-5-20250929",
 
-  // Compat retro, ainda lido por integracoes antigas da Manus (dataApi, imagem).
+  // Compat retro, ainda lido por integracoes antigas (dataApi, imagem).
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
 

@@ -3,7 +3,7 @@
  * SET7.06 - Operação, Observabilidade e Eficiência Cognitiva
  * 
  * Sistema de notificações push para alertas P1/P2
- * Integrado com Manus Notify
+ * Adaptador de push da plataforma, modo log até provedor real
  */
 
 import { notifyOwner } from "../../_core/notification";

@@ -1,7 +1,7 @@
 /**
  * Case Email Service
  * Serviço de notificações por email para submissões de cases
- * Integrado com Manus Notify para envio de emails
+ * Envio de e-mails pelo adaptador configurado da plataforma
  */
 
 import { notifyOwner } from "../../_core/notification";

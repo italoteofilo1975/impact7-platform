@@ -142,7 +142,7 @@ export default function NotificationSettings() {
                 <Bell className="w-5 h-5 text-muted-foreground" />
                 <div>
                   <Label>Notificações Push</Label>
-                  <p className="text-sm text-muted-foreground">Receber alertas via Manus Notify</p>
+                  <p className="text-sm text-muted-foreground">Receber alertas pelo canal de notificações da plataforma</p>
                 </div>
               </div>
               <Switch

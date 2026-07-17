@@ -2,7 +2,7 @@
  * Cache Service - SET7.06 Operação e Eficiência
  * 
  * Implementação de cache em memória com TTL e LRU eviction.
- * Compatível com ambiente Manus (sem Redis externo).
+ * Cache em memória, sem Redis externo.
  * 
  * Pode ser facilmente substituído por Redis em produção.
  */

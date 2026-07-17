@@ -321,7 +321,7 @@ export default function AdminSettings() {
                       <p className="font-medium">Autenticação OAuth</p>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Autenticação via Manus OAuth está ativa e configurada.
+                      Autenticação local por e-mail e senha está ativa e configurada.
                     </p>
                   </div>
 

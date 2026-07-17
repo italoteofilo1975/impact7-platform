@@ -2,7 +2,7 @@
  * Alert Service
  * SET7.06 - Operação, Observabilidade e Eficiência Cognitiva
  * 
- * Sistema de alertas em produção integrado com Manus Notify
+ * Sistema de alertas em produção, pelo adaptador de notificações da plataforma
  */
 
 import { notifyOwner } from "../../_core/notification";

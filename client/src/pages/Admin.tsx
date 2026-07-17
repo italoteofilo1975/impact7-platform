@@ -263,7 +263,7 @@ export default function Admin() {
             <a href={getLoginUrl()}>
               <Button className="w-full gradient-orange text-white border-0" size="lg">
                 <Shield className="w-5 h-5 mr-2" />
-                Fazer Login com Manus
+                Fazer Login
               </Button>
             </a>
             <Link href="/">

@@ -1,6 +1,6 @@
 // Storage na nossa stack: Supabase Storage.
 // Interface publica preservada (storagePut, storageGet -> { key, url }).
-// Sem credenciais Supabase, falha com mensagem clara em vez de bater na Manus.
+// Sem credenciais Supabase, falha com mensagem clara.
 
 import { ENV } from "./_core/env";
 

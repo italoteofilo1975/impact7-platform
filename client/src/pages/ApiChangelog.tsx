@@ -92,7 +92,7 @@ const CHANGELOG: ChangelogEntry[] = [
       { type: "added", description: "Jarvis - Assistente IA com RAG sobre Método IMPACT7" },
       { type: "added", description: "Sistema de cases de impacto social" },
       { type: "added", description: "Dashboard de analytics" },
-      { type: "added", description: "Autenticação via Manus OAuth" },
+      { type: "added", description: "Autenticação por e-mail e senha" },
       { type: "added", description: "PWA com suporte offline" },
     ],
   },

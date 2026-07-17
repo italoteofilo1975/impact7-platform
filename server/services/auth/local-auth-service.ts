@@ -101,7 +101,7 @@ export const localAuthService = {
 
     // Verificar se tem senha (usuario local)
     if (!user.passwordHash) {
-      throw new Error('Este usuario usa login social. Use o botao de login com Manus.');
+      throw new Error('Este usuario nao possui senha local. Use a recuperacao de senha.');
     }
 
     // Verificar senha

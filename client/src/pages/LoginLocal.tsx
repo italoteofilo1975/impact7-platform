@@ -282,7 +282,7 @@ export default function LoginLocal() {
             
             <div className="mt-6 pt-6 border-t text-center">
               <p className="text-sm text-muted-foreground">
-                Ou acesse com sua conta Manus
+                Ou volte para a página inicial
               </p>
               <Button 
                 variant="outline" 

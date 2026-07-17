@@ -105,7 +105,7 @@ async function checkLLM(): Promise<ComponentHealth> {
       message: "Serviço LLM disponível",
       lastCheck: new Date(),
       details: {
-        provider: "Manus Forge",
+        provider: "Anthropic",
       },
     };
   } catch (error) {
