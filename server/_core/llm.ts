@@ -55,6 +55,11 @@ export type ToolChoice =
   | ToolChoiceByName
   | ToolChoiceExplicit;
 
+// Provedor de LLM a usar nesta chamada. "anthropic" (default) e o provedor principal ja
+// integrado desde o inicio do projeto. "grok" e o segundo provedor, pedido pelo dono para
+// os agentes conversacionais de aliados e parceiros, mesmo formato compativel com OpenAI.
+export type LlmProvider = "anthropic" | "grok";
+
 export type InvokeParams = {
   messages: Message[];
   tools?: Tool[];
@@ -66,6 +71,7 @@ export type InvokeParams = {
   output_schema?: OutputSchema;
   responseFormat?: ResponseFormat;
   response_format?: ResponseFormat;
+  provider?: LlmProvider;
 };
 
 export type ToolCall = {
@@ -209,14 +215,25 @@ const normalizeToolChoice = (
   return toolChoice;
 };
 
-const resolveApiUrl = () =>
-  `${ENV.llmApiUrl.replace(/\/$/, "")}/chat/completions`;
+// Resolve url/chave/modelo pelo provedor pedido. Cada provedor tem seu proprio par de
+// variaveis de ambiente (achado natural de ter dois provedores: uma chave ausente nao pode
+// derrubar o outro provedor, cada um cai no seu proprio modo mock isoladamente).
+const resolveProviderConfig = (provider: LlmProvider) => {
+  if (provider === "grok") {
+    return { apiUrl: ENV.grokApiUrl, apiKey: ENV.grokApiKey, model: ENV.grokModel, label: "Grok" };
+  }
+  return { apiUrl: ENV.llmApiUrl, apiKey: ENV.llmApiKey, model: ENV.llmModel, label: "Anthropic" };
+};
 
-// Modo mock, quando nao ha chave de LLM configurada. O app roda, os agentes respondem
-// um placeholder rotulado, e basta colar a chave (LLM_API_KEY ou ANTHROPIC_API_KEY) para
-// virar resposta de verdade. Preserva o formato InvokeResult para nao mexer no chamador.
-const mockResult = (): InvokeResult => ({
-  id: "mock-no-llm-key",
+const resolveApiUrl = (apiUrl: string) =>
+  `${apiUrl.replace(/\/$/, "")}/chat/completions`;
+
+// Modo mock, quando nao ha chave configurada para o provedor pedido. O app roda, os agentes
+// respondem um placeholder rotulado, e basta colar a chave (LLM_API_KEY/ANTHROPIC_API_KEY
+// para o provedor principal, GROK_API_KEY/XAI_API_KEY para o Grok) para virar resposta real.
+// Preserva o formato InvokeResult para nao mexer no chamador.
+const mockResult = (label: string): InvokeResult => ({
+  id: `mock-no-${label.toLowerCase()}-key`,
   created: 0,
   model: "mock",
   choices: [
@@ -224,8 +241,7 @@ const mockResult = (): InvokeResult => ({
       index: 0,
       message: {
         role: "assistant",
-        content:
-          "[Impact7 modo mock] Nenhuma chave de LLM configurada. Defina LLM_API_KEY ou ANTHROPIC_API_KEY para respostas reais.",
+        content: `[Impact7 modo mock] Nenhuma chave de ${label} configurada. Configure a variavel de ambiente correspondente para respostas reais.`,
       },
       finish_reason: "stop",
     },
@@ -279,8 +295,10 @@ const normalizeResponseFormat = ({
 };
 
 export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
-  if (!ENV.llmApiKey) {
-    return mockResult();
+  const { apiUrl, apiKey, model, label } = resolveProviderConfig(params.provider ?? "anthropic");
+
+  if (!apiKey) {
+    return mockResult(label);
   }
 
   const {
@@ -295,7 +313,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   } = params;
 
   const payload: Record<string, unknown> = {
-    model: ENV.llmModel,
+    model,
     messages: messages.map(normalizeMessage),
   };
 
@@ -324,11 +342,11 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.response_format = normalizedResponseFormat;
   }
 
-  const response = await fetch(resolveApiUrl(), {
+  const response = await fetch(resolveApiUrl(apiUrl), {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${ENV.llmApiKey}`,
+      authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify(payload),
   });
@@ -336,7 +354,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(
-      `LLM invoke failed: ${response.status} ${response.statusText} – ${errorText}`
+      `LLM invoke (${label}) failed: ${response.status} ${response.statusText} – ${errorText}`
     );
   }
 

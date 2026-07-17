@@ -6,6 +6,7 @@ import { engagementEvents } from "../../../drizzle/schema.impact7";
 import { initiativeParams, auditLog } from "../../../drizzle/schema.impact8";
 import { eq } from "drizzle-orm";
 import { layerOfNum } from "../../../shared/ive-mapping";
+import { calcSroi } from "../../../shared/sroi-calculator";
 import { assertInitiativeTenant } from "../tenancy/tenant-context";
 
 // Placar do ecossistema. Contagem de UNICOS entre TODAS as iniciativas, metodo do maximo global:
@@ -57,36 +58,20 @@ export async function initiativeSroi(initiativeId: number, tenantId: number, act
     else if (layer === "esteira") esteira++;
   }
 
-  const atribuicao = p.atribuicaoBps / 10000;
-  // Achado 2.2/2.6 do RELATORIO_Consistencia (Opcao A do DECISOES_Pendentes item 1): o S-ROI
-  // honesto tem tres descontos, nao um so. Deadweight (o que teria acontecido de qualquer jeito,
-  // sem a iniciativa) e drop-off (perda de efeito ao longo do tempo) somam-se a atribuicao ja
-  // existente. Default zero em ambos preserva todo numero ja calculado ate alguem preencher dado
-  // real, exatamente como documentado no schema.
-  const deadweight = (p.deadweightBps ?? 0) / 10000;
-  const dropOff = (p.dropOffBps ?? 0) / 10000;
-  const fatorDesconto = atribuicao * (1 - deadweight) * (1 - dropOff);
-  const valorGatilho = p.valorGatilhoCents / 100;
-  const valorTransformacao = p.valorTransformacaoCents / 100;
-  const custo = p.custoImtsCents / 100;
+  // A formula em si vive em shared/sroi-calculator.ts, compartilhada com o simulador
+  // ilustrativo dos agentes conversacionais (ally-chat-service.ts), para que o numero real
+  // e o numero que o agente de IA explica pro aliado nunca possam divergir por duplicacao.
+  const calculo = calcSroi({
+    gatilhos, transformacoes,
+    valorGatilhoCents: p.valorGatilhoCents,
+    valorTransformacaoCents: p.valorTransformacaoCents,
+    atribuicaoBps: p.atribuicaoBps,
+    deadweightBps: p.deadweightBps ?? 0,
+    dropOffBps: p.dropOffBps ?? 0,
+    custoImtsCents: p.custoImtsCents,
+  });
 
-  const valorSocialBruto = gatilhos * valorGatilho + transformacoes * valorTransformacao;
-  const valorSocial = valorSocialBruto * fatorDesconto;
-  const sroi = custo > 0 ? valorSocial / custo : 0;
-
-  // Alavancagem, gatilhos por real de custo fixo investido pela IMTS. Metrica canonica citada no
-  // glossario da memoria viva e no Livro da Metodologia, cap11, que ainda nao existia no codigo.
-  const alavancagem = custo > 0 ? gatilhos / custo : 0;
-
-  // Sensibilidade sobre a premissa mais fragil, o valor por transformacao, em mais ou menos 30%.
-  const sroiLow = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 0.7) * fatorDesconto) / custo : 0;
-  const sroiHigh = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 1.3) * fatorDesconto) / custo : 0;
-
-  const memoria = {
-    gatilhos, transformacoes, esteiraProjecao: esteira,
-    valorGatilho, valorTransformacao, atribuicao, deadweight, dropOff, fatorDesconto, custo,
-    valorSocialBruto, valorSocial, sroi, alavancagem, sensibilidade: { sroiLow, sroiHigh },
-  };
+  const memoria = { ...calculo, esteiraProjecao: esteira };
 
   await db.insert(auditLog).values({
     actor, action: "compute_sroi", entity: "initiative", entityId: initiativeId,
