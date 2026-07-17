@@ -1034,31 +1034,36 @@ export const appRouter = router({
           role: z.enum(["user", "assistant", "system"]),
           content: z.string(),
         })).optional(),
+        provider: z.enum(["anthropic", "grok"]).optional(),
       }))
       .mutation(async ({ input }) => {
         const history = (input.history || []) as JarvisMessage[];
-        return chatWithJarvis(input.message, history);
+        return chatWithJarvis(input.message, history, input.provider);
       }),
-    
+
     calculate: publicProcedure
       .input(z.object({
-        investment: z.number().positive(),
-        contextScore: z.number().min(1).max(10),
-        resistanceScore: z.number().min(1).max(10),
-        beneficiaries: z.number().positive(),
-        duration: z.number().positive(),
+        gatilhos: z.number().min(0),
+        transformacoes: z.number().min(0),
+        valorGatilhoReais: z.number().min(0),
+        valorTransformacaoReais: z.number().min(0),
+        atribuicaoPercent: z.number().min(0).max(100),
+        deadweightPercent: z.number().min(0).max(100).optional(),
+        dropOffPercent: z.number().min(0).max(100).optional(),
+        custoImtsReais: z.number().positive(),
       }))
       .mutation(async ({ input }) => {
         return jarvisSkills.calculator(input);
       }),
-    
+
     mentorship: publicProcedure
       .input(z.object({
         topic: z.string().min(3),
         context: z.string().optional(),
+        provider: z.enum(["anthropic", "grok"]).optional(),
       }))
       .mutation(async ({ input }) => {
-        return jarvisSkills.mentorship(input.topic, input.context || "");
+        return jarvisSkills.mentorship(input.topic, input.context || "", input.provider);
       }),
     
     suggestions: publicProcedure.query(() => {

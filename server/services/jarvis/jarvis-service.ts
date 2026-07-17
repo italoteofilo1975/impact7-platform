@@ -1,11 +1,13 @@
 /**
  * Jarvis AI Service
- * Assistente inteligente do IMPACT7 com RAG e skills especializadas
+ * Assistente inteligente do Método Impact7 com RAG e skills especializadas
  */
 
 import { invokeLLM } from "../../_core/llm";
+import type { LlmProvider } from "../../_core/llm";
 import { llmCircuitBreaker, CircuitBreakerError } from "../../middleware/circuit-breaker";
 import { getContextForLLM, searchKnowledge } from "./knowledge-base";
+import { calcSroi } from "../../../shared/sroi-calculator";
 
 // Tipos
 export interface JarvisMessage {
@@ -20,66 +22,83 @@ export interface JarvisResponse {
   data?: Record<string, unknown>;
 }
 
+// Entrada da simulação ilustrativa de S-ROI do Jarvis. Unidades amigáveis para quem
+// digita (reais, percentuais 0-100) — convertidas para as unidades de calcSroi (centavos,
+// bps) antes de chamar a função pura compartilhada com o motor real (shared/sroi-calculator.ts).
+// Isto NUNCA toca no banco nem em nenhuma iniciativa real: é so uma simulacao com os
+// numeros que a pessoa usuaria informar.
 export interface CalculatorInput {
-  investment: number;
-  contextScore: number;
-  resistanceScore: number;
-  beneficiaries: number;
-  duration: number;
+  gatilhos: number;
+  transformacoes: number;
+  valorGatilhoReais: number;
+  valorTransformacaoReais: number;
+  atribuicaoPercent: number; // 0-100
+  deadweightPercent?: number; // 0-100, default 0
+  dropOffPercent?: number; // 0-100, default 0
+  custoImtsReais: number;
 }
 
 // System prompt do Jarvis - RESTRITO AO ESCOPO IMPACT7
-const JARVIS_SYSTEM_PROMPT = `Você é o Jarvis, o assistente inteligente EXCLUSIVO do Método IMPACT7 e da plataforma IMPACT7.
+const JARVIS_SYSTEM_PROMPT = `Você é o Jarvis, o assistente inteligente EXCLUSIVO do Método Impact7 e da plataforma Impact7.
 
 SOBRE VOCÊ:
-- Você é especialista APENAS em impacto social, metodologia IMPACT7, SET7 e transformação organizacional
-- Você tem acesso à base de conhecimento completa do IMPACT7
-- Você pode calcular o S-ROI de projetos usando a equação I = (E × C⁷) / R
-- Você oferece mentoria personalizada para organizações de impacto
+- Você é especialista APENAS no Método Impact7, impacto social e transformação organizacional através de ativos exponenciais
+- Você tem acesso à base de conhecimento do Impact7: Funil IVE, Funil IMPACTA, Motor Duplo, S-ROI honesto e Bifurcação de Capital
+- Você pode simular ilustrativamente o S-ROI de uma iniciativa usando a fórmula honesta do método (gatilhos, transformações, atribuição, deadweight, drop-off)
+- Você oferece mentoria estratégica baseada no método
+
+SOBRE O MÉTODO (use isso, e só isso, para falar de conceitos):
+- O Impact7 é uma fábrica de ativos exponenciais: a unidade central é o ATIVO (curso, tecnologia, comunidade, serviço), não a pessoa
+- Funil IVE: os 7 estágios de maturidade de um ativo — Origem, Ideação, Validação, Prototipação, Produtização, Operação, Escala
+- Funil IMPACTA: os 7 níveis de engajamento de uma pessoa — Informar, Motivar, Preparar (limiar de impacto), Ativar, Conectar, Transformar, Amplificar
+- Camadas acima do limiar: impacto (níveis 3-5), transformação (nível 6, subconjunto medido), esteira (nível 7, projeção — nunca somada ao S-ROI oficial)
+- Motor Duplo: trilha comercial (meta ~10x) e trilha social (meta ~100x, via Instituto Expand)
+- S-ROI honesto: valorSocialBruto = gatilhos×valorGatilho + transformações×valorTransformação, descontado por atribuição × (1-deadweight) × (1-dropOff), dividido pelo custo fixo IMTS. Faixa realista: 3x a 10x
+- Bifurcação de Capital: rubrica de 5 critérios ponderados que decide se uma iniciativa madura fica no ecossistema ou vira spin-off
+- O método está em fase de PILOTO (o "Piloto Jornada Impact7") — não invente números de clientes, faturamento ou casos de sucesso que não estão na base de conhecimento
 
 SUAS CAPACIDADES:
-1. CONHECIMENTO: Responder perguntas sobre o Método IMPACT7, SET7, seus pilares, equações e aplicações
-2. CALCULADORA: Calcular o S-ROI e índice de impacto de projetos
-3. MENTORIA: Oferecer orientação estratégica para maximizar impacto social
-4. ANÁLISE: Analisar casos e sugerir melhorias baseadas no método
-5. PLATAFORMA: Explicar funcionalidades da plataforma IMPACT7, planos, preços e recursos
+1. CONHECIMENTO: Responder perguntas sobre o Método Impact7 (Funil IVE, Funil IMPACTA, Motor Duplo, S-ROI honesto, Bifurcação de Capital)
+2. CALCULADORA: Simular ilustrativamente o S-ROI de uma iniciativa hipotética
+3. MENTORIA: Oferecer orientação estratégica baseada no método
+4. PLATAFORMA: Explicar funcionalidades da plataforma Impact7
 
 RESTRIÇÕES IMPORTANTES - VOCÊ NÃO DEVE:
-- Responder perguntas que NÃO estejam relacionadas ao IMPACT7, SET7, impacto social ou à plataforma
+- Responder perguntas que NÃO estejam relacionadas ao Impact7, impacto social ou à plataforma
 - Fornecer informações sobre outros assuntos como programação geral, receitas, entretenimento, etc.
-- Ajudar com tarefas que não sejam relacionadas ao escopo do IMPACT7
+- Ajudar com tarefas que não sejam relacionadas ao escopo do Impact7
 - Inventar informações sobre o método - use apenas a base de conhecimento
+- Inventar números de clientes, faturamento, casos de sucesso ou resultados de S-ROI reais - o método está em fase de piloto
+- Apresentar qualquer resultado da calculadora como se fosse um S-ROI auditado real: é sempre uma simulação ilustrativa
 
 QUANDO RECEBER PERGUNTAS FORA DO ESCOPO:
-- Educadamente informe que você é especializado EXCLUSIVAMENTE em IMPACT7 e impacto social
+- Educadamente informe que você é especializado EXCLUSIVAMENTE em Impact7 e impacto social
 - NÃO tente responder parcialmente - redirecione completamente para o escopo
 - Sugira reformular a pergunta relacionando ao contexto de impacto social
-- Ofereça ajuda com temas relacionados ao IMPACT7
+- Ofereça ajuda com temas relacionados ao Impact7
 - NUNCA forneça código de programação, receitas, piadas ou conteúdo não relacionado
 
 EXEMPLOS DE RESPOSTAS PARA PERGUNTAS FORA DO ESCOPO:
-- "Como programar em Python?" → "Sou especializado em impacto social e metodologia IMPACT7. Posso ajudá-lo a calcular o S-ROI do seu projeto ou explicar os 7 pilares do método."
-- "Qual a receita de bolo?" → "Minha especialidade é transformar organizações de impacto social. Posso ajudar com análise de projetos sociais ou mentoria estratégica."
-- "Conte uma piada" → "Prefiro focar em gerar impacto positivo! Posso explicar como o Método IMPACT7 já transformou mais de 500 organizações."
+- "Como programar em Python?" → "Sou especializado no Método Impact7 e impacto social. Posso ajudá-lo a entender o Funil IVE, o Funil IMPACTA ou simular ilustrativamente um S-ROI."
+- "Qual a receita de bolo?" → "Minha especialidade é o Método Impact7. Posso ajudar com o Motor Duplo, o S-ROI honesto ou mentoria estratégica de impacto."
+- "Conte uma piada" → "Prefiro focar em impacto! Posso explicar como funciona o Funil IMPACTA e o limiar de impacto do método."
 
 TEMAS PERMITIDOS:
-- Método IMPACT7 e seus 7 pilares (Imersão, Mapeamento, Prototipação, Avaliação, Consolidação, Transformação, Iteração)
-- SET7 (Sistema de Engenharia de Transformação)
-- Cálculo de S-ROI e impacto social
-- Gestão de projetos de impacto
+- Método Impact7: Funil IVE, Funil IMPACTA, Motor Duplo, S-ROI honesto, Bifurcação de Capital
+- Gestão de ativos e iniciativas de impacto
 - ESG, ODS, sustentabilidade
 - Investimento de impacto
 - Empreendedorismo social
-- Funcionalidades da plataforma IMPACT7
-- Planos e preços da plataforma
-- Casos de sucesso e cases de impacto
+- Funcionalidades da plataforma Impact7
+- O piloto atual do método (Jornada Impact7)
 
 DIRETRIZES:
 - Seja sempre útil, preciso e empático
 - Use linguagem clara e acessível
-- Quando relevante, cite os pilares ou conceitos do IMPACT7
+- Quando relevante, cite os conceitos exatos do Impact7 (funis, camadas, fórmula)
 - Se não souber algo DENTRO do escopo, admita e sugira onde encontrar a informação
 - Mantenha foco EXCLUSIVO em impacto social e transformação positiva
+- Nunca apresente números hipotéticos como se fossem dados reais auditados
 
 FORMATO DE RESPOSTA:
 - Use markdown para formatação
@@ -87,100 +106,99 @@ FORMATO DE RESPOSTA:
 - Use listas quando apropriado
 - Seja conciso mas completo`;
 
+function clampPercent(value: number | undefined): number {
+  if (value === undefined || Number.isNaN(value)) return 0;
+  return Math.min(Math.max(value, 0), 100);
+}
+
 // Skills do Jarvis
 export const jarvisSkills = {
-  // Skill: Calculadora de Impacto
+  // Skill: Simulação ilustrativa de S-ROI
   calculator: async (input: CalculatorInput): Promise<JarvisResponse> => {
-    const { investment, contextScore, resistanceScore, beneficiaries, duration } = input;
-    
-    // Normalizar scores (0-10 para 0-1)
-    const C = contextScore / 10;
-    const R = Math.max(resistanceScore / 10, 0.1); // Evitar divisão por zero
-    
-    // Calcular impacto: I = (E × C⁷) / R
-    const impactScore = Math.round((investment * Math.pow(C, 7)) / R);
-    
-    // Calcular valor social estimado
-    const socialValue = Math.round(impactScore * beneficiaries * (duration / 12));
-    
-    // Calcular S-ROI
-    const sRoi = Math.round((socialValue / investment) * 10) / 10;
-    
-    // Classificar resultado
+    const atribuicaoBps = Math.round(clampPercent(input.atribuicaoPercent) * 100);
+    const deadweightBps = Math.round(clampPercent(input.deadweightPercent) * 100);
+    const dropOffBps = Math.round(clampPercent(input.dropOffPercent) * 100);
+
+    const calculo = calcSroi({
+      gatilhos: Math.max(0, Math.round(input.gatilhos)),
+      transformacoes: Math.max(0, Math.round(input.transformacoes)),
+      valorGatilhoCents: Math.round(input.valorGatilhoReais * 100),
+      valorTransformacaoCents: Math.round(input.valorTransformacaoReais * 100),
+      atribuicaoBps,
+      deadweightBps,
+      dropOffBps,
+      custoImtsCents: Math.round(input.custoImtsReais * 100),
+    });
+
+    const fmt = (n: number) =>
+      n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
     let rating: string;
-    let recommendation: string;
-    
-    if (sRoi >= 10) {
-      rating = "Excelente";
-      recommendation = "Projeto com potencial excepcional! Considere escalar e documentar como case de sucesso.";
-    } else if (sRoi >= 7) {
+    if (calculo.sroi >= 10) {
+      rating = "Acima da faixa realista (revisar premissas de valor)";
+    } else if (calculo.sroi >= 7) {
       rating = "Muito Bom";
-      recommendation = "Projeto bem alinhado com os princípios IMPACT7. Foque em manter o contexto preservado.";
-    } else if (sRoi >= 5) {
+    } else if (calculo.sroi >= 5) {
       rating = "Bom";
-      recommendation = "Bom potencial. Revise o pilar de Imersão para aumentar o alinhamento contextual.";
-    } else if (sRoi >= 3) {
-      rating = "Moderado";
-      recommendation = "Há espaço para melhoria. Recomendamos aplicar o ciclo completo de Iteração.";
+    } else if (calculo.sroi >= 3) {
+      rating = "Dentro da faixa esperada";
     } else {
-      rating = "Baixo";
-      recommendation = "Alto risco de desperdício de recursos. Recomendamos voltar à fase de Imersão.";
+      rating = "Abaixo da faixa esperada";
     }
-    
-    const message = `## Resultado da Análise de Impacto
 
-### Métricas Calculadas
-| Métrica | Valor |
-|---------|-------|
-| **Índice de Impacto** | ${impactScore.toLocaleString('pt-BR')} |
-| **S-ROI Estimado** | ${sRoi}x |
-| **Valor Social Projetado** | R$ ${socialValue.toLocaleString('pt-BR')} |
-| **Classificação** | **${rating}** |
+    const message = `## Simulação Ilustrativa de S-ROI
 
-### Equação Aplicada
-\`I = (E × C⁷) / R\`
-- E (Investimento): R$ ${investment.toLocaleString('pt-BR')}
-- C (Contexto): ${contextScore}/10 → ${C.toFixed(2)}
-- R (Resistência): ${resistanceScore}/10 → ${R.toFixed(2)}
+> **Atenção:** isto é uma simulação com números hipotéticos informados por você. Não é um S-ROI auditado, não veio do banco de dados e não corresponde a nenhuma iniciativa real da plataforma.
 
-### Recomendação
-${recommendation}
+### Memória de cálculo
+| Item | Valor |
+|---|---|
+| Gatilhos | ${calculo.gatilhos} |
+| Transformações | ${calculo.transformacoes} |
+| Valor social bruto | R$ ${fmt(calculo.valorSocialBruto)} |
+| Fator de desconto (atribuição × (1-deadweight) × (1-dropOff)) | ${(calculo.fatorDesconto * 100).toFixed(1)}% |
+| Valor social (após desconto) | R$ ${fmt(calculo.valorSocial)} |
+| Custo IMTS | R$ ${fmt(calculo.custo)} |
+| **S-ROI simulado** | **${calculo.sroi.toFixed(2)}x** |
+| Alavancagem (gatilhos / custo) | ${calculo.alavancagem.toFixed(4)} |
+| Faixa de sensibilidade | ${calculo.sensibilidade.sroiLow.toFixed(2)}x – ${calculo.sensibilidade.sroiHigh.toFixed(2)}x |
 
-### Benchmarks de Referência
-- S-ROI Mínimo Recomendado: **7x**
-- S-ROI Médio (Projetos Sociais): **3-4x**
-- S-ROI Top 10% (IMPACT7): **12x+**`;
+### Classificação (ilustrativa)
+${rating}
+
+### Referência do método
+A faixa realista de S-ROI honesto (após os três descontos) é de **3x a 10x**. Um resultado
+de duas dezenas de vezes normalmente indica que os proxies de valor por gatilho ou por
+transformação estão otimistas demais — vale revisar as premissas, não comemorar o número.`;
 
     return {
       message,
       skill: "calculator",
       data: {
-        impactScore,
-        sRoi,
-        socialValue,
+        ...calculo,
         rating,
-        recommendation
+        illustrative: true,
       }
     };
   },
 
   // Skill: Mentoria
-  mentorship: async (topic: string, context: string): Promise<JarvisResponse> => {
+  mentorship: async (topic: string, context: string, provider?: LlmProvider): Promise<JarvisResponse> => {
     const knowledgeContext = getContextForLLM(topic);
-    
+
     const messages: JarvisMessage[] = [
       { role: "system", content: JARVIS_SYSTEM_PROMPT },
       { role: "system", content: knowledgeContext },
-      { 
-        role: "user", 
-        content: `Preciso de mentoria sobre: ${topic}\n\nContexto adicional: ${context}\n\nPor favor, forneça orientação estratégica baseada no Método IMPACT7.`
+      {
+        role: "user",
+        content: `Preciso de mentoria sobre: ${topic}\n\nContexto adicional: ${context}\n\nPor favor, forneça orientação estratégica baseada no Método Impact7.`
       }
     ];
-    
-    const response = await invokeLLM({ messages });
+
+    const response = await invokeLLM({ messages, provider });
     const rawContent = response.choices[0]?.message?.content;
     const assistantMessage = typeof rawContent === 'string' ? rawContent : "Desculpe, não consegui processar sua solicitação.";
-    
+
     return {
       message: assistantMessage,
       skill: "mentorship",
@@ -190,23 +208,25 @@ ${recommendation}
 
   // Skill: Exportação de Relatório
   exportReport: async (projectData: Record<string, unknown>): Promise<JarvisResponse> => {
-    const report = `# Relatório de Impacto IMPACT7
+    const report = `# Relatório Impact7
 
 ## Dados do Projeto
 ${Object.entries(projectData).map(([key, value]) => `- **${key}**: ${value}`).join('\n')}
 
 ## Análise Metodológica
 
-### Alinhamento com os 7 Pilares
-Este relatório foi gerado automaticamente pelo Jarvis, assistente do Método IMPACT7.
+### Posição no Funil IVE / Funil IMPACTA
+Este relatório foi gerado automaticamente pelo Jarvis, assistente do Método Impact7.
+Nenhum número acima que não venha explicitamente dos dados do projeto informado deve ser
+tratado como medição auditada.
 
 ### Recomendações
-1. Revise periodicamente os indicadores de impacto
-2. Mantenha a documentação do Context Lake atualizada
-3. Realize ciclos de iteração a cada 77 dias
+1. Revise periodicamente os indicadores de engajamento (Funil IMPACTA) e de maturidade do ativo (Funil IVE)
+2. Mantenha a trilha de auditoria do S-ROI atualizada
+3. Reavalie o fator de desconto (atribuição, deadweight, drop-off) a cada ciclo de medição
 
 ---
-*Gerado por Jarvis AI - Método IMPACT7*
+*Gerado por Jarvis AI - Método Impact7*
 *Data: ${new Date().toLocaleDateString('pt-BR')}*`;
 
     return {
@@ -220,33 +240,12 @@ Este relatório foi gerado automaticamente pelo Jarvis, assistente do Método IM
 // Função principal de chat do Jarvis
 export async function chatWithJarvis(
   userMessage: string,
-  conversationHistory: JarvisMessage[] = []
+  conversationHistory: JarvisMessage[] = [],
+  provider?: LlmProvider
 ): Promise<JarvisResponse> {
-  // Detectar intenção e skill
-  const lowerMessage = userMessage.toLowerCase();
-  
-  // Detectar pedido de cálculo
-  if (
-    lowerMessage.includes("calcul") ||
-    lowerMessage.includes("s-roi") ||
-    lowerMessage.includes("impacto") && lowerMessage.includes("projeto")
-  ) {
-    // Extrair números da mensagem se houver
-    const numbers = userMessage.match(/\d+/g);
-    if (numbers && numbers.length >= 3) {
-      return jarvisSkills.calculator({
-        investment: parseInt(numbers[0]) || 100000,
-        contextScore: Math.min(parseInt(numbers[1]) || 5, 10),
-        resistanceScore: Math.min(parseInt(numbers[2]) || 3, 10),
-        beneficiaries: parseInt(numbers[3]) || 1000,
-        duration: parseInt(numbers[4]) || 12
-      });
-    }
-  }
-  
   // Buscar contexto relevante na base de conhecimento
   const knowledgeContext = getContextForLLM(userMessage);
-  
+
   // Construir mensagens para o LLM
   const messages: JarvisMessage[] = [
     { role: "system", content: JARVIS_SYSTEM_PROMPT },
@@ -254,23 +253,23 @@ export async function chatWithJarvis(
     ...conversationHistory.slice(-10), // Últimas 10 mensagens
     { role: "user", content: userMessage }
   ];
-  
+
   try {
     console.log("[Jarvis] Iniciando chat com mensagem:", userMessage);
     console.log("[Jarvis] Histórico de mensagens:", conversationHistory.length);
-    
+
     // Executar LLM com circuit breaker para resiliência
     console.log("[Jarvis] Executando LLM via circuit breaker...");
-    const response = await llmCircuitBreaker.execute(() => invokeLLM({ messages }));
+    const response = await llmCircuitBreaker.execute(() => invokeLLM({ messages, provider }));
     console.log("[Jarvis] Resposta do LLM recebida com sucesso");
     const rawContent = response.choices[0]?.message?.content;
-    const assistantMessage = typeof rawContent === 'string' ? rawContent : 
+    const assistantMessage = typeof rawContent === 'string' ? rawContent :
       "Desculpe, não consegui processar sua solicitação. Por favor, tente novamente.";
-    
+
     // Identificar fontes usadas
     const relevantDocs = searchKnowledge(userMessage, 3);
     const sources = relevantDocs.map(doc => doc.titulo);
-    
+
     return {
       message: assistantMessage,
       sources: sources.length > 0 ? sources : undefined
@@ -279,14 +278,14 @@ export async function chatWithJarvis(
     console.error("[Jarvis] Erro capturado:", error);
     console.error("[Jarvis] Stack trace:", error instanceof Error ? error.stack : 'N/A');
     console.error("[Jarvis] Tipo de erro:", error instanceof CircuitBreakerError ? 'CircuitBreakerError' : error?.constructor?.name);
-    
+
     // Verificar se é erro do circuit breaker
     if (error instanceof CircuitBreakerError) {
       return {
         message: "O serviço de IA está temporariamente indisponível devido a alta demanda. Por favor, tente novamente em alguns instantes. Enquanto isso, você pode explorar nossa documentação ou usar a calculadora de impacto."
       };
     }
-    
+
     return {
       message: "Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente em alguns instantes."
     };
@@ -296,13 +295,13 @@ export async function chatWithJarvis(
 // Função para obter sugestões de perguntas
 export function getSuggestedQuestions(): string[] {
   return [
-    "O que é o Método IMPACT7?",
-    "Como calcular o S-ROI do meu projeto?",
-    "Explique a equação I = (E × C⁷) / R",
-    "Quais são os 7 pilares do IMPACT7?",
-    "Como aplicar o pilar da Imersão?",
-    "O que é o Context Lake?",
-    "Como medir impacto social?",
-    "Qual a diferença entre output e outcome?"
+    "O que é o Método Impact7?",
+    "O que é o Funil IVE?",
+    "Como funciona o Funil IMPACTA e o limiar de impacto?",
+    "O que é o Motor Duplo?",
+    "Como funciona o S-ROI honesto e seus três descontos?",
+    "O que é a Bifurcação de Capital?",
+    "O que diferencia gatilho, transformação e esteira?",
+    "Como está o piloto atual do Impact7?"
   ];
 }

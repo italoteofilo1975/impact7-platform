@@ -1,786 +1,438 @@
 /**
  * Jarvis Knowledge Base Service
- * Gerencia a base de conhecimento do IMPACT7 para RAG
+ * Gerencia a base de conhecimento do Método Impact7 para RAG.
+ *
+ * Conteúdo alinhado ao Método Impact7 real, tal como descrito nos dois livros (Livro do
+ * Método, Livro da Metodologia) e implementado na plataforma (shared/ive-mapping.ts,
+ * shared/sroi-calculator.ts, server/services/impact/*). Nenhum caso de estudo, número de
+ * clientes ou faturamento é inventado aqui — o método está em fase inicial / piloto, e a
+ * base é explícita sobre isso, seguindo a norma de zero travessões (sem impact-washing).
  */
 
-// Documentos da base de conhecimento IMPACT7
+// Documentos da base de conhecimento Impact7
 export const IMPACT7_KNOWLEDGE_BASE = {
-  // Fundamentação Científica
-  ciencia: {
-    teoriaInformacao: {
-      titulo: "Teoria da Informação - Claude Shannon",
-      conteudo: `A eficácia do IMPACT7 é fundamentada na Teoria da Informação de Claude Shannon. 
-      Identificamos a "Crise do Contexto" como um estado de alta entropia organizacional.
-      
-      PROBLEMA: A perda de sinal (propósito) ao longo da cadeia de comando gera dissipação de energia (recursos).
-      
-      SOLUÇÃO: O IMPACT7 atua como um filtro de redução de entropia, restaurando a integridade do sinal antes da execução.
-      
-      A entropia organizacional pode ser medida pela fórmula: H = -Σ p(x) log₂ p(x)
-      Onde p(x) representa a probabilidade de cada estado possível do sistema.`,
-      tags: ["ciência", "entropia", "shannon", "informação"]
+  // O método em si
+  metodo: {
+    oQueE: {
+      titulo: "O que é o Método Impact7",
+      conteudo: `O Impact7 é uma fábrica de ativos exponenciais.
+
+      A unidade atômica do método não é a pessoa, é o ATIVO: um curso, uma tecnologia,
+      uma comunidade, um serviço. "Impactar" alguém significa "acender" (ignitar) essa
+      pessoa através de um ativo — ela entra em contato com o ativo, avança em profundidade
+      de engajamento, e em algum ponto cruza o limiar em que passa a contar como impacto
+      real, não apenas exposição.
+
+      O método organiza esse processo em dois funis complementares:
+      - O Funil IVE (Origem, Ideação, Validação, Prototipação, Produtização, Operação,
+        Escala) descreve o estágio de maturidade do próprio ATIVO.
+      - O Funil IMPACTA (Informar, Motivar, Preparar, Ativar, Conectar, Transformar,
+        Amplificar) descreve a profundidade de engajamento de uma PESSOA com um ativo.
+
+      Em cima disso, o método usa um Motor Duplo (trilha comercial e trilha social) e um
+      S-ROI honesto, com desconto explícito por atribuição, deadweight e drop-off, para
+      nunca inflar o número de impacto reportado.`,
+      tags: ["método", "impact7", "ativo", "fábrica de ativos", "definição"]
     },
-    cienciaCognitiva: {
-      titulo: "Ciência Cognitiva - Lei de Miller",
-      conteudo: `A arquitetura do método respeita os limites biológicos do processamento humano.
-      
-      LEI DE MILLER: O cérebro humano processa 7±2 itens simultaneamente (George Miller, 1956).
-      
-      TEORIA DA CARGA COGNITIVA: John Sweller demonstrou que a memória de trabalho tem capacidade limitada.
-      
-      OTIMIZAÇÃO IMPACT7: A regra 7x7x77 funciona como mecanismo de "chunking", 
-      agrupando informações em blocos gerenciáveis para reduzir a carga cognitiva.
-      
-      Aplicações práticas:
-      - 7 Pilares do método (não mais, não menos)
-      - 7 Recursos por ciclo (7R)
-      - 7 Valores mínimos de entrega (7V)
-      - Ciclos de 77 unidades temporais (77T)`,
-      tags: ["cognitiva", "miller", "sweller", "chunking", "memória"]
-    },
-    sistemasComplexos: {
-      titulo: "Sistemas Adaptativos Complexos",
-      conteudo: `Comunidades são sistemas adaptativos complexos que se auto-organizam.
-      
-      CARACTERÍSTICAS:
-      - Emergência: propriedades surgem da interação entre partes
-      - Auto-organização: ordem emerge sem controle centralizado
-      - Adaptação: o sistema evolui em resposta ao ambiente
-      - Não-linearidade: pequenas mudanças podem ter grandes efeitos
-      
-      APLICAÇÃO NO IMPACT7:
-      O pilar da Independência utiliza princípios de organização bottom-up.
-      Regras simples geram ordem complexa e resiliente sem controle centralizado.
-      
-      Exemplo: Uma comunidade treinada com os 7 pilares desenvolve 
-      capacidade de resolver problemas novos sem intervenção externa.`,
-      tags: ["complexidade", "emergência", "auto-organização", "adaptação"]
+    conceitoDeAtivo: {
+      titulo: "O conceito de Ativo",
+      conteudo: `No Impact7, um ATIVO é qualquer coisa reutilizável que gera engajamento e,
+      eventualmente, impacto: um curso, uma tecnologia, uma comunidade, um serviço.
+
+      Por que o ativo é a unidade, e não a pessoa impactada diretamente? Porque um ativo bem
+      construído é o que permite que o impacto se repita e se multiplique sem depender de
+      esforço manual repetido — é o mecanismo de escala do método. Cada iniciativa dentro do
+      ecossistema Impact7 gira em torno de um ou mais ativos que avançam pelo Funil IVE, da
+      Origem até a Escala.`,
+      tags: ["ativo", "método", "escala", "definição"]
     }
   },
 
-  // Modelo Matemático
-  matematica: {
-    equacaoGeral: {
-      titulo: "Equação Geral do Impacto",
-      conteudo: `A equação fundamental do IMPACT7:
+  // Funil IVE — o estágio de maturidade do ativo/iniciativa
+  funilIve: {
+    definicao: {
+      titulo: "Funil IVE — os 7 estágios do ativo",
+      conteudo: `O Funil IVE descreve os sete estágios pelos quais um ativo ou iniciativa
+      passa, do surgimento à escala:
 
-      I = (E × C⁷) / R
+      1. ORIGEM (D0) — o ponto de partida, antes de qualquer validação.
+      2. IDEAÇÃO — a ideia do ativo está sendo formulada.
+      3. VALIDAÇÃO — testando se a ideia resolve um problema real.
+      4. PROTOTIPAÇÃO — construindo uma primeira versão funcional.
+      5. PRODUTIZAÇÃO — transformando o protótipo em algo entregável de forma repetível.
+      6. OPERAÇÃO — o ativo está rodando de forma estável, com beneficiários reais.
+      7. ESCALA — o ativo está sendo multiplicado além do contexto original.
+
+      No código da plataforma, esse estágio fica registrado no campo stageIve de cada
+      iniciativa (ver shared/ive-mapping.ts, constante IVE_STAGES). Cada iniciativa avança
+      estágio a estágio; não há atalho de Origem direto para Escala.`,
+      tags: ["funil ive", "estágios", "ativo", "stageIve", "origem", "escala"]
+    }
+  },
+
+  // Funil IMPACTA — a profundidade de engajamento de uma pessoa
+  funilImpacta: {
+    definicao: {
+      titulo: "Funil IMPACTA — os 7 níveis de engajamento",
+      conteudo: `O Funil IMPACTA mede o quão fundo o engajamento de uma pessoa com um ativo
+      chegou, em ordem crescente de profundidade:
+
+      1. INFORMAR — a pessoa teve o primeiro contato/exposição ao ativo.
+      2. MOTIVAR — a pessoa demonstrou algum interesse ativo (clicou, voltou).
+      3. PREPARAR — a pessoa deu o primeiro passo de uso real. Este é o LIMIAR DE IMPACTO:
+         a partir daqui a pessoa conta oficialmente como impactada.
+      4. ATIVAR — a pessoa completou uma ação/tarefa concreta dentro do ativo.
+      5. CONECTAR — a pessoa se conectou com outras pessoas em torno do ativo (comunidade,
+         pares).
+      6. TRANSFORMAR — um resultado sustentado e confirmado foi observado na vida da pessoa.
+      7. AMPLIFICAR — a pessoa indicou outras pessoas ou criou conteúdo a partir do ativo,
+         gerando um efeito de segunda ordem.
+
+      Abaixo do nível 3 (Preparar) a pessoa está apenas em EXPOSIÇÃO — ainda não conta como
+      impacto. Nos códigos reais isso vive em shared/ive-mapping.ts: IMPACTA_ORDER define os
+      sete níveis e IMPACT_THRESHOLD_LEVEL = 3 marca o limiar.`,
+      tags: ["funil impacta", "engajamento", "níveis", "limiar de impacto", "preparar"]
+    },
+    camadas: {
+      titulo: "As 3 camadas de impacto acima do limiar",
+      conteudo: `Uma vez que a pessoa cruza o limiar (nível 3, Preparar), ela entra em uma
+      das três camadas de impacto, em ordem crescente de peso probatório:
+
+      CAMADA IMPACTO (níveis 3 a 5 — Preparar, Ativar, Conectar)
+      É a camada do "gatilho": a pessoa cruzou o limiar e está engajada, mas o resultado de
+      transformação ainda não foi confirmado. Cada pessoa nesta camada conta como um
+      "gatilho" no S-ROI.
+
+      CAMADA TRANSFORMAÇÃO (nível 6 — Transformar)
+      Um subconjunto MEDIDO da camada de impacto: são as pessoas para quem um resultado
+      sustentado foi de fato confirmado (não presumido). Cada transformação também é um
+      gatilho, mas com peso maior no cálculo de valor social.
+
+      CAMADA ESTEIRA (nível 7 — Amplificar)
+      A camada de PROJEÇÃO de efeito de segunda ordem (indicações, conteúdo criado por
+      quem foi impactado). A esteira NUNCA é somada ao S-ROI monetário auditado — ela é
+      contada e reportada separadamente, como esteiraProjecao, exatamente para não inflar
+      artificialmente o número oficial de impacto.
+
+      Essa separação (impacto / transformação / esteira) é o que sustenta a honestidade do
+      S-ROI: só o que foi de fato medido entra na conta oficial.`,
+      tags: ["camadas", "impacto", "transformação", "esteira", "gatilho", "s-roi"]
+    }
+  },
+
+  // Motor Duplo
+  motorDuplo: {
+    definicao: {
+      titulo: "Motor Duplo — trilha comercial e trilha social",
+      conteudo: `O Impact7 opera com um Motor Duplo: duas trilhas de retorno, com metas e
+      naturezas de custo diferentes, rodando em paralelo.
+
+      TRILHA COMERCIAL
+      Alvo de retorno de aproximadamente 10x. Financeiramente sustentada dentro do próprio
+      ecossistema IMTS.
+
+      TRILHA SOCIAL
+      Alvo de retorno de aproximadamente 100x, viabilizada através de uma organização sem
+      fins lucrativos parceira, o Instituto Expand.
+
+      As duas trilhas também diferem na natureza do custo:
+      - CUSTO FIXO IMTS: o que a própria IMTS paga para operar o ativo (o denominador do
+        S-ROI, custoImts).
+      - CUSTO VARIÁVEL EXTERNALIZADO: na trilha social, o custo por beneficiário adicional
+        não é pago pela plataforma — é custeado por parceiros externos e doadores, o que é
+        o que permite à trilha social buscar uma meta de retorno tão mais alta que a
+        comercial sem inflar o custo fixo interno.`,
+      tags: ["motor duplo", "trilha comercial", "trilha social", "instituto expand", "custo"]
+    }
+  },
+
+  // S-ROI honesto
+  sroi: {
+    formulaHonesta: {
+      titulo: "S-ROI honesto — a fórmula auditável",
+      conteudo: `O S-ROI do Impact7 é calculado de forma auditável, nunca por estimativa
+      solta. A fórmula (implementada em shared/sroi-calculator.ts, função calcSroi, e usada
+      tanto no cálculo real quanto em qualquer simulação ilustrativa) é:
+
+      valorSocialBruto = gatilhos × valorGatilho + transformações × valorTransformação
+      fatorDesconto = atribuição × (1 − deadweight) × (1 − dropOff)
+      valorSocial = valorSocialBruto × fatorDesconto
+      S-ROI = valorSocial / custoImts
 
       Onde:
-      - I = Impacto mensurável (resultado final)
-      - E = Energia (recursos investidos: tempo, dinheiro, pessoas)
-      - C = Contexto preservado (0 a 1, onde 1 = contexto 100% preservado)
-      - R = Resistência do sistema (fricções, barreiras, ineficiências)
+      - gatilhos = pessoas únicas que cruzaram o limiar de impacto (camadas impacto +
+        transformação, deduplicadas por identidade, contando pelo maior nível já alcançado).
+      - transformações = subconjunto de gatilhos com resultado sustentado confirmado.
+      - valorGatilho / valorTransformação = proxies de valor monetário por gatilho e por
+        transformação, definidos por iniciativa.
+      - atribuição = percentual de crédito que a iniciativa pode honestamente reivindicar
+        pelo resultado (não age sozinha no mundo real).
+      - deadweight = percentual do resultado que teria acontecido de qualquer forma, mesmo
+        sem a iniciativa.
+      - dropOff = percentual do efeito que se perde ao longo do tempo.
+      - custoImts = custo fixo real pago pela IMTS para operar a iniciativa.
 
-      O EXPOENTE 7:
-      O expoente 7 demonstra matematicamente que pequenas perdas de contexto 
-      resultam em quedas catastróficas de impacto.
-      
-      Exemplo numérico:
-      - Se C = 0.9 (90% do contexto preservado): C⁷ = 0.478
-      - Se C = 0.8 (80% do contexto preservado): C⁷ = 0.210
-      - Se C = 0.7 (70% do contexto preservado): C⁷ = 0.082
-      
-      Uma perda de apenas 30% do contexto resulta em 92% de perda de impacto!`,
-      tags: ["equação", "impacto", "contexto", "matemática"]
+      A camada esteira (Amplificar) NUNCA entra nessa conta — é só projeção, reportada à
+      parte (esteiraProjecao).`,
+      tags: ["s-roi", "fórmula", "gatilhos", "transformações", "auditável", "calcSroi"]
     },
-    unidades: {
-      titulo: "Unidades de Medida IMPACT7",
-      conteudo: `O método utiliza três unidades fundamentais:
+    tresDescontos: {
+      titulo: "Os 3 fatores de desconto do S-ROI",
+      conteudo: `O S-ROI honesto nunca reporta o valor social bruto sem desconto. Três
+      fatores multiplicativos reduzem o número antes de virar S-ROI oficial:
 
-      7R - UNIDADE DE RECURSO
-      Alocação modular de recursos para evitar desperdício e forçar priorização.
-      Cada projeto deve ter exatamente 7 recursos-chave identificados.
-      
-      7V - UNIDADE DE VALOR
-      KPIs mínimos de entrega por ciclo.
-      Se output < 7V, o processo está ineficiente e precisa de ajuste.
-      
-      77T - CICLO TEMPORAL
-      Gestão de tempo em ciclos de 77 unidades (dias, horas, ou sprints).
-      Induz foco e urgência produtiva sem burnout.
-      
-      S-ROI - RETORNO SOCIAL SOBRE INVESTIMENTO
-      Meta: S-ROI ≥ 7x
-      Cada unidade monetária investida deve gerar 7x em valor social.
-      
-      Fórmula S-ROI = (Valor Social Gerado) / (Investimento Total)`,
-      tags: ["7R", "7V", "77T", "S-ROI", "métricas"]
+      1. ATRIBUIÇÃO — quanto do resultado observado pode ser honestamente creditado à
+         iniciativa, e não a outros fatores concorrentes (outras organizações, contexto
+         econômico, esforço da própria pessoa).
+      2. DEADWEIGHT — a fração do resultado que teria ocorrido de qualquer forma, mesmo sem
+         a iniciativa existir.
+      3. DROP-OFF — a perda de efeito ao longo do tempo (um resultado medido hoje pode não
+         se sustentar integralmente daqui a um ano).
+
+      Os três se multiplicam entre si (não se somam) para formar o fatorDesconto, o que
+      torna o desconto final naturalmente mais severo do que qualquer um dos três fatores
+      isolados — de propósito, para que o método erre para o lado conservador, nunca para o
+      lado inflado. A faixa realista de S-ROI depois desses descontos fica em torno de 3x a
+      10x; um número de duas dezenas de vezes é tratado como sinal de premissa de valor
+      inflada, não como troféu.`,
+      tags: ["desconto", "atribuição", "deadweight", "drop-off", "s-roi", "honestidade"]
     },
-    sRoi: {
-      titulo: "Cálculo do S-ROI",
-      conteudo: `O S-ROI (Social Return on Investment) é calculado assim:
+    alavancagem: {
+      titulo: "Alavancagem — gatilhos por real de custo fixo",
+      conteudo: `Além do S-ROI (que é monetário), o método acompanha a ALAVANCAGEM:
 
-      S-ROI = Valor Social Total / Investimento Total
+      alavancagem = gatilhos / custoImts
 
-      COMPONENTES DO VALOR SOCIAL:
-      1. Impacto Direto: benefícios mensuráveis aos beneficiários
-      2. Impacto Indireto: efeitos em famílias e comunidade
-      3. Impacto Sistêmico: mudanças em políticas ou práticas
-      
-      CLASSIFICAÇÃO S-ROI:
-      - Excelente: S-ROI ≥ 10x
-      - Muito Bom: S-ROI 7x - 9.9x
-      - Bom: S-ROI 5x - 6.9x
-      - Moderado: S-ROI 3x - 4.9x
-      - Baixo: S-ROI < 3x
-      
-      BENCHMARK IMPACT7:
-      - S-ROI Mínimo Recomendado: 7x
-      - S-ROI Médio (Projetos Sociais): 3-4x
-      - S-ROI Top 10% (com IMPACT7): 12x+`,
-      tags: ["S-ROI", "retorno", "investimento", "social", "cálculo"]
+      Ou seja, quantas pessoas cruzaram o limiar de impacto para cada real de custo fixo
+      pago pela IMTS. É uma métrica operacional complementar ao S-ROI: enquanto o S-ROI
+      responde "quanto valor social por real investido", a alavancagem responde "quantas
+      pessoas impactadas por real investido", sem depender dos proxies de valor monetário.`,
+      tags: ["alavancagem", "gatilhos", "custo", "métrica"]
     }
   },
 
-  // Os 7 Pilares
-  pilares: {
-    imersao: {
-      titulo: "Pilar 1: Imersão",
-      conteudo: `IMERSÃO - O primeiro pilar do IMPACT7
+  // Bifurcação de Capital
+  bifurcacao: {
+    rubrica: {
+      titulo: "Bifurcação de Capital",
+      conteudo: `A Bifurcação de Capital é o ponto de decisão em que uma iniciativa madura
+      é avaliada para decidir se ela permanece dentro do ecossistema IMTS ou se torna um
+      empreendimento autônomo (spin-off).
 
-      DEFINIÇÃO:
-      Etnografia digital e mergulho profundo no contexto antes de qualquer ação.
-      
-      OBJETIVO:
-      Entender verdadeiramente o problema antes de propor soluções.
-      
-      FERRAMENTAS:
-      - Entrevistas em profundidade com stakeholders
-      - Observação participante na comunidade
-      - Análise de dados históricos e narrativas
-      - Mapeamento de redes de relacionamento
-      
-      OUTPUTS:
-      - Mapa de Contexto completo
-      - Personas dos beneficiários
-      - Jornada atual do problema
-      - Hipóteses iniciais validadas
-      
-      ERRO COMUM:
-      Pular esta fase para "economizar tempo" resulta em soluções 
-      desconectadas da realidade, desperdiçando recursos.`,
-      tags: ["imersão", "etnografia", "contexto", "pesquisa"]
-    },
-    ideacao: {
-      titulo: "Pilar 2: Ideação",
-      conteudo: `IDEAÇÃO - O segundo pilar do IMPACT7
+      A avaliação usa uma rubrica de 5 critérios, cada um pontuado de 0 a 10 e com pesos
+      diferentes:
 
-      DEFINIÇÃO:
-      Canvas colaborativo e co-criação de soluções com a comunidade.
-      
-      PRINCÍPIO:
-      "Nada sobre nós, sem nós" - soluções devem ser co-criadas 
-      com os beneficiários, não impostas de fora.
-      
-      FERRAMENTAS:
-      - Design Thinking adaptado para impacto social
-      - Canvas IMPACT7 de Ideação
-      - Prototipagem rápida de conceitos
-      - Votação e priorização coletiva
-      
-      OUTPUTS:
-      - 3-5 conceitos de solução validados
-      - Protótipos de baixa fidelidade
-      - Critérios de sucesso definidos pela comunidade
-      - Roadmap inicial de implementação
-      
-      MÉTRICA:
-      % de ideias que vieram diretamente dos beneficiários (meta: >50%)`,
-      tags: ["ideação", "co-criação", "design thinking", "canvas"]
-    },
-    implementacao: {
-      titulo: "Pilar 3: Implementação",
-      conteudo: `IMPLEMENTAÇÃO - O terceiro pilar do IMPACT7
+      - Autonomia de mercado (peso ×2)
+      - Margem vs. equity (peso ×2)
+      - Sinergia com o ecossistema (peso ×1)
+      - Necessidade de capital (peso ×1)
+      - Velocidade exigida (peso ×1)
 
-      DEFINIÇÃO:
-      Micro-ciclos de 77 unidades e prototipagem rápida.
-      
-      PRINCÍPIO:
-      Falhar rápido, aprender rápido, ajustar rápido.
-      
-      METODOLOGIA:
-      - Ciclos de 77 dias (ou 77 horas para projetos menores)
-      - Entregas incrementais a cada ciclo
-      - Validação contínua com beneficiários
-      - Documentação de aprendizados
-      
-      REGRAS:
-      1. Nunca mais de 7 recursos ativos por ciclo (7R)
-      2. Mínimo de 7 entregas de valor por ciclo (7V)
-      3. Revisão obrigatória ao final de cada 77T
-      
-      OUTPUTS:
-      - MVP funcional ao final do primeiro ciclo
-      - Métricas de progresso documentadas
-      - Lista de ajustes para próximo ciclo`,
-      tags: ["implementação", "ciclos", "77T", "MVP", "prototipagem"]
-    },
-    iteracao: {
-      titulo: "Pilar 4: Iteração",
-      conteudo: `ITERAÇÃO - O quarto pilar do IMPACT7
+      O score ponderado resultante define o caminho:
+      - Score ≤ 6: a iniciativa permanece dentro do ecossistema IMTS.
+      - Score entre 7 e 9: modelo híbrido.
+      - Score ≥ 10: a iniciativa se torna um empreendimento autônomo (spin-off).
 
-      DEFINIÇÃO:
-      Feedback loops contínuos e melhoria sistemática.
-      
-      PRINCÍPIO:
-      O primeiro plano nunca sobrevive ao contato com a realidade.
-      A iteração transforma erros em aprendizado.
-      
-      CICLO DE ITERAÇÃO:
-      1. MEDIR: Coletar dados de desempenho
-      2. APRENDER: Analisar o que funcionou e o que não funcionou
-      3. AJUSTAR: Modificar abordagem baseado em evidências
-      4. REPETIR: Iniciar novo ciclo com melhorias
-      
-      FERRAMENTAS:
-      - Dashboard de métricas em tempo real
-      - Retrospectivas semanais com equipe
-      - Feedback estruturado de beneficiários
-      - A/B testing de abordagens
-      
-      MÉTRICA:
-      Velocidade de iteração (tempo entre identificar problema e implementar solução)`,
-      tags: ["iteração", "feedback", "melhoria contínua", "aprendizado"]
-    },
-    impacto: {
-      titulo: "Pilar 5: Impacto",
-      conteudo: `IMPACTO - O quinto pilar do IMPACT7
-
-      DEFINIÇÃO:
-      Dashboard S-ROI e mensuração rigorosa de resultados.
-      
-      PRINCÍPIO:
-      "O que não é medido não é gerenciado" - mas medir errado 
-      é pior do que não medir.
-      
-      FRAMEWORK DE MENSURAÇÃO:
-      1. OUTPUTS: O que foi entregue (quantidade)
-      2. OUTCOMES: Mudanças de comportamento (qualidade)
-      3. IMPACT: Transformação de longo prazo (sustentabilidade)
-      
-      MÉTRICAS OBRIGATÓRIAS:
-      - S-ROI (Retorno Social sobre Investimento)
-      - NPS dos beneficiários
-      - Taxa de retenção/engajamento
-      - Custo por beneficiário impactado
-      
-      FERRAMENTAS:
-      - Dashboard IMPACT7 automatizado
-      - Relatórios mensais de impacto
-      - Auditorias trimestrais independentes`,
-      tags: ["impacto", "métricas", "S-ROI", "mensuração", "dashboard"]
-    },
-    inspiracao: {
-      titulo: "Pilar 6: Inspiração",
-      conteudo: `INSPIRAÇÃO - O sexto pilar do IMPACT7
-
-      DEFINIÇÃO:
-      Storytelling estratégico e engajamento de parceiros.
-      
-      PRINCÍPIO:
-      Dados convencem a mente, histórias movem o coração.
-      Impacto real merece ser contado.
-      
-      ELEMENTOS DO STORYTELLING IMPACT7:
-      1. HERÓI: O beneficiário (não a organização)
-      2. JORNADA: Da situação inicial à transformação
-      3. OBSTÁCULOS: Desafios superados
-      4. TRANSFORMAÇÃO: Mudança mensurável
-      5. CHAMADA: Convite para outros se juntarem
-      
-      CANAIS:
-      - Relatórios de impacto visuais
-      - Vídeos de depoimentos
-      - Cases de estudo detalhados
-      - Apresentações para investidores
-      
-      MÉTRICA:
-      Taxa de conversão de prospects em parceiros/doadores`,
-      tags: ["inspiração", "storytelling", "engajamento", "parceiros"]
-    },
-    independencia: {
-      titulo: "Pilar 7: Independência",
-      conteudo: `INDEPENDÊNCIA - O sétimo pilar do IMPACT7
-
-      DEFINIÇÃO:
-      LMS integrado e empoderamento comunitário para sustentabilidade.
-      
-      PRINCÍPIO:
-      O objetivo final é tornar a intervenção desnecessária.
-      Sucesso = comunidade autônoma.
-      
-      ESTRATÉGIAS:
-      1. CAPACITAÇÃO: Treinar líderes locais
-      2. TRANSFERÊNCIA: Passar gestão para a comunidade
-      3. SUSTENTABILIDADE: Criar fontes de receita própria
-      4. REDE: Conectar com outras comunidades
-      
-      FERRAMENTAS:
-      - LMS (Learning Management System) com cursos
-      - Certificação de "Guardiões IMPACT7"
-      - Toolkit de replicação do método
-      - Rede de alumni e mentoria entre pares
-      
-      MÉTRICA DE SUCESSO:
-      % de projetos que continuam operando 2+ anos 
-      após encerramento da intervenção externa (meta: >70%)`,
-      tags: ["independência", "empoderamento", "sustentabilidade", "capacitação"]
+      Esse mecanismo existe para que a decisão de "soltar" um ativo do ecossistema seja
+      baseada em critérios explícitos e ponderados, não em intuição.`,
+      tags: ["bifurcação de capital", "spin-off", "rubrica", "autonomia", "critérios"]
     }
   },
 
-  // Framework Tecnológico
-  tecnologia: {
-    contextLake: {
-      titulo: "Context Lake - Data Lake Contextual",
-      conteudo: `CONTEXT LAKE - Preservação da Memória Contextual
+  // Ecossistema IMTS
+  ecossistema: {
+    imts: {
+      titulo: "Impact7 dentro do Ecossistema IMTS",
+      conteudo: `O Impact7 não é uma empresa isolada: é um produto da estrutura transversal
+      "Fábrica de Método", dentro do Ecossistema IMTS mais amplo.
 
-      DEFINIÇÃO:
-      Data lake especializado para armazenamento de dados não estruturados 
-      que preservam o contexto do projeto.
-      
-      TIPOS DE DADOS:
-      - Histórico organizacional e narrativas
-      - Transcrições de entrevistas
-      - Documentos culturais da comunidade
-      - Registros de decisões e justificativas
-      - Fotos, vídeos e áudios contextuais
-      
-      DIFERENCIAL:
-      Diferente de bancos de dados tradicionais, o Context Lake 
-      preserva o "porquê" além do "o quê".
-      
-      TECNOLOGIAS:
-      - Vector embeddings para busca semântica
-      - Graph database para relacionamentos
-      - Time-series para evolução temporal
-      - NLP para extração de insights`,
-      tags: ["context lake", "dados", "memória", "contexto"]
-    },
-    aiCore: {
-      titulo: "AI Core - Context Keeper",
-      conteudo: `AI CORE (CONTEXT KEEPER) - Guardião do Contexto
+      O Ecossistema IMTS é organizado em 9 círculos organizacionais, liderado pela CEO
+      Kamilla Marques e pelo fundador e CVO Ítalo Teófilo. A Fábrica de Método, responsável
+      por produzir e manter o Método Impact7 (os livros e sua implementação na plataforma),
+      é liderada por Ítalo Filho.
 
-      DEFINIÇÃO:
-      Agentes de IA que monitoram a comunicação da equipe em tempo real,
-      alertando sobre desvios de propósito e sugerindo correções.
-      
-      FUNCIONALIDADES:
-      1. MONITORAMENTO: Analisa comunicações da equipe
-      2. DETECÇÃO: Identifica sinais de perda de contexto
-      3. ALERTA: Notifica quando há desvio do propósito
-      4. SUGESTÃO: Propõe correções baseadas no Context Lake
-      
-      INDICADORES DE ALERTA:
-      - Linguagem desalinhada com valores do projeto
-      - Decisões que contradizem aprendizados anteriores
-      - Falta de referência aos beneficiários
-      - Métricas de vaidade vs. métricas de impacto
-      
-      INTEGRAÇÃO:
-      - Slack, Teams, Email
-      - Documentos compartilhados
-      - Reuniões gravadas`,
-      tags: ["IA", "context keeper", "monitoramento", "alertas"]
-    },
-    modulos: {
-      titulo: "Os 7 Módulos do IMPACT7-OS",
-      conteudo: `IMPACT7-OS - Sistema Operacional de Impacto
-
-      MÓDULO 1: IMERSÃO
-      Ferramentas de etnografia digital e pesquisa contextual.
-      
-      MÓDULO 2: IDEAÇÃO
-      Canvas colaborativo e sistema de co-criação.
-      
-      MÓDULO 3: IMPLEMENTAÇÃO
-      Gestão de ciclos 77T e tracking de entregas.
-      
-      MÓDULO 4: ITERAÇÃO
-      Dashboard de feedback e sistema de retrospectivas.
-      
-      MÓDULO 5: IMPACTO
-      Calculadora S-ROI e relatórios automatizados.
-      
-      MÓDULO 6: INSPIRAÇÃO
-      Gerador de cases e toolkit de storytelling.
-      
-      MÓDULO 7: INDEPENDÊNCIA
-      LMS integrado e certificação de guardiões.
-      
-      INTEGRAÇÃO:
-      Todos os módulos compartilham dados através do Context Lake,
-      garantindo consistência e preservação do contexto.`,
-      tags: ["módulos", "IMPACT7-OS", "plataforma", "software"]
+      Essa estrutura importa para entender o Impact7 como método: ele não foi desenhado
+      isoladamente, é parte de um ecossistema maior que também opera a trilha comercial e a
+      trilha social do Motor Duplo.`,
+      tags: ["ecossistema imts", "fábrica de método", "organização", "círculos"]
     }
   },
 
-  // Casos de Estudo Reais
-  casosEstudo: {
-    casoBrasil: {
-      titulo: "Caso de Estudo: Comunidade Esperança - Brasil",
-      conteudo: `CASO DE ESTUDO: COMUNIDADE ESPERANÇA - SÃO PAULO, BRASIL
+  // O piloto real documentado
+  piloto: {
+    jornadaImpact7: {
+      titulo: "Piloto Jornada Impact7 — o primeiro ativo real",
+      conteudo: `O Impact7 está em fase de piloto. O primeiro ativo real desenhado para
+      validar o método de ponta a ponta é a "Jornada Impact7": uma jornada educacional
+      instrumentada, um curso de 6 a 8 aulas, com acompanhamento de mentor de IA por
+      aluno — o único formato em que os sete níveis do Funil IMPACTA são medidos por
+      eventos que a plataforma já captura, sem integração adicional.
 
-      CONTEXTO INICIAL:
-      - Comunidade de 2.500 famílias em situação de vulnerabilidade
-      - Taxa de desemprego: 47%
-      - Evasão escolar: 32%
-      - Investimento anterior de R$ 1.2M sem resultados mensuráveis
-      
-      INTERVENÇÃO IMPACT7:
-      - Duração: 18 meses (3 ciclos de 77T)
-      - Investimento: R$ 450.000
-      - Equipe: 4 facilitadores + 12 líderes comunitários
-      
-      RESULTADOS APÓS 18 MESES:
-      - Desemprego: 47% → 18% (-62%)
-      - Evasão escolar: 32% → 8% (-75%)
-      - Renda média familiar: +127%
-      - 3 cooperativas criadas e autossustentáveis
-      - 89 microempreendedores formados
-      
-      S-ROI CALCULADO: 14.2x
-      Cada R$ 1 investido gerou R$ 14.20 em valor social.
-      
-      FATORES DE SUCESSO:
-      1. Imersão de 45 dias antes de qualquer ação
-      2. Co-criação com 100% das soluções validadas pela comunidade
-      3. Líderes locais como protagonistas desde o início
-      4. Métricas compartilhadas semanalmente com todos`,
-      tags: ["caso", "brasil", "comunidade", "resultados", "S-ROI"]
-    },
-    casoPortugal: {
-      titulo: "Caso de Estudo: Projeto Renascer - Portugal",
-      conteudo: `CASO DE ESTUDO: PROJETO RENASCER - PORTO, PORTUGAL
+      No banco de dados real, isso existe como a iniciativa "Piloto 01" (tenant Instituto
+      Expand, modo social, estágio IVE Operação). Os parâmetros econômicos de partida
+      (valor por gatilho, valor por transformação, atribuição) são explicitamente
+      ILUSTRATIVOS até o piloto rodar e calibrar os números reais — o piloto existe
+      exatamente para substituir esses valores por dados medidos.
 
-      CONTEXTO INICIAL:
-      - Bairro social com 800 famílias
-      - Alto índice de isolamento social em idosos (67%)
-      - Conflitos intergeracionais frequentes
-      - Tentativas anteriores de intervenção falharam
-      
-      INTERVENÇÃO IMPACT7:
-      - Duração: 12 meses (2 ciclos de 77T)
-      - Investimento: € 180.000
-      - Foco: Integração intergeracional
-      
-      RESULTADOS:
-      - Isolamento em idosos: 67% → 23% (-66%)
-      - Conflitos reportados: -78%
-      - 45 pares de mentoria jovem-idoso formados
-      - 2 negócios sociais criados pela comunidade
-      - Modelo replicado em 3 outros bairros
-      
-      S-ROI CALCULADO: 9.8x
-      
-      INOVAÇÃO APLICADA:
-      - "Cafés de Histórias" semanais conectando gerações
-      - App comunitário desenvolvido por jovens locais
-      - Horta urbana gerida intergeracionalmente`,
-      tags: ["caso", "portugal", "idosos", "intergeracional", "S-ROI"]
-    },
-    casoONG: {
-      titulo: "Caso de Estudo: ONG Transformação Digital",
-      conteudo: `CASO DE ESTUDO: TRANSFORMAÇÃO DE ONG TRADICIONAL
+      O piloto define 4 gates de avaliação antes de qualquer iniciativa ser considerada
+      validada: qualificação (estabilidade do funil), custo por usuário, S-ROI dentro da
+      faixa realista (3x–10x, nunca inflado), e auditabilidade (um terceiro cético consegue
+      refazer a conta a partir da trilha de auditoria e chegar ao mesmo número).
 
-      CONTEXTO INICIAL:
-      - ONG com 15 anos de atuação em educação
-      - Dificuldade em mensurar impacto real
-      - Dependência de um único financiador (85%)
-      - Equipe desmotivada e alta rotatividade
-      
-      DESAFIO:
-      Transformar operações para modelo IMPACT7 sem interromper serviços.
-      
-      INTERVENÇÃO:
-      - Fase 1: Diagnóstico e Imersão (30 dias)
-      - Fase 2: Redesenho de processos (45 dias)
-      - Fase 3: Implementação gradual (6 meses)
-      - Fase 4: Consolidação e escala (6 meses)
-      
-      RESULTADOS APÓS 12 MESES:
-      - S-ROI documentado: 8.7x (antes: não mensurável)
-      - Diversificação: 85% → 45% dependência de um financiador
-      - 4 novos parceiros institucionais
-      - Rotatividade de equipe: 40% → 12%
-      - NPS de beneficiários: 34 → 72
-      
-      LIÇÕES APRENDIDAS:
-      1. Mudança cultural leva tempo - respeitar o ritmo
-      2. Quick wins iniciais constroem confiança
-      3. Dados são aliados, não ameaças
-      4. Comunicação transparente é essencial`,
-      tags: ["caso", "ONG", "transformação", "institucional", "S-ROI"]
-    },
-    casoEducacao: {
-      titulo: "Caso de Estudo: Rede de Escolas Públicas",
-      conteudo: `CASO DE ESTUDO: REDE MUNICIPAL DE EDUCAÇÃO
-
-      CONTEXTO INICIAL:
-      - 23 escolas municipais
-      - IDEB médio: 4.2 (meta: 6.0)
-      - Evasão no ensino médio: 28%
-      - Orçamento limitado para inovação
-      
-      INTERVENÇÃO IMPACT7:
-      - Piloto em 5 escolas (primeiro ciclo 77T)
-      - Expansão para 23 escolas (segundo ciclo)
-      - Investimento total: R$ 890.000
-      
-      METODOLOGIA:
-      1. Imersão com professores, alunos e famílias
-      2. Co-criação de soluções por escola
-      3. Rede de troca entre escolas
-      4. Dashboard unificado de métricas
-      
-      RESULTADOS (24 MESES):
-      - IDEB médio: 4.2 → 5.8 (+38%)
-      - Evasão: 28% → 11% (-61%)
-      - Engajamento de professores: +89%
-      - 12 práticas inovadoras documentadas e replicadas
-      
-      S-ROI CALCULADO: 11.3x
-      
-      SUSTENTABILIDADE:
-      Modelo incorporado à política municipal de educação.`,
-      tags: ["caso", "educação", "escolas", "IDEB", "S-ROI", "público"]
+      IMPORTANTE: até o piloto concluir e os gates serem avaliados, não existem resultados
+      finais, números de S-ROI auditado ou contagem de beneficiários reais a divulgar. Ainda estamos na fase de medir, não de anunciar
+      resultado.`,
+      tags: ["piloto", "jornada impact7", "instituto expand", "gates", "fase inicial"]
     }
   },
 
   // FAQs Frequentes
   faqs: {
     oquee: {
-      titulo: "FAQ: O que é o IMPACT7?",
-      conteudo: `PERGUNTA: O que é o IMPACT7?
+      titulo: "FAQ: O que é o Impact7?",
+      conteudo: `PERGUNTA: O que é o Impact7?
 
       RESPOSTA:
-      O IMPACT7 é um método científico para maximizar o impacto social de projetos 
-      e organizações. Baseado em 7 pilares (Imersão, Ideação, Implementação, 
-      Iteração, Impacto, Inspiração e Independência), o método combina:
-      
-      - Fundamentação científica (Teoria da Informação, Ciência Cognitiva)
-      - Modelo matemático (Equação I = E × C⁷ / R)
-      - Framework tecnológico (Context Lake, AI Core)
-      - Métricas rigorosas (S-ROI, 7R, 7V, 77T)
-      
-      O diferencial é a preservação do contexto: garantir que o propósito 
-      original não se perca durante a execução.`,
+      O Impact7 é um método para transformar iniciativas de impacto social em uma fábrica
+      de ativos exponenciais — cursos, tecnologias, comunidades e serviços desenhados para
+      multiplicar o número de pessoas que cruzam o limiar de impacto real, com um S-ROI
+      medido de forma honesta (nunca inflado) e uma trilha de auditoria completa.
+
+      O método combina o Funil IVE (maturidade do ativo), o Funil IMPACTA (profundidade de
+      engajamento da pessoa), um Motor Duplo de retorno (comercial e social) e a fórmula do
+      S-ROI honesto, com três fatores de desconto (atribuição, deadweight, drop-off).`,
       tags: ["FAQ", "o que é", "definição", "introdução"]
     },
     paraquem: {
-      titulo: "FAQ: Para quem é o IMPACT7?",
-      conteudo: `PERGUNTA: Para quem é o IMPACT7?
+      titulo: "FAQ: Para quem é o Impact7?",
+      conteudo: `PERGUNTA: Para quem é o Impact7?
 
       RESPOSTA:
-      O IMPACT7 é ideal para:
-      
-      1. ONGs E ORGANIZAÇÕES SOCIAIS
-         - Que querem mensurar e aumentar seu impacto
-         - Que precisam prestar contas a financiadores
-         - Que buscam sustentabilidade de longo prazo
-      
-      2. EMPRESAS COM PROGRAMAS DE RSC
-         - Que querem ir além do "greenwashing"
-         - Que buscam impacto real e mensurável
-         - Que querem engajar colaboradores
-      
-      3. GOVERNOS E POLÍTICAS PÚBLICAS
-         - Que precisam otimizar recursos escassos
-         - Que querem evidências para tomada de decisão
-         - Que buscam escalar programas que funcionam
-      
-      4. INVESTIDORES DE IMPACTO
-         - Que querem avaliar projetos com rigor
-         - Que buscam maximizar retorno social
-         - Que precisam de métricas comparáveis
-      
-      5. EMPREENDEDORES SOCIAIS
-         - Que estão começando um projeto
-         - Que querem evitar erros comuns
-         - Que buscam um framework comprovado`,
-      tags: ["FAQ", "público", "para quem", "ONGs", "empresas"]
+      O Impact7 é pensado para organizações e iniciativas que:
+
+      - Constroem ou operam ativos de impacto social (cursos, comunidades, serviços,
+        tecnologias) e querem medir o resultado real, não só o alcance bruto.
+      - Precisam prestar contas com uma trilha de auditoria, não com estimativa solta.
+      - Trabalham com um modelo de retorno duplo: parte comercial, parte social, com
+        parceiros como o Instituto Expand viabilizando a trilha social.
+      - Estão dispostas a aceitar um S-ROI descontado por atribuição, deadweight e
+        drop-off — ou seja, um número mais conservador, mas defensável.
+
+      O método está em fase de piloto (ver "Piloto Jornada Impact7"), então hoje ele é mais
+      adequado para quem quer participar da validação inicial do que para quem busca um
+      produto já maduro e testado em escala.`,
+      tags: ["FAQ", "público", "para quem", "piloto"]
     },
     quantocusta: {
-      titulo: "FAQ: Quanto custa implementar o IMPACT7?",
-      conteudo: `PERGUNTA: Quanto custa implementar o IMPACT7?
+      titulo: "FAQ: Quanto custa o Impact7?",
+      conteudo: `PERGUNTA: Quanto custa o Impact7?
 
       RESPOSTA:
-      O investimento varia conforme o escopo:
-      
-      AUTOESTUDO (Gratuito a R$ 497)
-      - E-book gratuito com fundamentos
-      - Curso online completo: R$ 497
-      - Acesso à comunidade de prática
-      
-      CONSULTORIA GUIADA (R$ 5.000 - R$ 25.000)
-      - Diagnóstico inicial
-      - Workshops de capacitação
-      - Acompanhamento por 3-6 meses
-      - Ideal para ONGs pequenas/médias
-      
-      IMPLEMENTAÇÃO COMPLETA (R$ 50.000 - R$ 200.000)
-      - Projeto customizado
-      - Equipe dedicada
-      - Tecnologia IMPACT7-OS
-      - Acompanhamento por 12-24 meses
-      - Ideal para grandes organizações
-      
-      ROI TÍPICO:
-      Projetos IMPACT7 têm S-ROI médio de 8-12x, 
-      significando que o investimento se paga muitas vezes.`,
-      tags: ["FAQ", "custo", "preço", "investimento", "ROI"]
+      O Impact7 está em fase inicial / piloto — ainda não existe uma tabela de preços
+      pública e validada para divulgar aqui, e este assistente não vai inventar valores de
+      planos ou pacotes. Para uma conversa sobre custo e escopo, o caminho correto é falar
+      diretamente com a equipe do Ecossistema IMTS.
+
+      O que já está claro no método: o custo relevante para o S-ROI é o custoImts (o custo
+      fixo que a própria IMTS paga para operar cada iniciativa). Na trilha social, o custo
+      variável por beneficiário adicional é externalizado — custeado por parceiros e
+      doadores, não pela plataforma.`,
+      tags: ["FAQ", "custo", "preço", "investimento", "piloto"]
     },
     quantotempo: {
-      titulo: "FAQ: Quanto tempo leva para ver resultados?",
-      conteudo: `PERGUNTA: Quanto tempo leva para ver resultados?
+      titulo: "FAQ: Quanto tempo leva para ver resultado?",
+      conteudo: `PERGUNTA: Quanto tempo leva para ver resultado no Impact7?
 
       RESPOSTA:
-      O IMPACT7 trabalha com ciclos de 77 unidades temporais (77T):
-      
-      PRIMEIROS 30 DIAS:
-      - Diagnóstico completo
-      - Mapa de contexto
-      - Primeiras métricas baseline
-      
-      PRIMEIRO CICLO 77T (77 dias):
-      - MVP de solução implementado
-      - Primeiros resultados mensuráveis
-      - Ajustes baseados em feedback
-      
-      TRÊS CICLOS 77T (231 dias / ~8 meses):
-      - Resultados consolidados
-      - S-ROI calculável com confiança
-      - Modelo pronto para escala
-      
-      LONGO PRAZO (12-24 meses):
-      - Transformação sustentável
-      - Comunidade/organização autônoma
-      - Modelo replicável documentado
-      
-      IMPORTANTE:
-      Resultados rápidos são possíveis, mas transformação real leva tempo.
-      O método equilibra urgência com sustentabilidade.`,
-      tags: ["FAQ", "tempo", "resultados", "prazo", "77T"]
+      Depende do estágio do ativo no Funil IVE. Um ativo começa em Origem e precisa passar
+      por Ideação, Validação, Prototipação e Produtização antes de chegar a Operação — só aí
+      é possível medir engajamento real pelo Funil IMPACTA.
+
+      No piloto atual (Jornada Impact7), o cronograma de referência é de aproximadamente 12
+      semanas: as primeiras semanas são de produção do ativo e soft launch, o meio do
+      período é de coorte real rodando e sendo acompanhada, e o final do período é dedicado
+      à medição de transformação e ao cálculo do S-ROI auditável. Esse é o cronograma de UM
+      piloto específico, não uma promessa genérica de prazo para qualquer iniciativa.`,
+      tags: ["FAQ", "tempo", "prazo", "funil ive", "piloto"]
     },
     diferenciais: {
-      titulo: "FAQ: O que diferencia o IMPACT7 de outros métodos?",
-      conteudo: `PERGUNTA: O que diferencia o IMPACT7 de outros métodos?
+      titulo: "FAQ: O que diferencia o Impact7 de outros métodos?",
+      conteudo: `PERGUNTA: O que diferencia o Impact7 de outros métodos de impacto social?
 
       RESPOSTA:
-      Principais diferenciais:
-      
-      1. FUNDAMENTAÇÃO CIENTÍFICA
-         - Baseado em Teoria da Informação (Shannon)
-         - Respeita limites cognitivos (Lei de Miller)
-         - Modelo matemático testável
-      
-      2. FOCO NO CONTEXTO
-         - A maioria dos métodos ignora a "Crise do Contexto"
-         - IMPACT7 trata preservação de contexto como prioridade
-         - Tecnologia dedicada (Context Lake, AI Core)
-      
-      3. MÉTRICAS RIGOROSAS
-         - S-ROI padronizado e comparável
-         - Sistema 7R/7V/77T para gestão
-         - Dashboard em tempo real
-      
-      4. SUSTENTABILIDADE INTEGRADA
-         - Pilar de Independência desde o início
-         - Objetivo: tornar intervenção desnecessária
-         - Capacitação de líderes locais
-      
-      5. TECNOLOGIA PROPRIETÁRIA
-         - IMPACT7-OS: plataforma completa
-         - IA para preservação de contexto
-         - Integração de todos os pilares
-      
-      COMPARAÇÃO:
-      - Design Thinking: foca em soluções, não em contexto
-      - Lean Startup: foca em velocidade, não em impacto social
-      - Theory of Change: descritivo, não prescritivo`,
-      tags: ["FAQ", "diferenciais", "comparação", "vantagens"]
+      Os principais diferenciais do método:
+
+      1. UNIDADE DE MEDIDA É O ATIVO, NÃO A PESSOA
+         O foco é construir ativos reutilizáveis (cursos, tecnologias, comunidades,
+         serviços) que multiplicam o impacto, em vez de depender de esforço manual
+         repetido por beneficiário.
+
+      2. LIMIAR DE IMPACTO EXPLÍCITO
+         Nem todo contato conta como impacto. Só a partir do nível 3 (Preparar) do Funil
+         IMPACTA uma pessoa passa a contar oficialmente — abaixo disso é só exposição.
+
+      3. S-ROI COM DESCONTO HONESTO
+         O valor social bruto é sempre descontado por atribuição, deadweight e drop-off
+         antes de virar o número oficial. A camada de projeção (esteira/Amplificar) nunca é
+         somada ao número auditado.
+
+      4. AUDITABILIDADE
+         Cada cálculo de S-ROI é registrado em uma trilha de auditoria; um terceiro cético
+         deve conseguir refazer a conta e chegar ao mesmo resultado.
+
+      5. MOTOR DUPLO
+         Retorno comercial e retorno social são acompanhados separadamente, com naturezas
+         de custo diferentes (custo fixo IMTS vs. custo variável externalizado).`,
+      tags: ["FAQ", "diferenciais", "comparação", "vantagens", "s-roi honesto"]
     },
     comomecar: {
-      titulo: "FAQ: Como começar com o IMPACT7?",
-      conteudo: `PERGUNTA: Como começar com o IMPACT7?
+      titulo: "FAQ: Como começar com o Impact7?",
+      conteudo: `PERGUNTA: Como começar com o Impact7?
 
       RESPOSTA:
-      Passos recomendados para iniciar:
-      
-      PASSO 1: APRENDER OS FUNDAMENTOS
-      - Baixe o e-book gratuito no site
-      - Assista aos vídeos introdutórios
-      - Leia os casos de estudo
-      
-      PASSO 2: FAZER O DIAGNÓSTICO
-      - Use a Calculadora de Impacto online
-      - Avalie seu projeto atual
-      - Identifique gaps de contexto
-      
-      PASSO 3: ESCOLHER O CAMINHO
-      Opção A - Autoestudo:
-        - Curso online + comunidade
-        - Ideal para projetos pequenos
-      
-      Opção B - Consultoria:
-        - Agende uma conversa com especialista
-        - Diagnóstico personalizado
-        - Plano de implementação
-      
-      Opção C - Parceria:
-        - Para grandes organizações
-        - Implementação completa
-        - Tecnologia + acompanhamento
-      
-      PASSO 4: PRIMEIRO CICLO 77T
-      - Comece com um projeto piloto
-      - Aplique os 7 pilares
-      - Documente aprendizados
-      
-      CONTATO:
-      - WhatsApp: (11) 99999-9999
-      - Email: contato@impact7.com.br
-      - Site: www.impact7.com.br`,
-      tags: ["FAQ", "começar", "primeiros passos", "início"]
+      Como o método está em fase de piloto, o caminho de entrada hoje é diferente do de um
+      produto maduro:
+
+      1. ENTENDER O MÉTODO
+         Compreender o Funil IVE (maturidade do ativo) e o Funil IMPACTA (profundidade de
+         engajamento) — são os dois eixos que organizam qualquer iniciativa no método.
+
+      2. IDENTIFICAR UM ATIVO
+         Definir qual ativo (curso, tecnologia, comunidade, serviço) sua organização já tem
+         ou pode construir rapidamente, que sirva de base para medir impacto real.
+
+      3. CONVERSAR COM A EQUIPE DO ECOSSISTEMA IMTS
+         Para avaliar se sua iniciativa se encaixa na fase de piloto atual, ou aguardar a
+         próxima fase de abertura do método.
+
+      Este assistente não substitui essa conversa direta — ele pode explicar o método e
+      simular ilustrativamente o cálculo de S-ROI, mas decisões de parceria e escopo
+      dependem da equipe humana.`,
+      tags: ["FAQ", "começar", "primeiros passos", "início", "piloto"]
     },
     calculadora: {
-      titulo: "FAQ: Como funciona a Calculadora de Impacto?",
-      conteudo: `PERGUNTA: Como funciona a Calculadora de Impacto?
+      titulo: "FAQ: Como funciona a simulação de S-ROI do Jarvis?",
+      conteudo: `PERGUNTA: Como funciona a calculadora/simulação de S-ROI do Jarvis?
 
       RESPOSTA:
-      A Calculadora de Impacto aplica a equação I = (E × C⁷) / R:
-      
-      PARÂMETROS DE ENTRADA:
-      
-      1. ENERGIA (E) - Recursos investidos
-         - Orçamento total do projeto
-         - Horas de trabalho da equipe
-         - Recursos materiais
-         Escala: 1-10 (1=mínimo, 10=máximo)
-      
-      2. CONTEXTO (C) - Preservação do propósito
-         - Clareza da missão
-         - Alinhamento da equipe
-         - Conexão com beneficiários
-         Escala: 0-1 (0=perdido, 1=100% preservado)
-      
-      3. RESISTÊNCIA (R) - Barreiras e fricções
-         - Burocracia
-         - Conflitos internos
-         - Barreiras externas
-         Escala: 1-10 (1=mínima, 10=máxima)
-      
-      SAÍDA:
-      - Índice de Impacto (I)
-      - S-ROI estimado
-      - Recomendações de melhoria
-      - Comparação com benchmarks
-      
-      INTERPRETAÇÃO:
-      - I > 7: Excelente potencial de impacto
-      - I 4-7: Bom, com espaço para melhoria
-      - I < 4: Necessita revisão urgente`,
-      tags: ["FAQ", "calculadora", "equação", "impacto", "S-ROI"]
+      A simulação usa exatamente a mesma fórmula do S-ROI honesto usada no motor de
+      mensuração real da plataforma (shared/sroi-calculator.ts):
+
+      valorSocialBruto = gatilhos × valorGatilho + transformações × valorTransformação
+      fatorDesconto = atribuição × (1 − deadweight) × (1 − dropOff)
+      S-ROI = (valorSocialBruto × fatorDesconto) / custoImts
+
+      PARÂMETROS DE ENTRADA (todos definidos por quem está simulando, não vêm do banco):
+      - Gatilhos e transformações estimados
+      - Valor por gatilho e valor por transformação (em reais)
+      - Percentual de atribuição, deadweight e drop-off
+      - Custo fixo IMTS estimado (em reais)
+
+      MUITO IMPORTANTE: essa é uma SIMULAÇÃO ILUSTRATIVA com números hipotéticos que a
+      pessoa usuária informa. Ela não lê nem grava nada no banco de dados, não corresponde a
+      nenhuma iniciativa real registrada na plataforma, e o resultado nunca deve ser tratado
+      como um S-ROI auditado de fato.`,
+      tags: ["FAQ", "calculadora", "simulação", "s-roi", "ilustrativo"]
     }
   }
 };
@@ -802,7 +454,7 @@ export function searchKnowledge(query: string, limit: number = 3): KnowledgeDocu
 
   // Flatten knowledge base
   const allDocs: KnowledgeDocument[] = [];
-  
+
   for (const [categoria, subcategorias] of Object.entries(IMPACT7_KNOWLEDGE_BASE)) {
     for (const [subcategoria, doc] of Object.entries(subcategorias)) {
       allDocs.push({
@@ -817,12 +469,12 @@ export function searchKnowledge(query: string, limit: number = 3): KnowledgeDocu
   const scored = allDocs.map(doc => {
     let score = 0;
     const docText = `${doc.titulo} ${doc.conteudo} ${doc.tags.join(' ')}`.toLowerCase();
-    
+
     // Exact phrase match
     if (docText.includes(queryLower)) {
       score += 10;
     }
-    
+
     // Word matches
     for (const word of queryWords) {
       if (word.length < 3) continue;
@@ -838,7 +490,7 @@ export function searchKnowledge(query: string, limit: number = 3): KnowledgeDocu
         score += 8;
       }
     }
-    
+
     return { doc, score };
   });
 
@@ -853,18 +505,18 @@ export function searchKnowledge(query: string, limit: number = 3): KnowledgeDocu
 // Função para obter contexto formatado para o LLM
 export function getContextForLLM(query: string): string {
   const relevantDocs = searchKnowledge(query, 3);
-  
+
   if (relevantDocs.length === 0) {
-    return "Não encontrei informações específicas sobre esse tema na base de conhecimento IMPACT7.";
+    return "Não encontrei informações específicas sobre esse tema na base de conhecimento do Impact7.";
   }
-  
+
   let context = "CONTEXTO DA BASE DE CONHECIMENTO IMPACT7:\n\n";
-  
+
   for (const doc of relevantDocs) {
     context += `### ${doc.titulo}\n`;
     context += `${doc.conteudo}\n\n`;
   }
-  
+
   return context;
 }
 
@@ -877,7 +529,7 @@ export function listCategories(): string[] {
 export function getDocumentsByCategory(categoria: string): KnowledgeDocument[] {
   const cat = IMPACT7_KNOWLEDGE_BASE[categoria as keyof typeof IMPACT7_KNOWLEDGE_BASE];
   if (!cat) return [];
-  
+
   return Object.entries(cat).map(([subcategoria, doc]) => ({
     ...doc,
     categoria,
