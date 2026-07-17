@@ -7,7 +7,15 @@ import { SignJWT, jwtVerify } from "jose";
 import type { Request, Response } from "express";
 import { getDb } from "./db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "impact7-secret-key-change-in-production";
+// Em producao, JWT_SECRET e obrigatorio, um segredo hardcoded no repositorio permitiria
+// a qualquer um com acesso ao codigo forjar sessoes validas, inclusive de admin.
+// Em desenvolvimento local, um fallback claramente rotulado como inseguro evita travar o boot.
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  throw new Error(
+    "JWT_SECRET obrigatorio em producao. Configure a variavel de ambiente antes de iniciar o servidor.",
+  );
+}
+const JWT_SECRET = process.env.JWT_SECRET || "impact7-dev-only-insecure-secret-nao-usar-em-producao";
 const COOKIE_NAME = "app_session_id";
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
@@ -126,76 +134,6 @@ export async function authenticateCustomRequest(req: Request): Promise<any | nul
   } catch (error) {
     console.error("[Auth] Authentication error:", error);
     return null;
-  }
-}
-
-/**
- * Fazer login e criar sessão
- */
-export async function customLogin(
-  email: string,
-  password: string,
-  res: Response
-): Promise<{ success: boolean; user?: any; error?: string }> {
-  try {
-    const db = await getDb();
-    if (!db) {
-      return { success: false, error: "Database not available" };
-    }
-
-    // Buscar usuário por email
-    const { users } = await import("../drizzle/schema");
-    const { eq } = await import("drizzle-orm");
-    
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
-
-    if (!user) {
-      return { success: false, error: "Invalid credentials" };
-    }
-
-    // Verificar senha (simplificado - em produção usar bcrypt)
-    // Por enquanto, aceitar qualquer senha para admin
-    if (user.role !== "admin") {
-      return { success: false, error: "Unauthorized" };
-    }
-
-    // Criar JWT
-    const jwt = await createCustomJWT({
-      userId: user.id,
-      openId: `local:${user.id}`,
-      email: user.email ?? '',
-      role: user.role,
-      name: user.name || undefined,
-    });
-
-    // Setar cookie
-    res.cookie(COOKIE_NAME, jwt, {
-      httpOnly: true,
-      secure: false, // Desabilitar para desenvolvimento
-      sameSite: "lax",
-      maxAge: ONE_YEAR_MS,
-      path: "/",
-    });
-
-    console.log("[Auth] Login successful:", user.email);
-    console.log("[Auth] Cookie set:", COOKIE_NAME);
-
-    return {
-      success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-    };
-  } catch (error) {
-    console.error("[Auth] Login error:", error);
-    return { success: false, error: "Internal server error" };
   }
 }
 

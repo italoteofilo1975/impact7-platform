@@ -284,11 +284,14 @@ export const appRouter = router({
           .where(eq(users.role, 'admin'))
           .limit(1);
         
-        // Se ja existe admin, verificar se usuario atual e admin ou tem masterKey
+        // Se ja existe admin, so um admin autenticado ou quem tiver a chave de bootstrap
+        // configurada em ambiente (nunca hardcoded no codigo) pode criar outro admin.
+        // Sem ADMIN_BOOTSTRAP_KEY configurada, essa via fica inteiramente desabilitada.
         if (existingAdmins.length > 0) {
           const isCurrentUserAdmin = ctx.user?.role === 'admin';
-          const hasValidMasterKey = input.masterKey === 'IMPACT7_MASTER_2026';
-          
+          const bootstrapKey = process.env.ADMIN_BOOTSTRAP_KEY;
+          const hasValidMasterKey = !!bootstrapKey && input.masterKey === bootstrapKey;
+
           if (!isCurrentUserAdmin && !hasValidMasterKey) {
             throw new Error('Apenas administradores podem criar novos admins');
           }
@@ -1252,20 +1255,24 @@ export const appRouter = router({
                  duration, sroi, year, description, challenge, solution, results,
                  testimonialQuote, testimonialAuthor, testimonialRole, sdgs, metrics,
                  isFeatured, isActive
-          FROM caseStudies 
+          FROM caseStudies
           WHERE isActive = TRUE
         `;
+        const params: any[] = [];
         if (input?.sector) {
-          query += ` AND sector = '${input.sector}'`;
+          params.push(input.sector);
+          query += ` AND sector = ?`;
         }
         if (input?.region) {
-          query += ` AND region = '${input.region}'`;
+          params.push(input.region);
+          query += ` AND region = ?`;
         }
         if (input?.featured) {
           query += ` AND isFeatured = TRUE`;
         }
-        query += ` ORDER BY isFeatured DESC, year DESC LIMIT ${input?.limit || 20}`;
-        const result = await executeRawQuery(query);
+        params.push(input?.limit || 20);
+        query += ` ORDER BY isFeatured DESC, year DESC LIMIT ?`;
+        const result = await executeRawQuery(query, params);
         return result || [];
       }),
 
@@ -1275,9 +1282,10 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) return null;
-        const result = await executeRawQuery(`
-          SELECT * FROM caseStudies WHERE id = ${input.id} AND isActive = TRUE
-        `);
+        const result = await executeRawQuery(
+          `SELECT * FROM caseStudies WHERE id = ? AND isActive = TRUE`,
+          [input.id],
+        );
         const rows = result;
         return rows?.[0] || null;
       }),
@@ -3903,17 +3911,20 @@ export const appRouter = router({
         if (!db) return [];
         let query = `
           SELECT id, name, role, company, sector, content, rating, imageUrl, videoUrl, metrics, isFeatured
-          FROM testimonials 
+          FROM testimonials
           WHERE isActive = TRUE
         `;
+        const params: any[] = [];
         if (input?.sector) {
-          query += ` AND sector = '${input.sector}'`;
+          params.push(input.sector);
+          query += ` AND sector = ?`;
         }
         if (input?.featured) {
           query += ` AND isFeatured = TRUE`;
         }
-        query += ` ORDER BY displayOrder ASC, createdAt DESC LIMIT ${input?.limit || 10}`;
-        const result = await executeRawQuery(query);
+        params.push(input?.limit || 10);
+        query += ` ORDER BY displayOrder ASC, createdAt DESC LIMIT ?`;
+        const result = await executeRawQuery(query, params);
         return result || [];
       }),
 
@@ -3940,11 +3951,10 @@ export const appRouter = router({
         }
         const db = await getDb();
         if (!db) throw new Error('Database not available');
-        await executeRawQuery(`
-          UPDATE socialProofMetrics 
-          SET value = '${input.value}', updatedAt = NOW() 
-          WHERE metricKey = '${input.metricKey}'
-        `);
+        await executeRawQuery(
+          `UPDATE socialProofMetrics SET value = ?, updatedAt = NOW() WHERE metricKey = ?`,
+          [input.value, input.metricKey],
+        );
         return { success: true };
       }),
   }),

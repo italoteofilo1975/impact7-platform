@@ -1,3 +1,11 @@
+// Em producao, um JWT_SECRET vazio permitiria assinar e verificar tokens com segredo trivial,
+// abrindo forjamento de sessao. Falha rapido no boot em vez de rodar silenciosamente inseguro.
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  throw new Error(
+    "JWT_SECRET obrigatorio em producao. Configure a variavel de ambiente antes de iniciar o servidor.",
+  );
+}
+
 export const ENV = {
   appId: process.env.VITE_APP_ID ?? "",
   cookieSecret: process.env.JWT_SECRET ?? "",
