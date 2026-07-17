@@ -8,6 +8,13 @@
       "when": 1784240236473,
       "tag": "0000_impact7_postgres_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784325208863,
+      "tag": "0001_oval_power_man",
+      "breakpoints": true
     }
   ]
 }

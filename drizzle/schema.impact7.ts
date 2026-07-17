@@ -7,6 +7,10 @@ import { pgTable, integer, bigint, serial, varchar, text, index } from "drizzle-
 
 export const initiatives = pgTable("initiatives", {
   id: serial("id").primaryKey(),
+  // Achado 1.7/1.17 da revisao adversarial: isolamento multi-tenant existia so no papel,
+  // sem coluna para escopar. tenantId e obrigatorio a partir daqui, toda iniciativa pertence
+  // a exatamente um tenant (a alianca dona dela).
+  tenantId: integer("tenantId").notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   sector: varchar("sector", { length: 128 }),
   odsTags: text("odsTags"),
@@ -15,10 +19,15 @@ export const initiatives = pgTable("initiatives", {
   instrumented: integer("instrumented").default(1).notNull(),
   createdAt: bigint("createdAt", { mode: "number" }).notNull(),
   updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
-});
+}, (t) => ({
+  byTenant: index("initiatives_tenant_idx").on(t.tenantId),
+}));
 
 export const engagementEvents = pgTable("engagementEvents", {
   id: serial("id").primaryKey(),
+  // Denormalizado a partir de initiatives.tenantId no momento da escrita, para filtrar e
+  // indexar por tenant sem precisar de join em toda leitura de alto volume.
+  tenantId: integer("tenantId").notNull(),
   identityKey: varchar("identityKey", { length: 128 }).notNull(),
   initiativeId: integer("initiativeId").notNull(),
   signal: varchar("signal", { length: 64 }).notNull(),
@@ -28,4 +37,5 @@ export const engagementEvents = pgTable("engagementEvents", {
 }, (t) => ({
   byInitiative: index("ee_initiative_idx").on(t.initiativeId),
   byIdentityInitiative: index("ee_identity_initiative_idx").on(t.identityKey, t.initiativeId),
+  byTenant: index("ee_tenant_idx").on(t.tenantId),
 }));

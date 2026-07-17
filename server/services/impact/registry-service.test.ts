@@ -51,6 +51,13 @@ vi.mock("drizzle-orm", async (orig) => ({
   eq: (_col: unknown, val: unknown) => val,
 }));
 
+// A checagem real de posse tenant<->iniciativa e testada a fundo em tenant-context.test.ts.
+// Aqui o foco e o motor de mensuracao (S-ROI, placar, discontos), entao o guard de tenant e
+// um passthrough que apenas devolve o tenantId reclamado, sem tocar em nenhuma tabela.
+vi.mock("../tenancy/tenant-context", () => ({
+  assertInitiativeTenant: async (_initiativeId: number, claimedTenantId?: number) => claimedTenantId ?? 1,
+}));
+
 import { ecosystemPlacar, initiativeSroi } from "./registry-service";
 import { engagementEvents } from "../../../drizzle/schema.impact7";
 import { initiativeParams, auditLog } from "../../../drizzle/schema.impact8";
@@ -134,7 +141,7 @@ describe("initiativeSroi", () => {
     ]);
 
     const now = 1_752_000_000_000;
-    const m = await initiativeSroi(1, "italo", now);
+    const m = await initiativeSroi(1, 1, "italo", now);
 
     expect(m.gatilhos).toBe(3); // P1,P2,P4 (impacto+transformacao); P3 e esteira, fora do gatilho auditavel
     expect(m.transformacoes).toBe(1); // apenas P2
@@ -159,7 +166,7 @@ describe("initiativeSroi", () => {
   it("custo zero zera S-ROI e a faixa de sensibilidade em vez de dividir por zero", async () => {
     store.set(initiativeParams, [{ ...params, custoImtsCents: 0 }]);
     store.set(engagementEvents, [ev("P1", 1, 6)]);
-    const m = await initiativeSroi(1, "system", 1);
+    const m = await initiativeSroi(1, 1, "system", 1);
     expect(m.sroi).toBe(0);
     expect(m.sensibilidade.sroiLow).toBe(0);
     expect(m.sensibilidade.sroiHigh).toBe(0);
@@ -168,16 +175,52 @@ describe("initiativeSroi", () => {
   it("sem transformacoes, a faixa de sensibilidade colapsa no ponto central", async () => {
     store.set(initiativeParams, [params]);
     store.set(engagementEvents, [ev("P1", 1, 4), ev("P4", 1, 5)]); // dois gatilhos impacto, zero transformacao
-    const m = await initiativeSroi(1, "system", 1);
+    const m = await initiativeSroi(1, 1, "system", 1);
     expect(m.transformacoes).toBe(0);
     expect(m.sensibilidade.sroiLow).toBeCloseTo(m.sroi, 6);
     expect(m.sensibilidade.sroiHigh).toBeCloseTo(m.sroi, 6);
   });
 
+  // Achado 2.2/2.6 do RELATORIO_Consistencia (Opcao A do DECISOES_Pendentes item 1): os tres
+  // descontos do S-ROI honesto. Default zero em deadweight/dropOff preserva o numero ja coberto
+  // no teste acima; aqui testamos o efeito de cada desconto isoladamente, aplicados sobre a
+  // mesma base (P1 impacto + P2 transformacao, valorSocialBruto = 890, atribuicao 60%).
+  it("deadweight preenchido desconta do valor social sem tocar em transformacoes/gatilhos", async () => {
+    store.set(initiativeParams, [{ ...params, deadweightBps: 2000 }]); // 20% do efeito teria ocorrido de qualquer jeito
+    // P1 impacto (gatilho) + P2 transformacao (gatilho+transformacao): bruto = 2*30 + 1*800 = 860
+    store.set(engagementEvents, [ev("P1", 1, 4), ev("P2", 1, 6)]);
+    const m = await initiativeSroi(1, 1, "system", 1);
+    expect(m.deadweight).toBeCloseTo(0.2, 6);
+    expect(m.dropOff).toBe(0);
+    // fatorDesconto = 0.6 * (1-0.2) * (1-0) = 0.48
+    expect(m.fatorDesconto).toBeCloseTo(0.48, 6);
+    expect(m.valorSocial).toBeCloseTo(860 * 0.48, 6);
+  });
+
+  it("dropOff preenchido desconta do valor social, e os dois descontos se compoem multiplicativamente", async () => {
+    store.set(initiativeParams, [{ ...params, deadweightBps: 1000, dropOffBps: 2500 }]);
+    store.set(engagementEvents, [ev("P1", 1, 4), ev("P2", 1, 6)]); // bruto = 860
+    const m = await initiativeSroi(1, 1, "system", 1);
+    // fatorDesconto = 0.6 * (1-0.10) * (1-0.25) = 0.6 * 0.9 * 0.75 = 0.405
+    expect(m.fatorDesconto).toBeCloseTo(0.405, 6);
+    expect(m.valorSocial).toBeCloseTo(860 * 0.405, 6);
+    expect(m.sroi).toBeCloseTo((860 * 0.405) / 1000, 6);
+  });
+
+  it("deadweightBps/dropOffBps ausentes no registro (dado legado) tratam como zero, sem NaN", async () => {
+    const { deadweightBps, dropOffBps, ...legado } = { ...params, deadweightBps: 0, dropOffBps: 0 };
+    store.set(initiativeParams, [legado]);
+    store.set(engagementEvents, [ev("P1", 1, 4)]);
+    const m = await initiativeSroi(1, 1, "system", 1);
+    expect(m.deadweight).toBe(0);
+    expect(m.dropOff).toBe(0);
+    expect(Number.isNaN(m.sroi)).toBe(false);
+  });
+
   it("lanca erro quando a iniciativa nao tem parametros economicos", async () => {
     store.set(initiativeParams, []);
     store.set(engagementEvents, [ev("P1", 1, 4)]);
-    await expect(initiativeSroi(999, "system", 1)).rejects.toThrow(
+    await expect(initiativeSroi(999, 1, "system", 1)).rejects.toThrow(
       "Iniciativa sem parametros economicos",
     );
     expect(auditInserts).toHaveLength(0);

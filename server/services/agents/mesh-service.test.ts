@@ -8,12 +8,16 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 // --- mock da camada de dados (db) -------------------------------------------
-// A ordem das chamadas a select() e deterministica no codigo sob teste:
-// checkWindow faz 1 select; meterUsage faz 1 select. Enfileiramos os resultados.
-const { selectQueue, updateCalls, insertCalls } = vi.hoisted(() => ({
+// checkWindow faz 1 select (fila selectQueue). meterUsage nao seleciona mais: e um
+// upsert atomico via ON CONFLICT (achado 3.12/3.18 da revisao ampla, fix desta rodada).
+// O mock simula esse upsert com um mapa em memoria por chave identityKey:dayBucket,
+// somando manualmente os deltas do turno ao valor ja existente (equivalente ao que o
+// `sql`coluna + delta`` faria de fato no Postgres), e registra o estado final resultante
+// de cada chamada em upsertCalls para as asserções.
+const { selectQueue, upsertRows, upsertCalls } = vi.hoisted(() => ({
   selectQueue: [] as any[][],
-  updateCalls: [] as any[],
-  insertCalls: [] as any[],
+  upsertRows: new Map<string, { usedSeconds: number; tokensIn: number; tokensOut: number }>(),
+  upsertCalls: [] as any[],
 }));
 
 vi.mock("../../db", () => {
@@ -23,19 +27,22 @@ vi.mock("../../db", () => {
         where: () => Promise.resolve(selectQueue.length ? selectQueue.shift()! : []),
       }),
     }),
-    update: () => ({
-      set: (values: any) => ({
-        where: (_cond: any) => {
-          updateCalls.push(values);
+    insert: () => ({
+      values: (values: any) => ({
+        onConflictDoUpdate: (_conflict: any) => {
+          const key = `${values.identityKey}:${values.dayBucket}`;
+          const existing = upsertRows.get(key) ?? { usedSeconds: 0, tokensIn: 0, tokensOut: 0 };
+          const merged = {
+            usedSeconds: existing.usedSeconds + values.usedSeconds,
+            tokensIn: existing.tokensIn + values.tokensIn,
+            tokensOut: existing.tokensOut + values.tokensOut,
+            updatedAt: values.updatedAt,
+          };
+          upsertRows.set(key, merged);
+          upsertCalls.push(merged);
           return Promise.resolve();
         },
       }),
-    }),
-    insert: () => ({
-      values: (values: any) => {
-        insertCalls.push(values);
-        return Promise.resolve();
-      },
     }),
   };
   return { getDb: async () => db };
@@ -58,8 +65,8 @@ const DIA_MS = 86400000;
 
 function reset() {
   selectQueue.length = 0;
-  updateCalls.length = 0;
-  insertCalls.length = 0;
+  upsertRows.clear();
+  upsertCalls.length = 0;
   recordEngagement.mockClear();
 }
 
@@ -154,6 +161,7 @@ describe("runAgentTurn (turno completo)", () => {
   const baseParams = () => ({
     identityKey: "id-1",
     initiativeId: 42,
+    tenantId: 1,
     message: "como comeco minha licao?",
     signal: "lesson_started",
     taskComplexity: 0.9,
@@ -175,13 +183,11 @@ describe("runAgentTurn (turno completo)", () => {
     expect(p.rag).not.toHaveBeenCalled();
     expect(p.llm).not.toHaveBeenCalled();
     expect(recordEngagement).not.toHaveBeenCalled();
-    expect(insertCalls).toHaveLength(0);
-    expect(updateCalls).toHaveLength(0);
+    expect(upsertCalls).toHaveLength(0);
   });
 
   it("tarefa dificil escalona o modelo e concatena o contexto do RAG no prompt", async () => {
     selectQueue.push([]); // checkWindow -> sem uso
-    selectQueue.push([]); // meterUsage -> insere
     const p = baseParams();
     const r = await runAgentTurn(p);
     expect(r.blocked).toBe(false);
@@ -191,7 +197,6 @@ describe("runAgentTurn (turno completo)", () => {
 
   it("tarefa simples usa o tier barato", async () => {
     selectQueue.push([]);
-    selectQueue.push([]);
     const p = baseParams();
     p.taskComplexity = 0.1;
     const r = await runAgentTurn(p);
@@ -199,15 +204,12 @@ describe("runAgentTurn (turno completo)", () => {
     expect(p.llm.mock.calls[0][0]).toBe("barato");
   });
 
-  it("mede o custo via insert quando nao ha linha do dia e registra o engajamento do turno", async () => {
-    selectQueue.push([]); // checkWindow
-    selectQueue.push([]); // meterUsage -> sem linha -> insert
+  it("mede o custo via upsert quando nao ha linha do dia e registra o engajamento do turno", async () => {
+    selectQueue.push([]); // checkWindow -> sem linha, sem estado previo no upsertRows
     const p = baseParams();
     await runAgentTurn(p);
-    expect(insertCalls).toHaveLength(1);
-    expect(insertCalls[0]).toMatchObject({
-      identityKey: "id-1",
-      dayBucket: 100,
+    expect(upsertCalls).toHaveLength(1);
+    expect(upsertCalls[0]).toMatchObject({
       usedSeconds: 12,
       tokensIn: 120,
       tokensOut: 340,
@@ -216,19 +218,19 @@ describe("runAgentTurn (turno completo)", () => {
     expect(recordEngagement).toHaveBeenCalledWith({
       identityKey: "id-1",
       initiativeId: 42,
+      tenantId: 1,
       signal: "lesson_started",
       now: 100 * DIA_MS,
     });
   });
 
-  it("acumula o custo via update quando ja existe linha do dia", async () => {
+  it("acumula o custo via upsert quando ja existe linha do dia", async () => {
     selectQueue.push([{ usedSeconds: 100 }]); // checkWindow
-    selectQueue.push([{ id: 7, usedSeconds: 100, tokensIn: 10, tokensOut: 20 }]); // meterUsage
+    upsertRows.set("id-1:100", { usedSeconds: 100, tokensIn: 10, tokensOut: 20 }); // estado previo do dia
     const p = baseParams();
     await runAgentTurn(p);
-    expect(insertCalls).toHaveLength(0);
-    expect(updateCalls).toHaveLength(1);
-    expect(updateCalls[0]).toMatchObject({
+    expect(upsertCalls).toHaveLength(1);
+    expect(upsertCalls[0]).toMatchObject({
       usedSeconds: 112, // 100 + 12
       tokensIn: 130, // 10 + 120
       tokensOut: 360, // 20 + 340
@@ -238,16 +240,15 @@ describe("runAgentTurn (turno completo)", () => {
 
   it("arredonda os segundos fracionados ao medir", async () => {
     selectQueue.push([]); // checkWindow
-    selectQueue.push([]); // meterUsage -> insert
     const p = baseParams();
     p.llm = vi.fn(async () => ({ text: "x", tokensIn: 1, tokensOut: 1, seconds: 11.6 }));
     await runAgentTurn(p);
-    expect(insertCalls[0].usedSeconds).toBe(12);
+    expect(upsertCalls[0].usedSeconds).toBe(12);
   });
 
   it("o restante retornado pode ficar negativo quando o turno estoura a janela (sem enforcement de saldo)", async () => {
     selectQueue.push([{ usedSeconds: 7195 }]); // restam 5s
-    selectQueue.push([{ id: 1, usedSeconds: 7195, tokensIn: 0, tokensOut: 0 }]);
+    upsertRows.set("id-1:100", { usedSeconds: 7195, tokensIn: 0, tokensOut: 0 });
     const p = baseParams();
     p.llm = vi.fn(async () => ({ text: "x", tokensIn: 0, tokensOut: 0, seconds: 30 }));
     const r = await runAgentTurn(p);

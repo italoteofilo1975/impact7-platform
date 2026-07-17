@@ -45,6 +45,13 @@ vi.mock("drizzle-orm", () => ({
   and: (...preds: any[]) => (row: any) => preds.every((p) => p(row)),
 }));
 
+// A checagem real de posse tenant<->iniciativa e testada a fundo em tenant-context.test.ts.
+// Aqui o foco e a logica de engajamento em si, entao o guard de tenant e um passthrough
+// que apenas devolve o tenantId reclamado (default 1), sem tocar em nenhuma tabela.
+vi.mock("../tenancy/tenant-context", () => ({
+  assertInitiativeTenant: async (_initiativeId: number, claimedTenantId?: number) => claimedTenantId ?? 1,
+}));
+
 // O ive-mapping real e usado de proposito: e a fonte da verdade do limiar e das camadas.
 import {
   layerOfNum,
@@ -147,7 +154,7 @@ describe("userRating · metodo do maximo", () => {
     await recordEngagement({ identityKey: "id:a", initiativeId: 1, signal: "view", now: NOW });
     await recordEngagement({ identityKey: "id:a", initiativeId: 1, signal: "action_completed", now: NOW }); // 4
     await recordEngagement({ identityKey: "id:a", initiativeId: 1, signal: "dwell", now: NOW }); // 2
-    const r = await userRating("id:a", 1);
+    const r = await userRating("id:a", 1, 1);
     expect(r.maxLevel).toBe(4);
     expect(r.layer).toBe("impacto");
     expect(r.countsAsImpact).toBe(true);
@@ -156,13 +163,13 @@ describe("userRating · metodo do maximo", () => {
   it("nao mistura eventos de outra iniciativa", async () => {
     await recordEngagement({ identityKey: "id:a", initiativeId: 1, signal: "view", now: NOW });
     await recordEngagement({ identityKey: "id:a", initiativeId: 2, signal: "referral", now: NOW }); // 7 noutra
-    const r = await userRating("id:a", 1);
+    const r = await userRating("id:a", 1, 1);
     expect(r.maxLevel).toBe(1);
     expect(r.layer).toBe("exposicao");
   });
 
   it("sem eventos: maxLevel 0, exposicao, nao conta", async () => {
-    const r = await userRating("id:vazio", 99);
+    const r = await userRating("id:vazio", 99, 1);
     expect(r).toEqual({ maxLevel: 0, layer: "exposicao", countsAsImpact: false });
   });
 });
@@ -180,7 +187,7 @@ describe("initiativeImpact · contagem de unicos por metodo do maximo", () => {
     await recordEngagement({ identityKey: "D", initiativeId: 1, signal: "referral", now: NOW });
     await recordEngagement({ identityKey: "D", initiativeId: 1, signal: "click", now: NOW });
 
-    const r = await initiativeImpact(1);
+    const r = await initiativeImpact(1, 1);
     expect(r.alcanceUnico).toBe(4); // A, B, C, D
     expect(r.impacto).toBe(1); // A
     expect(r.transformacao).toBe(1); // C
@@ -189,7 +196,7 @@ describe("initiativeImpact · contagem de unicos por metodo do maximo", () => {
   });
 
   it("iniciativa sem eventos zera tudo", async () => {
-    const r = await initiativeImpact(42);
+    const r = await initiativeImpact(42, 1);
     expect(r).toEqual({
       alcanceUnico: 0,
       gatilhosUnicos: 0,
@@ -206,7 +213,7 @@ describe("initiativeImpact · contagem de unicos por metodo do maximo", () => {
     const umAnoAtras = NOW - 365 * 24 * 60 * 60 * 1000;
     await recordEngagement({ identityKey: "velho", initiativeId: 7, signal: "action_completed", now: umAnoAtras });
     await recordEngagement({ identityKey: "novo", initiativeId: 7, signal: "action_completed", now: NOW });
-    const r = await initiativeImpact(7);
+    const r = await initiativeImpact(7, 1);
     expect(r.alcanceUnico).toBe(2);
     expect(r.gatilhosUnicos).toBe(2);
   });

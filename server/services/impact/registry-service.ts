@@ -6,6 +6,7 @@ import { engagementEvents } from "../../../drizzle/schema.impact7";
 import { initiativeParams, auditLog } from "../../../drizzle/schema.impact8";
 import { eq } from "drizzle-orm";
 import { layerOfNum } from "../../../shared/ive-mapping";
+import { assertInitiativeTenant } from "../tenancy/tenant-context";
 
 // Placar do ecossistema. Contagem de UNICOS entre TODAS as iniciativas, metodo do maximo global:
 // cada identidade conta uma unica vez, pelo seu maior nivel em qualquer iniciativa. Isso e a defesa
@@ -31,9 +32,13 @@ export async function ecosystemPlacar() {
 
 // S-ROI auditavel de uma iniciativa, com memoria de calculo transparente e faixa de sensibilidade,
 // e registro na trilha de auditoria. O now e injetado, nunca Date.now() dentro da regra.
-export async function initiativeSroi(initiativeId: number, actor: string, now: number) {
+// tenantId e obrigatorio e verificado contra o dono real da iniciativa (achado 1.7/1.9), fechando
+// a mesma brecha ja fechada no engagement-service: sem isso qualquer chamador lia o S-ROI de
+// qualquer iniciativa so adivinhando o initiativeId.
+export async function initiativeSroi(initiativeId: number, tenantId: number, actor: string, now: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+  await assertInitiativeTenant(initiativeId, tenantId);
   const [p] = await db.select().from(initiativeParams).where(eq(initiativeParams.initiativeId, initiativeId));
   if (!p) throw new Error("Iniciativa sem parametros economicos");
 
@@ -53,12 +58,20 @@ export async function initiativeSroi(initiativeId: number, actor: string, now: n
   }
 
   const atribuicao = p.atribuicaoBps / 10000;
+  // Achado 2.2/2.6 do RELATORIO_Consistencia (Opcao A do DECISOES_Pendentes item 1): o S-ROI
+  // honesto tem tres descontos, nao um so. Deadweight (o que teria acontecido de qualquer jeito,
+  // sem a iniciativa) e drop-off (perda de efeito ao longo do tempo) somam-se a atribuicao ja
+  // existente. Default zero em ambos preserva todo numero ja calculado ate alguem preencher dado
+  // real, exatamente como documentado no schema.
+  const deadweight = (p.deadweightBps ?? 0) / 10000;
+  const dropOff = (p.dropOffBps ?? 0) / 10000;
+  const fatorDesconto = atribuicao * (1 - deadweight) * (1 - dropOff);
   const valorGatilho = p.valorGatilhoCents / 100;
   const valorTransformacao = p.valorTransformacaoCents / 100;
   const custo = p.custoImtsCents / 100;
 
   const valorSocialBruto = gatilhos * valorGatilho + transformacoes * valorTransformacao;
-  const valorSocial = valorSocialBruto * atribuicao;
+  const valorSocial = valorSocialBruto * fatorDesconto;
   const sroi = custo > 0 ? valorSocial / custo : 0;
 
   // Alavancagem, gatilhos por real de custo fixo investido pela IMTS. Metrica canonica citada no
@@ -66,12 +79,12 @@ export async function initiativeSroi(initiativeId: number, actor: string, now: n
   const alavancagem = custo > 0 ? gatilhos / custo : 0;
 
   // Sensibilidade sobre a premissa mais fragil, o valor por transformacao, em mais ou menos 30%.
-  const sroiLow = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 0.7) * atribuicao) / custo : 0;
-  const sroiHigh = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 1.3) * atribuicao) / custo : 0;
+  const sroiLow = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 0.7) * fatorDesconto) / custo : 0;
+  const sroiHigh = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 1.3) * fatorDesconto) / custo : 0;
 
   const memoria = {
     gatilhos, transformacoes, esteiraProjecao: esteira,
-    valorGatilho, valorTransformacao, atribuicao, custo,
+    valorGatilho, valorTransformacao, atribuicao, deadweight, dropOff, fatorDesconto, custo,
     valorSocialBruto, valorSocial, sroi, alavancagem, sensibilidade: { sroiLow, sroiHigh },
   };
 

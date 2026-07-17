@@ -1,15 +1,10 @@
 // server/services/tenancy/tenant-context.test.ts
 // Impact7 · Sprint 10 · testes do modulo tenancy.
 //
-// NOTA IMPORTANTE DE ESCOPO
-// A tarefa pede cobertura para "contagem de unicos por metodo do maximo", "limiar de
-// impacto no nivel Preparar", "tres camadas", "S-ROI e sensibilidade" e "janela de uso".
-// Dos arquivos lidos (tenant-context.ts e schema.tenants.ts) apenas a "janela de uso"
-// existe de fato, materializada em windowSecondsForMode. Os demais conceitos pertencem a
-// outros modulos do Impact7 e nao estao acessiveis aqui, portanto nao ha o que testar sem
-// inventar comportamento. Cobrimos integralmente a logica que este modulo realmente possui:
-// resolveTenant, scoped e windowSecondsForMode. A ausencia dos demais esta registrada na
-// revisao adversarial.
+// Cobre a logica que este modulo possui de fato: resolveTenant, scoped, windowSecondsForMode
+// e, desde a rodada de isolamento multi-tenant (achado 1.6/1.7/1.9 da revisao ampla),
+// assertInitiativeTenant — a barreira que agora e chamada de verdade pelo engagement-service
+// e pelo registry-service para impedir ler/escrever dado de iniciativa de outro tenant.
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { eq, and } from "drizzle-orm";
@@ -25,7 +20,7 @@ vi.mock("../../db", () => ({
   }),
 }));
 
-import { resolveTenant, scoped, windowSecondsForMode, type TenantContext } from "./tenant-context";
+import { resolveTenant, scoped, windowSecondsForMode, assertInitiativeTenant, type TenantContext } from "./tenant-context";
 
 beforeEach(() => {
   whereMock.mockReset();
@@ -99,6 +94,26 @@ describe("scoped", () => {
     const base = scoped(tenants.id, ctx);
     const comExtra = scoped(tenants.id, ctx, eq(tenants.name, "abc"));
     expect((base as any).queryChunks?.length).not.toBe((comExtra as any).queryChunks?.length);
+  });
+});
+
+describe("assertInitiativeTenant (achado 1.6/1.7/1.9 da revisao ampla)", () => {
+  // Fecha a lacuna que a nota de escopo acima registrava: agora este arquivo existe de fato
+  // sendo chamado em producao (engagement-service, registry-service), entao a barreira que
+  // impede ler/escrever dado de uma iniciativa de outro tenant precisa estar coberta aqui.
+  it("rejeita quando a iniciativa nao existe", async () => {
+    whereMock.mockResolvedValue([]);
+    await expect(assertInitiativeTenant(999, 1)).rejects.toThrow("Iniciativa nao encontrada");
+  });
+
+  it("rejeita quando a iniciativa pertence a outro tenant, mesmo com o id certo", async () => {
+    whereMock.mockResolvedValue([{ tenantId: 2 }]);
+    await expect(assertInitiativeTenant(1, 1)).rejects.toThrow("Iniciativa nao pertence a este tenant");
+  });
+
+  it("resolve e devolve o tenantId real quando a posse confere", async () => {
+    whereMock.mockResolvedValue([{ tenantId: 5 }]);
+    await expect(assertInitiativeTenant(1, 5)).resolves.toBe(5);
   });
 });
 

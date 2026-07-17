@@ -128,10 +128,22 @@ export async function recordTokenUsage(input: TokenUsageInput): Promise<{
   // Calcular novos valores
   const tokensUsed = input.tokensInput + input.tokensOutput;
   const costUsd = calculateCost(input.tokensInput, input.tokensOutput, input.modelUsed);
-  
-  const newUsedTokens = budget.usedTokens + tokensUsed;
-  const newUsedUsd = budget.usedUsd + costUsd;
-  
+
+  // Achado 3.13 da revisao ampla: ler usedTokens/usedUsd aqui e escrever depois (lost update)
+  // perdia consumo sob chamadas concorrentes e deixava o circuit breaker passar do limite antes
+  // de bloquear. O incremento em si e atomico no banco, via SQL, e o valor pos-incremento real
+  // volta no RETURNING, entao o resto da funcao decide status sobre o numero verdadeiro.
+  const [incremented] = await db.update(set7TokenBudgets)
+    .set({
+      usedTokens: sql`${set7TokenBudgets.usedTokens} + ${tokensUsed}`,
+      usedUsd: sql`${set7TokenBudgets.usedUsd} + ${costUsd}`,
+    })
+    .where(eq(set7TokenBudgets.budgetId, input.budgetId))
+    .returning({ usedTokens: set7TokenBudgets.usedTokens, usedUsd: set7TokenBudgets.usedUsd });
+
+  const newUsedTokens = incremented.usedTokens;
+  const newUsedUsd = incremented.usedUsd;
+
   // Calcular porcentagem de uso
   const tokenPercentage = (newUsedTokens / budget.budgetTokens) * 100;
   const usdPercentage = (newUsedUsd / budget.budgetUsd) * 100;
@@ -176,11 +188,10 @@ export async function recordTokenUsage(input: TokenUsageInput): Promise<{
     });
   }
   
-  // Atualizar budget
+  // Contadores ja foram incrementados atomicamente acima. Aqui so grava o status derivado
+  // do valor pos-incremento real, nao reescreve usedTokens/usedUsd.
   await db.update(set7TokenBudgets)
     .set({
-      usedTokens: newUsedTokens,
-      usedUsd: newUsedUsd,
       status: newStatus,
       circuitBreakerTriggered: circuitBreakerTriggered ? 1 : 0,
       circuitBreakerAt: circuitBreakerTriggered ? Date.now() : undefined,

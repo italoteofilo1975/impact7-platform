@@ -4,7 +4,7 @@
 // As dependencias de LLM e RAG sao injetadas, para manter a regra testavel e o custo baixo e trocavel.
 import { getDb } from "../../db";
 import { agentUsage } from "../../../drizzle/schema.agents";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { recordEngagement } from "../impact/engagement-service";
 import { ModelTier } from "../../../shared/agents-catalog";
 
@@ -36,6 +36,7 @@ export function selectModel(taskComplexity: number, escalateThreshold = 0.7): Mo
 export async function runAgentTurn(params: {
   identityKey: string;
   initiativeId: number;
+  tenantId: number;
   message: string;
   signal: string;         // sinal de engajamento deste turno, ex. lesson_started
   taskComplexity: number; // 0 a 1
@@ -54,29 +55,31 @@ export async function runAgentTurn(params: {
 
   await meterUsage(params.identityKey, params.now, out.seconds, out.tokensIn, out.tokensOut);
   await recordEngagement({
-    identityKey: params.identityKey, initiativeId: params.initiativeId, signal: params.signal, now: params.now,
+    identityKey: params.identityKey, initiativeId: params.initiativeId, tenantId: params.tenantId,
+    signal: params.signal, now: params.now,
   });
 
   return { blocked: false as const, tier, text: out.text, remainingSeconds: win.remainingSeconds - out.seconds };
 }
 
+// Achado 3.12/3.18 da revisao ampla: select-depois-update perdia incremento sob concorrencia
+// (lost update) e podia criar duas linhas para a mesma identidade e dia, furando a janela
+// diaria. Upsert atomico via ON CONFLICT, com incremento feito pelo proprio banco, corrige
+// as duas coisas de uma vez, apoiado na UNIQUE(identityKey, dayBucket) do schema.
 async function meterUsage(identityKey: string, now: number, seconds: number, tokensIn: number, tokensOut: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const bucket = dayBucket(now);
-  const [row] = await db.select().from(agentUsage)
-    .where(and(eq(agentUsage.identityKey, identityKey), eq(agentUsage.dayBucket, bucket)));
-  if (row) {
-    await db.update(agentUsage).set({
-      usedSeconds: row.usedSeconds + Math.round(seconds),
-      tokensIn: row.tokensIn + tokensIn,
-      tokensOut: row.tokensOut + tokensOut,
-      updatedAt: now,
-    }).where(eq(agentUsage.id, row.id));
-  } else {
-    await db.insert(agentUsage).values({
-      identityKey, dayBucket: bucket, usedSeconds: Math.round(seconds),
-      tokensIn, tokensOut, updatedAt: now,
+  const roundedSeconds = Math.round(seconds);
+  await db.insert(agentUsage)
+    .values({ identityKey, dayBucket: bucket, usedSeconds: roundedSeconds, tokensIn, tokensOut, updatedAt: now })
+    .onConflictDoUpdate({
+      target: [agentUsage.identityKey, agentUsage.dayBucket],
+      set: {
+        usedSeconds: sql`${agentUsage.usedSeconds} + ${roundedSeconds}`,
+        tokensIn: sql`${agentUsage.tokensIn} + ${tokensIn}`,
+        tokensOut: sql`${agentUsage.tokensOut} + ${tokensOut}`,
+        updatedAt: now,
+      },
     });
-  }
 }
