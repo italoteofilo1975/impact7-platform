@@ -136,13 +136,15 @@ describe("initiativeSroi", () => {
     const now = 1_752_000_000_000;
     const m = await initiativeSroi(1, "italo", now);
 
-    expect(m.gatilhos).toBe(4); // P1,P2,P3,P4
+    expect(m.gatilhos).toBe(3); // P1,P2,P4 (impacto+transformacao); P3 e esteira, fora do gatilho auditavel
     expect(m.transformacoes).toBe(1); // apenas P2
-    expect(m.valorSocialBruto).toBeCloseTo(920, 6); // 4*30 + 1*800
-    expect(m.valorSocial).toBeCloseTo(552, 6); // 920 * 0.6
-    expect(m.sroi).toBeCloseTo(0.552, 6);
-    expect(m.sensibilidade.sroiLow).toBeCloseTo(0.408, 6); // transformacao *0.7
-    expect(m.sensibilidade.sroiHigh).toBeCloseTo(0.696, 6); // transformacao *1.3
+    expect(m.esteiraProjecao).toBe(1); // P3, reportado em separado, nunca somado ao valor
+    expect(m.valorSocialBruto).toBeCloseTo(890, 6); // 3*30 + 1*800
+    expect(m.valorSocial).toBeCloseTo(534, 6); // 890 * 0.6
+    expect(m.sroi).toBeCloseTo(0.534, 6);
+    expect(m.alavancagem).toBeCloseTo(0.003, 6); // 3 gatilhos / R$1000 de custo fixo
+    expect(m.sensibilidade.sroiLow).toBeCloseTo(0.39, 6); // transformacao *0.7
+    expect(m.sensibilidade.sroiHigh).toBeCloseTo(0.678, 6); // transformacao *1.3
 
     // Trilha de auditoria gravada com o now injetado, nunca Date.now interno.
     expect(auditInserts).toHaveLength(1);
@@ -151,7 +153,7 @@ describe("initiativeSroi", () => {
     expect(auditInserts[0].v.action).toBe("compute_sroi");
     expect(auditInserts[0].v.entityId).toBe(1);
     expect(auditInserts[0].v.createdAt).toBe(now);
-    expect(JSON.parse(auditInserts[0].v.resultJson).sroi).toBeCloseTo(0.552, 6);
+    expect(JSON.parse(auditInserts[0].v.resultJson).sroi).toBeCloseTo(0.534, 6);
   });
 
   it("custo zero zera S-ROI e a faixa de sensibilidade em vez de dividir por zero", async () => {

@@ -41,11 +41,15 @@ export async function initiativeSroi(initiativeId: number, actor: string, now: n
   const maxByIdentity = new Map<string, number>();
   for (const r of evs) maxByIdentity.set(r.identityKey, Math.max(maxByIdentity.get(r.identityKey) ?? 0, r.level));
 
-  let gatilhos = 0, transformacoes = 0;
+  // A camada esteira (nivel Amplificar) e projecao do movimento de segunda ordem, e NUNCA entra
+  // no numero auditado de gatilhos nem no valor monetario do S-ROI oficial, conforme os dois livros
+  // (Metodo cap07, Metodologia cap13) e a memoria viva. E contada e reportada em separado.
+  let gatilhos = 0, transformacoes = 0, esteira = 0;
   for (const lvl of Array.from(maxByIdentity.values())) {
     const layer = layerOfNum(lvl);
-    if (layer === "impacto" || layer === "esteira") gatilhos++;
+    if (layer === "impacto") gatilhos++;
     else if (layer === "transformacao") { gatilhos++; transformacoes++; }
+    else if (layer === "esteira") esteira++;
   }
 
   const atribuicao = p.atribuicaoBps / 10000;
@@ -57,13 +61,18 @@ export async function initiativeSroi(initiativeId: number, actor: string, now: n
   const valorSocial = valorSocialBruto * atribuicao;
   const sroi = custo > 0 ? valorSocial / custo : 0;
 
+  // Alavancagem, gatilhos por real de custo fixo investido pela IMTS. Metrica canonica citada no
+  // glossario da memoria viva e no Livro da Metodologia, cap11, que ainda nao existia no codigo.
+  const alavancagem = custo > 0 ? gatilhos / custo : 0;
+
   // Sensibilidade sobre a premissa mais fragil, o valor por transformacao, em mais ou menos 30%.
   const sroiLow = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 0.7) * atribuicao) / custo : 0;
   const sroiHigh = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 1.3) * atribuicao) / custo : 0;
 
   const memoria = {
-    gatilhos, transformacoes, valorGatilho, valorTransformacao, atribuicao, custo,
-    valorSocialBruto, valorSocial, sroi, sensibilidade: { sroiLow, sroiHigh },
+    gatilhos, transformacoes, esteiraProjecao: esteira,
+    valorGatilho, valorTransformacao, atribuicao, custo,
+    valorSocialBruto, valorSocial, sroi, alavancagem, sensibilidade: { sroiLow, sroiHigh },
   };
 
   await db.insert(auditLog).values({
