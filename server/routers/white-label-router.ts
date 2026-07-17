@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../_core/trpc";
+import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import { getDb } from "../db";
 import { whiteLabelConfig } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -34,8 +34,9 @@ export const whiteLabelRouter = router({
       return config[0];
     }),
 
-  // Update or create white label config
-  updateConfig: publicProcedure
+  // Update or create white label config. Escrita cross-tenant, exige admin autenticado
+  // (achado 1.10 da revisao adversarial de codigo, era publicProcedure sem checagem).
+  updateConfig: adminProcedure
     .input(z.object({
       organizationId: z.string(),
       platformName: z.string().optional(),
@@ -87,8 +88,9 @@ export const whiteLabelRouter = router({
       return { success: true };
     }),
 
-  // List all white label configs (admin only)
-  listConfigs: publicProcedure
+  // List all white label configs (admin only). O comentario ja dizia admin only, mas o
+  // codigo era publicProcedure (achado 1.11 da revisao adversarial), agora corrigido.
+  listConfigs: adminProcedure
     .query(async () => {
       const db = await getDb();
       if (!db) throw new Error('Database not available');

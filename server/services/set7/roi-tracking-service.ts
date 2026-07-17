@@ -131,8 +131,11 @@ export async function updateRoiWithActuals(trackingId: string, input: UpdateRoiI
   const actualCostUsd = input.actualCostUsd ?? existing.actualCostUsd;
   const actualValueUsd = input.actualValueUsd ?? existing.actualValueUsd;
   
+  // Achado 2.14 da revisao adversarial: || descartava um actualValueUsd real igual a zero
+  // (caso normal antes do valor de negocio se materializar) e usava o valor planejado,
+  // inflando o ROI reportado. Corrigido para so cair no planejado quando de fato ausente.
   const { roiPercentage, roiRatio } = calculateRoi(
-    actualValueUsd || existing.plannedValueUsd,
+    actualValueUsd ?? existing.plannedValueUsd,
     actualCostUsd
   );
   
