@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { getDb } from '../db';
 import { caseSubmissions, leads, socialProofMetrics } from '../../drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
+import { calcSroi } from '../../shared/sroi-calculator';
 import { checkAPIKeyLimit, generateRateLimitHeaders } from '../security/api/rate-limiter';
 import { createAuditLog } from '../security/audit/logger';
 
@@ -213,7 +214,11 @@ router.get('/cases/:id', async (req: Request, res: Response) => {
  * @openapi
  * /api/v1/calculator:
  *   post:
- *     summary: Calculate social impact using IMPACT7 formula
+ *     summary: Simulate social impact using the IMPACT7 honest S-ROI formula
+ *     description: >
+ *       Public, illustrative simulator. Inputs are hypothetical numbers supplied by the
+ *       caller — this endpoint never reads or writes any audited initiative data, and the
+ *       response is not an audited S-ROI.
  *     tags: [Calculator]
  *     security:
  *       - ApiKeyAuth: []
@@ -225,65 +230,58 @@ router.get('/cases/:id', async (req: Request, res: Response) => {
  *             $ref: '#/components/schemas/CalculatorInput'
  *     responses:
  *       200:
- *         description: Calculation result
+ *         description: Simulation result (illustrative, not an audited S-ROI)
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/CalculatorResult'
  */
 const calculatorInputSchema = z.object({
-  engagement: z.number().min(0).max(100),
-  clarity: z.number().min(0).max(100),
-  connection: z.number().min(0).max(100),
-  commitment: z.number().min(0).max(100),
-  collaboration: z.number().min(0).max(100),
-  creativity: z.number().min(0).max(100),
-  continuity: z.number().min(0).max(100),
-  resistance: z.number().min(1).max(100),
-  investment: z.number().min(0).optional(),
+  gatilhos: z.number().int().min(0),
+  transformacoes: z.number().int().min(0),
+  valorGatilhoReais: z.number().min(0),
+  valorTransformacaoReais: z.number().min(0),
+  atribuicaoPercent: z.number().min(0).max(100),
+  deadweightPercent: z.number().min(0).max(100).optional(),
+  dropOffPercent: z.number().min(0).max(100).optional(),
+  custoImtsReais: z.number().positive(),
 });
 
 router.post('/calculator', async (req: Request, res: Response) => {
   try {
     const input = calculatorInputSchema.parse(req.body);
-    
-    // Calculate C^7 (product of all 7 Cs)
-    const c7 = (
-      (input.clarity / 100) *
-      (input.connection / 100) *
-      (input.commitment / 100) *
-      (input.collaboration / 100) *
-      (input.creativity / 100) *
-      (input.continuity / 100) *
-      (input.engagement / 100)
-    );
-    
-    // Calculate Impact Score: I = (E × C^7) / R
-    const impactScore = ((input.engagement / 100) * c7 * 1000) / (input.resistance / 100);
-    
-    // Calculate S-ROI if investment provided
-    let sroi = null;
-    if (input.investment && input.investment > 0) {
-      const socialValue = impactScore * 1000; // Simplified social value calculation
-      sroi = socialValue / input.investment;
-    }
-    
-    // Determine impact level
-    let level: string;
-    if (impactScore >= 80) level = 'exceptional';
-    else if (impactScore >= 60) level = 'high';
-    else if (impactScore >= 40) level = 'moderate';
-    else if (impactScore >= 20) level = 'developing';
-    else level = 'initial';
-    
+
+    // Unidades amigáveis (reais, percentuais 0-100) convertidas para as unidades de
+    // calcSroi (centavos, basis points) — mesmo padrão de jarvisSkills.calculator e do
+    // router.calculator.calculate.
+    const calculo = calcSroi({
+      gatilhos: input.gatilhos,
+      transformacoes: input.transformacoes,
+      valorGatilhoCents: Math.round(input.valorGatilhoReais * 100),
+      valorTransformacaoCents: Math.round(input.valorTransformacaoReais * 100),
+      atribuicaoBps: Math.round(input.atribuicaoPercent * 100),
+      deadweightBps: Math.round((input.deadweightPercent ?? 0) * 100),
+      dropOffBps: Math.round((input.dropOffPercent ?? 0) * 100),
+      custoImtsCents: Math.round(input.custoImtsReais * 100),
+    });
+
     res.json({
       success: true,
+      illustrative: true,
+      disclaimer: 'Simulação com números fornecidos por você. Não é um S-ROI auditado de nenhuma iniciativa real.',
       data: {
-        impactScore: Math.round(impactScore * 100) / 100,
-        level,
-        c7Value: Math.round(c7 * 10000) / 10000,
-        sroi: sroi ? Math.round(sroi * 100) / 100 : null,
-        recommendations: generateRecommendations(input),
+        gatilhos: calculo.gatilhos,
+        transformacoes: calculo.transformacoes,
+        valorSocialBruto: Math.round(calculo.valorSocialBruto * 100) / 100,
+        fatorDesconto: Math.round(calculo.fatorDesconto * 10000) / 10000,
+        valorSocial: Math.round(calculo.valorSocial * 100) / 100,
+        custo: Math.round(calculo.custo * 100) / 100,
+        sroi: Math.round(calculo.sroi * 100) / 100,
+        alavancagem: Math.round(calculo.alavancagem * 10000) / 10000,
+        sensibilidade: {
+          sroiLow: Math.round(calculo.sensibilidade.sroiLow * 100) / 100,
+          sroiHigh: Math.round(calculo.sensibilidade.sroiHigh * 100) / 100,
+        },
       },
     });
   } catch (error) {
@@ -295,7 +293,7 @@ router.post('/calculator', async (req: Request, res: Response) => {
         details: error.issues,
       });
     }
-    
+
     console.error('[PublicAPI] Calculator error:', error);
     res.status(500).json({
       success: false,
@@ -304,38 +302,6 @@ router.post('/calculator', async (req: Request, res: Response) => {
     });
   }
 });
-
-function generateRecommendations(input: z.infer<typeof calculatorInputSchema>): string[] {
-  const recommendations: string[] = [];
-  
-  if (input.clarity < 50) {
-    recommendations.push('Improve clarity of objectives and communication');
-  }
-  if (input.connection < 50) {
-    recommendations.push('Strengthen stakeholder connections and relationships');
-  }
-  if (input.commitment < 50) {
-    recommendations.push('Increase organizational commitment to impact goals');
-  }
-  if (input.collaboration < 50) {
-    recommendations.push('Enhance cross-functional collaboration');
-  }
-  if (input.creativity < 50) {
-    recommendations.push('Foster innovation and creative problem-solving');
-  }
-  if (input.continuity < 50) {
-    recommendations.push('Establish sustainable processes for long-term impact');
-  }
-  if (input.resistance > 70) {
-    recommendations.push('Address resistance factors through change management');
-  }
-  
-  if (recommendations.length === 0) {
-    recommendations.push('Maintain current practices and focus on scaling impact');
-  }
-  
-  return recommendations;
-}
 
 /**
  * @openapi

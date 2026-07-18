@@ -18,6 +18,7 @@ import { executeRawQuery } from "./db-raw";
 import { leads, contacts, whitepaperDownloads, ebookDownloads, newsletterSubscribers, calculations, caseFavorites, caseSubmissions, caseTags, caseTagRelations, notificationPreferences, systemSettings, impactTokens, users } from "../drizzle/schema";
 import { roles, permissions } from "../drizzle/schema";
 import { chatWithJarvis, jarvisSkills, getSuggestedQuestions, JarvisMessage } from "./services/jarvis/jarvis-service";
+import { calcSroi } from "../shared/sroi-calculator";
 import { searchKnowledge, listCategories, getDocumentsByCategory } from "./services/jarvis/knowledge-base";
 import { getAlertSummary, getActiveAlerts, getAlertHistory, acknowledgeAlert, resolveAlert, startAlertMonitoring } from "./services/alerts/alert-service";
 import { getAllCircuitBreakerStatus } from "./middleware/circuit-breaker";
@@ -742,86 +743,111 @@ export const appRouter = router({
   }),
 
   // Impact Calculator Router
+  // Simulador PÚBLICO e ILUSTRATIVO do S-ROI honesto (shared/sroi-calculator.ts). Nunca um
+  // S-ROI auditado de iniciativa real — quem digita os números é um visitante anônimo, sem
+  // qualquer vínculo com dados reais gravados no motor de mensuração (registry-service.ts).
   calculator: router({
     calculate: publicProcedure
       .input(z.object({
-        investment: z.number().positive(),
-        contextScore: z.number().min(1).max(10),
-        resistanceScore: z.number().min(1).max(10),
-        beneficiaries: z.number().positive(),
-        duration: z.number().positive(),
+        gatilhos: z.number().int().min(0),
+        transformacoes: z.number().int().min(0),
+        valorGatilhoReais: z.number().min(0),
+        valorTransformacaoReais: z.number().min(0),
+        atribuicaoPercent: z.number().min(0).max(100),
+        deadweightPercent: z.number().min(0).max(100).optional(),
+        dropOffPercent: z.number().min(0).max(100).optional(),
+        custoImtsReais: z.number().positive(),
         projectName: z.string().optional(),
         sector: z.string().optional(),
         sessionId: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
-        // Calculate impact using the IMPACT7 equation: I = (E × C^7) / R
-        const E = input.investment;
-        const C = input.contextScore / 10;
-        const R = Math.max(input.resistanceScore / 10, 0.1);
-        
-        const contextPower = Math.pow(C, 7);
-        const impactScore = (E * contextPower) / R;
-        
-        // Calculate S-ROI
-        const socialValue = impactScore * input.beneficiaries * (input.duration / 12);
-        const sRoi = socialValue / input.investment;
-        
-        // Determine rating
-        let rating = "Baixo";
-        if (sRoi >= 12) rating = "Excelente";
-        else if (sRoi >= 7) rating = "Muito Bom";
-        else if (sRoi >= 4) rating = "Bom";
-        else if (sRoi >= 2) rating = "Moderado";
-        
-        // Save calculation to database
+        // Unidades amigáveis (reais, percentuais 0-100) convertidas para as unidades de
+        // calcSroi (centavos, basis points) — mesmo padrão de jarvisSkills.calculator.
+        const atribuicaoBps = Math.round(input.atribuicaoPercent * 100);
+        const deadweightBps = Math.round((input.deadweightPercent ?? 0) * 100);
+        const dropOffBps = Math.round((input.dropOffPercent ?? 0) * 100);
+        const valorGatilhoCents = Math.round(input.valorGatilhoReais * 100);
+        const valorTransformacaoCents = Math.round(input.valorTransformacaoReais * 100);
+        const custoImtsCents = Math.round(input.custoImtsReais * 100);
+
+        const calculo = calcSroi({
+          gatilhos: input.gatilhos,
+          transformacoes: input.transformacoes,
+          valorGatilhoCents,
+          valorTransformacaoCents,
+          atribuicaoBps,
+          deadweightBps,
+          dropOffBps,
+          custoImtsCents,
+        });
+
+        // Salva a simulação (nunca um S-ROI auditado) no histórico.
         const db = await getDb();
         if (db) {
           await db.insert(calculations).values({
-            investment: Math.round(input.investment),
-            contextScore: input.contextScore,
-            resistanceScore: input.resistanceScore,
-            beneficiaries: input.beneficiaries,
-            duration: input.duration,
-            impactScore: Math.round(impactScore),
-            sRoi: Math.round(sRoi * 100), // Store as integer (multiply by 100)
+            gatilhos: calculo.gatilhos,
+            transformacoes: calculo.transformacoes,
+            valorGatilhoCents,
+            valorTransformacaoCents,
+            atribuicaoBps,
+            deadweightBps,
+            dropOffBps,
+            custoImtsCents,
+            valorSocialBrutoCents: Math.round(calculo.valorSocialBruto * 100),
+            valorSocialCents: Math.round(calculo.valorSocial * 100),
+            sRoi: Math.round(calculo.sroi * 100), // Store as integer (multiply by 100)
             projectName: input.projectName || null,
             sector: input.sector || null,
             sessionId: input.sessionId || null,
             createdAt: Date.now(),
           });
         }
-        
+
         return {
-          impactScore: Math.round(impactScore),
-          sRoi: parseFloat(sRoi.toFixed(2)),
-          socialValue: Math.round(socialValue),
-          rating,
+          gatilhos: calculo.gatilhos,
+          transformacoes: calculo.transformacoes,
+          valorSocialBruto: parseFloat(calculo.valorSocialBruto.toFixed(2)),
+          fatorDesconto: parseFloat(calculo.fatorDesconto.toFixed(4)),
+          valorSocial: parseFloat(calculo.valorSocial.toFixed(2)),
+          custo: parseFloat(calculo.custo.toFixed(2)),
+          sroi: parseFloat(calculo.sroi.toFixed(2)),
+          alavancagem: parseFloat(calculo.alavancagem.toFixed(4)),
+          sensibilidade: {
+            sroiLow: parseFloat(calculo.sensibilidade.sroiLow.toFixed(2)),
+            sroiHigh: parseFloat(calculo.sensibilidade.sroiHigh.toFixed(2)),
+          },
+          illustrative: true as const,
         };
       }),
-    
+
     history: protectedProcedure.query(async ({ ctx }) => {
       const db = await getDb();
       if (!db) return [];
-      
+
       return db.select()
         .from(calculations)
         .where(eq(calculations.userId, ctx.user.id))
         .orderBy(desc(calculations.createdAt))
         .limit(20);
     }),
-    
+
     exportPdf: publicProcedure
       .input(z.object({
-        investment: z.number().positive(),
-        contextScore: z.number().min(1).max(10),
-        resistanceScore: z.number().min(1).max(10),
-        beneficiaries: z.number().positive(),
-        duration: z.number().positive(),
-        sRoi: z.string(),
-        socialValue: z.number(),
-        impactScore: z.number(),
-        rating: z.string(),
+        gatilhos: z.number().int().min(0),
+        transformacoes: z.number().int().min(0),
+        valorSocialBruto: z.number(),
+        fatorDesconto: z.number(),
+        valorSocial: z.number(),
+        custo: z.number(),
+        sroi: z.number(),
+        alavancagem: z.number(),
+        sensibilidade: z.object({
+          sroiLow: z.number(),
+          sroiHigh: z.number(),
+        }).optional(),
+        projectName: z.string().optional(),
+        sector: z.string().optional(),
         language: z.string().optional(),
       }))
       .mutation(async ({ input }) => {

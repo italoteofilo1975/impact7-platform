@@ -1,265 +1,256 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+// Resultado do simulador PÚBLICO e ILUSTRATIVO do S-ROI honesto (shared/sroi-calculator.ts).
+// Nunca um S-ROI auditado de iniciativa real: quem preenche os números é um visitante
+// anônimo do site, sem qualquer vínculo com dados reais gravados no motor de mensuração
+// (registry-service.ts). O PDF gerado a partir daqui precisa deixar isso explícito.
 export interface CalculatorResult {
-  investment: number;
-  contextScore: number;
-  resistanceScore: number;
-  beneficiaries: number;
-  duration: number;
-  sRoi: string;
-  socialValue: number;
-  impactScore: number;
-  rating: string;
+  gatilhos: number;
+  transformacoes: number;
+  valorSocialBruto: number;
+  fatorDesconto: number;
+  valorSocial: number;
+  custo: number;
+  sroi: number;
+  alavancagem: number;
+  sensibilidade?: { sroiLow: number; sroiHigh: number };
+  projectName?: string;
+  sector?: string;
   language?: string;
 }
 
 const translations = {
   pt: {
-    title: 'RELATÓRIO DE IMPACTO SOCIAL',
-    subtitle: 'Calculadora S-ROI - Método IMPACT7',
+    title: 'SIMULAÇÃO DE IMPACTO SOCIAL',
+    subtitle: 'Simulador S-ROI Honesto - Método IMPACT7',
     generatedAt: 'Gerado em',
-    projectData: 'Dados do Projeto',
-    investment: 'Investimento Total',
-    contextAlignment: 'Alinhamento de Contexto',
-    barriers: 'Barreiras e Resistência',
-    beneficiaries: 'Beneficiários Diretos',
-    duration: 'Duração do Projeto',
-    months: 'meses',
-    results: 'Resultados da Análise',
-    sRoi: 'S-ROI Estimado',
-    socialValue: 'Valor Social Gerado',
-    impactScore: 'Score de Impacto',
-    classification: 'Classificação',
-    equation: 'A Equação do Impacto',
-    equationDesc: 'I = (E × C⁷) / R',
-    equationExplanation: 'Onde E = Energia (Investimento), C = Contexto (Alinhamento), R = Resistência (Barreiras)',
-    benchmarks: 'Benchmarks de Referência',
-    minRecommended: 'S-ROI Mínimo Recomendado',
-    avgSocial: 'S-ROI Médio (Projetos Sociais)',
-    top10: 'Top 10% S-ROI (IMPACT7)',
+    projectData: 'Dados Informados',
+    gatilhos: 'Gatilhos (pessoas que cruzaram o limiar de impacto)',
+    transformacoes: 'Transformações (subconjunto com transformação sustentada)',
+    custo: 'Custo Fixo IMTS',
+    fatorDesconto: 'Fator de Desconto (atribuição × (1-deadweight) × (1-dropOff))',
+    results: 'Resultados da Simulação',
+    sRoi: 'S-ROI Simulado',
+    valorSocialBruto: 'Valor Social Bruto',
+    valorSocial: 'Valor Social (após desconto)',
+    alavancagem: 'Alavancagem (gatilhos / custo)',
+    sensibilidade: 'Faixa de Sensibilidade',
+    equation: 'A Fórmula Honesta do S-ROI',
+    equationDesc: 'S-ROI = [(gatilhos×valorGatilho + transformações×valorTransformação) × atribuição × (1-deadweight) × (1-dropOff)] / custoIMTS',
+    equationExplanation: 'A esteira (nível Amplificar do Funil IMPACTA) é projeção e nunca entra nesta soma.',
+    referenceTitle: 'Referência ilustrativa (não é um benchmark de mercado)',
+    referenceDesc: 'A faixa realista de S-ROI honesto, após os três descontos, costuma ficar entre 3x e 10x. Um resultado muito acima disso normalmente indica premissas de valor otimistas demais — vale revisar os números, não comemorar.',
     methodology: 'Metodologia',
-    methodologyDesc: 'Este relatório foi gerado utilizando o Método IMPACT7, que combina Ciência Cognitiva, Modelagem Matemática e Engenharia de Software para maximizar o retorno sobre investimento social.',
+    methodologyDesc: 'Esta simulação foi gerada usando a fórmula honesta de S-ROI do Método IMPACT7: valor social bruto (gatilhos e transformações vezes proxies de valor), descontado por atribuição, deadweight e drop-off, dividido pelo custo fixo da IMTS.',
     footer: 'Relatório gerado automaticamente pela Plataforma IMPACT7',
-    disclaimer: 'Os valores apresentados são estimativas baseadas nos dados fornecidos e podem variar conforme a execução do projeto.',
+    disclaimer: 'ATENÇÃO: este é um relatório de SIMULAÇÃO gerado com números informados por você. Não é um S-ROI auditado, não veio do banco de dados de iniciativas reais e não representa nenhum resultado real da plataforma ou do Método IMPACT7.',
   },
   en: {
-    title: 'SOCIAL IMPACT REPORT',
-    subtitle: 'S-ROI Calculator - IMPACT7 Method',
+    title: 'SOCIAL IMPACT SIMULATION',
+    subtitle: 'Honest S-ROI Simulator - IMPACT7 Method',
     generatedAt: 'Generated at',
-    projectData: 'Project Data',
-    investment: 'Total Investment',
-    contextAlignment: 'Context Alignment',
-    barriers: 'Barriers and Resistance',
-    beneficiaries: 'Direct Beneficiaries',
-    duration: 'Project Duration',
-    months: 'months',
-    results: 'Analysis Results',
-    sRoi: 'Estimated S-ROI',
-    socialValue: 'Social Value Generated',
-    impactScore: 'Impact Score',
-    classification: 'Classification',
-    equation: 'The Impact Equation',
-    equationDesc: 'I = (E × C⁷) / R',
-    equationExplanation: 'Where E = Energy (Investment), C = Context (Alignment), R = Resistance (Barriers)',
-    benchmarks: 'Reference Benchmarks',
-    minRecommended: 'Minimum Recommended S-ROI',
-    avgSocial: 'Average S-ROI (Social Projects)',
-    top10: 'Top 10% S-ROI (IMPACT7)',
+    projectData: 'Data Provided',
+    gatilhos: 'Triggers (people who crossed the impact threshold)',
+    transformacoes: 'Transformations (subset with sustained transformation)',
+    custo: 'Fixed IMTS Cost',
+    fatorDesconto: 'Discount Factor (attribution × (1-deadweight) × (1-dropOff))',
+    results: 'Simulation Results',
+    sRoi: 'Simulated S-ROI',
+    valorSocialBruto: 'Gross Social Value',
+    valorSocial: 'Social Value (after discount)',
+    alavancagem: 'Leverage (triggers / cost)',
+    sensibilidade: 'Sensitivity Range',
+    equation: 'The Honest S-ROI Formula',
+    equationDesc: 'S-ROI = [(triggers×triggerValue + transformations×transformationValue) × attribution × (1-deadweight) × (1-dropOff)] / IMTScost',
+    equationExplanation: 'The pipeline layer (Amplify level of the IMPACTA funnel) is a projection and is never summed into this number.',
+    referenceTitle: 'Illustrative reference (not a market benchmark)',
+    referenceDesc: 'The realistic range for honest S-ROI, after the three discounts, is typically 3x to 10x. A result well above that usually means the value proxies are too optimistic — worth reviewing the assumptions, not celebrating the number.',
     methodology: 'Methodology',
-    methodologyDesc: 'This report was generated using the IMPACT7 Method, which combines Cognitive Science, Mathematical Modeling, and Software Engineering to maximize social return on investment.',
+    methodologyDesc: 'This simulation was generated using the IMPACT7 Method\'s honest S-ROI formula: gross social value (triggers and transformations times value proxies), discounted by attribution, deadweight and drop-off, divided by the fixed IMTS cost.',
     footer: 'Report automatically generated by IMPACT7 Platform',
-    disclaimer: 'The values presented are estimates based on the data provided and may vary according to project execution.',
+    disclaimer: 'ATTENTION: this is a SIMULATION report generated with numbers you provided. It is not an audited S-ROI, it did not come from the real initiatives database, and it does not represent any real result of the platform or of the IMPACT7 Method.',
   },
   es: {
-    title: 'INFORME DE IMPACTO SOCIAL',
-    subtitle: 'Calculadora S-ROI - Método IMPACT7',
+    title: 'SIMULACIÓN DE IMPACTO SOCIAL',
+    subtitle: 'Simulador S-ROI Honesto - Método IMPACT7',
     generatedAt: 'Generado en',
-    projectData: 'Datos del Proyecto',
-    investment: 'Inversión Total',
-    contextAlignment: 'Alineación de Contexto',
-    barriers: 'Barreras y Resistencia',
-    beneficiaries: 'Beneficiarios Directos',
-    duration: 'Duración del Proyecto',
-    months: 'meses',
-    results: 'Resultados del Análisis',
-    sRoi: 'S-ROI Estimado',
-    socialValue: 'Valor Social Generado',
-    impactScore: 'Puntuación de Impacto',
-    classification: 'Clasificación',
-    equation: 'La Ecuación del Impacto',
-    equationDesc: 'I = (E × C⁷) / R',
-    equationExplanation: 'Donde E = Energía (Inversión), C = Contexto (Alineación), R = Resistencia (Barreras)',
-    benchmarks: 'Benchmarks de Referencia',
-    minRecommended: 'S-ROI Mínimo Recomendado',
-    avgSocial: 'S-ROI Promedio (Proyectos Sociales)',
-    top10: 'Top 10% S-ROI (IMPACT7)',
+    projectData: 'Datos Informados',
+    gatilhos: 'Gatillos (personas que cruzaron el umbral de impacto)',
+    transformacoes: 'Transformaciones (subconjunto con transformación sostenida)',
+    custo: 'Costo Fijo IMTS',
+    fatorDesconto: 'Factor de Descuento (atribución × (1-deadweight) × (1-dropOff))',
+    results: 'Resultados de la Simulación',
+    sRoi: 'S-ROI Simulado',
+    valorSocialBruto: 'Valor Social Bruto',
+    valorSocial: 'Valor Social (después del descuento)',
+    alavancagem: 'Apalancamiento (gatillos / costo)',
+    sensibilidade: 'Rango de Sensibilidad',
+    equation: 'La Fórmula Honesta del S-ROI',
+    equationDesc: 'S-ROI = [(gatillos×valorGatillo + transformaciones×valorTransformación) × atribución × (1-deadweight) × (1-dropOff)] / costoIMTS',
+    equationExplanation: 'La capa de esteira (nivel Amplificar del Embudo IMPACTA) es una proyección y nunca se suma a este número.',
+    referenceTitle: 'Referencia ilustrativa (no es un benchmark de mercado)',
+    referenceDesc: 'El rango realista de S-ROI honesto, tras los tres descuentos, suele estar entre 3x y 10x. Un resultado muy por encima suele indicar supuestos de valor demasiado optimistas — conviene revisar los números, no celebrarlos.',
     methodology: 'Metodología',
-    methodologyDesc: 'Este informe fue generado utilizando el Método IMPACT7, que combina Ciencia Cognitiva, Modelado Matemático e Ingeniería de Software para maximizar el retorno sobre inversión social.',
+    methodologyDesc: 'Esta simulación fue generada usando la fórmula honesta de S-ROI del Método IMPACT7: valor social bruto (gatillos y transformaciones por proxies de valor), descontado por atribución, deadweight y drop-off, dividido por el costo fijo de IMTS.',
     footer: 'Informe generado automáticamente por la Plataforma IMPACT7',
-    disclaimer: 'Los valores presentados son estimaciones basadas en los datos proporcionados y pueden variar según la ejecución del proyecto.',
+    disclaimer: 'ATENCIÓN: este es un informe de SIMULACIÓN generado con números que usted proporcionó. No es un S-ROI auditado, no proviene de la base de datos de iniciativas reales y no representa ningún resultado real de la plataforma o del Método IMPACT7.',
   },
 };
 
-export function generateCalculatorPDF(data: CalculatorResult): string {
+function drawReport(doc: jsPDF, data: CalculatorResult) {
   const lang = (data.language || 'en') as keyof typeof translations;
   const t = translations[lang] || translations.en;
-  
-  const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
-  
+
   // Colors
   const primaryColor: [number, number, number] = [255, 107, 53]; // Orange
   const darkColor: [number, number, number] = [30, 41, 59]; // Dark blue
   const grayColor: [number, number, number] = [107, 114, 128];
-  
+
   // Header
   doc.setFillColor(30, 41, 59);
   doc.rect(0, 0, pageWidth, 45, 'F');
-  
-  doc.setFontSize(22);
+
+  doc.setFontSize(20);
   doc.setTextColor(255, 255, 255);
   doc.text(t.title, pageWidth / 2, 20, { align: 'center' });
-  
+
   doc.setFontSize(12);
   doc.setTextColor(200, 200, 200);
   doc.text(t.subtitle, pageWidth / 2, 30, { align: 'center' });
-  
+
   doc.setFontSize(10);
   doc.text(`${t.generatedAt}: ${new Date().toLocaleString(lang === 'pt' ? 'pt-BR' : lang === 'es' ? 'es-ES' : 'en-US')}`, pageWidth / 2, 40, { align: 'center' });
-  
+
   // Project Data Section
   doc.setFontSize(14);
   doc.setTextColor(...darkColor);
   doc.text(t.projectData, 20, 60);
-  
+
   const formatCurrency = (value: number) => {
     const locale = lang === 'pt' ? 'pt-BR' : lang === 'es' ? 'es-ES' : 'en-US';
     const currency = lang === 'pt' ? 'BRL' : 'USD';
     return new Intl.NumberFormat(locale, { style: 'currency', currency, minimumFractionDigits: 0 }).format(value);
   };
-  
+
   autoTable(doc, {
     startY: 65,
     head: [],
     body: [
-      [t.investment, formatCurrency(data.investment)],
-      [t.contextAlignment, `${data.contextScore}/10`],
-      [t.barriers, `${data.resistanceScore}/10`],
-      [t.beneficiaries, data.beneficiaries.toLocaleString()],
-      [t.duration, `${data.duration} ${t.months}`],
+      [t.gatilhos, data.gatilhos.toLocaleString()],
+      [t.transformacoes, data.transformacoes.toLocaleString()],
+      [t.custo, formatCurrency(data.custo)],
+      [t.fatorDesconto, `${(data.fatorDesconto * 100).toFixed(1)}%`],
     ],
     theme: 'plain',
-    styles: { fontSize: 11 },
+    styles: { fontSize: 10 },
     columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 80 },
+      0: { fontStyle: 'bold', cellWidth: 110 },
       1: { halign: 'right' },
     },
     margin: { left: 20, right: 20 },
   });
-  
+
   // Results Section
   const resultsY = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15;
-  
+
   doc.setFontSize(14);
   doc.setTextColor(...darkColor);
   doc.text(t.results, 20, resultsY);
-  
+
   // S-ROI Highlight Box
   doc.setFillColor(255, 247, 237); // Light orange background
   doc.roundedRect(20, resultsY + 5, pageWidth - 40, 35, 3, 3, 'F');
-  
+
   doc.setFontSize(12);
   doc.setTextColor(...grayColor);
   doc.text(t.sRoi, pageWidth / 2, resultsY + 15, { align: 'center' });
-  
+
   doc.setFontSize(28);
   doc.setTextColor(...primaryColor);
-  doc.text(`${data.sRoi}x`, pageWidth / 2, resultsY + 30, { align: 'center' });
-  
-  doc.setFontSize(12);
-  doc.setTextColor(...darkColor);
-  doc.text(data.rating, pageWidth / 2, resultsY + 38, { align: 'center' });
-  
+  doc.text(`${data.sroi.toFixed(2)}x`, pageWidth / 2, resultsY + 30, { align: 'center' });
+
+  if (data.sensibilidade) {
+    doc.setFontSize(10);
+    doc.setTextColor(...darkColor);
+    doc.text(
+      `${t.sensibilidade}: ${data.sensibilidade.sroiLow.toFixed(2)}x - ${data.sensibilidade.sroiHigh.toFixed(2)}x`,
+      pageWidth / 2,
+      resultsY + 38,
+      { align: 'center' },
+    );
+  }
+
   // Other Results
   autoTable(doc, {
     startY: resultsY + 50,
     head: [],
     body: [
-      [t.socialValue, formatCurrency(data.socialValue)],
-      [t.impactScore, data.impactScore.toLocaleString()],
+      [t.valorSocialBruto, formatCurrency(data.valorSocialBruto)],
+      [t.valorSocial, formatCurrency(data.valorSocial)],
+      [t.alavancagem, data.alavancagem.toFixed(4)],
     ],
     theme: 'plain',
-    styles: { fontSize: 11 },
+    styles: { fontSize: 10 },
     columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 80 },
+      0: { fontStyle: 'bold', cellWidth: 110 },
       1: { halign: 'right' },
     },
     margin: { left: 20, right: 20 },
   });
-  
+
   // Equation Section
   const equationY = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15;
-  
+
   doc.setFontSize(14);
   doc.setTextColor(...darkColor);
   doc.text(t.equation, 20, equationY);
-  
+
   doc.setFillColor(241, 245, 249);
-  doc.roundedRect(20, equationY + 5, pageWidth - 40, 25, 3, 3, 'F');
-  
-  doc.setFontSize(16);
+  doc.roundedRect(20, equationY + 5, pageWidth - 40, 30, 3, 3, 'F');
+
+  doc.setFontSize(9);
   doc.setTextColor(...primaryColor);
-  doc.text(t.equationDesc, pageWidth / 2, equationY + 15, { align: 'center' });
-  
+  const equationLines = doc.splitTextToSize(t.equationDesc, pageWidth - 50);
+  doc.text(equationLines, pageWidth / 2, equationY + 14, { align: 'center' });
+
+  doc.setFontSize(8);
+  doc.setTextColor(...grayColor);
+  const explanationLines = doc.splitTextToSize(t.equationExplanation, pageWidth - 50);
+  doc.text(explanationLines, pageWidth / 2, equationY + 14 + (equationLines.length * 5), { align: 'center' });
+
+  // Illustrative reference (NOT a fabricated benchmark table — a single labeled range).
+  const referenceY = equationY + 45;
+
+  doc.setFontSize(12);
+  doc.setTextColor(...darkColor);
+  doc.text(t.referenceTitle, 20, referenceY);
+
   doc.setFontSize(9);
   doc.setTextColor(...grayColor);
-  doc.text(t.equationExplanation, pageWidth / 2, equationY + 25, { align: 'center' });
-  
-  // Benchmarks Section
-  const benchmarksY = equationY + 40;
-  
-  doc.setFontSize(14);
-  doc.setTextColor(...darkColor);
-  doc.text(t.benchmarks, 20, benchmarksY);
-  
-  autoTable(doc, {
-    startY: benchmarksY + 5,
-    head: [],
-    body: [
-      [t.minRecommended, '7x'],
-      [t.avgSocial, '3-4x'],
-      [t.top10, '12x+'],
-    ],
-    theme: 'striped',
-    styles: { fontSize: 10 },
-    headStyles: { fillColor: primaryColor },
-    columnStyles: {
-      0: { cellWidth: 120 },
-      1: { halign: 'right', fontStyle: 'bold' },
-    },
-    margin: { left: 20, right: 20 },
-  });
-  
+  const referenceLines = doc.splitTextToSize(t.referenceDesc, pageWidth - 40);
+  doc.text(referenceLines, 20, referenceY + 8);
+
   // Methodology Section
-  const methodY = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15;
-  
+  const methodY = referenceY + 8 + (referenceLines.length * 4) + 12;
+
   doc.setFontSize(14);
   doc.setTextColor(...darkColor);
   doc.text(t.methodology, 20, methodY);
-  
+
   doc.setFontSize(9);
   doc.setTextColor(...grayColor);
   const methodLines = doc.splitTextToSize(t.methodologyDesc, pageWidth - 40);
   doc.text(methodLines, 20, methodY + 8);
-  
+
   // Disclaimer
   const disclaimerY = methodY + 8 + (methodLines.length * 4) + 10;
   doc.setFontSize(8);
-  doc.setTextColor(150, 150, 150);
+  doc.setTextColor(180, 60, 40);
   const disclaimerLines = doc.splitTextToSize(t.disclaimer, pageWidth - 40);
   doc.text(disclaimerLines, 20, disclaimerY);
-  
+
   // Footer
   doc.setFontSize(8);
   doc.setTextColor(...grayColor);
@@ -269,116 +260,17 @@ export function generateCalculatorPDF(data: CalculatorResult): string {
     doc.internal.pageSize.getHeight() - 10,
     { align: 'center' }
   );
-  
-  // Return as data URI
+}
+
+export function generateCalculatorPDF(data: CalculatorResult): string {
+  const doc = new jsPDF();
+  drawReport(doc, data);
   return doc.output('datauristring');
 }
 
 export function generateCalculatorPDFBuffer(data: CalculatorResult): Buffer {
-  const lang = (data.language || 'en') as keyof typeof translations;
-  const t = translations[lang] || translations.en;
-  
   const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  
-  // Colors
-  const primaryColor: [number, number, number] = [255, 107, 53];
-  const darkColor: [number, number, number] = [30, 41, 59];
-  const grayColor: [number, number, number] = [107, 114, 128];
-  
-  // Header
-  doc.setFillColor(30, 41, 59);
-  doc.rect(0, 0, pageWidth, 45, 'F');
-  
-  doc.setFontSize(22);
-  doc.setTextColor(255, 255, 255);
-  doc.text(t.title, pageWidth / 2, 20, { align: 'center' });
-  
-  doc.setFontSize(12);
-  doc.setTextColor(200, 200, 200);
-  doc.text(t.subtitle, pageWidth / 2, 30, { align: 'center' });
-  
-  doc.setFontSize(10);
-  doc.text(`${t.generatedAt}: ${new Date().toLocaleString(lang === 'pt' ? 'pt-BR' : lang === 'es' ? 'es-ES' : 'en-US')}`, pageWidth / 2, 40, { align: 'center' });
-  
-  // Project Data
-  doc.setFontSize(14);
-  doc.setTextColor(...darkColor);
-  doc.text(t.projectData, 20, 60);
-  
-  const formatCurrency = (value: number) => {
-    const locale = lang === 'pt' ? 'pt-BR' : lang === 'es' ? 'es-ES' : 'en-US';
-    const currency = lang === 'pt' ? 'BRL' : 'USD';
-    return new Intl.NumberFormat(locale, { style: 'currency', currency, minimumFractionDigits: 0 }).format(value);
-  };
-  
-  autoTable(doc, {
-    startY: 65,
-    head: [],
-    body: [
-      [t.investment, formatCurrency(data.investment)],
-      [t.contextAlignment, `${data.contextScore}/10`],
-      [t.barriers, `${data.resistanceScore}/10`],
-      [t.beneficiaries, data.beneficiaries.toLocaleString()],
-      [t.duration, `${data.duration} ${t.months}`],
-    ],
-    theme: 'plain',
-    styles: { fontSize: 11 },
-    columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 80 },
-      1: { halign: 'right' },
-    },
-    margin: { left: 20, right: 20 },
-  });
-  
-  // Results
-  const resultsY = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15;
-  
-  doc.setFontSize(14);
-  doc.setTextColor(...darkColor);
-  doc.text(t.results, 20, resultsY);
-  
-  doc.setFillColor(255, 247, 237);
-  doc.roundedRect(20, resultsY + 5, pageWidth - 40, 35, 3, 3, 'F');
-  
-  doc.setFontSize(12);
-  doc.setTextColor(...grayColor);
-  doc.text(t.sRoi, pageWidth / 2, resultsY + 15, { align: 'center' });
-  
-  doc.setFontSize(28);
-  doc.setTextColor(...primaryColor);
-  doc.text(`${data.sRoi}x`, pageWidth / 2, resultsY + 30, { align: 'center' });
-  
-  doc.setFontSize(12);
-  doc.setTextColor(...darkColor);
-  doc.text(data.rating, pageWidth / 2, resultsY + 38, { align: 'center' });
-  
-  autoTable(doc, {
-    startY: resultsY + 50,
-    head: [],
-    body: [
-      [t.socialValue, formatCurrency(data.socialValue)],
-      [t.impactScore, data.impactScore.toLocaleString()],
-    ],
-    theme: 'plain',
-    styles: { fontSize: 11 },
-    columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 80 },
-      1: { halign: 'right' },
-    },
-    margin: { left: 20, right: 20 },
-  });
-  
-  // Footer
-  doc.setFontSize(8);
-  doc.setTextColor(...grayColor);
-  doc.text(
-    t.footer,
-    pageWidth / 2,
-    doc.internal.pageSize.getHeight() - 10,
-    { align: 'center' }
-  );
-  
+  drawReport(doc, data);
   const arrayBuffer = doc.output('arraybuffer');
   return Buffer.from(arrayBuffer);
 }

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import SEO from "@/components/SEO";
 import { trpc } from "@/lib/trpc";
@@ -16,51 +16,17 @@ import WhatsAppWidget from "@/components/WhatsAppWidget";
 
 export default function Calculadora() {
   const { t, i18n } = useTranslation();
-  const [investment, setInvestment] = useState(100000);
-  const [contextScore, setContextScore] = useState(5);
-  const [resistanceScore, setResistanceScore] = useState(3);
-  const [beneficiaries, setBeneficiaries] = useState(1000);
-  const [duration, setDuration] = useState(12);
-  const [showResult, setShowResult] = useState(false);
 
-  const result = useMemo(() => {
-    // I = (E × C^7) / R
-    const E = investment;
-    const C = contextScore / 10; // Normalize to 0-1
-    const R = Math.max(resistanceScore / 10, 0.1); // Normalize and prevent division by zero
-    
-    const contextPower = Math.pow(C, 7);
-    const impactScore = (E * contextPower) / R;
-    
-    // Calculate S-ROI (Social Return on Investment)
-    const socialValue = impactScore * beneficiaries * (duration / 12);
-    const sRoi = socialValue / investment;
-    
-    // Determine rating
-    let rating = t("calculator.ratings.low");
-    let ratingColor = "text-red-500";
-    if (sRoi >= 12) {
-      rating = t("calculator.ratings.excellent");
-      ratingColor = "text-green-500";
-    } else if (sRoi >= 7) {
-      rating = t("calculator.ratings.veryGood");
-      ratingColor = "text-emerald-500";
-    } else if (sRoi >= 4) {
-      rating = t("calculator.ratings.good");
-      ratingColor = "text-yellow-500";
-    } else if (sRoi >= 2) {
-      rating = t("calculator.ratings.moderate");
-      ratingColor = "text-orange-500";
-    }
-
-    return {
-      impactScore: Math.round(impactScore),
-      sRoi: sRoi.toFixed(1),
-      socialValue: Math.round(socialValue),
-      rating,
-      ratingColor,
-    };
-  }, [investment, contextScore, resistanceScore, beneficiaries, duration, t]);
+  // Entradas da fórmula honesta de S-ROI do Método IMPACT7 (ver server/shared/sroi-calculator.ts):
+  // S-ROI = [(gatilhos*valorGatilho + transformacoes*valorTransformacao) * atribuicao * (1-deadweight) * (1-dropOff)] / custoImts
+  const [gatilhos, setGatilhos] = useState(500);
+  const [transformacoes, setTransformacoes] = useState(150);
+  const [valorGatilhoReais, setValorGatilhoReais] = useState(300);
+  const [valorTransformacaoReais, setValorTransformacaoReais] = useState(2000);
+  const [atribuicaoPercent, setAtribuicaoPercent] = useState(50);
+  const [deadweightPercent, setDeadweightPercent] = useState(20);
+  const [dropOffPercent, setDropOffPercent] = useState(10);
+  const [custoImtsReais, setCustoImtsReais] = useState(100000);
 
   const formatCurrency = (value: number) => {
     const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'es' ? 'es-ES' : 'pt-BR';
@@ -74,13 +40,15 @@ export default function Calculadora() {
 
   const calculateMutation = trpc.calculator.calculate.useMutation({
     onSuccess: (data) => {
-      setShowResult(true);
-      toast.success(t("calculator.toast.success", { sroi: data.sRoi }));
+      toast.success(t("calculator.toast.success", { sroi: data.sroi }));
     },
     onError: (error) => {
       toast.error(error.message || t("calculator.toast.error"));
     },
   });
+
+  const result = calculateMutation.data;
+  const showResult = !!result;
 
   const exportPdfMutation = trpc.calculator.exportPdf.useMutation({
     onSuccess: (data) => {
@@ -99,17 +67,18 @@ export default function Calculadora() {
   });
 
   const handleExportPdf = async () => {
+    if (!result) return;
     try {
       await exportPdfMutation.mutateAsync({
-        investment,
-        contextScore,
-        resistanceScore,
-        beneficiaries,
-        duration,
-        sRoi: result.sRoi,
-        socialValue: result.socialValue,
-        impactScore: result.impactScore,
-        rating: result.rating,
+        gatilhos: result.gatilhos,
+        transformacoes: result.transformacoes,
+        valorSocialBruto: result.valorSocialBruto,
+        fatorDesconto: result.fatorDesconto,
+        valorSocial: result.valorSocial,
+        custo: result.custo,
+        sroi: result.sroi,
+        alavancagem: result.alavancagem,
+        sensibilidade: result.sensibilidade,
         language: i18n.language,
       });
     } catch (error) {
@@ -120,11 +89,14 @@ export default function Calculadora() {
   const handleCalculate = async () => {
     try {
       await calculateMutation.mutateAsync({
-        investment,
-        contextScore,
-        resistanceScore,
-        beneficiaries,
-        duration,
+        gatilhos,
+        transformacoes,
+        valorGatilhoReais,
+        valorTransformacaoReais,
+        atribuicaoPercent,
+        deadweightPercent,
+        dropOffPercent,
+        custoImtsReais,
         sessionId: `session_${Date.now()}`,
       });
     } catch (error) {
@@ -132,14 +104,25 @@ export default function Calculadora() {
     }
   };
 
-  const getRecommendation = () => {
-    const sRoiValue = parseFloat(result.sRoi);
-    if (sRoiValue >= 7) {
-      return t("calculator.results.excellent");
-    } else if (sRoiValue >= 4) {
-      return t("calculator.results.good");
+  const getRating = (sroi: number) => {
+    if (sroi >= 10) return { label: "Excelente", color: "text-green-500" };
+    if (sroi >= 7) return { label: "Muito bom", color: "text-emerald-500" };
+    if (sroi >= 4) return { label: "Bom", color: "text-yellow-500" };
+    if (sroi >= 2) return { label: "Moderado", color: "text-orange-500" };
+    return { label: "Baixo", color: "text-red-500" };
+  };
+
+  const getRecommendation = (sroi: number) => {
+    if (sroi >= 10) {
+      return "S-ROI acima de 10x costuma indicar premissas de valor otimistas demais. Vale revisar os números (valor por gatilho/transformação, atribuição) antes de comemorar.";
     }
-    return t("calculator.results.moderate");
+    if (sroi >= 7) {
+      return "Resultado bastante positivo. Confira se a atribuição e os descontos de deadweight/drop-off refletem a realidade do projeto.";
+    }
+    if (sroi >= 3) {
+      return "Faixa realista para um S-ROI honesto após os descontos de atribuição, deadweight e drop-off (geralmente entre 3x e 10x).";
+    }
+    return "Potencial moderado. Avalie se é possível aumentar a atribuição do projeto ao resultado ou reduzir custos fixos da IMTS.";
   };
 
   return (
@@ -152,7 +135,7 @@ export default function Calculadora() {
       />
       <div className="min-h-screen bg-background">
       <MainNavbar />
-      
+
       <main className="pt-16">
         {/* Hero */}
         <section className="gradient-hero text-white py-16">
@@ -185,137 +168,212 @@ export default function Calculadora() {
                     {t("calculator.projectData")}
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    {t("calculator.projectDataDesc")}
+                    Preencha os números do seu projeto para simular o S-ROI honesto do Método IMPACT7.
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-8">
-                  {/* Investment */}
+                  {/* Gatilhos */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="flex items-center gap-2">
-                        {t("calculator.investment")}
+                        Número de gatilhos (pessoas que cruzaram o limiar de impacto)
                         <Tooltip>
                           <TooltipTrigger>
                             <Info className="w-4 h-4 text-muted-foreground" />
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p className="max-w-xs">{t("calculator.investmentTooltip")}</p>
+                            <p className="max-w-xs">Quantidade de pessoas que cruzaram o limiar mínimo de impacto do projeto.</p>
                           </TooltipContent>
                         </Tooltip>
                       </Label>
-                      <span className="font-semibold text-primary">{formatCurrency(investment)}</span>
+                      <span className="font-semibold text-primary">{gatilhos.toLocaleString()}</span>
                     </div>
                     <Slider
-                      value={[investment]}
-                      onValueChange={(v) => setInvestment(v[0])}
-                      min={10000}
-                      max={10000000}
-                      step={10000}
+                      value={[gatilhos]}
+                      onValueChange={(v) => setGatilhos(v[0])}
+                      min={0}
+                      max={5000}
+                      step={10}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{t("calculator.investmentMin")}</span>
-                      <span>{t("calculator.investmentMax")}</span>
+                      <span>0</span>
+                      <span>5.000</span>
                     </div>
                   </div>
 
-                  {/* Context Score */}
+                  {/* Transformações */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="flex items-center gap-2">
-                        {t("calculator.contextAlignment")}
+                        Número de transformações
                         <Tooltip>
                           <TooltipTrigger>
                             <Info className="w-4 h-4 text-muted-foreground" />
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p className="max-w-xs">{t("calculator.contextTooltip")}</p>
+                            <p className="max-w-xs">Subconjunto dos gatilhos que teve transformação sustentada (mais profunda e duradoura).</p>
                           </TooltipContent>
                         </Tooltip>
                       </Label>
-                      <span className="font-semibold text-primary">{contextScore}/10</span>
+                      <span className="font-semibold text-primary">{transformacoes.toLocaleString()}</span>
                     </div>
                     <Slider
-                      value={[contextScore]}
-                      onValueChange={(v) => setContextScore(v[0])}
-                      min={1}
-                      max={10}
-                      step={1}
+                      value={[transformacoes]}
+                      onValueChange={(v) => setTransformacoes(v[0])}
+                      min={0}
+                      max={5000}
+                      step={5}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{t("calculator.low")}</span>
-                      <span>{t("calculator.high")}</span>
+                      <span>0</span>
+                      <span>5.000</span>
                     </div>
                   </div>
 
-                  {/* Resistance Score */}
+                  {/* Valor por gatilho */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label>Valor por gatilho (R$)</Label>
+                      <span className="font-semibold text-primary">{formatCurrency(valorGatilhoReais)}</span>
+                    </div>
+                    <Slider
+                      value={[valorGatilhoReais]}
+                      onValueChange={(v) => setValorGatilhoReais(v[0])}
+                      min={0}
+                      max={5000}
+                      step={10}
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>R$ 0</span>
+                      <span>R$ 5.000</span>
+                    </div>
+                  </div>
+
+                  {/* Valor por transformação */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label>Valor por transformação (R$)</Label>
+                      <span className="font-semibold text-primary">{formatCurrency(valorTransformacaoReais)}</span>
+                    </div>
+                    <Slider
+                      value={[valorTransformacaoReais]}
+                      onValueChange={(v) => setValorTransformacaoReais(v[0])}
+                      min={0}
+                      max={20000}
+                      step={50}
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>R$ 0</span>
+                      <span>R$ 20.000</span>
+                    </div>
+                  </div>
+
+                  {/* Atribuição */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="flex items-center gap-2">
-                        {t("calculator.barriers")}
+                        % de atribuição
                         <Tooltip>
                           <TooltipTrigger>
                             <Info className="w-4 h-4 text-muted-foreground" />
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p className="max-w-xs">{t("calculator.barriersTooltip")}</p>
+                            <p className="max-w-xs">Percentual do resultado que pode ser atribuído a este projeto (o restante se deve a outros fatores/atores).</p>
                           </TooltipContent>
                         </Tooltip>
                       </Label>
-                      <span className="font-semibold text-primary">{resistanceScore}/10</span>
+                      <span className="font-semibold text-primary">{atribuicaoPercent}%</span>
                     </div>
                     <Slider
-                      value={[resistanceScore]}
-                      onValueChange={(v) => setResistanceScore(v[0])}
-                      min={1}
-                      max={10}
+                      value={[atribuicaoPercent]}
+                      onValueChange={(v) => setAtribuicaoPercent(v[0])}
+                      min={0}
+                      max={100}
                       step={1}
                     />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{t("calculator.few")}</span>
-                      <span>{t("calculator.many")}</span>
-                    </div>
                   </div>
 
-                  {/* Beneficiaries */}
+                  {/* Deadweight */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label>{t("calculator.beneficiaries")}</Label>
-                      <span className="font-semibold text-primary">{beneficiaries.toLocaleString()}</span>
+                      <Label className="flex items-center gap-2">
+                        % deadweight (opcional)
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Info className="w-4 h-4 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="max-w-xs">Percentual do resultado que teria acontecido de qualquer forma, mesmo sem o projeto.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </Label>
+                      <span className="font-semibold text-primary">{deadweightPercent}%</span>
                     </div>
                     <Slider
-                      value={[beneficiaries]}
-                      onValueChange={(v) => setBeneficiaries(v[0])}
-                      min={100}
-                      max={100000}
-                      step={100}
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>100</span>
-                      <span>100.000</span>
-                    </div>
-                  </div>
-
-                  {/* Duration */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label>{t("calculator.duration")}</Label>
-                      <span className="font-semibold text-primary">{duration} {t("calculator.months")}</span>
-                    </div>
-                    <Slider
-                      value={[duration]}
-                      onValueChange={(v) => setDuration(v[0])}
-                      min={3}
-                      max={60}
+                      value={[deadweightPercent]}
+                      onValueChange={(v) => setDeadweightPercent(v[0])}
+                      min={0}
+                      max={100}
                       step={1}
                     />
+                  </div>
+
+                  {/* Drop-off */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="flex items-center gap-2">
+                        % drop-off (opcional)
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Info className="w-4 h-4 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="max-w-xs">Percentual de queda do impacto ao longo do tempo (o efeito não se mantém integralmente).</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </Label>
+                      <span className="font-semibold text-primary">{dropOffPercent}%</span>
+                    </div>
+                    <Slider
+                      value={[dropOffPercent]}
+                      onValueChange={(v) => setDropOffPercent(v[0])}
+                      min={0}
+                      max={100}
+                      step={1}
+                    />
+                  </div>
+
+                  {/* Custo fixo da IMTS */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="flex items-center gap-2">
+                        Custo fixo da IMTS (R$)
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Info className="w-4 h-4 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="max-w-xs">Custo fixo total do investimento social a ser dividido pelo valor social gerado.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </Label>
+                      <span className="font-semibold text-primary">{formatCurrency(custoImtsReais)}</span>
+                    </div>
+                    <Slider
+                      value={[custoImtsReais]}
+                      onValueChange={(v) => setCustoImtsReais(v[0])}
+                      min={1000}
+                      max={1000000}
+                      step={1000}
+                    />
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{t("calculator.durationMin")}</span>
-                      <span>{t("calculator.durationMax")}</span>
+                      <span>R$ 1 mil</span>
+                      <span>R$ 1 milhão</span>
                     </div>
                   </div>
 
-                  <Button 
-                    className="w-full gradient-orange text-white border-0" 
+                  <Button
+                    className="w-full gradient-orange text-white border-0"
                     size="lg"
                     onClick={handleCalculate}
                     disabled={calculateMutation.isPending}
@@ -323,7 +381,7 @@ export default function Calculadora() {
                     {calculateMutation.isPending ? (
                       <>
                         <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        {t("calculator.calculating")}
+                        Calculando...
                       </>
                     ) : (
                       <>
@@ -340,35 +398,38 @@ export default function Calculadora() {
                 {/* Equation Display */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t("calculator.equation.title")}</CardTitle>
+                    <CardTitle>A Fórmula Honesta do S-ROI</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="equation text-center py-4">
-                      <span className="text-primary">I</span> = (<span className="text-primary">E</span> × <span className="text-primary">C</span><sup>7</sup>) / <span className="text-primary">R</span>
+                    <div className="equation text-center py-4 text-sm md:text-base">
+                      <span className="text-primary">S-ROI</span> = [(gatilhos × valorGatilho + transformações × valorTransformação) × atribuição × (1-deadweight) × (1-dropOff)] / custoIMTS
                     </div>
                     <div className="grid grid-cols-4 gap-4 text-center text-sm">
                       <div>
-                        <div className="font-bold text-primary">E</div>
-                        <div className="text-muted-foreground">{t("calculator.equation.energy")}</div>
+                        <div className="font-bold text-primary">Gatilhos</div>
+                        <div className="text-muted-foreground">Pessoas que cruzaram o limiar</div>
                       </div>
                       <div>
-                        <div className="font-bold text-primary">C</div>
-                        <div className="text-muted-foreground">{t("calculator.equation.context")}</div>
+                        <div className="font-bold text-primary">Transformações</div>
+                        <div className="text-muted-foreground">Transformação sustentada</div>
                       </div>
                       <div>
-                        <div className="font-bold text-primary">R</div>
-                        <div className="text-muted-foreground">{t("calculator.equation.resistance")}</div>
+                        <div className="font-bold text-primary">Custo</div>
+                        <div className="text-muted-foreground">Custo fixo da IMTS</div>
                       </div>
                       <div>
-                        <div className="font-bold text-primary">I</div>
-                        <div className="text-muted-foreground">{t("calculator.equation.impact")}</div>
+                        <div className="font-bold text-primary">S-ROI</div>
+                        <div className="text-muted-foreground">Retorno social</div>
                       </div>
                     </div>
+                    <p className="text-xs text-muted-foreground mt-4 text-center">
+                      A esteira (nível Amplificar do Funil IMPACTA) é projeção e nunca entra nesta soma.
+                    </p>
                   </CardContent>
                 </Card>
 
                 {/* Results */}
-                {showResult && (
+                {showResult && result && (
                   <Card className="border-primary/30">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -378,19 +439,32 @@ export default function Calculadora() {
                     </CardHeader>
                     <CardContent className="space-y-6">
                       <div className="text-center p-6 bg-primary/5 rounded-xl">
-                        <div className="text-sm text-muted-foreground mb-2">{t("calculator.results.sroiEstimated")}</div>
-                        <div className="text-5xl font-bold text-primary mb-2">{result.sRoi}x</div>
-                        <div className={`text-lg font-semibold ${result.ratingColor}`}>{result.rating}</div>
+                        <div className="text-sm text-muted-foreground mb-2">S-ROI Simulado</div>
+                        <div className="text-5xl font-bold text-primary mb-2">{result.sroi.toFixed(1)}x</div>
+                        <div className={`text-lg font-semibold ${getRating(result.sroi).color}`}>{getRating(result.sroi).label}</div>
+                        {result.sensibilidade && (
+                          <div className="text-xs text-muted-foreground mt-2">
+                            Faixa de sensibilidade: {result.sensibilidade.sroiLow.toFixed(1)}x — {result.sensibilidade.sroiHigh.toFixed(1)}x
+                          </div>
+                        )}
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="p-4 bg-card border rounded-lg">
-                          <div className="text-sm text-muted-foreground">{t("calculator.results.socialValue")}</div>
-                          <div className="text-xl font-bold">{formatCurrency(result.socialValue)}</div>
+                          <div className="text-sm text-muted-foreground">Valor Social Bruto</div>
+                          <div className="text-xl font-bold">{formatCurrency(result.valorSocialBruto)}</div>
                         </div>
                         <div className="p-4 bg-card border rounded-lg">
-                          <div className="text-sm text-muted-foreground">{t("calculator.results.impactScore")}</div>
-                          <div className="text-xl font-bold">{result.impactScore.toLocaleString()}</div>
+                          <div className="text-sm text-muted-foreground">Valor Social (após descontos)</div>
+                          <div className="text-xl font-bold">{formatCurrency(result.valorSocial)}</div>
+                        </div>
+                        <div className="p-4 bg-card border rounded-lg">
+                          <div className="text-sm text-muted-foreground">Custo Fixo da IMTS</div>
+                          <div className="text-xl font-bold">{formatCurrency(result.custo)}</div>
+                        </div>
+                        <div className="p-4 bg-card border rounded-lg">
+                          <div className="text-sm text-muted-foreground">Alavancagem</div>
+                          <div className="text-xl font-bold">{result.alavancagem.toFixed(2)}x</div>
                         </div>
                       </div>
 
@@ -400,15 +474,19 @@ export default function Calculadora() {
                           <div>
                             <div className="font-semibold text-sm mb-1">{t("calculator.results.recommendation")}</div>
                             <p className="text-sm text-muted-foreground">
-                              {getRecommendation()}
+                              {getRecommendation(result.sroi)}
                             </p>
                           </div>
                         </div>
                       </div>
 
+                      <p className="text-xs text-muted-foreground text-center">
+                        Simulação ilustrativa com os números que você informou. Não é um S-ROI auditado de nenhuma iniciativa real.
+                      </p>
+
                       <div className="flex gap-4">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="flex-1"
                           onClick={handleExportPdf}
                           disabled={exportPdfMutation.isPending}
@@ -435,16 +513,16 @@ export default function Calculadora() {
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">{t("calculator.benchmarks.minRecommended")}</span>
-                        <span className="font-semibold text-primary">7x</span>
+                        <span className="text-sm text-muted-foreground">Faixa realista de S-ROI honesto</span>
+                        <span className="font-semibold text-primary">3x - 10x</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">{t("calculator.benchmarks.avgSocial")}</span>
-                        <span className="font-semibold">3-4x</span>
+                        <span className="text-sm text-muted-foreground">Abaixo da faixa</span>
+                        <span className="font-semibold text-orange-500">&lt; 3x</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">{t("calculator.benchmarks.top10")}</span>
-                        <span className="font-semibold text-green-500">12x+</span>
+                        <span className="text-sm text-muted-foreground">Acima da faixa (revisar premissas)</span>
+                        <span className="font-semibold text-green-500">&gt; 10x</span>
                       </div>
                     </div>
                   </CardContent>
@@ -480,7 +558,7 @@ export default function Calculadora() {
           </div>
         </section>
       </main>
-      
+
       <Footer />
       <WhatsAppWidget />
     </div>

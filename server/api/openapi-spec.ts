@@ -92,17 +92,46 @@ export const openApiSpec = {
     schemas: {
       CalculatorInput: {
         type: 'object',
-        required: ['engagement', 'clarity', 'connection', 'commitment', 'collaboration', 'creativity', 'continuity', 'resistance'],
+        description: 'Entrada da simulação ilustrativa do S-ROI honesto (não é dado de nenhuma iniciativa real).',
+        required: ['gatilhos', 'transformacoes', 'valorGatilhoReais', 'valorTransformacaoReais', 'atribuicaoPercent', 'custoImtsReais'],
         properties: {
-          engagement: { type: 'number', minimum: 0, maximum: 100 },
-          clarity: { type: 'number', minimum: 0, maximum: 100 },
-          connection: { type: 'number', minimum: 0, maximum: 100 },
-          commitment: { type: 'number', minimum: 0, maximum: 100 },
-          collaboration: { type: 'number', minimum: 0, maximum: 100 },
-          creativity: { type: 'number', minimum: 0, maximum: 100 },
-          continuity: { type: 'number', minimum: 0, maximum: 100 },
-          resistance: { type: 'number', minimum: 1, maximum: 100 },
-          investment: { type: 'number', minimum: 0 },
+          gatilhos: { type: 'integer', minimum: 0, description: 'Pessoas que cruzaram o limiar de impacto (nível Preparar do Funil IMPACTA)' },
+          transformacoes: { type: 'integer', minimum: 0, description: 'Subconjunto com transformação sustentada (nível Transformar)' },
+          valorGatilhoReais: { type: 'number', minimum: 0, description: 'Proxy de valor monetário por gatilho, em reais' },
+          valorTransformacaoReais: { type: 'number', minimum: 0, description: 'Proxy de valor monetário por transformação, em reais' },
+          atribuicaoPercent: { type: 'number', minimum: 0, maximum: 100, description: 'Percentual de atribuição (0-100)' },
+          deadweightPercent: { type: 'number', minimum: 0, maximum: 100, description: 'Percentual de deadweight (0-100), default 0' },
+          dropOffPercent: { type: 'number', minimum: 0, maximum: 100, description: 'Percentual de drop-off (0-100), default 0' },
+          custoImtsReais: { type: 'number', minimum: 0, exclusiveMinimum: true, description: 'Custo fixo da IMTS, em reais' },
+        },
+      },
+      CalculatorResult: {
+        type: 'object',
+        description: 'Resultado da simulação ilustrativa (não é um S-ROI auditado).',
+        properties: {
+          success: { type: 'boolean' },
+          illustrative: { type: 'boolean', description: 'Sempre true — sinaliza que o resultado é uma simulação, não um dado auditado.' },
+          disclaimer: { type: 'string' },
+          data: {
+            type: 'object',
+            properties: {
+              gatilhos: { type: 'integer' },
+              transformacoes: { type: 'integer' },
+              valorSocialBruto: { type: 'number' },
+              fatorDesconto: { type: 'number' },
+              valorSocial: { type: 'number' },
+              custo: { type: 'number' },
+              sroi: { type: 'number' },
+              alavancagem: { type: 'number' },
+              sensibilidade: {
+                type: 'object',
+                properties: {
+                  sroiLow: { type: 'number' },
+                  sroiHigh: { type: 'number' },
+                },
+              },
+            },
+          },
         },
       },
       LeadInput: {

@@ -63,21 +63,33 @@ export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert;
 
 /**
- * User calculations history for impact calculator.
+ * User calculations history for the public S-ROI simulator (calculator.calculate).
+ *
+ * Redesenhada para guardar as variaveis reais da formula honesta de shared/sroi-calculator.ts
+ * (gatilhos, transformacoes, valores em centavos, descontos em basis points) em vez das
+ * colunas da equacao ficticia anterior (contextScore/resistanceScore/impactScore, "I = (E x
+ * C^7) / R", nunca derivada de nada real). Estas linhas continuam sendo SIMULACOES publicas
+ * com numeros digitados por visitantes anonimos -- nunca S-ROI auditado de iniciativa real
+ * (esse fica em initiativeParams/registry-service.ts, com tenant e trilha de auditoria).
  */
 export const calculations = pgTable("calculations", {
   id: serial("id").primaryKey(),
   sessionId: varchar("sessionId", { length: 64 }),
   userId: integer("userId"),
   projectName: varchar("projectName", { length: 255 }),
-  investment: integer("investment").notNull(),
-  contextScore: integer("contextScore").notNull(),
-  resistanceScore: integer("resistanceScore").notNull(),
-  beneficiaries: integer("beneficiaries").notNull(),
-  duration: integer("duration").notNull(),
-  impactScore: integer("impactScore").notNull(),
-  sRoi: integer("sRoi").notNull(),
   sector: varchar("sector", { length: 100 }),
+  gatilhos: integer("gatilhos").default(0).notNull(),
+  transformacoes: integer("transformacoes").default(0).notNull(),
+  valorGatilhoCents: integer("valorGatilhoCents").default(0).notNull(),
+  valorTransformacaoCents: integer("valorTransformacaoCents").default(0).notNull(),
+  atribuicaoBps: integer("atribuicaoBps").default(0).notNull(),
+  deadweightBps: integer("deadweightBps").default(0).notNull(),
+  dropOffBps: integer("dropOffBps").default(0).notNull(),
+  custoImtsCents: integer("custoImtsCents").default(0).notNull(),
+  // Resultados derivados, guardados so para exibir o historico sem recalcular.
+  valorSocialBrutoCents: integer("valorSocialBrutoCents").default(0).notNull(),
+  valorSocialCents: integer("valorSocialCents").default(0).notNull(),
+  sRoi: integer("sRoi").default(0).notNull(), // sroi * 100 (2 casas decimais)
   createdAt: bigint("createdAt", { mode: "number" }).notNull(),
 });
 

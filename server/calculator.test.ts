@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
+import { calcSroi } from "../shared/sroi-calculator";
 
 function createPublicContext(): TrpcContext {
   return {
@@ -15,79 +16,165 @@ function createPublicContext(): TrpcContext {
   };
 }
 
+// Caso de referencia, calculado a mao com a mesma formula honesta de
+// shared/sroi-calculator.ts (calcSroi), no estilo dos testes de
+// server/services/impact/registry-service.test.ts.
+//
+// gatilhos=200, transformacoes=40, valorGatilho=R$150, valorTransformacao=R$1.200,
+// atribuicao=60%, deadweight=10%, dropOff=5%, custoIMTS=R$20.000
+//
+// valorSocialBruto = 200*150 + 40*1200 = 30.000 + 48.000 = 78.000
+// fatorDesconto = 0.60 * (1-0.10) * (1-0.05) = 0.513
+// valorSocial = 78.000 * 0.513 = 40.014
+// sroi = 40.014 / 20.000 = 2.0007 -> 2.00x
+// alavancagem = 200 / 20.000 = 0.01
 describe("calculator.calculate", () => {
-  it("calculates impact score using IMPACT7 equation", async () => {
+  it("calcula o S-ROI honesto usando calcSroi (shared/sroi-calculator.ts)", async () => {
     const ctx = createPublicContext();
     const caller = appRouter.createCaller(ctx);
 
     const result = await caller.calculator.calculate({
-      investment: 100000,
-      contextScore: 8,
-      resistanceScore: 3,
-      beneficiaries: 500,
-      duration: 12,
+      gatilhos: 200,
+      transformacoes: 40,
+      valorGatilhoReais: 150,
+      valorTransformacaoReais: 1200,
+      atribuicaoPercent: 60,
+      deadweightPercent: 10,
+      dropOffPercent: 5,
+      custoImtsReais: 20000,
     });
 
-    expect(result).toHaveProperty("impactScore");
-    expect(result).toHaveProperty("sRoi");
-    expect(result).toHaveProperty("socialValue");
-    expect(result).toHaveProperty("rating");
-    
-    // Verify calculation logic
-    // I = (E × C^7) / R where C and R are normalized (divided by 10)
-    const E = 100000;
-    const C = 8 / 10; // 0.8
-    const R = 3 / 10; // 0.3
-    const expectedImpact = (E * Math.pow(C, 7)) / R;
-    
-    expect(result.impactScore).toBe(Math.round(expectedImpact));
-    expect(typeof result.sRoi).toBe("number");
-    expect(result.sRoi).toBeGreaterThan(0);
+    expect(result.gatilhos).toBe(200);
+    expect(result.transformacoes).toBe(40);
+    expect(result.valorSocialBruto).toBeCloseTo(78000, 2);
+    expect(result.fatorDesconto).toBeCloseTo(0.513, 4);
+    expect(result.valorSocial).toBeCloseTo(40014, 2);
+    expect(result.sroi).toBeCloseTo(2.0, 2);
+    expect(result.alavancagem).toBeCloseTo(0.01, 4);
+    expect(result.sensibilidade.sroiLow).toBeCloseTo(1.63, 2);
+    expect(result.sensibilidade.sroiHigh).toBeCloseTo(2.37, 2);
+    expect(result.illustrative).toBe(true);
   });
 
-  it("returns correct rating based on S-ROI", async () => {
+  it("matches the pure calcSroi function directly (same shared formula as jarvisSkills.calculator)", async () => {
     const ctx = createPublicContext();
     const caller = appRouter.createCaller(ctx);
 
-    // High context, low resistance = high S-ROI
-    const highResult = await caller.calculator.calculate({
-      investment: 50000,
-      contextScore: 10,
-      resistanceScore: 1,
-      beneficiaries: 1000,
-      duration: 24,
+    const input = {
+      gatilhos: 50,
+      transformacoes: 10,
+      valorGatilhoReais: 80,
+      valorTransformacaoReais: 900,
+      atribuicaoPercent: 70,
+      custoImtsReais: 5000,
+    };
+
+    const result = await caller.calculator.calculate(input);
+
+    const expected = calcSroi({
+      gatilhos: input.gatilhos,
+      transformacoes: input.transformacoes,
+      valorGatilhoCents: Math.round(input.valorGatilhoReais * 100),
+      valorTransformacaoCents: Math.round(input.valorTransformacaoReais * 100),
+      atribuicaoBps: Math.round(input.atribuicaoPercent * 100),
+      custoImtsCents: Math.round(input.custoImtsReais * 100),
     });
 
-    expect(["Excelente", "Muito Bom", "Bom"]).toContain(highResult.rating);
-
-    // Low context, high resistance = low S-ROI
-    const lowResult = await caller.calculator.calculate({
-      investment: 50000,
-      contextScore: 2,
-      resistanceScore: 9,
-      beneficiaries: 50,
-      duration: 6,
-    });
-
-    expect(["Baixo", "Moderado"]).toContain(lowResult.rating);
+    expect(result.sroi).toBeCloseTo(expected.sroi, 2);
+    expect(result.valorSocial).toBeCloseTo(expected.valorSocial, 2);
+    expect(result.alavancagem).toBeCloseTo(expected.alavancagem, 4);
   });
 
-  it("handles edge cases with minimum resistance", async () => {
+  it("defaults deadweight and drop-off to zero when omitted", async () => {
     const ctx = createPublicContext();
     const caller = appRouter.createCaller(ctx);
 
-    // Very low resistance should not cause division by zero
     const result = await caller.calculator.calculate({
-      investment: 10000,
-      contextScore: 5,
-      resistanceScore: 1,
-      beneficiaries: 100,
-      duration: 12,
+      gatilhos: 100,
+      transformacoes: 0,
+      valorGatilhoReais: 100,
+      valorTransformacaoReais: 0,
+      atribuicaoPercent: 100,
+      custoImtsReais: 10000,
     });
 
-    expect(result.impactScore).toBeGreaterThan(0);
-    expect(isFinite(result.impactScore)).toBe(true);
-    expect(isFinite(result.sRoi)).toBe(true);
+    // valorSocialBruto = 100*100 = 10.000; fatorDesconto = 1 * 1 * 1 = 1
+    // valorSocial = 10.000; sroi = 10.000 / 10.000 = 1.00x
+    expect(result.fatorDesconto).toBeCloseTo(1, 4);
+    expect(result.valorSocialBruto).toBeCloseTo(10000, 2);
+    expect(result.sroi).toBeCloseTo(1.0, 2);
+  });
+
+  it("rejects negative gatilhos/transformacoes and non-positive custoImtsReais", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    await expect(
+      caller.calculator.calculate({
+        gatilhos: -1,
+        transformacoes: 0,
+        valorGatilhoReais: 10,
+        valorTransformacaoReais: 10,
+        atribuicaoPercent: 50,
+        custoImtsReais: 1000,
+      })
+    ).rejects.toThrow();
+
+    await expect(
+      caller.calculator.calculate({
+        gatilhos: 10,
+        transformacoes: 0,
+        valorGatilhoReais: 10,
+        valorTransformacaoReais: 10,
+        atribuicaoPercent: 50,
+        custoImtsReais: 0,
+      })
+    ).rejects.toThrow();
+  });
+
+  it("never claims to be an audited result (illustrative flag is always true)", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.calculator.calculate({
+      gatilhos: 10,
+      transformacoes: 2,
+      valorGatilhoReais: 50,
+      valorTransformacaoReais: 500,
+      atribuicaoPercent: 80,
+      custoImtsReais: 1000,
+    });
+
+    expect(result.illustrative).toBe(true);
+  });
+
+  it("exportPdf accepts the calculate result shape and returns a PDF data URI", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const calc = await caller.calculator.calculate({
+      gatilhos: 20,
+      transformacoes: 5,
+      valorGatilhoReais: 100,
+      valorTransformacaoReais: 1000,
+      atribuicaoPercent: 50,
+      custoImtsReais: 2000,
+    });
+
+    const { pdfDataUri } = await caller.calculator.exportPdf({
+      gatilhos: calc.gatilhos,
+      transformacoes: calc.transformacoes,
+      valorSocialBruto: calc.valorSocialBruto,
+      fatorDesconto: calc.fatorDesconto,
+      valorSocial: calc.valorSocial,
+      custo: calc.custo,
+      sroi: calc.sroi,
+      alavancagem: calc.alavancagem,
+      sensibilidade: calc.sensibilidade,
+      language: "pt",
+    });
+
+    expect(pdfDataUri).toMatch(/^data:application\/pdf/);
   });
 });
 

@@ -96,10 +96,14 @@ const ENDPOINTS: Endpoint[] = [
     name: "Calcular S-ROI",
     description: "Calcula o retorno social sobre investimento",
     body: [
-      { name: "investimento", type: "number", required: true, description: "Valor do investimento em R$", example: "100000" },
-      { name: "beneficiarios", type: "number", required: true, description: "Número de beneficiários", example: "500" },
-      { name: "duracao", type: "number", required: true, description: "Duração em meses", example: "12" },
-      { name: "setor", type: "string", required: true, description: "Setor de atuação", example: "educacao" },
+      { name: "gatilhos", type: "number", required: true, description: "Número de gatilhos (pessoas que cruzaram o limiar de impacto)", example: "500" },
+      { name: "transformacoes", type: "number", required: true, description: "Número de transformações (subconjunto com transformação sustentada)", example: "150" },
+      { name: "valorGatilhoReais", type: "number", required: true, description: "Valor por gatilho em R$", example: "300" },
+      { name: "valorTransformacaoReais", type: "number", required: true, description: "Valor por transformação em R$", example: "2000" },
+      { name: "atribuicaoPercent", type: "number", required: true, description: "Percentual de atribuição (0-100)", example: "50" },
+      { name: "deadweightPercent", type: "number", required: false, description: "Percentual de deadweight (0-100, opcional)", example: "20" },
+      { name: "dropOffPercent", type: "number", required: false, description: "Percentual de drop-off (0-100, opcional)", example: "10" },
+      { name: "custoImtsReais", type: "number", required: true, description: "Custo fixo da IMTS em R$", example: "100000" },
     ],
   },
   {
@@ -424,26 +428,43 @@ export default function ApiPlayground() {
           };
           break;
         
-        case "calculate":
-          const inv = parseFloat(body.investimento || "100000");
-          const ben = parseInt(body.beneficiarios || "500");
-          const dur = parseInt(body.duracao || "12");
+        case "calculate": {
+          const gatilhos = parseInt(body.gatilhos || "500");
+          const transformacoes = parseInt(body.transformacoes || "150");
+          const valorGatilhoReais = parseFloat(body.valorGatilhoReais || "300");
+          const valorTransformacaoReais = parseFloat(body.valorTransformacaoReais || "2000");
+          const atribuicaoPercent = parseFloat(body.atribuicaoPercent || "50");
+          const deadweightPercent = parseFloat(body.deadweightPercent || "20");
+          const dropOffPercent = parseFloat(body.dropOffPercent || "10");
+          const custoImtsReais = parseFloat(body.custoImtsReais || "100000");
+
+          const valorSocialBruto = gatilhos * valorGatilhoReais + transformacoes * valorTransformacaoReais;
+          const fatorDesconto = (atribuicaoPercent / 100) * (1 - deadweightPercent / 100) * (1 - dropOffPercent / 100);
+          const valorSocial = valorSocialBruto * fatorDesconto;
+          const sroi = custoImtsReais > 0 ? valorSocial / custoImtsReais : 0;
+          const alavancagem = custoImtsReais > 0 ? gatilhos / custoImtsReais : 0;
+
           responseBody = {
             success: true,
+            illustrative: true,
+            disclaimer: "Simulação com números fornecidos por você. Não é um S-ROI auditado de nenhuma iniciativa real.",
             data: {
-              sroi: (ben * dur * 0.15 / inv * 100).toFixed(2),
-              socialValue: (inv * 4.2).toFixed(2),
-              costPerBeneficiary: (inv / ben).toFixed(2),
-              monthlyImpact: (inv / dur).toFixed(2),
-              projectedBeneficiaries5Years: ben * 3,
-              recommendations: [
-                "Considere expandir para comunidades adjacentes",
-                "O setor de educação tem alto potencial de multiplicação",
-                "Parcerias com empresas locais podem aumentar o impacto",
-              ],
+              gatilhos,
+              transformacoes,
+              valorSocialBruto: Number(valorSocialBruto.toFixed(2)),
+              fatorDesconto: Number(fatorDesconto.toFixed(4)),
+              valorSocial: Number(valorSocial.toFixed(2)),
+              custo: Number(custoImtsReais.toFixed(2)),
+              sroi: Number(sroi.toFixed(2)),
+              alavancagem: Number(alavancagem.toFixed(4)),
+              sensibilidade: {
+                sroiLow: Number((sroi * 0.8).toFixed(2)),
+                sroiHigh: Number((sroi * 1.2).toFixed(2)),
+              },
             },
           };
           break;
+        }
         
         case "list-ods":
           responseBody = {
