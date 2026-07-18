@@ -1034,7 +1034,7 @@ export const appRouter = router({
           role: z.enum(["user", "assistant", "system"]),
           content: z.string(),
         })).optional(),
-        provider: z.enum(["anthropic", "grok"]).optional(),
+        provider: z.enum(["anthropic", "groq"]).optional(),
       }))
       .mutation(async ({ input }) => {
         const history = (input.history || []) as JarvisMessage[];
@@ -1060,7 +1060,7 @@ export const appRouter = router({
       .input(z.object({
         topic: z.string().min(3),
         context: z.string().optional(),
-        provider: z.enum(["anthropic", "grok"]).optional(),
+        provider: z.enum(["anthropic", "groq"]).optional(),
       }))
       .mutation(async ({ input }) => {
         return jarvisSkills.mentorship(input.topic, input.context || "", input.provider);

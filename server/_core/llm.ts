@@ -56,9 +56,12 @@ export type ToolChoice =
   | ToolChoiceExplicit;
 
 // Provedor de LLM a usar nesta chamada. "anthropic" (default) e o provedor principal ja
-// integrado desde o inicio do projeto. "grok" e o segundo provedor, pedido pelo dono para
+// integrado desde o inicio do projeto. "groq" e o segundo provedor, pedido pelo dono para
 // os agentes conversacionais de aliados e parceiros, mesmo formato compativel com OpenAI.
-export type LlmProvider = "anthropic" | "grok";
+// Groq (inferencia rapida sobre modelos abertos) e a xAI Grok sao empresas diferentes apesar
+// do nome parecido; o dono forneceu uma chave gsk_..., que e o formato da Groq, entao e essa
+// a integracao real aqui.
+export type LlmProvider = "anthropic" | "groq";
 
 export type InvokeParams = {
   messages: Message[];
@@ -219,8 +222,8 @@ const normalizeToolChoice = (
 // variaveis de ambiente (achado natural de ter dois provedores: uma chave ausente nao pode
 // derrubar o outro provedor, cada um cai no seu proprio modo mock isoladamente).
 const resolveProviderConfig = (provider: LlmProvider) => {
-  if (provider === "grok") {
-    return { apiUrl: ENV.grokApiUrl, apiKey: ENV.grokApiKey, model: ENV.grokModel, label: "Grok" };
+  if (provider === "groq") {
+    return { apiUrl: ENV.groqApiUrl, apiKey: ENV.groqApiKey, model: ENV.groqModel, label: "Groq" };
   }
   return { apiUrl: ENV.llmApiUrl, apiKey: ENV.llmApiKey, model: ENV.llmModel, label: "Anthropic" };
 };
@@ -230,7 +233,7 @@ const resolveApiUrl = (apiUrl: string) =>
 
 // Modo mock, quando nao ha chave configurada para o provedor pedido. O app roda, os agentes
 // respondem um placeholder rotulado, e basta colar a chave (LLM_API_KEY/ANTHROPIC_API_KEY
-// para o provedor principal, GROK_API_KEY/XAI_API_KEY para o Grok) para virar resposta real.
+// para o provedor principal, GROQ_API_KEY para o Groq) para virar resposta real.
 // Preserva o formato InvokeResult para nao mexer no chamador.
 const mockResult = (label: string): InvokeResult => ({
   id: `mock-no-${label.toLowerCase()}-key`,

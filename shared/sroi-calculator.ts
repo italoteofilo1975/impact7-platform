@@ -1,5 +1,5 @@
 // shared/sroi-calculator.ts
-// Impact7 · Sprint Grok/Aliados · a formula do S-ROI auditavel extraida como funcao pura,
+// Impact7 · Sprint Groq/Aliados · a formula do S-ROI auditavel extraida como funcao pura,
 // compartilhada entre o motor de mensuracao real (registry-service.ts, dado de banco, com
 // tenant e trilha de auditoria) e o simulador ilustrativo dos agentes conversacionais
 // (ally-chat-service.ts, dado hipotetico, sem tocar em banco nem em iniciativa real).

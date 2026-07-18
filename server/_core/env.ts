@@ -27,12 +27,14 @@ export const ENV = {
     "",
   llmModel: process.env.LLM_MODEL ?? "claude-sonnet-4-5-20250929",
 
-  // Segundo provedor de LLM, Grok/xAI, para os agentes conversacionais de aliados e parceiros
-  // (subprojeto pedido pelo dono). Endpoint compativel com OpenAI, mesmo formato do adaptador
-  // principal. Sem chave, o mesmo modo mock rotulado do provedor Anthropic entra em acao.
-  grokApiUrl: process.env.GROK_API_URL ?? process.env.XAI_API_URL ?? "https://api.x.ai/v1",
-  grokApiKey: process.env.GROK_API_KEY ?? process.env.XAI_API_KEY ?? "",
-  grokModel: process.env.GROK_MODEL ?? "grok-4",
+  // Segundo provedor de LLM, Groq (a empresa de inferencia rapida sobre modelos abertos,
+  // Llama/Mixtral/etc, nao confundir com Grok da xAI, sao duas empresas diferentes com nomes
+  // parecidos), para os agentes conversacionais de aliados e parceiros (subprojeto pedido pelo
+  // dono). Endpoint compativel com OpenAI, mesmo formato do adaptador principal. Sem chave, o
+  // mesmo modo mock rotulado do provedor Anthropic entra em acao.
+  groqApiUrl: process.env.GROQ_API_URL ?? "https://api.groq.com/openai/v1",
+  groqApiKey: process.env.GROQ_API_KEY ?? "",
+  groqModel: process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile",
 
   // Compat retro, ainda lido por integracoes antigas (dataApi, imagem).
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
