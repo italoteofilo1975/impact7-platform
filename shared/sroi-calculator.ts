@@ -34,6 +34,14 @@ export type SroiMemoria = {
   valorSocial: number;
   sroi: number;
   alavancagem: number;
+  // achado A.6 do BACKLOG_Plataforma_Auditoria_14_Processos.md: os livros exigem, em duas
+  // passagens distintas, que a alavancagem seja "sempre reportada como faixa, nunca como
+  // ponto unico". alavancagem (gatilhos/custo) e mantido intacto para compatibilidade
+  // retroativa; alavancagemLow/High adicionam a faixa conservador/agressivo, variando a
+  // fracao de gatilhos honestamente atribuivel a iniciativa (mesma logica de atribuicao
+  // usada no S-ROI) em vez de tratar todo gatilho registrado como certamente causado por ela.
+  alavancagemLow: number;
+  alavancagemHigh: number;
   sensibilidade: { sroiLow: number; sroiHigh: number };
 };
 
@@ -63,12 +71,42 @@ export function calcSroi(inputs: SroiInputs): SroiMemoria {
   const sroi = custo > 0 ? valorSocial / custo : 0;
   const alavancagem = custo > 0 ? gatilhos / custo : 0;
 
-  const sroiLow = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 0.7) * fatorDesconto) / custo : 0;
-  const sroiHigh = custo > 0 ? ((gatilhos * valorGatilho + transformacoes * valorTransformacao * 1.3) * fatorDesconto) / custo : 0;
+  // Achado A.6: a analise de sensibilidade original variava apenas o valor da
+  // transformacao em +-30%, mantendo fatorDesconto (atribuicao/deadweight/dropOff)
+  // identico nos dois cenarios — o Livro da Metodologia exige recalcular ao menos as tres
+  // variaveis mais incertas, incluindo atribuicao, com faixas conservador/agressivo.
+  // Variamos atribuicao em +-10 pontos percentuais (clampado em [0,1]), mantendo
+  // deadweight e dropOff fixos (nao sao, neste achado, as variaveis mais incertas
+  // apontadas), e combinamos essa incerteza com a variacao de transformacao ja existente
+  // pegando o minimo/maximo entre os quatro cenarios (atribuicao baixa/alta x
+  // transformacao -30%/+30%) — a forma mais conservadora de reportar a faixa.
+  const atribuicaoLow = Math.max(0, atribuicao - 0.10);
+  const atribuicaoHigh = Math.min(1, atribuicao + 0.10);
+  const fatorDescontoLow = atribuicaoLow * (1 - deadweight) * (1 - dropOff);
+  const fatorDescontoHigh = atribuicaoHigh * (1 - deadweight) * (1 - dropOff);
+
+  const valorSocialBrutoTransfLow = gatilhos * valorGatilho + transformacoes * valorTransformacao * 0.7;
+  const valorSocialBrutoTransfHigh = gatilhos * valorGatilho + transformacoes * valorTransformacao * 1.3;
+
+  const cenariosValorSocial = [
+    valorSocialBrutoTransfLow * fatorDescontoLow,
+    valorSocialBrutoTransfLow * fatorDescontoHigh,
+    valorSocialBrutoTransfHigh * fatorDescontoLow,
+    valorSocialBrutoTransfHigh * fatorDescontoHigh,
+  ];
+  const sroiLow = custo > 0 ? Math.min(...cenariosValorSocial) / custo : 0;
+  const sroiHigh = custo > 0 ? Math.max(...cenariosValorSocial) / custo : 0;
+
+  // Alavancagem como faixa: gatilhos honestamente atribuiveis (conservador/agressivo) por
+  // real de custo fixo, em vez do ponto unico gatilhos/custo que ignora a incerteza de
+  // atribuicao.
+  const alavancagemLow = custo > 0 ? (gatilhos * atribuicaoLow) / custo : 0;
+  const alavancagemHigh = custo > 0 ? (gatilhos * atribuicaoHigh) / custo : 0;
 
   return {
     gatilhos, transformacoes,
     valorGatilho, valorTransformacao, atribuicao, deadweight, dropOff, fatorDesconto, custo,
-    valorSocialBruto, valorSocial, sroi, alavancagem, sensibilidade: { sroiLow, sroiHigh },
+    valorSocialBruto, valorSocial, sroi, alavancagem, alavancagemLow, alavancagemHigh,
+    sensibilidade: { sroiLow, sroiHigh },
   };
 }

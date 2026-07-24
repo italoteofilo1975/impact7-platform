@@ -206,7 +206,15 @@ export const IMPACT7_KNOWLEDGE_BASE = {
       Ou seja, quantas pessoas cruzaram o limiar de impacto para cada real de custo fixo
       pago pela IMTS. É uma métrica operacional complementar ao S-ROI: enquanto o S-ROI
       responde "quanto valor social por real investido", a alavancagem responde "quantas
-      pessoas impactadas por real investido", sem depender dos proxies de valor monetário.`,
+      pessoas impactadas por real investido", sem depender dos proxies de valor monetário.
+
+      Os livros exigem, em duas passagens distintas, que a alavancagem seja SEMPRE reportada
+      como faixa, nunca como ponto único — a mesma incerteza de atribuição que desconta o
+      S-ROI se aplica aqui. Por isso o cálculo retorna alavancagemLow e alavancagemHigh
+      (gatilhos honestamente atribuíveis, num intervalo conservador/agressivo de atribuição,
+      dividido pelo custo fixo), além do ponto único original mantido por compatibilidade.
+      Ao relatar alavancagem, sempre cite a faixa, ex.: "alavancagem: 3.2x a 4.8x", nunca só
+      um número.`,
       tags: ["alavancagem", "gatilhos", "custo", "métrica"]
     }
   },

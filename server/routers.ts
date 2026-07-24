@@ -824,6 +824,8 @@ export const appRouter = router({
           custo: parseFloat(calculo.custo.toFixed(2)),
           sroi: parseFloat(calculo.sroi.toFixed(2)),
           alavancagem: parseFloat(calculo.alavancagem.toFixed(4)),
+          alavancagemLow: parseFloat(calculo.alavancagemLow.toFixed(4)),
+          alavancagemHigh: parseFloat(calculo.alavancagemHigh.toFixed(4)),
           sensibilidade: {
             sroiLow: parseFloat(calculo.sensibilidade.sroiLow.toFixed(2)),
             sroiHigh: parseFloat(calculo.sensibilidade.sroiHigh.toFixed(2)),
@@ -853,6 +855,8 @@ export const appRouter = router({
         custo: z.number(),
         sroi: z.number(),
         alavancagem: z.number(),
+        alavancagemLow: z.number().optional(),
+        alavancagemHigh: z.number().optional(),
         sensibilidade: z.object({
           sroiLow: z.number(),
           sroiHigh: z.number(),

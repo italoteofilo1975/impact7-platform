@@ -14,6 +14,8 @@ export interface CalculatorResult {
   custo: number;
   sroi: number;
   alavancagem: number;
+  alavancagemLow?: number;
+  alavancagemHigh?: number;
   sensibilidade?: { sroiLow: number; sroiHigh: number };
   projectName?: string;
   sector?: string;
@@ -34,7 +36,7 @@ const translations = {
     sRoi: 'S-ROI Simulado',
     valorSocialBruto: 'Valor Social Bruto',
     valorSocial: 'Valor Social (após desconto)',
-    alavancagem: 'Alavancagem (gatilhos / custo)',
+    alavancagem: 'Alavancagem (gatilhos atribuíveis / custo)',
     sensibilidade: 'Faixa de Sensibilidade',
     equation: 'A Fórmula Honesta do S-ROI',
     equationDesc: 'S-ROI = [(gatilhos×valorGatilho + transformações×valorTransformação) × atribuição × (1-deadweight) × (1-dropOff)] / custoIMTS',
@@ -59,7 +61,7 @@ const translations = {
     sRoi: 'Simulated S-ROI',
     valorSocialBruto: 'Gross Social Value',
     valorSocial: 'Social Value (after discount)',
-    alavancagem: 'Leverage (triggers / cost)',
+    alavancagem: 'Leverage (attributable triggers / cost)',
     sensibilidade: 'Sensitivity Range',
     equation: 'The Honest S-ROI Formula',
     equationDesc: 'S-ROI = [(triggers×triggerValue + transformations×transformationValue) × attribution × (1-deadweight) × (1-dropOff)] / IMTScost',
@@ -84,7 +86,7 @@ const translations = {
     sRoi: 'S-ROI Simulado',
     valorSocialBruto: 'Valor Social Bruto',
     valorSocial: 'Valor Social (después del descuento)',
-    alavancagem: 'Apalancamiento (gatillos / costo)',
+    alavancagem: 'Apalancamiento (gatillos atribuibles / costo)',
     sensibilidade: 'Rango de Sensibilidad',
     equation: 'La Fórmula Honesta del S-ROI',
     equationDesc: 'S-ROI = [(gatillos×valorGatillo + transformaciones×valorTransformación) × atribución × (1-deadweight) × (1-dropOff)] / costoIMTS',
@@ -133,6 +135,13 @@ function drawReport(doc: jsPDF, data: CalculatorResult) {
     const currency = lang === 'pt' ? 'BRL' : 'USD';
     return new Intl.NumberFormat(locale, { style: 'currency', currency, minimumFractionDigits: 0 }).format(value);
   };
+
+  // A alavancagem e sempre reportada como faixa (nunca ponto unico) — achado A.6 do
+  // BACKLOG_Plataforma_Auditoria_14_Processos.md. Quando alavancagemLow/High nao vierem
+  // preenchidos (chamador antigo), cai para o ponto unico por compatibilidade retroativa.
+  const alavancagemLabel = data.alavancagemLow !== undefined && data.alavancagemHigh !== undefined
+    ? `${data.alavancagemLow.toFixed(4)} - ${data.alavancagemHigh.toFixed(4)}`
+    : data.alavancagem.toFixed(4);
 
   autoTable(doc, {
     startY: 65,
@@ -189,7 +198,7 @@ function drawReport(doc: jsPDF, data: CalculatorResult) {
     body: [
       [t.valorSocialBruto, formatCurrency(data.valorSocialBruto)],
       [t.valorSocial, formatCurrency(data.valorSocial)],
-      [t.alavancagem, data.alavancagem.toFixed(4)],
+      [t.alavancagem, alavancagemLabel],
     ],
     theme: 'plain',
     styles: { fontSize: 10 },

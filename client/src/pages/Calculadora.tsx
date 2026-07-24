@@ -78,6 +78,8 @@ export default function Calculadora() {
         custo: result.custo,
         sroi: result.sroi,
         alavancagem: result.alavancagem,
+        alavancagemLow: result.alavancagemLow,
+        alavancagemHigh: result.alavancagemHigh,
         sensibilidade: result.sensibilidade,
         language: i18n.language,
       });
@@ -464,7 +466,9 @@ export default function Calculadora() {
                         </div>
                         <div className="p-4 bg-card border rounded-lg">
                           <div className="text-sm text-muted-foreground">Alavancagem</div>
-                          <div className="text-xl font-bold">{result.alavancagem.toFixed(2)}x</div>
+                          <div className="text-xl font-bold">
+                            {result.alavancagemLow.toFixed(2)}x – {result.alavancagemHigh.toFixed(2)}x
+                          </div>
                         </div>
                       </div>
 

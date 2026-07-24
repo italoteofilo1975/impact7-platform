@@ -160,7 +160,7 @@ export const jarvisSkills = {
 | Valor social (após desconto) | R$ ${fmt(calculo.valorSocial)} |
 | Custo IMTS | R$ ${fmt(calculo.custo)} |
 | **S-ROI simulado** | **${calculo.sroi.toFixed(2)}x** |
-| Alavancagem (gatilhos / custo) | ${calculo.alavancagem.toFixed(4)} |
+| Alavancagem (gatilhos atribuíveis / custo, sempre como faixa) | ${calculo.alavancagemLow.toFixed(4)} a ${calculo.alavancagemHigh.toFixed(4)} |
 | Faixa de sensibilidade | ${calculo.sensibilidade.sroiLow.toFixed(2)}x – ${calculo.sensibilidade.sroiHigh.toFixed(2)}x |
 
 ### Classificação (ilustrativa)

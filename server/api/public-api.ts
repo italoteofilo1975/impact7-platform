@@ -278,6 +278,8 @@ router.post('/calculator', async (req: Request, res: Response) => {
         custo: Math.round(calculo.custo * 100) / 100,
         sroi: Math.round(calculo.sroi * 100) / 100,
         alavancagem: Math.round(calculo.alavancagem * 10000) / 10000,
+        alavancagemLow: Math.round(calculo.alavancagemLow * 10000) / 10000,
+        alavancagemHigh: Math.round(calculo.alavancagemHigh * 10000) / 10000,
         sensibilidade: {
           sroiLow: Math.round(calculo.sensibilidade.sroiLow * 100) / 100,
           sroiHigh: Math.round(calculo.sensibilidade.sroiHigh * 100) / 100,

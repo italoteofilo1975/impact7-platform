@@ -51,8 +51,13 @@ describe("calculator.calculate", () => {
     expect(result.valorSocial).toBeCloseTo(40014, 2);
     expect(result.sroi).toBeCloseTo(2.0, 2);
     expect(result.alavancagem).toBeCloseTo(0.01, 4);
-    expect(result.sensibilidade.sroiLow).toBeCloseTo(1.63, 2);
-    expect(result.sensibilidade.sroiHigh).toBeCloseTo(2.37, 2);
+    // achado A.6: alavancagem sempre como faixa (atribuicao 60% +-10pp -> 50%/70%)
+    expect(result.alavancagemLow).toBeCloseTo(0.005, 4);
+    expect(result.alavancagemHigh).toBeCloseTo(0.007, 4);
+    // achado A.6: sensibilidade combina variacao de atribuicao (50%/70%) e de transformacao
+    // (*0.7/*1.3), pegando o minimo/maximo entre os quatro cenarios
+    expect(result.sensibilidade.sroiLow).toBeCloseTo(1.36, 2);
+    expect(result.sensibilidade.sroiHigh).toBeCloseTo(2.77, 2);
     expect(result.illustrative).toBe(true);
   });
 
@@ -83,6 +88,8 @@ describe("calculator.calculate", () => {
     expect(result.sroi).toBeCloseTo(expected.sroi, 2);
     expect(result.valorSocial).toBeCloseTo(expected.valorSocial, 2);
     expect(result.alavancagem).toBeCloseTo(expected.alavancagem, 4);
+    expect(result.alavancagemLow).toBeCloseTo(expected.alavancagemLow, 4);
+    expect(result.alavancagemHigh).toBeCloseTo(expected.alavancagemHigh, 4);
   });
 
   it("defaults deadweight and drop-off to zero when omitted", async () => {
@@ -170,6 +177,8 @@ describe("calculator.calculate", () => {
       custo: calc.custo,
       sroi: calc.sroi,
       alavancagem: calc.alavancagem,
+      alavancagemLow: calc.alavancagemLow,
+      alavancagemHigh: calc.alavancagemHigh,
       sensibilidade: calc.sensibilidade,
       language: "pt",
     });

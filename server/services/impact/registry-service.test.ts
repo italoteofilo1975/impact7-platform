@@ -150,8 +150,13 @@ describe("initiativeSroi", () => {
     expect(m.valorSocial).toBeCloseTo(534, 6); // 890 * 0.6
     expect(m.sroi).toBeCloseTo(0.534, 6);
     expect(m.alavancagem).toBeCloseTo(0.003, 6); // 3 gatilhos / R$1000 de custo fixo
-    expect(m.sensibilidade.sroiLow).toBeCloseTo(0.39, 6); // transformacao *0.7
-    expect(m.sensibilidade.sroiHigh).toBeCloseTo(0.678, 6); // transformacao *1.3
+    // achado A.6: alavancagem sempre como faixa (atribuicao 60% +-10pp -> 50%/70%)
+    expect(m.alavancagemLow).toBeCloseTo(0.0015, 6); // 3 * 0.5 / 1000
+    expect(m.alavancagemHigh).toBeCloseTo(0.0021, 6); // 3 * 0.7 / 1000
+    // achado A.6: sensibilidade combina variacao de atribuicao (50%/70%) e de transformacao
+    // (*0.7/*1.3), pegando o minimo/maximo entre os quatro cenarios
+    expect(m.sensibilidade.sroiLow).toBeCloseTo(0.325, 6); // (3*30 + 1*800*0.7) * 0.5 / 1000
+    expect(m.sensibilidade.sroiHigh).toBeCloseTo(0.791, 6); // (3*30 + 1*800*1.3) * 0.7 / 1000
 
     // Trilha de auditoria gravada com o now injetado, nunca Date.now interno.
     expect(auditInserts).toHaveLength(1);
@@ -172,13 +177,19 @@ describe("initiativeSroi", () => {
     expect(m.sensibilidade.sroiHigh).toBe(0);
   });
 
-  it("sem transformacoes, a faixa de sensibilidade colapsa no ponto central", async () => {
+  it("sem transformacoes, a faixa de sensibilidade ainda varia (agora tambem por atribuicao)", async () => {
     store.set(initiativeParams, [params]);
     store.set(engagementEvents, [ev("P1", 1, 4), ev("P4", 1, 5)]); // dois gatilhos impacto, zero transformacao
     const m = await initiativeSroi(1, 1, "system", 1);
     expect(m.transformacoes).toBe(0);
-    expect(m.sensibilidade.sroiLow).toBeCloseTo(m.sroi, 6);
-    expect(m.sensibilidade.sroiHigh).toBeCloseTo(m.sroi, 6);
+    // achado A.6: a variacao de transformacao colapsa (nao ha transformacao para variar),
+    // mas a variacao de atribuicao (60% +-10pp) continua abrindo uma faixa real e
+    // simetrica em torno do sroi central — nao mais um ponto unico disfarcado de faixa.
+    expect(m.sroi).toBeCloseTo(0.036, 6);
+    expect(m.sensibilidade.sroiLow).toBeCloseTo(0.03, 6);
+    expect(m.sensibilidade.sroiHigh).toBeCloseTo(0.042, 6);
+    expect(m.sensibilidade.sroiLow).toBeLessThan(m.sroi);
+    expect(m.sensibilidade.sroiHigh).toBeGreaterThan(m.sroi);
   });
 
   // Achado 2.2/2.6 do RELATORIO_Consistencia (Opcao A do DECISOES_Pendentes item 1): os tres

@@ -122,7 +122,9 @@ export const openApiSpec = {
               valorSocial: { type: 'number' },
               custo: { type: 'number' },
               sroi: { type: 'number' },
-              alavancagem: { type: 'number' },
+              alavancagem: { type: 'number', description: 'Ponto unico gatilhos/custo, mantido por compatibilidade retroativa — prefira alavancagemLow/alavancagemHigh.' },
+              alavancagemLow: { type: 'number', description: 'Alavancagem no cenario conservador (atribuicao -10pp).' },
+              alavancagemHigh: { type: 'number', description: 'Alavancagem no cenario agressivo (atribuicao +10pp).' },
               sensibilidade: {
                 type: 'object',
                 properties: {
