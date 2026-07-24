@@ -10,8 +10,9 @@ import WhatsAppWidget from "@/components/WhatsAppWidget";
 export default function Matematica() {
   const { t } = useTranslation();
 
-  const variables = ["I", "E", "C", "R"];
+  const variables = ["G", "T", "D", "C"];
   const dimensions = [1, 2, 3, 4, 5, 6, 7];
+  const iveStages = [1, 2, 3, 4, 5, 6, 7];
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,8 +47,8 @@ export default function Matematica() {
                   <CardTitle className="text-2xl">{t("math.equation.title")}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="equation text-center py-8 text-4xl md:text-6xl">
-                    <span className="text-primary">I</span> = (<span className="text-primary">E</span> × <span className="text-primary">C</span><sup className="text-2xl md:text-3xl">7</sup>) / <span className="text-primary">R</span>
+                  <div className="equation text-center py-8 text-2xl md:text-4xl">
+                    <span className="text-primary">S-ROI</span> = [(<span className="text-primary">G</span>×valorG + <span className="text-primary">T</span>×valorT) × <span className="text-primary">D</span>] / <span className="text-primary">C</span>
                   </div>
                   <p className="text-center text-muted-foreground max-w-2xl mx-auto">
                     {t("math.equation.description")}
@@ -150,6 +151,46 @@ export default function Matematica() {
           </div>
         </section>
 
+        {/* Funil IVE */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-4">
+                  <Lightbulb className="w-4 h-4" />
+                  {t("math.ive.badge")}
+                </div>
+                <h2 className="text-3xl font-bold mb-4">{t("math.ive.title")}</h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  {t("math.ive.subtitle")}
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {iveStages.map((stage) => (
+                  <Card key={stage} className="card-hover">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full gradient-orange flex items-center justify-center text-white font-bold text-sm">
+                          {stage}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-sm">
+                            {t(`math.ive.stages.${stage}.name`)}
+                          </h4>
+                          <p className="text-xs text-muted-foreground">
+                            {t(`math.ive.stages.${stage}.description`)}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* S-ROI */}
         <section className="py-16 bg-card">
           <div className="container mx-auto px-4">
@@ -163,8 +204,8 @@ export default function Matematica() {
 
               <Card>
                 <CardContent className="p-8">
-                  <div className="equation text-center py-4 text-2xl md:text-4xl mb-6">
-                    <span className="text-primary">S-ROI</span> = <span className="text-primary">VS</span> / <span className="text-primary">E</span>
+                  <div className="equation text-center py-4 text-xl md:text-3xl mb-6">
+                    <span className="text-primary">S-ROI</span> = Valor Social × (atribuição × (1-deadweight) × (1-dropOff)) / Custo
                   </div>
                   
                   <div className="grid md:grid-cols-2 gap-6">

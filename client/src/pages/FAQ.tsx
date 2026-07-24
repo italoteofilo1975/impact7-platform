@@ -30,7 +30,7 @@ const faqCategories = [
     questions: [
       {
         q: "O que é o Método IMPACT7?",
-        a: "O Método IMPACT7 é uma metodologia científica para mensuração e maximização de impacto social. Baseado na equação I = (E × C⁷) / R, permite quantificar o retorno social sobre investimento (S-ROI) de projetos e iniciativas de impacto.",
+        a: "O Método IMPACT7 é uma metodologia para mensuração honesta de impacto social. O S-ROI (Retorno Social sobre Investimento) soma o valor gerado por gatilhos e transformações e desconta, multiplicativamente, a atribuição, o deadweight e o drop-off — nunca uma equação com expoente fictício.",
       },
       {
         q: "Quem pode usar a plataforma?",
@@ -38,7 +38,7 @@ const faqCategories = [
       },
       {
         q: "Qual a diferença entre IMPACT7 e outras metodologias?",
-        a: "O IMPACT7 se diferencia por sua base científica rigorosa, equação matemática validada, e foco nos 7 Capitais (Humano, Social, Intelectual, Financeiro, Manufaturado, Natural e Cultural) que compõem o impacto holístico.",
+        a: "O IMPACT7 se diferencia por medir apenas o que cruza o limiar de impacto (nível 3, Preparar, do Funil IMPACTA de 7 níveis), por descontar honestamente atribuição, deadweight e drop-off, e por nunca somar a esteira (projeção de amplificação) ao número auditado.",
       },
     ],
   },
@@ -49,7 +49,7 @@ const faqCategories = [
     questions: [
       {
         q: "Como funciona a Calculadora de Impacto?",
-        a: "A calculadora utiliza a equação I = (E × C⁷) / R onde E é a Eficiência, C⁷ representa os 7 Capitais, e R é o Risco. Você insere os valores de cada componente e a calculadora retorna o índice de impacto e o S-ROI estimado.",
+        a: "A calculadora aplica a fórmula honesta do S-ROI: (gatilhos × valor do gatilho + transformações × valor da transformação) × atribuição × (1-deadweight) × (1-dropOff), dividido pelo custo fixo do investimento. Você insere esses valores e a calculadora retorna o S-ROI e a alavancagem (sempre como faixa, nunca como número único).",
       },
       {
         q: "Os resultados da calculadora são precisos?",

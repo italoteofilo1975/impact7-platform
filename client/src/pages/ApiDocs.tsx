@@ -97,41 +97,31 @@ const API_ENDPOINTS = [
   {
     method: "POST",
     path: "/api/v1/calculator",
-    summary: "Calcular impacto social",
-    description: "Calcula o índice de impacto social usando a fórmula I = (E × C⁷) / R",
+    summary: "Calcular S-ROI (simulação ilustrativa)",
+    description: "Calcula o S-ROI honesto (valor social descontado por atribuição, deadweight e drop-off, dividido pelo custo) com os números que você fornecer. Não é um S-ROI auditado de nenhuma iniciativa real.",
     tag: "Calculator",
     scopes: ["calculator:use"],
     requestExample: `{
-  "investment": 100000,
-  "beneficiaries": 500,
-  "duration": 12,
-  "effectiveness": 0.8,
-  "coverage": 0.7,
-  "continuity": 0.85,
-  "costEfficiency": 0.75,
-  "communityEngagement": 0.9,
-  "culturalAdaptation": 0.8,
-  "capacityBuilding": 0.7,
-  "collaboration": 0.85,
-  "risk": 0.2
+  "gatilhos": 1500,
+  "transformacoes": 220,
+  "valorGatilhoReais": 30,
+  "valorTransformacaoReais": 800,
+  "atribuicaoPercent": 60,
+  "deadweightPercent": 10,
+  "dropOffPercent": 15,
+  "custoImtsReais": 15000
 }`,
     responseExample: `{
-  "impactIndex": 7.85,
-  "sroi": 4.2,
-  "classification": "Alto Impacto",
-  "breakdown": {
-    "effectiveness": 0.8,
-    "c7Product": 0.314,
-    "riskFactor": 0.2
-  },
-  "recommendations": [
-    "Considere aumentar o engajamento comunitário",
-    "O índice de capacitação pode ser melhorado"
-  ],
-  "benchmarks": {
-    "sectorAverage": 5.2,
-    "topPerformers": 8.5,
-    "percentile": 78
+  "success": true,
+  "illustrative": true,
+  "disclaimer": "Simulação com números fornecidos por você. Não é um S-ROI auditado de nenhuma iniciativa real.",
+  "data": {
+    "valorSocialBruto": 221000,
+    "fatorDesconto": 0.459,
+    "valorSocial": 101439,
+    "sroi": 6.76,
+    "alavancagem": 0.1,
+    "sensibilidade": { "sroiLow": 5.5, "sroiHigh": 8.0 }
   }
 }`,
   },

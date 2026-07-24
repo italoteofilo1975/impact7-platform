@@ -1081,79 +1081,93 @@
   "math": {
     "breadcrumb": "Matemáticas",
     "badge": "Modelado Matemático",
-    "title": "Las Matemáticas del Impacto",
-    "subtitle": "Comprende la ecuación que cuantifica el potencial de transformación social y cómo cada variable influye en el resultado.",
+    "title": "Las Matemáticas del Método Impact7",
+    "subtitle": "Comprende la fórmula honesta del S-ROI, los tres descuentos que aplica y el Embudo IMPACTA que define cuándo un contacto se convierte en impacto.",
     "equation": {
-      "title": "La Ecuación Fundamental",
-      "description": "El Impacto (I) es directamente proporcional a la Energía invertida (E) multiplicada por el Contexto (C) elevado a la séptima potencia, e inversamente proporcional a las Resistencias (R)."
+      "title": "La Fórmula Honesta del S-ROI",
+      "description": "El S-ROI no usa una ecuación ficticia con exponente 7. Suma el valor generado por gatillos y transformaciones, descuenta lo que no puede atribuirse al proyecto (atribución), lo que habría ocurrido de todos modos (deadweight) y lo que no se sostiene en el tiempo (drop-off), y divide el resultado entre el costo fijo de la IMTS."
     },
     "variables": {
-      "title": "Las Variables de la Ecuación",
-      "subtitle": "Cada variable representa un aspecto fundamental del proyecto social",
+      "title": "Las Variables del S-ROI Honesto",
+      "subtitle": "Cada variable alimenta la fórmula real usada por la Calculadora y la API pública del Método Impact7",
       "unit": "Unidad",
-      "I": {
-        "name": "Impacto",
-        "description": "Resultado medible de la intervención social",
-        "formula": "Variable dependiente",
-        "unit": "Unidades de impacto"
+      "G": {
+        "name": "Gatillos",
+        "description": "Personas que cruzaron el umbral de impacto — nivel 3 (Preparar) del Embudo IMPACTA.",
+        "formula": "gatillos × valorGatillo",
+        "unit": "personas"
       },
-      "E": {
-        "name": "Energía (Inversión)",
-        "description": "Suma de todos los recursos invertidos en el proyecto",
-        "formula": "E = Rf + Rh + Rm + Rt",
-        "unit": "$ (Dólares)"
+      "T": {
+        "name": "Transformaciones",
+        "description": "Subconjunto de gatillos con transformación sostenida — nivel 6 (Transformar) del Embudo IMPACTA.",
+        "formula": "transformaciones × valorTransformación",
+        "unit": "personas"
+      },
+      "D": {
+        "name": "Descuentos",
+        "description": "Tres descuentos compuestos multiplicativamente, nunca sumados: atribución, deadweight y drop-off.",
+        "formula": "atribución × (1 - deadweight) × (1 - dropOff)",
+        "unit": "%"
       },
       "C": {
-        "name": "Contexto",
-        "description": "Grado de alineación con las 7 dimensiones contextuales",
-        "formula": "C = (Σ Ci) / 7, donde i = 1...7",
-        "unit": "Score 0-1"
-      },
-      "R": {
-        "name": "Resistencia",
-        "description": "Suma de barreras y fricciones que reducen el impacto",
-        "formula": "R = Rb + Rc + Rp + Ri",
-        "unit": "Score 0-1"
+        "name": "Costo Fijo de la IMTS",
+        "description": "Costo total de la inversión social, usado como denominador del S-ROI.",
+        "formula": "costoImts",
+        "unit": "$ (moneda)"
       }
     },
     "powerOf7": {
-      "badge": "El Poder del 7",
-      "title": "¿Por qué C⁷?",
-      "subtitle": "El exponente 7 no es arbitrario. Representa las 7 dimensiones contextuales que, cuando están alineadas, generan un efecto multiplicador exponencial en el impacto.",
+      "badge": "Los 7 Niveles de Difusión",
+      "title": "El Embudo IMPACTA: de Informar a Amplificar",
+      "subtitle": "El Embudo IMPACTA tiene 7 niveles. El umbral de impacto está en la entrada del nivel 3 (Preparar): antes es alcance, a partir de ahí es impacto — y entra en el cálculo del S-ROI.",
       "dimensions": {
-        "1": { "name": "Cultural", "description": "Alineación con valores y prácticas locales" },
-        "2": { "name": "Económico", "description": "Viabilidad y sostenibilidad financiera" },
-        "3": { "name": "Social", "description": "Aceptación y compromiso comunitario" },
-        "4": { "name": "Político", "description": "Apoyo institucional y regulatorio" },
-        "5": { "name": "Tecnológico", "description": "Infraestructura y capacidad técnica" },
-        "6": { "name": "Ambiental", "description": "Sostenibilidad e impacto ecológico" },
-        "7": { "name": "Institucional", "description": "Gobernanza y capacidad organizacional" }
+        "1": { "name": "1. Informar", "description": "La persona recibió el contenido. Señal: alcance o visualización. Pre-umbral, cuenta como alcance." },
+        "2": { "name": "2. Motivar", "description": "La persona prestó atención. Señal: tiempo de lectura, clic o retorno. Pre-umbral, cuenta como alcance." },
+        "3": { "name": "3. Preparar (umbral)", "description": "La persona comenzó a aprender o usar. Señal: primera interacción activa. Desde aquí es gatillo y entra al S-ROI." },
+        "4": { "name": "4. Activar", "description": "La persona actuó. Señal: una acción o tarea completada." },
+        "5": { "name": "5. Conectar", "description": "La persona entró a la red. Señal: interacción con otras personas." },
+        "6": { "name": "6. Transformar", "description": "Hubo cambio sostenido. Señal: resultado medido a lo largo del tiempo. Aquí vive el S-ROI robusto." },
+        "7": { "name": "7. Amplificar (cinta)", "description": "La persona se volvió multiplicadora. Se reporta por separado como proyección — nunca se suma al S-ROI auditado." }
       },
       "effect": {
-        "title": "Efecto Exponencial",
-        "description": "Cuando C = 0.5, C⁷ = 0.0078 (impacto muy reducido). Cuando C = 0.9, C⁷ = 0.478 (impacto significativo). ¡Un aumento de 0.5 a 0.9 en el contexto resulta en un aumento de 61x en el multiplicador!"
+        "title": "El Umbral del Impacto",
+        "description": "Informar y Motivar son exposición, no impacto. El gatillo se enciende en Preparar (nivel 3): desde ahí la persona entra al conteo de impacto. Transformar (nivel 6) es donde vive el S-ROI robusto. Amplificar (nivel 7) es la cinta exponencial: siempre se reporta por separado, como proyección del movimiento, nunca se suma al número auditado."
+      }
+    },
+    "ive": {
+      "badge": "La Columna de Madurez del Producto",
+      "title": "El Embudo IVE: 7 Pasos, del Origen a la Escala",
+      "subtitle": "Mientras el Embudo IMPACTA mide el impacto social generado, el Embudo IVE mide la madurez de la iniciativa. Cada paso tiene una compuerta de sí o no antes del siguiente.",
+      "stages": {
+        "1": { "name": "1. Origen", "description": "El punto de partida: el dolor real identificado, antes de cualquier solución." },
+        "2": { "name": "2. Ideación", "description": "Co-creación de posibles soluciones con quienes viven el problema." },
+        "3": { "name": "3. Validación", "description": "Prueba de la hipótesis con el público real, antes de construir a escala." },
+        "4": { "name": "4. Prototipado", "description": "Primera versión funcional y probable, aún no reproducible sin el creador." },
+        "5": { "name": "5. Productización (compuerta)", "description": "Compuerta: el activo es reproducible sin el creador en la sala." },
+        "6": { "name": "6. Operación", "description": "La solución funciona de forma estable en el día a día." },
+        "7": { "name": "7. Escala (compuerta)", "description": "Compuerta: cada implementación está instrumentada y es única — medida, no solo copiada." }
       }
     },
     "sroi": {
-      "title": "S-ROI: Retorno Social sobre Inversión",
-      "subtitle": "La métrica que traduce impacto en valor comparable",
+      "title": "Cómo se Calcula el S-ROI Honesto",
+      "subtitle": "Tres descuentos compuestos multiplicativamente, nunca una suma — y la cinta nunca entra en la cuenta.",
       "socialValue": {
-        "title": "VS (Valor Social)",
-        "description": "Suma de beneficios sociales generados, monetizados a través de proxies validados (ej: costo evitado, productividad generada, bienestar aumentado)."
+        "title": "Valor Social",
+        "description": "Gatillos × valor por gatillo, más transformaciones × valor por transformación — el total bruto, antes de los tres descuentos."
       },
       "investment": {
-        "title": "E (Energía/Inversión)",
-        "description": "Suma de todos los recursos invertidos: financieros, humanos, materiales y tecnológicos."
+        "title": "Costo Fijo de la IMTS",
+        "description": "El costo fijo total de la inversión social, usado como denominador del S-ROI."
       },
       "interpretation": {
-        "title": "Interpretación",
-        "description": "Un S-ROI de 7x significa que por cada $1 invertido, se generan $7 en valor social. El benchmark mínimo recomendado por el Método IMPACT7 es de 7x."
+        "title": "Interpretación y Apalancamiento",
+        "description": "El valor social bruto se multiplica por tres descuentos compuestos — atribución × (1-deadweight) × (1-dropOff) — y se divide entre el costo. El rango realista de S-ROI honesto está entre 3x y 10x; por encima de eso conviene revisar las premisas. El apalancamiento (gatillos/costo) se reporta aparte, siempre como rango, y nunca se suma al S-ROI."
       }
     },
     "cta": {
-      "title": "Aplica las Matemáticas a Tu Proyecto",
-      "subtitle": "Usa nuestra calculadora interactiva para estimar el impacto potencial de tu proyecto social.",
-      "calculateImpact": "Calcular Impacto",
+      "title": "Aplica el S-ROI Honesto en Tu Proyecto",
+      "subtitle": "Usa nuestra calculadora interactiva para estimar el S-ROI honesto de tu proyecto, con todos los descuentos aplicados.",
+      "calculateImpact": "Calcular S-ROI",
       "readWhitepaper": "Leer Whitepaper Completo"
     }
   },

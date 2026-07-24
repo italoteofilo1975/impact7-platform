@@ -200,7 +200,7 @@ A API usa códigos HTTP padrão:
       post: {
         tags: ["Calculator"],
         summary: "Calcular impacto social",
-        description: "Calcula o índice de impacto social usando a fórmula I = (E × C⁷) / R",
+        description: "Calcula o S-ROI honesto (simulacao ilustrativa) com base em gatilhos, transformacoes e os tres descontos: atribuicao, deadweight e drop-off.",
         operationId: "calculateImpact",
         security: [{ apiKey: [] }, { oauth2: ["calculator:use"] }],
         requestBody: {

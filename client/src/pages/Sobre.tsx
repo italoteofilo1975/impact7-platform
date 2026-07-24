@@ -44,7 +44,7 @@ const values = [
 
 const milestones = [
   { year: "2020", event: "Fundação do IMPACT7 e início das pesquisas" },
-  { year: "2021", event: "Publicação da equação I = (E × C⁷) / R" },
+  { year: "2021", event: "Formalização da fórmula honesta do S-ROI e do Funil IMPACTA" },
   { year: "2022", event: "Lançamento da primeira versão da plataforma" },
   { year: "2023", event: "Parceria com 50+ organizações de impacto" },
   { year: "2024", event: "Expansão internacional e lançamento do Jarvis IA" },
@@ -204,41 +204,41 @@ export default function Sobre() {
         <div className="container max-w-4xl">
           <div className="text-center mb-12">
             <Badge className="mb-4">Metodologia</Badge>
-            <h2 className="text-3xl font-bold mb-4">A Ciência por Trás do IMPACT7</h2>
+            <h2 className="text-3xl font-bold mb-4">O Método por Trás do IMPACT7</h2>
             <p className="text-muted-foreground">
-              Nossa metodologia é baseada em anos de pesquisa acadêmica e validação prática
+              A fórmula honesta do S-ROI: sem expoente fictício, com três descontos auditáveis
             </p>
           </div>
 
           <Card>
             <CardContent className="pt-6">
               <div className="text-center mb-8">
-                <p className="text-4xl font-mono font-bold text-primary mb-2">
-                  I = (E × C⁷) / R
+                <p className="text-2xl md:text-3xl font-mono font-bold text-primary mb-2">
+                  S-ROI = Valor Social × Descontos / Custo
                 </p>
-                <p className="text-muted-foreground">A Equação do Impacto</p>
+                <p className="text-muted-foreground">A Fórmula Honesta do S-ROI</p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
-                  <p className="text-2xl font-bold text-green-600 mb-2">E</p>
-                  <p className="font-medium">Eficiência</p>
+                  <p className="text-2xl font-bold text-green-600 mb-2">VS</p>
+                  <p className="font-medium">Valor Social</p>
                   <p className="text-sm text-muted-foreground">
-                    Capacidade de transformar recursos em resultados
+                    Gatilhos × valor do gatilho, mais transformações × valor da transformação
                   </p>
                 </div>
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
-                  <p className="text-2xl font-bold text-blue-600 mb-2">C⁷</p>
-                  <p className="font-medium">7 Capitais</p>
+                  <p className="text-2xl font-bold text-blue-600 mb-2">D</p>
+                  <p className="font-medium">Três Descontos</p>
                   <p className="text-sm text-muted-foreground">
-                    Humano, Social, Intelectual, Financeiro, Manufaturado, Natural, Cultural
+                    Atribuição × (1-deadweight) × (1-dropOff), compostos multiplicativamente
                   </p>
                 </div>
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
-                  <p className="text-2xl font-bold text-red-600 mb-2">R</p>
-                  <p className="font-medium">Risco</p>
+                  <p className="text-2xl font-bold text-red-600 mb-2">C</p>
+                  <p className="font-medium">Custo</p>
                   <p className="text-sm text-muted-foreground">
-                    Fatores que podem comprometer os resultados
+                    Custo fixo do investimento social, denominador do S-ROI
                   </p>
                 </div>
               </div>

@@ -204,18 +204,18 @@ export default function JarvisChat() {
                   <span className="text-sm text-slate-300">Calcular S-ROI</span>
                 </button>
                 <button
-                  onClick={() => handleSuggestionClick("Quais são os 7 pilares do IMPACT7?")}
+                  onClick={() => handleSuggestionClick("O que é o Funil IMPACTA e os 7 níveis de difusão?")}
                   className="p-3 bg-slate-800 hover:bg-slate-700 rounded-lg text-left transition-colors group"
                 >
                   <Lightbulb className="w-5 h-5 text-yellow-400 mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm text-slate-300">Os 7 Pilares</span>
+                  <span className="text-sm text-slate-300">Funil IMPACTA</span>
                 </button>
                 <button
-                  onClick={() => handleSuggestionClick("Explique a equação I = (E × C⁷) / R")}
+                  onClick={() => handleSuggestionClick("Explique a formula honesta do S-ROI e os tres descontos")}
                   className="p-3 bg-slate-800 hover:bg-slate-700 rounded-lg text-left transition-colors group"
                 >
                   <MessageCircle className="w-5 h-5 text-green-400 mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm text-slate-300">A Equação</span>
+                  <span className="text-sm text-slate-300">A Fórmula do S-ROI</span>
                 </button>
               </div>
 

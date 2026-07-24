@@ -52,9 +52,9 @@ const faqData: FAQItem[] = [
   {
     id: "2",
     question: "O que é o Método IMPACT7?",
-    answer: "O Método IMPACT7 é uma metodologia científica para mensuração de impacto social que combina Ciência Cognitiva, Modelagem Matemática e Engenharia de Software. Ele utiliza a equação I = (E × C⁷) / R, onde I é o Impacto, E é o Efeito, C⁷ é o Fator de Contexto (composto por 7 coeficientes) e R é a Resistência.",
+    answer: "O Método IMPACT7 é uma metodologia de mensuração honesta de impacto social. O S-ROI soma o valor gerado por gatilhos (nível 3, Preparar, do Funil IMPACTA) e transformações (nível 6, Transformar), multiplicado pelos descontos de atribuição, deadweight e drop-off, dividido pelo custo fixo do investimento.",
     category: "geral",
-    tags: ["método", "equação", "ciência"],
+    tags: ["método", "s-roi", "funil impacta"],
   },
   {
     id: "3",
@@ -68,16 +68,16 @@ const faqData: FAQItem[] = [
   {
     id: "4",
     question: "Como funciona a Calculadora de Impacto?",
-    answer: "A Calculadora de Impacto permite inserir dados do seu projeto (investimento, beneficiários, duração, setor) e responder a um questionário sobre os 7 coeficientes de contexto. Com base nessas informações, o sistema calcula automaticamente o S-ROI usando a equação do Método IMPACT7.",
+    answer: "A Calculadora de Impacto permite inserir gatilhos, transformações, os valores monetários de cada um, e os três descontos (atribuição, deadweight, drop-off) e o custo fixo do investimento. Com base nessas informações, o sistema calcula automaticamente o S-ROI honesto e a alavancagem, sempre reportada como faixa.",
     category: "calculadora",
     tags: ["calculadora", "sroi", "cálculo"],
   },
   {
     id: "5",
-    question: "O que são os 7 coeficientes de contexto?",
-    answer: "Os 7 coeficientes são: C1 (Clareza de Propósito), C2 (Capacidade de Execução), C3 (Contexto Social), C4 (Colaboração), C5 (Comunicação), C6 (Continuidade) e C7 (Cultura de Impacto). Cada um é avaliado de 0 a 10 e multiplicado para formar o Fator de Contexto C⁷.",
+    question: "O que são os três descontos do S-ROI?",
+    answer: "São três descontos compostos multiplicativamente sobre o valor social bruto: atribuição (quanto do resultado é realmente creditável ao projeto), deadweight (o que aconteceria de qualquer forma, mesmo sem o projeto) e drop-off (o que não se sustenta ao longo do tempo). O fator final é atribuição × (1-deadweight) × (1-dropOff).",
     category: "calculadora",
-    tags: ["coeficientes", "contexto", "c7"],
+    tags: ["descontos", "atribuição", "deadweight", "dropoff"],
   },
   {
     id: "6",

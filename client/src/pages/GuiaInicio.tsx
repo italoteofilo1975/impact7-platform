@@ -118,7 +118,7 @@ const quickLinks = [
 const tutorials = [
   {
     title: "Como calcular o S-ROI",
-    description: "Aprenda a usar a equação I = (E × C⁷) / R para mensurar impacto social.",
+    description: "Aprenda a usar a fórmula honesta do S-ROI (gatilhos e transformações, descontados por atribuição, deadweight e drop-off) para mensurar impacto social.",
     duration: "5 min",
     type: "article",
     link: "/metodologia",
@@ -131,8 +131,8 @@ const tutorials = [
     link: "/cases/submit",
   },
   {
-    title: "Entendendo os 7 Coeficientes",
-    description: "Conheça cada um dos coeficientes que compõem o Fator de Contexto.",
+    title: "Entendendo o Funil IMPACTA",
+    description: "Conheça os 7 níveis do Funil IMPACTA e onde fica o limiar que separa alcance de impacto.",
     duration: "10 min",
     type: "article",
     link: "/ciencia",
@@ -149,7 +149,7 @@ const tutorials = [
 const faqs = [
   {
     question: "O que é o S-ROI?",
-    answer: "S-ROI (Social Return on Investment) é uma métrica que quantifica o retorno social sobre o investimento. No Método IMPACT7, calculamos usando a equação I = (E × C⁷) / R, onde E é o efeito, C⁷ é o fator de contexto e R é a resistência.",
+    answer: "S-ROI (Social Return on Investment) é uma métrica que quantifica o retorno social sobre o investimento. No Método IMPACT7, calculamos somando gatilhos e transformações monetizados, descontando atribuição, deadweight e drop-off (compostos multiplicativamente), e dividindo pelo custo fixo do investimento.",
   },
   {
     question: "Como funciona a certificação?",

@@ -32,7 +32,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'calculator',
     title: 'Calculadora S-ROI',
-    description: 'Calcule o Retorno Social sobre Investimento dos seus projetos usando nossa equacao exclusiva: I = (E x C^7) / R',
+    description: 'Calcule o S-ROI honesto dos seus projetos: gatilhos e transformacoes, descontados por atribuicao, deadweight e drop-off.',
     position: 'bottom',
     target: '[data-tour="calculator"]',
     icon: <Calculator className="h-8 w-8 text-blue-500" />,
