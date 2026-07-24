@@ -191,6 +191,7 @@ export default function Calculadora() {
                       <span className="font-semibold text-primary">{gatilhos.toLocaleString()}</span>
                     </div>
                     <Slider
+                      aria-label="Número de gatilhos"
                       value={[gatilhos]}
                       onValueChange={(v) => setGatilhos(v[0])}
                       min={0}
@@ -220,6 +221,7 @@ export default function Calculadora() {
                       <span className="font-semibold text-primary">{transformacoes.toLocaleString()}</span>
                     </div>
                     <Slider
+                      aria-label="Número de transformações"
                       value={[transformacoes]}
                       onValueChange={(v) => setTransformacoes(v[0])}
                       min={0}
@@ -239,6 +241,7 @@ export default function Calculadora() {
                       <span className="font-semibold text-primary">{formatCurrency(valorGatilhoReais)}</span>
                     </div>
                     <Slider
+                      aria-label="Valor por gatilho em reais"
                       value={[valorGatilhoReais]}
                       onValueChange={(v) => setValorGatilhoReais(v[0])}
                       min={0}
@@ -258,6 +261,7 @@ export default function Calculadora() {
                       <span className="font-semibold text-primary">{formatCurrency(valorTransformacaoReais)}</span>
                     </div>
                     <Slider
+                      aria-label="Valor por transformação em reais"
                       value={[valorTransformacaoReais]}
                       onValueChange={(v) => setValorTransformacaoReais(v[0])}
                       min={0}
@@ -287,6 +291,7 @@ export default function Calculadora() {
                       <span className="font-semibold text-primary">{atribuicaoPercent}%</span>
                     </div>
                     <Slider
+                      aria-label="Percentual de atribuição"
                       value={[atribuicaoPercent]}
                       onValueChange={(v) => setAtribuicaoPercent(v[0])}
                       min={0}
@@ -312,6 +317,7 @@ export default function Calculadora() {
                       <span className="font-semibold text-primary">{deadweightPercent}%</span>
                     </div>
                     <Slider
+                      aria-label="Percentual de deadweight"
                       value={[deadweightPercent]}
                       onValueChange={(v) => setDeadweightPercent(v[0])}
                       min={0}
@@ -337,6 +343,7 @@ export default function Calculadora() {
                       <span className="font-semibold text-primary">{dropOffPercent}%</span>
                     </div>
                     <Slider
+                      aria-label="Percentual de drop-off"
                       value={[dropOffPercent]}
                       onValueChange={(v) => setDropOffPercent(v[0])}
                       min={0}
@@ -362,6 +369,7 @@ export default function Calculadora() {
                       <span className="font-semibold text-primary">{formatCurrency(custoImtsReais)}</span>
                     </div>
                     <Slider
+                      aria-label="Custo fixo da IMTS em reais"
                       value={[custoImtsReais]}
                       onValueChange={(v) => setCustoImtsReais(v[0])}
                       min={1000}
