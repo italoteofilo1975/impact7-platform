@@ -11,6 +11,13 @@ export const users = pgTable("users", {
   passwordHash: varchar("passwordHash", { length: 255 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: text("role").default("user").notNull(), // user, manager, admin
+  // Achado A.1 do BACKLOG_Plataforma_Auditoria_14_Processos: tenantId nulavel, a organizacao
+  // (alianca) a que esta conta pertence. Usuarios de plataforma sem vinculo (admin global,
+  // visitante que so se cadastrou no site) legitimamente nao tem tenant; operadores de uma
+  // iniciativa tem. E a partir daqui, e so daqui, que o tenantId de uma sessao autenticada e
+  // resolvido — nunca mais aceito como valor livre vindo do input do chamador
+  // (ver server/services/tenancy/tenant-context.ts, resolveTenantForUser).
+  tenantId: integer("tenantId"),
   stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
   stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
   subscriptionStatus: text("subscriptionStatus").default("none"), // active, canceled, past_due, trialing, none

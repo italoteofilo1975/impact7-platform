@@ -24,6 +24,24 @@ export async function resolveTenant(key: { tenantId?: number }): Promise<TenantC
   return { tenantId: t.id, mode: t.mode === "comercial" ? "comercial" : "social" };
 }
 
+// Achado A.1 do BACKLOG_Plataforma_Auditoria_14_Processos: initiativeSroi/recordEngagement/
+// userRating/initiativeImpact eram publicProcedure e confiavam no tenantId declarado pelo
+// proprio input do chamador. assertInitiativeTenant so confere se o initiativeId pertence ao
+// tenantId alegado — nunca se o chamador tem direito de alegar aquele tenantId. resolveTenant
+// existia mas so era chamado em teste, nunca em producao.
+//
+// resolveTenantForUser fecha essa lacuna: recebe o usuario JA AUTENTICADO pelo middleware de
+// sessao (ctx.user de um protectedProcedure, nunca um valor de input) e resolve o tenant a
+// partir do vinculo real gravado no proprio registro do usuario (users.tenantId), delegando
+// para resolveTenant a validacao de que o tenant ainda existe. Se o usuario nao tiver tenant
+// vinculado, a chamada e rejeitada — nao ha fallback silencioso para um tenantId de input.
+export async function resolveTenantForUser(user: { id: number; tenantId?: number | null }): Promise<TenantContext> {
+  if (user.tenantId === null || user.tenantId === undefined) {
+    throw new Error("Usuario sem tenant associado");
+  }
+  return resolveTenant({ tenantId: user.tenantId });
+}
+
 // Compoe uma condicao de escopo por tenant, para somar a qualquer where de leitura ou escrita.
 // Uso: db.select().from(engagementEvents).where(scoped(engagementEvents.tenantId, ctx, extra))
 export function scoped(tenantColumn: any, ctx: TenantContext, extra?: SQL): SQL | undefined {

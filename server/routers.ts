@@ -143,6 +143,17 @@ import { set7Router } from "./routers/set7-router";
 import { whiteLabelRouter } from "./routers/white-label-router";
 import { autoNotificationService } from "./services/notifications/auto-notification-service";
 
+// Achado A.2/A.3 do BACKLOG_Plataforma_Auditoria_14_Processos: varios routers rotulados
+// "admin only" em comentario usavam so protectedProcedure (exige sessao, nao exige role) e
+// nunca checavam ctx.user.role de fato — qualquer visitante que se auto-cadastrasse acessava
+// BI interno, health do sistema e stack traces de erro. requireAdmin() centraliza a checagem
+// ja usada em outros pontos do arquivo (if (ctx.user.role !== 'admin') throw ...).
+function requireAdmin(ctx: { user?: { role?: string } }) {
+  if (!ctx.user || ctx.user.role !== 'admin') {
+    throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso restrito a administradores' });
+  }
+}
+
 export const appRouter = router({
   impact: impactRouter,
   registry: registryRouter,
@@ -944,99 +955,123 @@ export const appRouter = router({
         return { success: true };
       }),
     
-    // Get dashboard metrics (admin only)
+    // Get dashboard metrics (admin only) — achado A.2: agora checa role de verdade
     dashboard: protectedProcedure
       .input(z.object({
         startDate: z.string(),
         endDate: z.string(),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const startDate = new Date(input.startDate);
         const endDate = new Date(input.endDate);
         return getDashboardMetrics(startDate, endDate);
       }),
-    
+
     // Get metrics by day (admin only)
     metricsByDay: protectedProcedure
       .input(z.object({
         startDate: z.string(),
         endDate: z.string(),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const startDate = new Date(input.startDate);
         const endDate = new Date(input.endDate);
         return getMetricsByDay(startDate, endDate);
       }),
-    
+
     // Get Jarvis stats (admin only)
     jarvisStats: protectedProcedure
       .input(z.object({
         startDate: z.string(),
         endDate: z.string(),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const startDate = new Date(input.startDate);
         const endDate = new Date(input.endDate);
         return getJarvisStats(startDate, endDate);
       }),
-    
+
     // Get Jarvis interactions by day (admin only)
     jarvisByDay: protectedProcedure
       .input(z.object({
         startDate: z.string(),
         endDate: z.string(),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const startDate = new Date(input.startDate);
         const endDate = new Date(input.endDate);
         return getJarvisInteractionsByDay(startDate, endDate);
       }),
-    
+
     // Get top Jarvis queries (admin only)
     topQueries: protectedProcedure
       .input(z.object({
         limit: z.number().min(1).max(50).optional(),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         return getTopJarvisQueries(input.limit || 10);
       }),
-    
+
     // Get conversion stats (admin only)
     conversionStats: protectedProcedure
       .input(z.object({
         startDate: z.string(),
         endDate: z.string(),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const startDate = new Date(input.startDate);
         const endDate = new Date(input.endDate);
         return getConversionStats(startDate, endDate);
       }),
-    
+
     // Get conversions by source (admin only)
     conversionsBySource: protectedProcedure
       .input(z.object({
         startDate: z.string(),
         endDate: z.string(),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const startDate = new Date(input.startDate);
         const endDate = new Date(input.endDate);
         return getConversionsBySource(startDate, endDate);
       }),
-    
+
     // Get conversion funnel (admin only)
     conversionFunnel: protectedProcedure
       .input(z.object({
         startDate: z.string(),
         endDate: z.string(),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const startDate = new Date(input.startDate);
         const endDate = new Date(input.endDate);
         return getConversionFunnel(startDate, endDate);
       }),
-    
+
     // Get top pages (admin only)
     topPages: protectedProcedure
       .input(z.object({
@@ -1044,7 +1079,10 @@ export const appRouter = router({
         endDate: z.string(),
         limit: z.number().min(1).max(50).optional(),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const startDate = new Date(input.startDate);
         const endDate = new Date(input.endDate);
         return getTopPages(startDate, endDate, input.limit || 10);
@@ -1119,48 +1157,60 @@ export const appRouter = router({
   }),
 
   // Alerts Router (Admin only)
+  // Achado A.2: router inteiro rotulado "Admin only" mas nenhuma procedure checava
+  // ctx.user.role de verdade. requireAdmin() centraliza a checagem para todas as 11 procedures
+  // abaixo, incluindo recentErrors (que vaza stack trace completo) e acknowledge/resolve
+  // (mutacoes que interferem em alertas operacionais).
   alerts: router({
-    summary: protectedProcedure.query(() => {
+    summary: protectedProcedure.query(({ ctx }) => {
+      requireAdmin(ctx);
       return getAlertSummary();
     }),
-    
-    active: protectedProcedure.query(() => {
+
+    active: protectedProcedure.query(({ ctx }) => {
+      requireAdmin(ctx);
       return getActiveAlerts();
     }),
-    
+
     history: protectedProcedure
       .input(z.object({
         limit: z.number().min(1).max(500).optional().default(100),
       }))
-      .query(({ input }) => {
+      .query(({ input, ctx }) => {
+        requireAdmin(ctx);
         return getAlertHistory(input.limit);
       }),
-    
+
     acknowledge: protectedProcedure
       .input(z.object({
         alertId: z.string(),
       }))
-      .mutation(({ input }) => {
+      .mutation(({ input, ctx }) => {
+        requireAdmin(ctx);
         return { success: acknowledgeAlert(input.alertId) };
       }),
-    
+
     resolve: protectedProcedure
       .input(z.object({
         alertId: z.string(),
       }))
-      .mutation(({ input }) => {
+      .mutation(({ input, ctx }) => {
+        requireAdmin(ctx);
         return { success: resolveAlert(input.alertId) };
       }),
-    
-    circuitBreakers: protectedProcedure.query(() => {
+
+    circuitBreakers: protectedProcedure.query(({ ctx }) => {
+      requireAdmin(ctx);
       return getAllCircuitBreakerStatus();
     }),
-    
-    cacheStats: protectedProcedure.query(() => {
+
+    cacheStats: protectedProcedure.query(({ ctx }) => {
+      requireAdmin(ctx);
       return getAllCacheStats();
     }),
-    
-    systemHealth: protectedProcedure.query(() => {
+
+    systemHealth: protectedProcedure.query(({ ctx }) => {
+      requireAdmin(ctx);
       const uptime = process.uptime();
       const memoryUsage = process.memoryUsage();
       return {
@@ -1175,8 +1225,9 @@ export const appRouter = router({
         timestamp: Date.now(),
       };
     }),
-    
-    errorStats: protectedProcedure.query(() => {
+
+    errorStats: protectedProcedure.query(({ ctx }) => {
+      requireAdmin(ctx);
       const stats = errorTracker.getStats();
       return {
         total: stats.total,
@@ -1191,10 +1242,11 @@ export const appRouter = router({
         })),
       };
     }),
-    
+
     recentErrors: protectedProcedure
       .input(z.object({ limit: z.number().min(1).max(100).optional().default(50) }))
-      .query(({ input }) => {
+      .query(({ input, ctx }) => {
+        requireAdmin(ctx);
         return errorTracker.getRecentErrors(input.limit).map(e => ({
           id: e.id,
           level: e.level,
@@ -2864,6 +2916,9 @@ export const appRouter = router({
     getByCode: protectedProcedure
       .input(z.object({ code: z.string() }))
       .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const { notificationTemplateService } = await import('./services/notifications/notification-template-service');
         return notificationTemplateService.getByCode(input.code);
       }),
@@ -2951,7 +3006,10 @@ export const appRouter = router({
         code: z.string(),
         variables: z.record(z.string(), z.string()),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const { notificationTemplateService } = await import('./services/notifications/notification-template-service');
         return notificationTemplateService.renderNotification(input.code, input.variables);
       }),
@@ -2959,6 +3017,9 @@ export const appRouter = router({
     getVariables: protectedProcedure
       .input(z.object({ type: z.string() }))
       .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Acesso restrito a administradores');
+        }
         const { notificationTemplateService } = await import('./services/notifications/notification-template-service');
         return notificationTemplateService.getVariablesForType(input.type);
       }),
@@ -4170,10 +4231,15 @@ export const appRouter = router({
         return allUsers;
       }),
 
-    // Obter permissões e roles de um usuário
+    // Obter permissões e roles de um usuário — achado A.3 (IDOR): sem checagem, qualquer
+    // usuario autenticado enumerava roles/permissoes de qualquer outro usuario. Agora exige
+    // ser admin ou estar consultando o proprio usuario.
     getUserRBAC: protectedProcedure
       .input(z.object({ userId: z.number() }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.id !== input.userId) {
+          throw new Error('Acesso restrito a administradores ou ao proprio usuario');
+        }
         const { getUserPermissions, getUserRoles } = await import('./rbac');
         const [permissions, roles] = await Promise.all([
           getUserPermissions(input.userId),
