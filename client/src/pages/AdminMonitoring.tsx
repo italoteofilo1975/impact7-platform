@@ -25,6 +25,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/DashboardLayout";
 import AdminBreadcrumb from '@/components/AdminBreadcrumb';
+import { toast } from "sonner";
 
 export default function AdminMonitoring() {
   const { user, loading: authLoading } = useAuth();
@@ -60,10 +61,12 @@ export default function AdminMonitoring() {
   // Mutations
   const acknowledgeMutation = trpc.alerts.acknowledge.useMutation({
     onSuccess: () => refetchAlerts(),
+    onError: (e) => toast.error(e.message || "Erro ao reconhecer alerta"),
   });
-  
+
   const resolveMutation = trpc.alerts.resolve.useMutation({
     onSuccess: () => refetchAlerts(),
+    onError: (e) => toast.error(e.message || "Erro ao resolver alerta"),
   });
 
   // Auth check

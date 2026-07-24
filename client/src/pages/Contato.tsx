@@ -207,7 +207,7 @@ export default function Contato() {
                         <div className="space-y-2">
                           <Label htmlFor="subject">Assunto</Label>
                           <Select onValueChange={(v) => form.setValue("subject", v)}>
-                            <SelectTrigger>
+                            <SelectTrigger id="subject">
                               <SelectValue placeholder="Selecione um assunto" />
                             </SelectTrigger>
                             <SelectContent>

@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import { Suspense } from "react";
+import { toast } from "sonner";
 import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
@@ -46,7 +47,14 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
 
   if (!isUnauthorized) return;
 
-  window.location.href = getLoginUrl();
+  // Evita loops de redirecionamento se já estivermos na tela de login
+  if (window.location.pathname === "/login") return;
+
+  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+  toast.error("Sua sessão expirou. Faça login novamente.");
+
+  window.location.href = getLoginUrl({ redirect: currentUrl, reason: "session_expired" });
 };
 
 queryClient.getQueryCache().subscribe(event => {

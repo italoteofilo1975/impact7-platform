@@ -42,6 +42,7 @@ import MainNavbar from '@/components/MainNavbar';
 import Footer from '@/components/Footer';
 import { usePDFDownload } from '@/components/PDFDownload';
 import { Streamdown } from 'streamdown';
+import { toast } from 'sonner';
 
 const reportTypes = [
   { value: 'impact', label: 'Relatório de Impacto', icon: BarChart3, description: 'Análise completa do impacto social' },
@@ -80,6 +81,7 @@ export default function JarvisReports() {
       setTitle('');
       setCustomPrompt('');
     },
+    onError: (e) => toast.error(e.message || 'Erro ao gerar relatório'),
   });
 
   const deleteMutation = trpc.jarvisReports.delete.useMutation({
@@ -87,6 +89,7 @@ export default function JarvisReports() {
       refetch();
       setSelectedReportId(null);
     },
+    onError: (e) => toast.error(e.message || 'Erro ao excluir relatório'),
   });
 
   const handleGenerate = () => {

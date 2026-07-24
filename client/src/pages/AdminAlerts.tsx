@@ -47,6 +47,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 type AlertSeverity = "critical" | "warning" | "info" | "success";
 type AlertStatus = "active" | "acknowledged" | "resolved";
@@ -107,6 +108,7 @@ export default function AdminAlerts() {
       refetchActive();
       refetchSummary();
     },
+    onError: (e) => toast.error(e.message || "Erro ao reconhecer alerta"),
   });
 
   const resolveMutation = trpc.alerts.resolve.useMutation({
@@ -115,6 +117,7 @@ export default function AdminAlerts() {
       refetchSummary();
       refetchHistory();
     },
+    onError: (e) => toast.error(e.message || "Erro ao resolver alerta"),
   });
 
   const updateConfigMutation = trpc.autoAlerts.updateConfig.useMutation({
@@ -122,6 +125,7 @@ export default function AdminAlerts() {
       refetchAutoAlert();
       alert("Configuração salva com sucesso!");
     },
+    onError: (e) => toast.error(e.message || "Erro ao salvar configuração"),
   });
 
   // Combinar alertas ativos e histórico

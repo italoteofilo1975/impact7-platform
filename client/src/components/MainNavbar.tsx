@@ -65,7 +65,7 @@ export function MainNavbar() {
           {/* CTA Button + Language Selector + Theme Toggle + User Menu */}
           <div className="hidden lg:flex items-center gap-2">
             <Link href="/busca">
-              <Button variant="ghost" size="icon" title="Busca global">
+              <Button variant="ghost" size="icon" title="Busca global" aria-label="Busca global">
                 <Search className="w-4 h-4" />
               </Button>
             </Link>

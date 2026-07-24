@@ -13,6 +13,7 @@ import { useAuth } from '@/_core/hooks/useAuth';
 import { Link } from 'wouter';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { toast } from 'sonner';
 
 type NotificationType = 'info' | 'success' | 'warning' | 'error' | 'case_pending' | 'case_approved' | 'case_rejected' | 'certificate_issued' | 'token_earned' | 'system';
 
@@ -67,14 +68,17 @@ export default function Notificacoes() {
 
   const markAsReadMutation = trpc.userNotifications.markAsRead.useMutation({
     onSuccess: () => refetch(),
+    onError: (e) => toast.error(e.message || 'Erro ao marcar notificação como lida'),
   });
 
   const markAllAsReadMutation = trpc.userNotifications.markAllAsRead.useMutation({
     onSuccess: () => refetch(),
+    onError: (e) => toast.error(e.message || 'Erro ao marcar notificações como lidas'),
   });
 
   const deleteMutation = trpc.userNotifications.delete.useMutation({
     onSuccess: () => refetch(),
+    onError: (e) => toast.error(e.message || 'Erro ao excluir notificação'),
   });
 
   if (authLoading) {

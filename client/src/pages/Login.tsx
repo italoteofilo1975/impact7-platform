@@ -8,13 +8,20 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [, setLocation] = useLocation();
-  // Obter redirect URL dos query params
+  // Obter redirect URL e motivo do redirecionamento dos query params
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const redirect = urlParams.get("redirect");
     setRedirectUrl(redirect);
+
+    const reason = urlParams.get("reason");
+    if (reason === "session_expired") {
+      setSessionExpired(true);
+      toast.error("Sua sessão expirou, faça login novamente.");
+    }
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -87,6 +94,14 @@ export default function Login() {
           {/* Card de login */}
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-2xl">
             <h2 className="text-xl font-semibold text-white mb-6">Entrar na plataforma</h2>
+
+            {sessionExpired && (
+              <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 mb-4">
+                <p className="text-sm text-amber-400">
+                  Sua sessão expirou, faça login novamente.
+                </p>
+              </div>
+            )}
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
