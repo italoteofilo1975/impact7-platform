@@ -12,7 +12,7 @@
  * - Usar validateSET7Compliance() antes de deploy
  * - Usar generateSET7Context() para LLM prompts
  * 
- * @version 1.0
+ * @version 2.0
  * @author IMPACT7 Team
  */
 
@@ -134,7 +134,7 @@ Ao implementar esta feature, garanta:
 - Código limpo e bem documentado
 - Testes unitários e de integração
 - Tratamento de erros robusto
-- Acessibilidade (WCAG 2.1 AA)
+- Acessibilidade (WCAG 2.2 AA)
 - Internacionalização (PT-BR, EN, ES)
 - Logging para observabilidade
 `,
