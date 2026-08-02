@@ -17,6 +17,7 @@ import {
   cosineSimilarity,
   EMBEDDING_DIM,
 } from "./embeddings";
+import { KB_SEED_DOCUMENTS } from "./kb-seed-content";
 
 export interface RagSearchResult {
   id: number;
@@ -163,6 +164,36 @@ export async function semanticSearch(
   const active = rows.filter((r) => r.isActive === 1);
   const queryVec = await generateEmbedding(query);
   return rankBySimilarity(queryVec, active, topK, minScore);
+}
+
+/**
+ * Popula a base de conhecimento com o conteúdo canônico de seed.
+ * IDEMPOTENTE: ignora documentos cujo título já existe. Retorna quantos
+ * foram inseridos e quantos foram ignorados.
+ */
+export async function seedKnowledgeBase(): Promise<{ inserted: number; skipped: number }> {
+  const db = await getDb();
+  if (!db) throw new Error("Banco de dados indisponível");
+
+  const existing = await db.select().from(knowledgeDocuments);
+  const existingTitles = new Set(existing.map((d) => d.title));
+
+  let inserted = 0;
+  let skipped = 0;
+  for (const seed of KB_SEED_DOCUMENTS) {
+    if (existingTitles.has(seed.title)) {
+      skipped++;
+      continue;
+    }
+    await ingestDocument({
+      title: seed.title,
+      content: seed.content,
+      category: seed.category,
+      tags: seed.tags,
+    });
+    inserted++;
+  }
+  return { inserted, skipped };
 }
 
 /**

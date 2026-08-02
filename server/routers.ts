@@ -16,7 +16,7 @@ import { executeRawQuery } from "./db-raw";
 import { leads, contacts, whitepaperDownloads, ebookDownloads, newsletterSubscribers, calculations, caseFavorites, caseSubmissions, caseTags, caseTagRelations, notificationPreferences, systemSettings, impactTokens, users } from "../drizzle/schema";
 import { roles, permissions } from "../drizzle/schema";
 import { chatWithJarvis, jarvisSkills, getSuggestedQuestions, JarvisMessage } from "./services/jarvis/jarvis-service";
-import { ingestDocument, listDocuments, deleteDocument, reindexAll, semanticSearch } from "./services/jarvis/rag-service";
+import { ingestDocument, listDocuments, deleteDocument, reindexAll, semanticSearch, seedKnowledgeBase } from "./services/jarvis/rag-service";
 import { searchKnowledge, listCategories, getDocumentsByCategory } from "./services/jarvis/knowledge-base";
 import { getAlertSummary, getActiveAlerts, getAlertHistory, acknowledgeAlert, resolveAlert, startAlertMonitoring } from "./services/alerts/alert-service";
 import { getAllCircuitBreakerStatus } from "./middleware/circuit-breaker";
@@ -1132,6 +1132,15 @@ export const appRouter = router({
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso restrito a administradores' });
         }
         return reindexAll(input.force);
+      }),
+
+    // Popular a base com o conteúdo canônico do método (admin, idempotente)
+    seed: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso restrito a administradores' });
+        }
+        return seedKnowledgeBase();
       }),
   }),
 
