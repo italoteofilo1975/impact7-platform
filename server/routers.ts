@@ -16,6 +16,7 @@ import { executeRawQuery } from "./db-raw";
 import { leads, contacts, whitepaperDownloads, ebookDownloads, newsletterSubscribers, calculations, caseFavorites, caseSubmissions, caseTags, caseTagRelations, notificationPreferences, systemSettings, impactTokens, users } from "../drizzle/schema";
 import { roles, permissions } from "../drizzle/schema";
 import { chatWithJarvis, jarvisSkills, getSuggestedQuestions, JarvisMessage } from "./services/jarvis/jarvis-service";
+import { ingestDocument, listDocuments, deleteDocument, reindexAll, semanticSearch } from "./services/jarvis/rag-service";
 import { searchKnowledge, listCategories, getDocumentsByCategory } from "./services/jarvis/knowledge-base";
 import { getAlertSummary, getActiveAlerts, getAlertHistory, acknowledgeAlert, resolveAlert, startAlertMonitoring } from "./services/alerts/alert-service";
 import { getAllCircuitBreakerStatus } from "./middleware/circuit-breaker";
@@ -1072,6 +1073,65 @@ export const appRouter = router({
       }))
       .query(({ input }) => {
         return getDocumentsByCategory(input.category);
+      }),
+  }),
+
+  // Knowledge Base Router (RAG) — busca semântica sobre knowledgeDocuments
+  knowledgeBase: router({
+    // Busca semântica pública (usada pelo Jarvis e pelo site)
+    search: publicProcedure
+      .input(z.object({
+        query: z.string().min(2),
+        topK: z.number().min(1).max(10).optional().default(3),
+        minScore: z.number().min(0).max(1).optional().default(0.05),
+      }))
+      .query(async ({ input }) => {
+        return semanticSearch(input.query, input.topK, input.minScore);
+      }),
+
+    // Listagem (admin)
+    list: protectedProcedure
+      .input(z.object({ activeOnly: z.boolean().optional().default(true) }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso restrito a administradores' });
+        }
+        return listDocuments(input.activeOnly);
+      }),
+
+    // Ingestão de documento (admin) — gera embedding e persiste
+    ingest: protectedProcedure
+      .input(z.object({
+        title: z.string().min(2),
+        content: z.string().min(1),
+        category: z.string().min(1),
+        tags: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso restrito a administradores' });
+        }
+        return ingestDocument(input);
+      }),
+
+    // Remoção de documento (admin)
+    remove: protectedProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso restrito a administradores' });
+        }
+        return deleteDocument(input.id);
+      }),
+
+    // Reindexação de embeddings ausentes/inválidos (admin)
+    reindex: protectedProcedure
+      .input(z.object({ force: z.boolean().optional().default(false) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso restrito a administradores' });
+        }
+        return reindexAll(input.force);
       }),
   }),
 

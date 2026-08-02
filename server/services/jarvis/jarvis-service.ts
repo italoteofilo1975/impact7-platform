@@ -6,6 +6,7 @@
 import { invokeLLM } from "../../_core/llm";
 import { llmCircuitBreaker, CircuitBreakerError } from "../../middleware/circuit-breaker";
 import { getContextForLLM, searchKnowledge } from "./knowledge-base";
+import { getRagContext } from "./rag-service";
 
 // Tipos
 export interface JarvisMessage {
@@ -244,13 +245,18 @@ export async function chatWithJarvis(
     }
   }
   
-  // Buscar contexto relevante na base de conhecimento
+  // Buscar contexto relevante na base de conhecimento estática
   const knowledgeContext = getContextForLLM(userMessage);
-  
+
+  // Buscar contexto dinâmico via RAG (documentos indexados no banco).
+  // Best-effort: retorna "" se DB indisponível ou sem resultados.
+  const ragContext = await getRagContext(userMessage, 3);
+
   // Construir mensagens para o LLM
   const messages: JarvisMessage[] = [
     { role: "system", content: JARVIS_SYSTEM_PROMPT },
     { role: "system", content: knowledgeContext },
+    ...(ragContext ? [{ role: "system" as const, content: ragContext }] : []),
     ...conversationHistory.slice(-10), // Últimas 10 mensagens
     { role: "user", content: userMessage }
   ];
