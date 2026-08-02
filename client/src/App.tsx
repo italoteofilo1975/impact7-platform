@@ -132,6 +132,7 @@ import JarvisChat from "./components/JarvisChat";
 import AccessibilityWidget from "./components/AccessibilityWidget";
 import { useWhiteLabel } from "./hooks/useWhiteLabel";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
+import CookieConsent from "./components/CookieConsent";
 import { SkipLink } from "./components/Accessibility";
 import { AdminRoute } from "./components/AdminRoute";
 
@@ -284,6 +285,7 @@ function App() {
             <JarvisChat />
             <AccessibilityWidget />
             <PWAInstallPrompt />
+            <CookieConsent />
           </NotificationProvider>
         </TooltipProvider>
       </ThemeProvider>
