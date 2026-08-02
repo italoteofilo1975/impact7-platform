@@ -118,6 +118,7 @@ const AdminSettings = lazy(() => import("./pages/AdminSettings"));
 const AdminContacts = lazy(() => import("./pages/AdminContacts"));
 const AdminAudit = lazy(() => import("./pages/AdminAudit"));
 const AdminCareers = lazy(() => import("./pages/AdminCareers"));
+const AdminKnowledgeBase = lazy(() => import("./pages/AdminKnowledgeBase"));
 const AdminPages = lazy(() => import("./pages/AdminPages"));
 const AdminErrorLogs = lazy(() => import("./pages/AdminErrorLogs"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
@@ -236,6 +237,7 @@ function Router() {
         <Route path="/admin/contacts">{() => <AdminRoute><AdminContacts /></AdminRoute>}</Route>
         <Route path="/admin/audit">{() => <AdminRoute><AdminAudit /></AdminRoute>}</Route>
         <Route path="/admin/carreiras">{() => <AdminRoute><AdminCareers /></AdminRoute>}</Route>
+        <Route path="/admin/base-conhecimento">{() => <AdminRoute><AdminKnowledgeBase /></AdminRoute>}</Route>
         <Route path="/admin/reports">{() => <AdminRoute><AdminReports /></AdminRoute>}</Route>
         <Route path="/admin/business">{() => <AdminRoute><AdminBusinessMetrics /></AdminRoute>}</Route>
         <Route path="/admin/set7">{() => <AdminRoute><Set7Dashboard /></AdminRoute>}</Route>

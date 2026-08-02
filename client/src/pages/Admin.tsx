@@ -1,7 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Link } from "wouter";
 import NavigationButtons from "@/components/NavigationButtons";
-import { Shield, Users, FileText, BarChart3, Settings, LogOut, Home, ChevronRight, Lock, AlertTriangle, RefreshCw, Activity, Briefcase, Bell, Tag, Coins, Zap, FileCode, MessageSquare, ClipboardList, Gauge, AlertCircle, Brain, BriefcaseBusiness, Globe, Bug } from "lucide-react";
+import { Shield, Users, FileText, BarChart3, Settings, LogOut, Home, ChevronRight, Lock, AlertTriangle, RefreshCw, Activity, Briefcase, Bell, Tag, Coins, Zap, FileCode, MessageSquare, ClipboardList, Gauge, AlertCircle, Brain, BriefcaseBusiness, Globe, Bug, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
@@ -133,6 +133,14 @@ const adminModules = [
     description: "Gerenciar vagas abertas e candidaturas",
     count: null,
     link: "/admin/carreiras",
+    isLink: true,
+  },
+  {
+    icon: BookOpen,
+    title: "Base de Conhecimento",
+    description: "Gerenciar documentos do RAG do Jarvis e busca semântica",
+    count: null,
+    link: "/admin/base-conhecimento",
     isLink: true,
   },
   {
